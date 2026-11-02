@@ -34,3 +34,11 @@ Current limits:
 This is **not a whole-process memory limit**. Third-party curl/SQLite/OpenSSL/SQL-connector internals, thread stacks, the small engine bootstrap and transient bounded readiness buffers are excluded. Readiness control buffers are separately bounded to under 1 MiB at the descriptor cap, so budget exhaustion cannot prevent draining/cancellation. Zend allocations remain subject to PHP's memory_limit. Applications still need conservative concurrency, database/server limits and OS process/container quotas for hostile or dense multi-tenant workloads.
 
 io_uring, kqueue and IOCP remain absent. The initialization host's liburing NOP test completed successfully; implementing and validating actual file operations, cancellation and kernel feature fallbacks is still required. No released PHP scheduler RFC is assumed. PHP threading capability remains false even on an untested ZTS build until an interpreter-thread executor is implemented and validated.
+
+Phase 3 additions: readiness includes bytes already buffered by PHP streams
+(including TLS casting); syscall errors preserve errno; replaceAtomic runs on
+native workers with explicit visibility/durability semantics in FILESYSTEM.md.
+No io_uring filesystem, kqueue or IOCP implementation was added. Database TLS
+capabilities and synchronous trust-file/crypto setup boundaries are documented
+in DATABASE_COMPATIBILITY.md. Single-interpreter ZTS CLI evidence does not enable
+PHP userland threads. Native aggregate accounting still excludes external libraries.

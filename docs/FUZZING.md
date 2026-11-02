@@ -68,3 +68,5 @@ inputs are committed under `tests/fuzz/corpus/resp/`; no native crash was found.
 
 CI runs regression seeds and short fuzz smoke tests. These runs are evidence of
 bounded testing, not proof of parser completeness or production safety.
+
+Final native ASan/UBSan rerun after the filesystem changes: 294,043 inputs in 61 seconds, 867 new corpus units, peak RSS 297 MiB, no finding. Raw log/corpus: final-native-fuzz under build/phase3-path. This target exercises allocator/value/job ownership; atomic syscall faults are a separate tests/audit/atomic_write.c harness, not falsely counted as coverage-guided filesystem fuzzing.

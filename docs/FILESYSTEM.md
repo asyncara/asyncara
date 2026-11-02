@@ -44,7 +44,7 @@ Tests: empty/binary writes; explicit permissions; symlink replacement; 120
 concurrent replacements plus 200 reads with no partial contents; 100 cancellation
 requests; missing/permission errno; no leftover temporary files. The native
 ASan/UBSan fault harness injects file fsync EIO, rename EXDEV, directory fsync EIO
-and allocation failure, checks publication state and zero managed allocations.
+allocation failure, EINTR/one-byte partial writes and ENOSPC, checks publication state and zero managed allocations.
 It verifies fsync calls and recovery, not physical crash durability.
 
 ```sh

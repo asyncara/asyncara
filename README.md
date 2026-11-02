@@ -52,3 +52,13 @@ The [complete local concurrency tour](examples/python_concurrency_tour.php) exer
 See [API and semantics](docs/API.md), [architecture](docs/ARCHITECTURE.md), [driver details](docs/DRIVERS.md), [security](docs/SECURITY.md), [limitations](docs/LIMITATIONS.md), [measured performance](docs/PERFORMANCE.md), and the precise [roadmap](docs/ROADMAP.md). [WORKLOG](WORKLOG.md) records commands, failures, fixes and evidence. All benchmark samples are retained in [the raw results](benchmarks/results/latest.json).
 
 Phase 3 resource admission and buffering policies: [RESOURCE_LIMITS.md](docs/RESOURCE_LIMITS.md).
+
+Phase 3 hardening adds bounded pending work/results, RESP/IPC fuzz regressions,
+worker signal isolation, strict database TLS identity, separate Oracle MySQL
+8.4.13 tests, buffered TLS wakeup handling and atomic filesystem replacement.
+A frozen one-hour mixed baseline completed; six-/24-hour certification remains
+outstanding. See [release readiness](docs/RELEASE_READINESS.md),
+[database matrix](docs/DATABASE_COMPATIBILITY.md), [filesystem contracts](docs/FILESYSTEM.md),
+[FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
+[ZTS scope](docs/ZTS_COMPATIBILITY.md). HTTP streaming, WebSocket, expanded hooks,
+and framework certification remain unavailable. Release status stays EXPERIMENTAL.

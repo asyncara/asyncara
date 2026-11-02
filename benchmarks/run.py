@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-import os,sys,json,pathlib,platform,subprocess,datetime,hashlib
+import os,sys,json,pathlib,platform,subprocess,datetime,hashlib,argparse
 root=pathlib.Path(__file__).resolve().parent.parent;os.chdir(root)
+parser=argparse.ArgumentParser();parser.add_argument('--output',default='benchmarks/results/latest.json');options=parser.parse_args()
 subprocess.run([sys.executable,'scripts/check-build.py','build/asyncara.so'],check=True)
 subprocess.run(['scripts/prepare-test-certs.sh'],check=True)
 fixture=subprocess.Popen(['python3','tests/fixtures/http_server.py','build/test-certs/cert.pem','build/test-certs/key.pem'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=open('build/benchmark-fixture.log','w'),text=True)
@@ -23,6 +24,6 @@ try:
  else:results['swooleUnavailable']=result.stderr+result.stdout
 finally:
  fixture.stdin.close();fixture.wait(timeout=10)
-path=pathlib.Path('benchmarks/results');path.mkdir(exist_ok=True)
-(path/'latest.json').write_text(json.dumps(results,indent=2)+'\n')
+path=pathlib.Path(options.output);path.parent.mkdir(parents=True,exist_ok=True)
+path.write_text(json.dumps(results,indent=2)+'\n')
 print(json.dumps({case['mode']:[round(s['seconds'],5) for s in case['samples']]for case in results['cases']},indent=2))

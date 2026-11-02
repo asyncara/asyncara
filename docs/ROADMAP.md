@@ -52,8 +52,8 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 ## Next engineering work, in order
 
-1. Review the audit fixes and corrected source archive; add the independent regressions to CI. Expand protocol/allocation fuzzing, sustained multiworker FPM soak, remote SQL auth/TLS and ZTS coverage. Establish third-party memory/process quotas and bounded notification/result queues. Preserve the independently verified debug/instrumented PHP and fatal-teardown tests.
-2. Add typed errno reporting, atomic replacement and io_uring file operations only after real completion/cancellation/fallback tests. Preserve the worker fallback.
+1. Execute hosted CI and six-/24-hour frozen soaks; extend multiworker FPM endurance. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
+2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
 3. Complete HTTP streaming/backpressure and multipart, WebSocket protocol support, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
 4. Extend individual transparent hooks with exact parameter/warning/resource/return/signal behavior tests; keep unsupported groups explicit.
 5. Add common DB manual transaction APIs where missing, server-side prepared caches, richer Redis types and safe notification/pipeline policies.
