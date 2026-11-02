@@ -14,7 +14,9 @@ if not paths:
     raise SystemExit('No tracked source: stage the intended source files before packaging.')
 target = root / options.output
 target.parent.mkdir(exist_ok=True)
-with target.open('wb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed:
+if target.exists() or target.with_suffix(target.suffix + '.sha256').exists():
+    raise SystemExit('Preserve historical artifacts: choose a new --output path.')
+with target.open('xb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed:
     with tarfile.open(fileobj=compressed, mode='w|', format=tarfile.PAX_FORMAT) as archive:
         for name in paths:
             path = root / name

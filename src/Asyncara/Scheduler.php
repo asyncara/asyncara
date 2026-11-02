@@ -140,7 +140,8 @@ final class Scheduler
         foreach ($result['results'] as $item) {
             $future = $this->native[$item['id']] ?? null; unset($this->native[$item['id']]);
             if (!$future) continue;
-            if ($item['error'] !== null) $future->reject($item['error'] === 'Operation cancelled' ? new CancelledException($item['error']) : new OperationException($item['error']));
+            if ($item['error'] !== null) $future->reject($item['error'] === 'Operation cancelled' ? new CancelledException($item['error']) :
+                (($item['errno'] ?? 0) ? new Exception\FilesystemException($item['error'], $item['errno'], $item['committed']) : new OperationException($item['error'])));
             else $future->resolve($item['value']);
         }
     }
