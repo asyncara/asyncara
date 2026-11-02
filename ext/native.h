@@ -102,7 +102,7 @@ typedef struct ar_engine {
     int running, use_epoll;
 } ar_engine;
 typedef struct {
-    int fd, events, ready;
+    int fd, events, ready, buffered;
     long key;
 } ar_watch;
 void *ar_alloc(ar_engine *e, size_t bytes);

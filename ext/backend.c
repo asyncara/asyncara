@@ -236,6 +236,9 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     pthread_mutex_unlock(&e->mutex);
     if (done)
         timeout = 0;
+    for (size_t i = 0; i < n; i++)
+        if (w[i].buffered)
+            timeout = 0;
     long curl_timeout = -1;
     if (e->multi) {
         curl_multi_timeout(e->multi, &curl_timeout);
@@ -279,7 +282,8 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     int rc = wait_fds(e, fds, count, timeout);
     if (rc >= 0) {
         for (size_t i = 0; i < n; i++)
-            w[i].ready = fds[indices[i]].revents & (w[i].events | POLLERR | POLLHUP | POLLNVAL);
+            w[i].ready = w[i].buffered ||
+                         (fds[indices[i]].revents & (w[i].events | POLLERR | POLLHUP | POLLNVAL));
         if (e->multi) {
             for (size_t i = curl_start; i < count; i++)
                 if (fds[i].revents) {

@@ -545,7 +545,10 @@ PHP_FUNCTION(asyncara_poll) {
                 zend_value_error("Stream has no pollable descriptor");
                 RETURN_THROWS();
             }
-            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = key};
+            /* Casting a TLS stream may move SSL_pending bytes into PHP's
+             * buffer. Kernel readiness alone then loses the wakeup. */
+            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = key,
+                               .buffered = !mode && (stream->writepos > stream->readpos || stream->eof)};
         }
         ZEND_HASH_FOREACH_END();
     }
