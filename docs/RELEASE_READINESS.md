@@ -61,7 +61,11 @@ Soak: frozen baseline `cad761e` passed 3,600.149 workload seconds, 20,855 cycles
 +296 KiB, flat descriptors/threads, zero final pending runtime objects. Final
 runtime `8af2604` passed a separate 300.106-second run, 1,894 cycles / 1.894m Tasks,
 18 injected restarts; RSS endpoint medians +444 KiB. The earlier hour does not
-certify the later binary. Six-/24-hour tests are **not executed**. Short-window
+certify the later binary. A separate HTTP-streaming checkpoint1f792ef passed3,600.110s/19,761cycles,
+19.761m burst Tasks and197worker recoveries, RSS endpoint+380KiB and zero final
+pending work. WebSocket checkpoint648c076 passed300.026s/24,686cycles with16
+connections. Each report retains its exact source scope; later Connector gate
+changes are independently tested. Six-/24-hour tests are **not executed**. Short-window
 slopes and latency outliers remain in the evidence; no leak-free/low-latency
 production guarantee is inferred.
 
@@ -126,8 +130,9 @@ package.py requires a new output name. A clean extraction must build from its
 own ext sources/config.m4, using independently available PHP/dependency headers.
 The final attestation records archive-source comparisons and test commands.
 
-1. Execute the committed hosted CI; repeat frozen final-binary 1h/6h/24h runs and
-   longer FPM fault/recycling workloads using tests/soak. Retain provenance/trends.
+1. Resolve the expanded FPM RSS-over-warmup failures with allocator/process
+   capacity evidence; retain the unchanged failing assertions. Complete hosted
+   CI provisioning/validation and frozen final-binary 6h/24h workloads.
 2. Follow up the upstream libpq unload allocation; expand server disconnect,
    remote TLS/auth, prepared cache and cancellation acknowledgement coverage.
 3. Extend the tested curl multi streaming paths with multi-file MIME and broader

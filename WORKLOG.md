@@ -323,3 +323,23 @@ without that API now reject TLS before any connection instead of failing compile
 or attempting insecure fallback. Added explicit unsupported-TLS regression and
 CI header-capability selection. Supported3.4.10 TLS path remains unchanged and
 requires rerunning its private-CA matrix. Original compiler errors preserved.
+
+## Phase 3 continuation — HTTP mixed one-hour result
+
+Frozen1f792ef completed3,600.110s/19,761cycles/19.761m burst Tasks/197worker
+crash-recoveries. All706samples retained; fds20/threads5/sockets7 flat; tracked
+native0 at boundaries/final pending0. RSS endpoint+380KiB/slope472.37KiB/h;
+livePHP+16,168bytes; maxstep655.7ms/timerlag502.7ms on loadedhost. Separate evidence
+for this checkpoint, not a claim about later WebSocket/Connector binaries.
+Six-/24-hour tests remain unexecuted and FPM RSS failures remain open.
+
+Connector3.3.17 follow-up: its verification option itself forcesTLS, so the Unix
+socket attempt first failed on the server's automatic self-signed certificate,
+then on a TLS-disabled server. Inspected exact upstream3.3.17 auth code. Unsupported
+TLS/defaultTCP/CA options are rejected before connection; only the explicit
+non-TLS path leaves the TLS-enabling verification option unset. No unverified
+TLS is allowed. Plain fixture now states --skip-ssl and asserts empty cipher;
+separate verifiedTLS fixture unchanged. OldSDK/runtime plain query/bind/large/
+transaction/cancellation/lifecycle tests and fail-closed matrix now pass. Earlier
+failures preserved. Native3.4.10 Oracle/privateCA100-repeat matrix also passed
+following the feature-gate fix; further final-source instrumentation follows.
