@@ -23,7 +23,14 @@ jobs:
         env:
           PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
         run: |
-          ./scripts/bootstrap-local.sh
+          mkdir -p build
+          if sudo apt-get update > build/ci-bootstrap.log 2>&1 && ./scripts/bootstrap-local.sh >> build/ci-bootstrap.log 2>&1; then
+            cat build/ci-bootstrap.log
+          else
+            cat build/ci-bootstrap.log
+            python3 -c 'from pathlib import Path; [print("::error::" + x.replace("%", "%25")) for x in Path("build/ci-bootstrap.log").read_text().splitlines()[-25:]]'
+            exit 1
+          fi
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
       - run: composer install --no-interaction --ignore-platform-req=ext-asyncara
       - run: python3 scripts/install-test-websockets.py
@@ -66,9 +73,14 @@ jobs:
           coverage: none
       - name: Provision disposable runner services and development tools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-16 mariadb-server redis-server php8.5-fpm libc6-dbg
-          ./scripts/bootstrap-local.sh
+          mkdir -p build
+          if sudo apt-get update > build/ci-provision.log 2>&1 && sudo apt-get install -y postgresql-16 mariadb-server redis-server php8.5-fpm libc6-dbg >> build/ci-provision.log 2>&1 && ./scripts/bootstrap-local.sh >> build/ci-provision.log 2>&1; then
+            cat build/ci-provision.log
+          else
+            cat build/ci-provision.log
+            python3 -c 'from pathlib import Path; [print("::error::" + x.replace("%", "%25")) for x in Path("build/ci-provision.log").read_text().splitlines()[-25:]]'
+            exit 1
+          fi
           (cd .local/debs && apt download valgrind libc6-dbg)
           for package in .local/debs/valgrind_*.deb .local/debs/libc6-dbg_*.deb; do dpkg-deb -x "$package" .local/sysroot; done
       - run: make build
