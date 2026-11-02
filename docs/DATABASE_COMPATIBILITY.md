@@ -2,6 +2,7 @@
 
 These are tested configurations, not universal server certification. Tests use
 isolated processes, private CA keys, loopback TCP and per-run credentials.
+TLS trust-file loading and cryptographic work run synchronously during connection setup; slow trust-store files can stall that thread. Verified nonblocking behavior covers socket waits and pending queries, not arbitrary library initialization.
 No real WAN, managed service, certificate rotation or mutual TLS deployment has
 been certified. Third-party allocations remain outside Asyncara's native ledger.
 

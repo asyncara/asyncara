@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "commit": "8af260430e218e0a1b929b5622893d695f1c99af",
+    "gitStatus": "",
+    "sourceManifestSha256": "becf4552db043ace49b144003ac6badec7d8888044c8039bfa26d75489b212fd",
+    "extensionSha256": "d861852d0e0a55814ac174beefafa0b3e488959880c80a45389ee161317c5eab",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "cpuCount": 6,
+    "php": "PHP 8.5.11 (cli) (built: Sep 24 2026 13:49:29) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.11, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.11, Copyright (c), by Zend Technologies\n",
+    "requestedSeconds": 300.0,
+    "tasksPerCycle": 1000,
+    "databases": true,
+    "startedUtc": "2026-11-02T20:58:11Z"
+  },
+  "report": {
+    "status": "PASS",
+    "wallSeconds": 309.19359839800745,
+    "workloadExit": 0,
+    "samples": 59,
+    "complete": [
+      {
+        "type": "complete",
+        "seconds": 300.1058814369608,
+        "cycles": 1894,
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 190926,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0
+        },
+        "scheduler": {
+          "turns": 249334,
+          "taskSteps": 4227870,
+          "maxStepSeconds": 0.29557435610331595,
+          "maxTimerLagSeconds": 0.3396798041649163,
+          "activeTasks": 0,
+          "pendingFutures": 0,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 0,
+          "ioWatchers": 0,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "os": {
+          "rssKiB": 44204,
+          "threads": 5,
+          "fds": 13,
+          "sockets": 4
+        }
+      }
+    ],
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 43584,
+        "max": 44276,
+        "median": 44012.0,
+        "endMinusStartMedian": 444,
+        "slopePerHour": 8838.71786575498
+      },
+      "phpBytes": {
+        "min": 1667528,
+        "max": 1692320,
+        "median": 1692104.0,
+        "endMinusStartMedian": 16168,
+        "slopePerHour": 168950.46592202954
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "median": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 20,
+        "max": 20,
+        "median": 20.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "threads": {
+        "min": 5,
+        "max": 5,
+        "median": 5.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 7,
+        "max": 7,
+        "median": 7.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      }
+    },
+    "failures": [],
+    "parseErrors": [],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers."
+    ]
+  },
+  "rawEvidence": "/tmp/asyncara-phase3-cQBA3H/soak-final-5m"
+}

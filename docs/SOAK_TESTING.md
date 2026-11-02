@@ -64,3 +64,13 @@ The separate scheduled workflow runs the one-hour test; its remote status is
 unverified until hosted CI executes it. Longer commands require a machine/session
 that can remain available for the full duration. Do not label a smoke test as a
 one-hour soak or extrapolate successful short runs to 24 hours.
+
+Final runtime checkpoint `8af2604` also passed a frozen 300.106-second mixed run:
+1,894 cycles / 1.894m burst Tasks, 18 injected worker restarts, no unexpected
+errors or final pending runtime objects. Stable sampled fds20/threads5/sockets7;
+RSS endpoint medians +444 KiB and live PHP +16,168 bytes. The short-window RSS
+slope was 8,838.7 KiB/hour; extrapolating five minutes to long-term growth is not
+justified. The sample range and slopes are retained in
+[phase3/soak-final-5m.json](phase3/soak-final-5m.json). Final-binary long-duration
+stability remains unverified. Atomic replacement has separate fault/race tests;
+this mixed workload exercises ordinary file operations.
