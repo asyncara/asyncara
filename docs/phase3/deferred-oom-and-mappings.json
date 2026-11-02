@@ -1,0 +1,241 @@
+{
+  "scope": "PHP8.5.12 deferred OOM + Linux large-buffer native mapping correction",
+  "sourceCommitBeforeMappings": "e891149",
+  "status": "PARTIALLY_IMPLEMENTED",
+  "logs": {
+    "fatal-batch-negative.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/fatal-batch-negative.log",
+      "sha256": "01bcff8242f48ea96c424d85dcd6255dea91128946728dc7a492f92bdc162183"
+    },
+    "delayed-oom-audit.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/delayed-oom-audit.log",
+      "sha256": "111b889e28d972c2444504d39de2addcb0a178ad298b4bcc9284eae38f5b77e4"
+    },
+    "delayed-oom-8.3-audit.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/delayed-oom-8.3-audit.log",
+      "sha256": "af5fd89e79aa3dca9bca67bb1bbee189616d2bde327a324b519202ec6c0929db"
+    },
+    "delayed-oom-8.4-audit.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/delayed-oom-8.4-audit.log",
+      "sha256": "9f9a2756ead13cb7ca4e96cf7bcb90914a87d5e8121cbf0caeb16aa596d165e8"
+    },
+    "delayed-oom-fatal-db.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/delayed-oom-fatal-db.log",
+      "sha256": "abf4ef841a6287ad6b788aff6de34c5cfb5248c6f1287f22af8c6c6e38fd8779"
+    },
+    "mapped-verify.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/mapped-verify.log",
+      "sha256": "a264294c134f91b53195f51cdbb66fdfd65008c2b86cfc8860c6b561ce13e564"
+    },
+    "mapped-regressions.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/mapped-regressions.log",
+      "sha256": "ae02089fb815c93c1652104ce066d64b8ac6124889f91497face21ede16305b4"
+    },
+    "mapped-allocations.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/mapped-allocations.log",
+      "sha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+    },
+    "mapped-tsan.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/mapped-tsan.log",
+      "sha256": "095d7f3c5af6648560ea2769a9ef7a7410579d5a8292d40704af5129af046c57"
+    },
+    "fuzz-native-budget.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/fuzz-native-budget.log",
+      "sha256": "fca30c46797b752d4bd3bcec5d457c6a23c44e5b055835c39d2e7ad20148430f"
+    },
+    "fuzz-http-budget.log": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/fuzz-http-budget.log",
+      "sha256": "fb1ef02532c9f7b0d8aff17a833632c4e4ee4bb5bce641abfe2d2e3f6ee43489"
+    }
+  },
+  "beforeMapping": {
+    "directory": "/tmp/asyncara-phase3-cQBA3H/fpm-8.5.12-oom-fixed-5m",
+    "growth": {
+      "rssRangeKiBAfterWarmup": {
+        "2124784": 73456,
+        "2124753": 172,
+        "2124754": 24564,
+        "2124751": 24508
+      },
+      "maxRssIncreaseKiB": {
+        "2124784": 24448,
+        "2124753": 172,
+        "2124754": 24564,
+        "2124751": 24448
+      },
+      "warmupPeakKiB": {
+        "2124784": 137496,
+        "2124753": 137856,
+        "2124754": 129360,
+        "2124751": 129232
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2124784": 14792,
+        "2124753": 2100,
+        "2124754": 8,
+        "2124751": 0
+      }
+    },
+    "provenance": {
+      "commit": "8c45a1b2dcb5c6e4d6d8f91c43fd9727f6c9ef4f",
+      "gitStatus": " M ext/mysql.c\n M ext/php_asyncara.c\n M ext/php_asyncara.h\n M ext/postgresql.c\n M scripts/audit.py\n?? tests/audit/fatal_batch.php\n",
+      "files": {
+        "build/asyncara.so": "a6d9b5224773a98538023ebde9853b006242b5eb4d47baf7da242cc6ad33ea4d",
+        "tests/soak/fpm.py": "e521a3e3e5a0ce866355c8fb6d36d0ae871af7d571b7849956bd2d841577579f",
+        "scripts/audit-fpm.py": "12af80f5bad18d3247eaef07d210e2bf088b1a6af379a93a23a765780506ceae",
+        "tests/audit/fpm_request.php": "fca97379d8d697a079d64fa2468e188190e6f8b5d7fcfc8e08f6cbf5df62d7fc"
+      },
+      "mixedModes": [
+        "buffered HTTP",
+        "streamed HTTP",
+        "SQLite",
+        "filesystem",
+        "pending shutdown"
+      ],
+      "requestedSeconds": 300.0
+    }
+  },
+  "afterMapping": {
+    "directory": "/tmp/asyncara-phase3-cQBA3H/fpm-mapped-5m",
+    "growth": {
+      "rssRangeKiBAfterWarmup": {
+        "2164697": 280,
+        "2164698": 264,
+        "2164699": 304,
+        "2164729": 496
+      },
+      "maxRssIncreaseKiB": {
+        "2164697": 280,
+        "2164698": 264,
+        "2164699": 304,
+        "2164729": 496
+      },
+      "warmupPeakKiB": {
+        "2164697": 18716,
+        "2164698": 18704,
+        "2164699": 18932,
+        "2164729": 14556
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2164697": 500,
+        "2164698": 568,
+        "2164699": 488,
+        "2164729": 2968
+      }
+    },
+    "provenance": {
+      "commit": "8c45a1b2dcb5c6e4d6d8f91c43fd9727f6c9ef4f",
+      "gitStatus": " M ext/memory.c\n M ext/mysql.c\n M ext/php_asyncara.c\n M ext/php_asyncara.h\n M ext/postgresql.c\n M scripts/audit.py\n?? tests/audit/fatal_batch.php\n",
+      "files": {
+        "build/asyncara.so": "19add963f8bdf30335fa3477e73cf1e6fcdae4d8b201cdb3b06fb50a3bacc8db",
+        "tests/soak/fpm.py": "e521a3e3e5a0ce866355c8fb6d36d0ae871af7d571b7849956bd2d841577579f",
+        "scripts/audit-fpm.py": "12af80f5bad18d3247eaef07d210e2bf088b1a6af379a93a23a765780506ceae",
+        "tests/audit/fpm_request.php": "fca97379d8d697a079d64fa2468e188190e6f8b5d7fcfc8e08f6cbf5df62d7fc"
+      },
+      "mixedModes": [
+        "buffered HTTP",
+        "streamed HTTP",
+        "SQLite",
+        "filesystem",
+        "pending shutdown"
+      ],
+      "requestedSeconds": 300.0
+    },
+    "cases": [
+      {
+        "name": "A-lifecycle",
+        "workers": 1,
+        "requests": 100,
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "workers": 1,
+        "requests": 10,
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS",
+        "requests": 25,
+        "pids": [
+          2164311,
+          2164426,
+          2164575
+        ]
+      },
+      {
+        "name": "mixed-reload-kill",
+        "status": "PASS",
+        "seconds": 300.1925688169431,
+        "requests": 3912,
+        "reloads": 1,
+        "killedWorkers": 1,
+        "rssRangeKiBAfterWarmup": {
+          "2164697": 280,
+          "2164698": 264,
+          "2164699": 304,
+          "2164729": 496
+        },
+        "maxRssIncreaseKiB": {
+          "2164697": 280,
+          "2164698": 264,
+          "2164699": 304,
+          "2164729": 496
+        },
+        "warmupPeakKiB": {
+          "2164697": 18716,
+          "2164698": 18704,
+          "2164699": 18932,
+          "2164729": 14556
+        },
+        "growthBeyondWarmupPeakKiB": {
+          "2164697": 500,
+          "2164698": 568,
+          "2164699": 488,
+          "2164729": 2968
+        }
+      },
+      {
+        "name": "request-timeout",
+        "status": "PASS",
+        "terminatedPid": 2245935,
+        "replacement": {
+          "pid": 2246509,
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 15540,
+          "idleWaitSeconds": 0.0008368208073079586,
+          "transientThreadsBeforeReaping": 1
+        }
+      }
+    ]
+  },
+  "fuzzing": {
+    "native": {
+      "executions": 306396,
+      "seconds": 61,
+      "peakRssMiB": 198
+    },
+    "http": {
+      "executions": 803874,
+      "seconds": 61,
+      "peakRssMiB": 147
+    },
+    "asanQuarantineMiB": 64,
+    "rssLimitMiB": 512,
+    "findings": []
+  }
+}

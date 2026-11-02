@@ -397,3 +397,22 @@ No error suppression or RSS assertion change has been applied.
 PHP upstream reference: https://www.php.net/manual/en/ini.core.php#ini.memory-hard-limit-percent.
 Use matching PHP SDK/runtime builds; final validation moves to patched8.5.12.
 The older8.5.11 sanitizer/ZTS evidence is historical, not a deployment recommendation.
+
+## Bounded native page ownership and repeated FPM check
+
+Three expanded FPM runs exceeded the unchanged8192KiB RSS-over-warmup bound;
+the latest8.5.12 run exceeded it by14,792KiB. Allocation probes showed freed
+thread arenas retaining large buffers. Asyncara allocations >=1MiB now use
+page-rounded mappings; freeing releases pages, with no global malloc settings.
+Resize counts both temporary owners and preserves old memory on quota/OS failure.
+ASan mapped tails are poisoned, verified by a deliberate overrun. New mapping
+tests cover quota, relocation, injected mmap failure, unmap and four workers.
+NativeASan/UBSan/TSan, allocation injection and make verify pass.
+
+The unchanged300s FPM mix now passes3,912requests, lifecycle/recycling/reload/kill/
+fatal/timeout assertions, six idleFDs/one thread, RSS16,968–19,420KiB and at most
+2,968KiB beyond warmup. Historical failures remain in evidence. The follow-up
+soak runner snapshots its module before any worker/reload. A frozen rerun follows.
+ASan fuzz quarantine is explicitly64MiB to keep instrumentation within the same
+512MiB RSS ceiling:306,396native and803,874HTTP inputs/61s each, peaks198/147MiB,
+no findings. See docs/phase3/deferred-oom-and-mappings.json.

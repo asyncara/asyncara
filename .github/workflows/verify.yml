@@ -47,6 +47,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-10.log bash -c 'php -n tests/fuzz/websocket_mutation.php 5 100000 build/ws-fuzz-smoke'
       - run: ./scripts/ci-run.sh build/ci-step-11.log bash -c 'make audit'
       - run: ./scripts/ci-run.sh build/ci-step-12.log bash -c './scripts/audit-allocations.sh'
+      - run: ./scripts/ci-run.sh build/ci-native-mappings.log ./scripts/test-native-mappings.sh
       - run: ./scripts/ci-run.sh build/ci-step-13.log bash -c './scripts/test-worker-signals.sh'
       - run: ./scripts/ci-run.sh build/ci-step-14.log bash -c './scripts/test-atomic-failures.sh'
       - run: ./scripts/ci-run.sh build/ci-step-15.log bash -c 'python3 tests/audit/package_repro.py --output build/package-repro'
@@ -61,7 +62,9 @@ jobs:
             build/*.log
             build/ci-audit/
             build/fuzz-smoke/run.log
+            build/fuzz-smoke/artifacts/
             build/fuzz-http-smoke/run.log
+            build/fuzz-http-smoke/artifacts/
             build/ws-fuzz-smoke/
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
