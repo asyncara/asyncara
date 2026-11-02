@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Reuse audit FastCGI/concurrency assertions; extend process lifecycle faults."""
-import argparse, concurrent.futures, importlib.util, json, os, pathlib, signal, socket, subprocess, time
+import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, signal, socket, subprocess, time
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser();parser.add_argument('--seconds',type=float,default=60);parser.add_argument('--output',required=True);args=parser.parse_args()
 if args.seconds<=0:parser.error('Duration must be positive')
@@ -31,10 +31,12 @@ def stop(process,log):
 def children(process):
     path=pathlib.Path(f'/proc/{process.pid}/task/{process.pid}/children')
     return {int(v)for v in path.read_text().split()}
+provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['build/asyncara.so','tests/soak/fpm.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
+(out/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
 results=[]
 try:
     # Preserve the original three distinct assertions as the first phase.
-    for case in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True)]:
+    for case in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True),('D-streaming',4,12,'stream',True)]:
         results.append(audit.run(*case));print(case[0]+' PASS',flush=True)
     process,port,log=launch('recycling',1,recycle=10)
     try:
@@ -49,7 +51,7 @@ try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=4)as executor:
             while time.monotonic()-start<args.seconds:
                 base=len(responses)
-                futures=[executor.submit(audit.request,port,base+i,'io'if i<3 else'pending')for i in range(4)]
+                futures=[executor.submit(audit.request,port,base+i,('io'if i<2 else 'stream'if i==2 else'pending'))for i in range(4)]
                 batch=[f.result()for f in futures];responses+=batch
                 if not reloads:
                     old=children(process)
