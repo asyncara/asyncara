@@ -28,7 +28,7 @@ jobs:
             cat build/ci-bootstrap.log
           else
             cat build/ci-bootstrap.log
-            python3 -c 'from pathlib import Path; [print("::error::" + x.replace("%", "%25")) for x in Path("build/ci-bootstrap.log").read_text().splitlines()[-25:]]'
+            python3 -c 'from pathlib import Path; print("::error::" + "\n".join(Path("build/ci-bootstrap.log").read_text().splitlines()[-30:]).replace("%", "%25").replace("\n", "%0A"))'
             exit 1
           fi
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
@@ -78,7 +78,7 @@ jobs:
             cat build/ci-provision.log
           else
             cat build/ci-provision.log
-            python3 -c 'from pathlib import Path; [print("::error::" + x.replace("%", "%25")) for x in Path("build/ci-provision.log").read_text().splitlines()[-25:]]'
+            python3 -c 'from pathlib import Path; print("::error::" + "\n".join(Path("build/ci-provision.log").read_text().splitlines()[-30:]).replace("%", "%25").replace("\n", "%0A"))'
             exit 1
           fi
           (cd .local/debs && apt download valgrind libc6-dbg)
