@@ -13,6 +13,7 @@ final class ProcessPool
     private bool $closed = false;
     private string $bootstrap;
     private int $pendingBytes = 0;
+    private int $restarts = 0;
     public function __construct(int $workers, string $bootstrap, private int $queueLimit = 256, private int $queueBytes = 67108864, private int $workerMemoryBytes = 268435456)
     {
         if ($workers < 1 || $workers > 64 || $queueLimit < 1 || $queueLimit > 100000 || $queueBytes < 1 || $queueBytes > 1073741824 || $workerMemoryBytes < 8388608) throw new \ValueError('Invalid pool limits');
@@ -77,7 +78,7 @@ final class ProcessPool
                 if (isset($result['error'])) throw new WorkerException($result['error']);
                 return $result['value'] ?? null;
             } finally {
-                if (!$healthy) { $this->stop($this->workers[$index]); if (!$this->closed) $this->workers[$index] = $this->start(); }
+                if (!$healthy) { $this->stop($this->workers[$index]); if (!$this->closed) { $this->workers[$index] = $this->start(); $this->restarts++; } }
                 if (!$this->closed) $this->available->tryPut($index);
                 $this->available->taskDone();
             }
@@ -88,7 +89,7 @@ final class ProcessPool
     }
     public function statistics(): array
     {
-        return ['workers'=>count($this->workers), 'pendingJobs'=>count($this->jobs), 'pendingBytes'=>$this->pendingBytes, 'queueLimit'=>$this->queueLimit, 'queueBytes'=>$this->queueBytes, 'workerMemoryBytes'=>$this->workerMemoryBytes, 'closed'=>$this->closed];
+        return ['workers'=>count($this->workers), 'restarts'=>$this->restarts, 'pendingJobs'=>count($this->jobs), 'pendingBytes'=>$this->pendingBytes, 'queueLimit'=>$this->queueLimit, 'queueBytes'=>$this->queueBytes, 'workerMemoryBytes'=>$this->workerMemoryBytes, 'closed'=>$this->closed];
     }
     private function retire(array $worker): void
     {

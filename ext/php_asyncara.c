@@ -266,6 +266,15 @@ PHP_FUNCTION(asyncara_info) {
     for (ar_file *file = e->files; file; file = file->next)
         file_count++;
     add_assoc_long(return_value, "openFileHandles", file_count);
+    size_t sqlite_count = 0, http_sockets = 0, queued = 0;
+    for (ar_db *db = e->dbs; db; db = db->next) sqlite_count++;
+    for (ar_socket *socket = e->sockets; socket; socket = socket->next) http_sockets++;
+    pthread_mutex_lock(&e->mutex);
+    for (ar_job *job = e->queue_head; job; job = job->queue_next) queued++;
+    pthread_mutex_unlock(&e->mutex);
+    add_assoc_long(return_value, "sqliteConnections", sqlite_count);
+    add_assoc_long(return_value, "httpReadinessSockets", http_sockets);
+    add_assoc_long(return_value, "nativeQueueDepth", queued);
 }
 PHP_FUNCTION(asyncara_submit) {
     char *name;

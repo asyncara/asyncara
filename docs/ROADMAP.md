@@ -44,6 +44,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | CI regression and database lifecycle workflows | IMPLEMENTED_BUT_NOT_FULLY_TESTED | local commands executed; hosted workflows added but not yet run remotely |
 | P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
 | P2 protocol/allocation fuzzing | IMPLEMENTED_AND_TESTED | committed seeds, 100 RESP cases, real IPC failures, 326,134 native ASan/UBSan fuzz inputs and 12,737 instrumented PHP mutations; bounded coverage in FUZZING.md |
+| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | 20.173-second smoke passed; one-hour run next; 6h/24h not executed; SOAK_TESTING.md |
 | Third-party aggregate memory accounting | PARTIALLY_IMPLEMENTED | SQLite value limits; other foreign allocators remain outside native ledger |
 
 ## Next engineering work, in order

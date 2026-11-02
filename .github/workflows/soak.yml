@@ -1,0 +1,32 @@
+name: Scheduled mixed soak
+on:
+  schedule:
+    - cron: '23 2 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  one-hour:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+      - name: Provision isolated runner dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 mariadb-server redis-server
+          ./scripts/bootstrap-local.sh
+      - run: make build
+      - run: python3 tests/soak/run.py --seconds 3600 --databases --output build/soak-1h
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: one-hour-soak
+          path: |
+            build/soak-1h/*.json
+            build/soak-1h/*.jsonl
+            build/soak-1h/*.log

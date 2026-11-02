@@ -4,6 +4,7 @@ import argparse, os, pathlib, socket, subprocess, sys, time
 parser=argparse.ArgumentParser()
 parser.add_argument('--valgrind',action='store_true')
 parser.add_argument('--test-file',default='tests/databases.php')
+parser.add_argument('--timeout',type=float,default=180,help='Child deadline in seconds, including long soak workloads')
 options=parser.parse_args()
 root=pathlib.Path(__file__).resolve().parent.parent
 os.chdir(root)
@@ -37,7 +38,7 @@ try:
  if options.valgrind:
   env|={'USE_ZEND_ALLOC':'0','VALGRIND_LIB':str(root/'.local/sysroot/usr/libexec/valgrind')}
   command=[str(root/'.local/sysroot/usr/bin/valgrind'),'--extra-debuginfo-path='+str(root/'.local/debug'),'--keep-debuginfo=yes','--leak-check=full','--show-leak-kinds=definite','--errors-for-leak-kinds=definite','--error-exitcode=99','--log-file=build/valgrind-databases.log']+command
- result=subprocess.run(command,env=env,timeout=180)
+ result=subprocess.run(command,env=env,timeout=options.timeout)
 finally:
  for p in processes:
   if p.poll() is None:p.terminate()
