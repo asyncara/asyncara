@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -660,11 +661,23 @@ int ar_submit(ar_engine *e, ar_job *j) {
     if (e->pending >= AR_MAX_PENDING)
         return -1;
     if (j->op != OP_HTTP && !e->thread_count) {
+        /* Workers must never execute request/SAPI signal handlers. Block async
+         * signals before creation so there is no unmasked startup window, then
+         * restore exactly the interpreter thread's previous mask. Synchronous
+         * fault signals remain available to crash/sanitizer handlers. */
+        sigset_t blocked, previous;
+        sigfillset(&blocked);
+        const int faults[] = {SIGABRT, SIGBUS, SIGFPE, SIGILL, SIGSEGV, SIGTRAP, SIGSYS};
+        for (size_t i = 0; i < sizeof(faults) / sizeof(*faults); i++) sigdelset(&blocked, faults[i]);
+        int mask_error = pthread_sigmask(SIG_BLOCK, &blocked, &previous);
+        if (mask_error) { errno = mask_error; return -1; }
         for (int i = 0; i < 4; i++) {
             if (pthread_create(&e->threads[i], NULL, worker, e))
                 break;
             e->thread_count++;
         }
+        mask_error = pthread_sigmask(SIG_SETMASK, &previous, NULL);
+        if (mask_error) { errno = mask_error; return -1; }
         if (!e->thread_count)
             return -1;
     }
