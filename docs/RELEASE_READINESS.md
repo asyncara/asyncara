@@ -82,7 +82,7 @@ Long-duration FPM/framework and all process-tree failure modes remain unverified
 | Redis 7.0.15 | RESP2/3, ACL/TLS, pipeline/transaction/PubSub, 200 reconnect/cancel cycles | Attributes/streaming aggregates/arbitrary pushes/cluster/sentinel |
 | Filesystem | pthread workers, stable streams/handles, errno, atomic visibility and sync calls | io_uring operations NOT_IMPLEMENTED; power-loss/ACL/mount certification |
 | HTTP | Concurrent curl multi, bounded buffered and HTTP/1.1 streamed responses, file/iterable uploads/downloads, one-file MIME | Long streaming soak, multi-file MIME and broader curl/proxy certification |
-| WebSocket | No implementation advertised | NOT_IMPLEMENTED |
+| WebSocket | ws/wss client, raw TCP server, bounded framing/messages, controls, cancellation, Python17.4 interop | Extensions, server WSS, browser/Autobahn and endurance certification |
 | Hooks | sleep/usleep PARTIALLY_SUPPORTED, tested ordinary timer path | All stream/curl/filesystem/database hook groups UNSUPPORTED |
 | ZTS | PHP8.5.11 ZTS DEBUG single-interpreter CLI core/poll/database tests | Concurrent interpreters unverified; userland ThreadPool BLOCKED |
 | Platforms/frameworks | Tested Linux x86_64; existing Composer/PSR-17/18 preserved | IPv6/TLS edge matrix, other OSes, Laravel/Symfony/WordPress/loop adapters |
@@ -126,8 +126,8 @@ The final attestation records archive-source comparisons and test commands.
    remote TLS/auth, prepared cache and cancellation acknowledgement coverage.
 3. Extend the tested curl multi streaming paths with multi-file MIME and broader
    long-duration/proxy/protocol certification before promoting their support.
-4. Implement full WebSocket framing/state/UTF-8/limits and independent interop,
-   then fuzz it. Keep the capability unavailable until tests pass.
+4. Extend WebSocket soak, state-machine fuzzing and independent/browser/Autobahn
+   interop; preserve its explicit limits and tested scope in WEBSOCKET.md.
 5. Broaden filesystem durability/ACL/mount races and IPv6/TLS edge cases. Keep
    io_uring absent until real operation/completion/fallback tests exist.
 6. Add individual verified hooks, transaction APIs and framework/loop adapters;

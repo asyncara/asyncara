@@ -39,3 +39,11 @@ are documented. Do not generalize earlier zero-loss non-TLS tests to this path.
 No invalid-memory access was found in the new instrumented tests; this is bounded
 evidence. Fuzzing, ZTS CLI and short multiworker fault tests now have executed
 results; multi-interpreter ZTS and six-/24-hour operation remain unverified.
+
+WebSocket handshakes enforce role masking, bounded lengths, reserved bits,
+UTF-8 and strict WSS certificate verification. Server Origin is explicitly
+allowlisted when supplied; clients can omit/forge Origin, so it is not an auth
+mechanism. Use the authorization callback and application access controls.
+Slow consumers are disconnected with an explicit capacity error. No compression
+extension is negotiated. Tests cover malformed frames and independent peers;
+no Autobahn/browser or hostile remote deployment certification is claimed.

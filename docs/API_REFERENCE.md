@@ -490,3 +490,62 @@ isActive(): bool
 ```php
 __construct(array $completed, array $pending)
 ```
+
+## `Asyncara\WebSocket\Client`
+
+```php
+static connect(string $url, array $protocols = [], array $headers = [], ?string $caFile = NULL, float $timeout = 10.0, int $messageLimit = 1048576, int $queueLimit = 16, int $queueBytes = 4194304, float $idleTimeout = 30.0): Asyncara\Future
+```
+
+## `Asyncara\WebSocket\Connection`
+
+```php
+receive(): ?Asyncara\WebSocket\Message
+send(string $data, bool $binary = false): void
+ping(?string $payload = NULL, float $timeout = 5.0): Asyncara\Future
+close(int $code = 1000, string $reason = '', float $timeout = 5.0): void
+abort(): void
+exception(): ?Throwable
+statistics(): array
+```
+
+## `Asyncara\WebSocket\FrameCodec`
+
+```php
+__construct(bool $expectMasked, int $limit = 1048576)
+push(string $bytes): void
+clear(): void
+next(): ?array
+static encode(int $opcode, string $data, bool $masked, bool $fin = true): string
+static utf8(string $value): bool
+static closePayload(string $data): array
+```
+
+## `Asyncara\WebSocket\Handshake`
+
+```php
+static read(Asyncara\IO\TcpStream $stream): array
+static one(array $headers, string $name): string
+static tokens(array $headers, string $name): array
+static upgrade(array $headers): void
+static accept(string $key): string
+static protocols(array $protocols): void
+```
+
+## `Asyncara\WebSocket\Message`
+
+```php
+__construct(string $data, bool $binary = false)
+```
+
+## `Asyncara\WebSocket\ProtocolException`
+
+```php
+__construct(string $message, int $closeCode = 1002)
+```
+
+## `Asyncara\WebSocket\Server`
+
+```php
+static accept(Asyncara\IO\TcpStream $stream, array $origins = [], array $protocols = [], ?callable $authorize = NULL, float $timeout = 5.0, int $messageLimit = 1048576, int $queueLimit = 16, int $queueBytes = 4194304, float $idleTimeout = 30.0): Asyncara\Future
+```

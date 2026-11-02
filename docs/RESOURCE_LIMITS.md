@@ -66,3 +66,9 @@ Evidence: `tests/resource_bounds.php`, `tests/database/resource_bounds.php`, the
 existing native limits/memory tests and the independent audit regression suite.
 The first Phase 3 SQLite test failed on the baseline because `length(zeroblob(20000000))`
 was accepted; the connection limit now rejects it, and a subsequent query works.
+
+WebSocket: default 1 MiB message / 16 queued messages / 4 MiB queued payload,
+16 pending pings, bounded handshake and incremental parser. Overflow policy is
+DISCONNECT_SLOW_CONSUMER with explicit error after already queued messages.
+Frame/message/string temporaries and waiting send callers use PHP heap outside
+the native ledger. Exact configurable bounds/ownership: WEBSOCKET.md.

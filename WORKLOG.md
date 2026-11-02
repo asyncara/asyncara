@@ -199,3 +199,27 @@ Streaming integration exercises32MiB binary response/download/upload/MIME, empty
 Native ASan/UBSan and allocation injection pass. HTTP callback libFuzzer campaigns:704,679/61s and602,547/61s, no findings, peaks373/369MiB. Valgrind initially reported PHP-object cycles retained at process shutdown; explicit collection reclaimed114 cycles and weak stream owners became null. Final workload: zero errors and zero definite/indirect/possible losses,77,515 reachable bytes, no suppressions. Native ledger already returned to zero. This documents PHP-cycle lifetime, not a native allocator fix.
 
 Added three independent benchmark samples per buffered8MiB, streamed8/32MiB, slow-consumer32MiB, download32MiB and upload32MiB workload, with raw PHP/native/RSS peaks. docs/HTTP_STREAMING.md, RESOURCE_LIMITS, SECURITY, ROADMAP and API_REFERENCE now describe the tested scope. docs/phase3/http-streaming.json preserves log hashes. Next: frozen mixed soak including streams, re-run complete archive/build verification, then protocol expansion after lifecycle evidence. Release remains EXPERIMENTAL; old long-run evidence is not relabeled as testing this binary.
+
+## Phase 3 continuation — bounded WebSocket implementation
+
+Added explicit ws/wss client, raw TCP server upgrade, incremental role-masked
+framing, fragmentation/UTF-8/control/close state handling and bounded message
+queues over existing TcpStream. Default browser Origin deny without allowlist;
+optional authorization; no compression/extensions or FPM upgrade claim. Separate
+message/frame locks permit Pong between64KiB data fragments. A preserved copied
+old-lock negative control fails the independent peer's8MiB interleaving assertion.
+
+41 framing cases and Python websockets17.4 bidirectional interop pass on8.3/.4/.5,
+poll, fully instrumented8.5 and ZTS DEBUG single-interpreter CLI. Includes WSS
+CA/name failures, malformed handshakes/frames, close timeout, slow-consumer
+capacity, idle timeout, cancellation and cleanup. Final Valgrind zero errors/
+definite/indirect/possible losses,77,515 reachable. No suppressions. Mutation
+campaigns24,933/60.001s and47,262/60.002s, no findings; finalRSS322,620KiB. The
+framing mutation target is not network state-machine coverage-guided fuzzing.
+
+Added pinned local peer installer, CI commands, corpus and frozen WebSocket soak
+mode. Ten-second16-connection smoke passed1,140cycles and finalzero pending work.
+The one-hour mixed HTTP streaming soak is still running at this checkpoint and
+will be attested separately. API/reference/security/resource/status docs now
+state the tested WebSocket scope and remaining interoperability/endurance gaps.
+Release remains EXPERIMENTAL. No universal WebSocket or ZTS certification claim.
