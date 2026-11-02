@@ -314,3 +314,12 @@ suites pass across8.3/8.4/8.5; additional installed8.5DB/fatal/TLS/FPM audit pas
 Attestation: docs/phase3/package-streaming-checkpoint.json. Later CI-only changes
 are distinct; archive remains unchanged. API reference generator now omits
 classes explicitly marked internal, preserving the public WebSocket API boundary.
+
+Hosted8.3 reached compilation and exposed a real Connector/C compatibility
+mistake. Reproduced with freshly extracted Ubuntu10.11.14 SDK (Connector/C3.3.17):
+version gating incorrectly assumed the TLS callback/status fields were backported.
+Replaced inferred version threshold with the actual public feature macro. Builds
+without that API now reject TLS before any connection instead of failing compile
+or attempting insecure fallback. Added explicit unsupported-TLS regression and
+CI header-capability selection. Supported3.4.10 TLS path remains unchanged and
+requires rerunning its private-CA matrix. Original compiler errors preserved.
