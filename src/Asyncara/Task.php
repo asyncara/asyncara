@@ -12,6 +12,7 @@ final class Task extends Future
     /** @internal */
     public function __construct(public readonly int $id, private Scheduler $scheduler, callable $body, array $context)
     {
+        parent::__construct();
         $this->context = $context;
         $this->cancellation = new CancellationSource();
         $this->fiber = new \Fiber(function () use ($body): void {

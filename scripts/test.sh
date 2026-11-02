@@ -8,3 +8,4 @@ python3 scripts/check-build.py "${ASYNCARA_EXTENSION:-build/asyncara.so}"
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/native_memory.php
 python3 scripts/test-fatal-memory.py
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/file_handles.php
+"${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/resource_bounds.php

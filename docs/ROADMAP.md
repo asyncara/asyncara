@@ -36,6 +36,15 @@ Updated 2026-11-02. Status describes implemented behavior and executed evidence,
 
 A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E worker filesystem; F worker SQLite; G Tasks/Futures/cancellation/deadlines; H synchronization; I structured groups; J process CPU parallelism; K verified limited timer hooks; M automated integration tests; N reproducible local/phpize builds; O accurate documentation are present and tested. L is bounded evidence: no known critical invalid-memory defect in the tested paths, with clean instrumentation runs described in SECURITY.md; this is not a universal memory-safety guarantee.
 
+## Phase 3 hardening checkpoints
+
+| Work | Status | Evidence / boundary |
+|---|---|---|
+| P0 preserved baseline and seven audit negative controls | IMPLEMENTED_AND_TESTED | audit1 source match; original archive reproduces all seven failures; baseline commands pass; checkpoint b0dfa41 |
+| CI regression and database lifecycle workflows | IMPLEMENTED_BUT_NOT_FULLY_TESTED | local commands executed; hosted workflows added but not yet run remotely |
+| P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
+| Third-party aggregate memory accounting | PARTIALLY_IMPLEMENTED | SQLite value limits; other foreign allocators remain outside native ledger |
+
 ## Next engineering work, in order
 
 1. Review the audit fixes and corrected source archive; add the independent regressions to CI. Expand protocol/allocation fuzzing, sustained multiworker FPM soak, remote SQL auth/TLS and ZTS coverage. Establish third-party memory/process quotas and bounded notification/result queues. Preserve the independently verified debug/instrumented PHP and fatal-teardown tests.

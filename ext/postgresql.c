@@ -223,7 +223,9 @@ PHP_FUNCTION(asyncara_pg_read) {
             array_init(&item);
             for (int col = 0; col < PQnfields(r); col++) {
                 size_t size = (size_t)PQgetlength(r, row, col);
-                bytes += size;
+                /* Payload plus a conservative accounting charge for each cell.
+                 * This is a conversion budget, not libpq allocation tracking. */
+                bytes += size + strlen(PQfname(r, col)) + 64;
                 if (bytes > PG_BUFFER_LIMIT) {
                     zval_ptr_dtor(&item);
                     PQclear(r);
@@ -247,7 +249,19 @@ PHP_FUNCTION(asyncara_pg_read) {
         p->result = NULL;
     }
     PGnotify *note;
+    size_t notification_bytes = 0, notification_count = 0;
     while ((note = p->notification = PQnotifies(p->conn))) {
+        notification_bytes += strlen(note->relname) + strlen(note->extra);
+        if (++notification_count > 1024 || notification_bytes > 1048576) {
+            /* Keep ownership in p until close: also safe on a Zend bailout. */
+            pg_close_handle(p);
+            zval_ptr_dtor(&rows);
+            zval_ptr_dtor(&notifications);
+            zval_ptr_dtor(return_value);
+            ZVAL_UNDEF(return_value);
+            zend_throw_exception(zend_ce_exception, "PostgreSQL notification batch limit exceeded; connection closed", 0);
+            RETURN_THROWS();
+        }
         zval item;
         array_init(&item);
         add_assoc_string(&item, "channel", note->relname);

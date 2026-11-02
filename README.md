@@ -50,3 +50,5 @@ The [complete local concurrency tour](examples/python_concurrency_tour.php) exer
 - io_uring has passed a separate kernel NOP probe but is **not an Asyncara backend**. WebSocket, HTTP streaming/multipart, ZTS interpreter threads and platform backends beyond Linux remain incomplete or unimplemented.
 
 See [API and semantics](docs/API.md), [architecture](docs/ARCHITECTURE.md), [driver details](docs/DRIVERS.md), [security](docs/SECURITY.md), [limitations](docs/LIMITATIONS.md), [measured performance](docs/PERFORMANCE.md), and the precise [roadmap](docs/ROADMAP.md). [WORKLOG](WORKLOG.md) records commands, failures, fixes and evidence. All benchmark samples are retained in [the raw results](benchmarks/results/latest.json).
+
+Phase 3 resource admission and buffering policies: [RESOURCE_LIMITS.md](docs/RESOURCE_LIMITS.md).
