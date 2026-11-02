@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Reuse audit FastCGI/concurrency assertions; extend process lifecycle faults."""
-import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, signal, socket, subprocess, time
+import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, shutil, signal, socket, subprocess, time
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser();parser.add_argument('--seconds',type=float,default=60);parser.add_argument('--output',required=True);args=parser.parse_args()
 if args.seconds<=0:parser.error('Duration must be positive')
@@ -8,12 +8,16 @@ out=pathlib.Path(args.output).resolve()
 if out.exists():parser.error('Preserve evidence: choose a new output directory')
 os.environ['ASYNCARA_FPM_DIR']=str(out)
 spec=importlib.util.spec_from_file_location('audit_fpm',root/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
+selected=(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')).resolve()
+subprocess.run(['python3',str(root/'scripts/check-build.py'),str(selected)],check=True)
+extension=out/'asyncara.so';shutil.copy2(selected,extension)
+os.environ['ASYNCARA_EXTENSION']=str(extension)
 def launch(name,workers,recycle=0,timeout=0):
     with socket.socket()as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
     folder=out/name;folder.mkdir();cfg=folder/'fpm.conf'
     cfg.write_text(f'[global]\ndaemonize=no\nprocess_control_timeout=5s\npid={folder}/pid\nerror_log={folder}/error.log\n[soak]\nlisten=127.0.0.1:{port}\npm=static\npm.max_children={workers}\npm.max_requests={recycle}\nrequest_terminate_timeout={timeout}\nclear_env=yes\ncatch_workers_output=yes\nsecurity.limit_extensions=.php\nphp_admin_flag[log_errors]=on\nphp_admin_value[error_log]={folder}/php-errors.log\n')
     log=(folder/'startup.log').open('w')
-    process=subprocess.Popen([os.environ.get('FPM_BIN','php-fpm8.5'),'-n','-F','-d','extension='+str(root/'build/asyncara.so'),'-d','display_errors=0','-y',str(cfg)],stdout=log,stderr=log,start_new_session=True)
+    process=subprocess.Popen([os.environ.get('FPM_BIN','php-fpm8.5'),'-n','-F','-d','extension='+str(extension),'-d','display_errors=0','-y',str(cfg)],stdout=log,stderr=log,start_new_session=True)
     deadline=time.monotonic()+10
     while True:
         if process.poll()is not None:raise RuntimeError('FPM startup failed')
@@ -31,7 +35,7 @@ def stop(process,log):
 def children(process):
     path=pathlib.Path(f'/proc/{process.pid}/task/{process.pid}/children')
     return {int(v)for v in path.read_text().split()}
-provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['build/asyncara.so','tests/soak/fpm.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
+provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'extension':{'selected':str(selected),'snapshot':str(extension),'sha256':hashlib.sha256(extension.read_bytes()).hexdigest()}, 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['tests/soak/fpm.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
 (out/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
 results=[]
 try:
