@@ -15,6 +15,7 @@ jobs:
         env:
           # Package repositories must supply matching SDK/FPM packages as well.
           use_builds_cache: 'false'
+          update: 'true'
         with:
           php-version: '8.5'
           coverage: none

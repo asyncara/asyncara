@@ -270,5 +270,37 @@
       ]
     }
   },
-  "limits": "Diagnostic trim is test-only. Strong evidence of allocator caching; does not retroactively pass the failed soak or establish an enduring bound."
+  "limits": "Diagnostic trim is test-only. Strong evidence of allocator caching; does not retroactively pass the failed soak or establish an enduring bound.",
+  "repeat": {
+    "path": "/tmp/asyncara-phase3-cQBA3H/fpm-stream-soak-repeat",
+    "status": "FAIL",
+    "growth": {
+      "rssRangeKiBAfterWarmup": {
+        "2057515": 24512,
+        "2057547": 36748,
+        "2057516": 36724,
+        "2057517": 49132
+      },
+      "maxRssIncreaseKiB": {
+        "2057515": 24456,
+        "2057547": 36748,
+        "2057516": 36724,
+        "2057517": 49132
+      },
+      "warmupPeakKiB": {
+        "2057515": 129232,
+        "2057547": 112596,
+        "2057516": 116692,
+        "2057517": 127368
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2057515": 0,
+        "2057547": 27340,
+        "2057516": 12600,
+        "2057517": 14356
+      }
+    },
+    "sampleCount": 4692,
+    "failureSha256": "8f8a3566dfd3bddf20cc433d73fb5bd13679317daac1873f3f2103e2f925a30f"
+  }
 }
