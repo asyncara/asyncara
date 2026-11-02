@@ -270,3 +270,14 @@ arena bytes, substantial RSS reclamation after diagnostic trim, native ledger0.
 Evidence supports cache/fragmentation effects; the operational RSS criterion
 remains open rather than claiming proven long-term bounds. No production trim
 or allocator settings changed. Added failure.json preservation to the FPM runner.
+
+## Hosted CI first execution
+
+Pushed phase3-hardening normally at4cdb4f5. GitHub run41539565366 actually ran and
+failed all four jobs during dependency provisioning with exit100, before any
+runtime tests. Public job annotations expose the failed steps; log download
+requires GitHub authentication unavailable to this session (403). Added fresh
+apt indexes on disposable regression runners and preserved provisioning logs/
+error annotations so the exact package failure can be diagnosed. This does not
+claim the hosted tests passed. Local archive PHP8.3/.4/.5 builds/tests remain
+separate evidence. No host-wide package settings were changed.
