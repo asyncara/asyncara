@@ -57,3 +57,21 @@ builds only into the requested new directory. Hosted CI remains unexecuted.
 References: [Connector verification API](https://mariadb.com/docs/connectors/mariadb-connector-c/api-functions/mysql_optionsv),
 [actual local-address policy](https://github.com/mariadb-corporation/mariadb-connector-c/blob/v3.4.10/plugins/auth/my_auth.c),
 [Oracle binary installation](https://dev.mysql.com/doc/refman/8.4/en/binary-installation.html).
+
+## Ubuntu Connector/C 3.3.17 capability regression
+
+Ubuntu MariaDB10.11.14 development/runtime packages report Connector/C3.3.17
+but do not contain the TLS callback/status API. The earlier version-only gate
+failed compilation; the corrected gate checks the public feature macro.
+With these exact headers/runtime, unencrypted Unix-socket integration against
+MariaDB11.8.9 passes binding, large values, transactions, concurrency, cancellation
+and cleanup. TLS/default-TCP/CA requests fail before opening a connection.
+
+The3.3 verification option itself enables TLS, as confirmed in upstream
+mariadb_lib.c and plugins/auth/my_auth.c. For the permitted non-TLS path only,
+the driver leaves that option unset and prohibits CA options that could turn
+TLS on. This does not permit unverified TLS: any requested TLS is rejected on
+this configuration. The separate plain Unix fixture now explicitly disables
+server TLS and asserts an empty session cipher. Strict private-CA tests remain
+separate and certificate verification remains enabled on the supported3.4.10
+path. No Oracle/MySQL or TLS support is inferred for this older client.

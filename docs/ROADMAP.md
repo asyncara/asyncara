@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-11-02. Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
+Updated 2026-11-03 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
 
 | Area | Status | Evidence / remaining work |
 |---|---|---|
@@ -44,7 +44,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | CI regression and database lifecycle workflows | IMPLEMENTED_BUT_NOT_FULLY_TESTED | local commands executed; hosted workflows added but not yet run remotely |
 | P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
 | P2 protocol/allocation fuzzing | IMPLEMENTED_AND_TESTED | committed seeds, 100 RESP cases, real IPC failures, 326,134 native ASan/UBSan fuzz inputs and 12,737 instrumented PHP mutations; bounded coverage in FUZZING.md |
-| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | one-hour frozen baseline: 20,855 cycles / 20.855m Tasks, flat fds/threads, +296 KiB RSS endpoint medians; 6h/24h not executed; SOAK_TESTING.md |
+| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | baseline20,855cycles and HTTP-streaming checkpoint19,761cycles each ran one hour; flat fds/threads, latterRSS+380KiB; WebSocket5m24,686cycles; 6h/24h not executed; SOAK_TESTING.md |
 | P4 expanded FPM lifecycle | PARTIALLY_IMPLEMENTED | 300.157 mixed seconds / 4,380 requests, recycling/reload/kill/timeout/fatal/pending isolation; later streaming mix failed RSS-over-warmup criterion; allocator investigation remains open; FPM_LIFECYCLE.md |
 | P5 database TLS/auth and protocol repairs | PARTIALLY_IMPLEMENTED | Private-CA matrix, Oracle 8.4.13, certificate identity fix, nonblocking transaction control and buffered TLS wakeups; WAN/mTLS/cancel acknowledgement remain unverified |
 | P6 ZTS investigation | PARTIALLY_IMPLEMENTED | PHP 8.5.11 ZTS DEBUG CLI full tests and database suite pass; concurrent interpreter threads unverified, ThreadPool BLOCKED |
@@ -52,7 +52,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 ## Next engineering work, in order
 
-1. Execute hosted CI and six-/24-hour frozen soaks; extend multiworker FPM endurance. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
+1. Resolve the repeated expanded FPM RSS-over-warmup failures without weakening checks; finish hosted CI and six-/24-hour frozen soaks. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
 3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket endurance/interoperability coverage, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
 4. Extend individual transparent hooks with exact parameter/warning/resource/return/signal behavior tests; keep unsupported groups explicit.

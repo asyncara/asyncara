@@ -180,7 +180,7 @@ PHP_FUNCTION(asyncara_mysql_open) {
         zend_value_error("MariaDB tls must be boolean");
         goto error;
     }
-    my_bool verify = 1, enforce = tls ? Z_TYPE_P(tls) == IS_TRUE : !p->options[4];
+    my_bool enforce = tls ? Z_TYPE_P(tls) == IS_TRUE : !p->options[4];
     p->tls_required = enforce;
     if (enforce) {
 #ifdef AR_MYSQL_STRICT_TLS
@@ -199,8 +199,22 @@ PHP_FUNCTION(asyncara_mysql_open) {
         goto error;
 #endif
     }
+    /* In 3.3 the verification option itself turns TLS on. Without the strict
+     * callback API, only the explicitly non-TLS path above is available; do
+     * not accidentally enable an unsupported TLS handshake for Unix sockets.
+     * Reject CA configuration too, since it independently enables TLS there. */
+#ifdef AR_MYSQL_STRICT_TLS
+    my_bool verify = 1;
+#else
+    if (p->options[5]) {
+        zend_value_error("MariaDB CA configuration requires the strict TLS callback/status API");
+        goto error;
+    }
+#endif
     if (mysql_options(p->conn, MYSQL_OPT_NONBLOCK, NULL) ||
+#ifdef AR_MYSQL_STRICT_TLS
         mysql_options(p->conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &verify) ||
+#endif
         mysql_options(p->conn, MYSQL_OPT_SSL_ENFORCE, &enforce)) {
         my_error(p);
         goto error;

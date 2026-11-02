@@ -19,7 +19,7 @@ if not (my/'data/mysql').exists():
 processes=[];pg_started=False
 try:
  subprocess.run([str(pgbin/'pg_ctl'),'-D',str(pg/'data'),'-o',f"-k {pg} -h '' -p 55499",'-l',str(pg/'server.log'),'-w','start'],check=True,stdout=subprocess.DEVNULL);pg_started=True
- mp=subprocess.Popen(['mariadbd','--no-defaults','--datadir='+str(my/'data'),'--socket='+str(my/'mysql.sock'),'--pid-file='+str(my/'server.pid'),'--skip-networking','--log-error='+str(my/'server.log')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);processes.append(mp)
+ mp=subprocess.Popen(['mariadbd','--no-defaults','--datadir='+str(my/'data'),'--socket='+str(my/'mysql.sock'),'--pid-file='+str(my/'server.pid'),'--skip-networking','--skip-ssl','--log-error='+str(my/'server.log')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);processes.append(mp)
  with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
  redis_log=(rd/'server.log').open('w')
  rp=subprocess.Popen(['redis-server','--bind','127.0.0.1','--port',str(port),'--save','','--appendonly','no','--dir',str(rd)],stdout=redis_log,stderr=redis_log);processes.append(rp)

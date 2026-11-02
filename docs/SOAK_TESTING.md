@@ -100,3 +100,20 @@ run is not extrapolated to a leak rate. Maximum task step376.7ms and timer lag
 Futures,timers/watchers/sockets were zero. Full trends/provenance are retained in
 [phase3/soak-websocket-5m.json](phase3/soak-websocket-5m.json). This is five-minute
 WebSocket evidence, not six-/24-hour certification.
+
+## One hour including HTTP streaming
+
+Frozen commit `1f792ef` completed3,600.110 workload seconds (3,618.891s including
+fixture startup/teardown),19,761mixed cycles /19.761million burst Tasks and197
+injected ProcessPool crash/recoveries. Buffered and streamed HTTP, ordinary files,
+SQLite/PostgreSQL/MariaDB/Redis, queues, cancellation and timers were included.
+All706samples retained. Steady fds20/threads5/sockets7; native tracked bytes0 at
+cycle boundaries. RSS endpoint medians+380KiB, slope472.37KiB/hour; live PHP
+endpoint medians+16,168bytes. Final Tasks/Futures/timers/watchers/native work0.
+Maximum task step655.7ms/timer lag502.7ms occurred on the shared loaded host.
+
+This certifies the tested workload at the recorded source/native hash only. It
+predates WebSocket and the later older-Connector/C capability-gate correction.
+Those have separate tests; no six-/24-hour or final-binary endurance claim is
+inferred. Raw provenance/trends: phase3/soak-http-1h.json. The separate expanded
+FPM RSS failures remain open despite this CLI mixed-soak success.
