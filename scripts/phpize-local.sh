@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/relocate-tools.py
+python3 scripts/check-php-sdk.py "$(.local/bin/php-config --include-dir)" "${PHP_BIN:-php}"
 root="$PWD"
 export PATH="$root/.local/bin:$root/.local/sysroot/usr/bin:$PATH"
 export AUTOM4TE_PERLLIB="$root/.local/sysroot/usr/share/autoconf"
