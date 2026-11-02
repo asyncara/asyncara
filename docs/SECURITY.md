@@ -1,0 +1,27 @@
+# Security and memory-safety assumptions
+
+Asyncara is development infrastructure. Do not expose its low-level native functions, worker registry, filesystem paths or connector configuration directly to untrusted callers.
+
+## Boundaries
+
+- Native worker threads never call Zend, execute PHP or manipulate zvals. Inputs are copied before queueing. Results are marshalled on the request thread after synchronized completion. Shutdown joins threads before releasing their memory.
+- Process workers are trusted PHP programs, not sandboxes. An explicit local registry selects callables; request data contains only bounded JSON, never serialized PHP objects or closure code. proc_open receives an argument array. Job failure/crash is not automatically replayed. Cancellation can kill a worker but does not roll back external side effects.
+- HTTP permits only HTTP(S), verifies certificates/hostnames, defaults to no redirects, and rejects CR/LF header injection. It does not implement SSRF policy: restrict destinations and proxies in the application. Compression is bounded by the decoded-body cap.
+- SQL uses native parameter binding. SQLite has connection ordering; libpq uses parameterized extended protocol; Connector/C uses prepared statements. SQL text itself remains trusted application input. Connection credentials can appear in PHP exception traces if the application's PHP configuration records arguments; set an appropriate logging policy.
+- Redis is length-framed and parser limits reject malformed or excessive replies. It has no cluster/sentinel trust model or arbitrary push demultiplexer. Cancelled/misaligned network database connections are discarded.
+- Files obey submission-time open_basedir checks, but symlink races are not a sandbox boundary. Regular-file operations reject special files. Streaming keeps one native descriptor with serialized operations. Partial side effects after cancellation are documented. Ordinary path writes are not atomic replacement or durable transactions; File::sync provides explicit fsync on a worker.
+- Explicit Context is shallow and task-local. Shared object instances, superglobals, global variables, static fields, extension state and persistent resources remain shared.
+
+## Executed validation
+
+Native compilation uses `-Wall -Wextra -Werror`. The standalone native worker harness passed AddressSanitizer and UndefinedBehaviorSanitizer with leak detection and no suppression. It exercises file jobs, binary SQLite results, cancellation and request shutdown with queued work. This harness does not instrument Zend, curl/OpenSSL internals, libpq or Connector/C binaries.
+
+Valgrind ran the PHP/native core stress workload and the PostgreSQL/MariaDB/Redis integration suite with `USE_ZEND_ALLOC=0`, matching locally extracted glibc symbols and no error suppressions. The completed runs report zero memory errors and zero definite/indirect/possible lost bytes after PHP cycle collection. About 77.5 KiB remained reachable at process exit. Stock PHP Fiber stacks trigger Valgrind stack-switch warnings; no max-stackframe setting or suppression was used to hide memory errors.
+
+Valgrind found and prompted fixes for Connector/C statement handles on interrupted/error paths and library-global teardown. Its initial small PHP-object losses disappeared after explicit cycle collection; long-lived callers should understand normal PHP cycles and may collect at request/job boundaries. The 100-cycle stress script performs that collection and checks memory/descriptor stability. This is not proof that all possible shutdown orders or extension combinations are safe.
+
+## Remaining verification work
+
+A full PHP debug/ASan/UBSan build, broad allocation-failure injection, protocol fuzzing, long-duration load, ZTS, SQL TLS/authentication variants and adversarial filesystem races remain incomplete. The standalone native harness also passes ThreadSanitizer; this does not instrument third-party library internals. GCC TSan on this host requires non-PIE and process-local ASLR disabling through setarch; no global setting is changed. An isolated FPM test reuses one worker for 100 requests, checking request state, pending-work teardown, threads, descriptors and an RSS plateau. No critical invalid-memory access is known in the tested configuration; production certification is explicitly withheld. An aggregate budget bounds retained Asyncara-owned native allocations and tests cover rejection/recovery plus Zend memory-limit bailout cleanup. Third-party library allocations and bounded readiness control buffers are excluded; see BACKENDS.md. Time bounds on all shutdown paths remain incomplete.
+
+New native code must include ownership/error-path review and executed regressions. Report a suspected vulnerability privately to the project owner; this repository has no established public security-contact address yet.

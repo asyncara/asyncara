@@ -1,0 +1,26 @@
+{
+  "name": "asyncara/runtime",
+  "description": "Fiber scheduling, native asynchronous I/O and process parallelism for PHP",
+  "type": "library",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3 <8.6",
+    "ext-asyncara": "*",
+    "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.1",
+    "psr/http-message": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Asyncara\\": "src/Asyncara/"
+    }
+  },
+  "scripts": {
+    "test": "bash scripts/test.sh"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8",
+    "amphp/amp": "^3.0",
+    "revolt/event-loop": "^1.0"
+  }
+}

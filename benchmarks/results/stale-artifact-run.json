@@ -1,0 +1,801 @@
+{
+  "recordedAt": "2026-11-02T16:25:31.085626+00:00",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "cpuCount": 6,
+  "workload": "24 local HTTP/1.1 requests; .02 second upstream delay; 4 active requests except sequential baseline; HTTP connection reuse disabled for matched baselines; three samples per case",
+  "cases": [
+    {
+      "mode": "sequential-http",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.653258618,
+          "operations": 24,
+          "operationsPerSecond": 36.738895345120426,
+          "medianMs": 24.25349,
+          "p95Ms": 33.984261,
+          "p99Ms": 36.720068,
+          "parentCpuSeconds": 0.04162299999999999,
+          "parentMaxRssKiB": 23680,
+          "voluntarySwitches": 27,
+          "involuntarySwitches": 4,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.615291252,
+          "operations": 24,
+          "operationsPerSecond": 39.00591780232234,
+          "medianMs": 23.644595,
+          "p95Ms": 33.216781,
+          "p99Ms": 34.140955,
+          "parentCpuSeconds": 0.048514,
+          "parentMaxRssKiB": 23680,
+          "voluntarySwitches": 24,
+          "involuntarySwitches": 3,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.681213823,
+          "operations": 24,
+          "operationsPerSecond": 35.23122871216311,
+          "medianMs": 25.104591,
+          "p95Ms": 32.448893,
+          "p99Ms": 34.75744,
+          "parentCpuSeconds": 0.045886,
+          "parentMaxRssKiB": 23680,
+          "voluntarySwitches": 25,
+          "involuntarySwitches": 5,
+          "diagnostics": null
+        }
+      ]
+    },
+    {
+      "mode": "async-http",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.177501002,
+          "operations": 24,
+          "operationsPerSecond": 135.210504332815,
+          "medianMs": 26.833064,
+          "p95Ms": 32.71199,
+          "p99Ms": 33.387356,
+          "parentCpuSeconds": 0.051546999999999996,
+          "parentMaxRssKiB": 24704,
+          "voluntarySwitches": 20,
+          "involuntarySwitches": 4,
+          "diagnostics": {
+            "turns": 84,
+            "taskSteps": 80,
+            "maxStepSeconds": 0.010065068956464529,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.22023677,
+          "operations": 24,
+          "operationsPerSecond": 108.97362869969443,
+          "medianMs": 27.620503,
+          "p95Ms": 71.054068,
+          "p99Ms": 71.56435,
+          "parentCpuSeconds": 0.06900999999999999,
+          "parentMaxRssKiB": 24704,
+          "voluntarySwitches": 22,
+          "involuntarySwitches": 6,
+          "diagnostics": {
+            "turns": 89,
+            "taskSteps": 80,
+            "maxStepSeconds": 0.0033691239077597857,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.182465544,
+          "operations": 24,
+          "operationsPerSecond": 131.53168249672387,
+          "medianMs": 28.476655,
+          "p95Ms": 35.53188,
+          "p99Ms": 39.498157,
+          "parentCpuSeconds": 0.048748,
+          "parentMaxRssKiB": 24704,
+          "voluntarySwitches": 20,
+          "involuntarySwitches": 2,
+          "diagnostics": {
+            "turns": 78,
+            "taskSteps": 78,
+            "maxStepSeconds": 0.008051870157942176,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ]
+    },
+    {
+      "mode": "tasks",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.129597197,
+          "operations": 1000,
+          "operationsPerSecond": 7716.216269708364,
+          "medianMs": 71.046138,
+          "p95Ms": 87.157737,
+          "p99Ms": 87.746971,
+          "parentCpuSeconds": 0.128735,
+          "parentMaxRssKiB": 38912,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 14,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.010421538027003407,
+            "maxTimerLagSeconds": 0.028377152979373932,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        },
+        {
+          "seconds": 0.118863641,
+          "operations": 1000,
+          "operationsPerSecond": 8413.00158389057,
+          "medianMs": 50.079709,
+          "p95Ms": 76.096183,
+          "p99Ms": 76.516153,
+          "parentCpuSeconds": 0.114956,
+          "parentMaxRssKiB": 39040,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 14,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.015381240053102374,
+            "maxTimerLagSeconds": 0.03197002084925771,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        },
+        {
+          "seconds": 0.083889206,
+          "operations": 1000,
+          "operationsPerSecond": 11920.484740313314,
+          "medianMs": 41.289882,
+          "p95Ms": 47.733792,
+          "p99Ms": 48.327016,
+          "parentCpuSeconds": 0.082509,
+          "parentMaxRssKiB": 39168,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 11,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.003462085034698248,
+            "maxTimerLagSeconds": 0.011175116989761591,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        }
+      ]
+    },
+    {
+      "mode": "timers",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.15395015,
+          "operations": 1000,
+          "operationsPerSecond": 6495.6091306179305,
+          "medianMs": 91.250658,
+          "p95Ms": 106.028624,
+          "p99Ms": 106.68039,
+          "parentCpuSeconds": 0.15107500000000001,
+          "parentMaxRssKiB": 38656,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 21,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.011928105959668756,
+            "maxTimerLagSeconds": 0.03863093024119735,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        },
+        {
+          "seconds": 0.089408662,
+          "operations": 1000,
+          "operationsPerSecond": 11184.598646605404,
+          "medianMs": 43.805604,
+          "p95Ms": 45.973588,
+          "p99Ms": 46.417389,
+          "parentCpuSeconds": 0.08548700000000001,
+          "parentMaxRssKiB": 38912,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 19,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.004940751940011978,
+            "maxTimerLagSeconds": 0.011545240180566907,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        },
+        {
+          "seconds": 0.083091687,
+          "operations": 1000,
+          "operationsPerSecond": 12034.898268463367,
+          "medianMs": 40.060891,
+          "p95Ms": 42.483761,
+          "p99Ms": 42.610745,
+          "parentCpuSeconds": 0.07941300000000001,
+          "parentMaxRssKiB": 39168,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 20,
+          "diagnostics": {
+            "turns": 9,
+            "taskSteps": 2003,
+            "maxStepSeconds": 0.003900635987520218,
+            "maxTimerLagSeconds": 0.010032262187451124,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 25165824
+          }
+        }
+      ]
+    },
+    {
+      "mode": "amp-timers",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.210907079,
+          "operations": 1000,
+          "operationsPerSecond": 4741.424539856246,
+          "medianMs": 79.306503,
+          "p95Ms": 86.092881,
+          "p99Ms": 86.49952,
+          "parentCpuSeconds": 0.163368,
+          "parentMaxRssKiB": 37376,
+          "voluntarySwitches": 22,
+          "involuntarySwitches": 21,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.120389409,
+          "operations": 1000,
+          "operationsPerSecond": 8306.378512083234,
+          "medianMs": 66.751702,
+          "p95Ms": 74.763081,
+          "p99Ms": 75.279303,
+          "parentCpuSeconds": 0.116563,
+          "parentMaxRssKiB": 38016,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 26,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.124725527,
+          "operations": 1000,
+          "operationsPerSecond": 8017.604928620586,
+          "medianMs": 56.98012,
+          "p95Ms": 65.645435,
+          "p99Ms": 67.547672,
+          "parentCpuSeconds": 0.121501,
+          "parentMaxRssKiB": 38144,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 24,
+          "diagnostics": null
+        }
+      ]
+    },
+    {
+      "mode": "sequential-files",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.004088501,
+          "operations": 200,
+          "operationsPerSecond": 48917.68401181754,
+          "medianMs": 0.01124,
+          "p95Ms": 0.026761,
+          "p99Ms": 0.095092,
+          "parentCpuSeconds": 0.004089,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 0,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.003595579,
+          "operations": 200,
+          "operationsPerSecond": 55623.86475168534,
+          "medianMs": 0.01167,
+          "p95Ms": 0.02271,
+          "p99Ms": 0.061991,
+          "parentCpuSeconds": 0.003601,
+          "parentMaxRssKiB": 23552,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 0,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.003467906,
+          "operations": 200,
+          "operationsPerSecond": 57671.69006311013,
+          "medianMs": 0.01106,
+          "p95Ms": 0.02031,
+          "p99Ms": 0.050631,
+          "parentCpuSeconds": 0.00347,
+          "parentMaxRssKiB": 23552,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 0,
+          "diagnostics": null
+        }
+      ]
+    },
+    {
+      "mode": "files",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.067408408,
+          "operations": 200,
+          "operationsPerSecond": 2966.9889251797786,
+          "medianMs": 0.716328,
+          "p95Ms": 4.06502,
+          "p99Ms": 8.694335,
+          "parentCpuSeconds": 0.0815,
+          "parentMaxRssKiB": 24064,
+          "voluntarySwitches": 320,
+          "involuntarySwitches": 3,
+          "diagnostics": {
+            "turns": 65,
+            "taskSteps": 206,
+            "maxStepSeconds": 0.0026953271590173244,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.026091246,
+          "operations": 200,
+          "operationsPerSecond": 7665.40624391798,
+          "medianMs": 0.324508,
+          "p95Ms": 1.092097,
+          "p99Ms": 1.662361,
+          "parentCpuSeconds": 0.035629,
+          "parentMaxRssKiB": 24064,
+          "voluntarySwitches": 309,
+          "involuntarySwitches": 0,
+          "diagnostics": {
+            "turns": 85,
+            "taskSteps": 207,
+            "maxStepSeconds": 0.0011689991224557161,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.020036226,
+          "operations": 200,
+          "operationsPerSecond": 9981.919748759072,
+          "medianMs": 0.234926,
+          "p95Ms": 0.968374,
+          "p99Ms": 1.291562,
+          "parentCpuSeconds": 0.028055,
+          "parentMaxRssKiB": 24064,
+          "voluntarySwitches": 308,
+          "involuntarySwitches": 0,
+          "diagnostics": {
+            "turns": 86,
+            "taskSteps": 207,
+            "maxStepSeconds": 0.001551748951897025,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ]
+    },
+    {
+      "mode": "sqlite",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.146052105,
+          "operations": 200,
+          "operationsPerSecond": 1369.3743065188962,
+          "medianMs": 0.41845,
+          "p95Ms": 2.189194,
+          "p99Ms": 4.343238,
+          "parentCpuSeconds": 0.159799,
+          "parentMaxRssKiB": 24448,
+          "voluntarySwitches": 414,
+          "involuntarySwitches": 1,
+          "diagnostics": {
+            "turns": 607,
+            "taskSteps": 607,
+            "maxStepSeconds": 0.007734040962532163,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.175447293,
+          "operations": 200,
+          "operationsPerSecond": 1139.9434928870633,
+          "medianMs": 0.447991,
+          "p95Ms": 2.725818,
+          "p99Ms": 7.121417,
+          "parentCpuSeconds": 0.164462,
+          "parentMaxRssKiB": 24448,
+          "voluntarySwitches": 422,
+          "involuntarySwitches": 7,
+          "diagnostics": {
+            "turns": 607,
+            "taskSteps": 607,
+            "maxStepSeconds": 0.008466309867799282,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.113999152,
+          "operations": 200,
+          "operationsPerSecond": 1754.399015178639,
+          "medianMs": 0.373259,
+          "p95Ms": 1.485997,
+          "p99Ms": 3.499987,
+          "parentCpuSeconds": 0.095892,
+          "parentMaxRssKiB": 24448,
+          "voluntarySwitches": 412,
+          "involuntarySwitches": 3,
+          "diagnostics": {
+            "turns": 607,
+            "taskSteps": 607,
+            "maxStepSeconds": 0.0011293480638414621,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ]
+    },
+    {
+      "mode": "queue",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.027038249,
+          "operations": 10000,
+          "operationsPerSecond": 369846.4349522042,
+          "medianMs": null,
+          "p95Ms": null,
+          "p99Ms": null,
+          "parentCpuSeconds": 0.026981,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 2,
+          "diagnostics": {
+            "turns": 590,
+            "taskSteps": 592,
+            "maxStepSeconds": 0.0009182530920952559,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.087037486,
+          "operations": 10000,
+          "operationsPerSecond": 114893.02436883344,
+          "medianMs": null,
+          "p95Ms": null,
+          "p99Ms": null,
+          "parentCpuSeconds": 0.08669299999999999,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 5,
+          "diagnostics": {
+            "turns": 590,
+            "taskSteps": 592,
+            "maxStepSeconds": 0.0002729259431362152,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.022737301,
+          "operations": 10000,
+          "operationsPerSecond": 439805.9382685746,
+          "medianMs": null,
+          "p95Ms": null,
+          "p99Ms": null,
+          "parentCpuSeconds": 0.022534,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 4,
+          "diagnostics": {
+            "turns": 590,
+            "taskSteps": 592,
+            "maxStepSeconds": 0.00030009797774255276,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ]
+    },
+    {
+      "mode": "sequential-cpu",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.476018183,
+          "operations": 4,
+          "operationsPerSecond": 8.40304035192706,
+          "medianMs": 114.605537,
+          "p95Ms": 115.681184,
+          "p99Ms": 115.681184,
+          "parentCpuSeconds": 0.475619,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 6,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.517296956,
+          "operations": 4,
+          "operationsPerSecond": 7.732502489343857,
+          "medianMs": 121.490778,
+          "p95Ms": 122.289618,
+          "p99Ms": 122.289618,
+          "parentCpuSeconds": 0.5169969999999999,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 4,
+          "diagnostics": null
+        },
+        {
+          "seconds": 0.489740846,
+          "operations": 4,
+          "operationsPerSecond": 8.167585025162472,
+          "medianMs": 114.812813,
+          "p95Ms": 117.036447,
+          "p99Ms": 117.036447,
+          "parentCpuSeconds": 0.489308,
+          "parentMaxRssKiB": 23424,
+          "voluntarySwitches": 0,
+          "involuntarySwitches": 5,
+          "diagnostics": null
+        }
+      ]
+    },
+    {
+      "mode": "cpu",
+      "php": "8.5.11",
+      "samples": [
+        {
+          "seconds": 0.245496288,
+          "operations": 4,
+          "operationsPerSecond": 16.2935253831618,
+          "medianMs": 168.337148,
+          "p95Ms": 174.332947,
+          "p99Ms": 174.332947,
+          "parentCpuSeconds": 0.022486,
+          "parentMaxRssKiB": 23936,
+          "voluntarySwitches": 16,
+          "involuntarySwitches": 2,
+          "diagnostics": {
+            "turns": 33,
+            "taskSteps": 42,
+            "maxStepSeconds": 0.014744704822078347,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.220364447,
+          "operations": 4,
+          "operationsPerSecond": 18.151748407945316,
+          "medianMs": 182.940011,
+          "p95Ms": 185.380111,
+          "p99Ms": 185.380111,
+          "parentCpuSeconds": 0.016725,
+          "parentMaxRssKiB": 23936,
+          "voluntarySwitches": 15,
+          "involuntarySwitches": 3,
+          "diagnostics": {
+            "turns": 32,
+            "taskSteps": 42,
+            "maxStepSeconds": 0.014840227086097002,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        },
+        {
+          "seconds": 0.238136868,
+          "operations": 4,
+          "operationsPerSecond": 16.797063107422744,
+          "medianMs": 165.321205,
+          "p95Ms": 174.568073,
+          "p99Ms": 174.568073,
+          "parentCpuSeconds": 0.011772,
+          "parentMaxRssKiB": 23936,
+          "voluntarySwitches": 16,
+          "involuntarySwitches": 5,
+          "diagnostics": {
+            "turns": 34,
+            "taskSteps": 43,
+            "maxStepSeconds": 0.00896722194738686,
+            "maxTimerLagSeconds": 0,
+            "activeTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ]
+    },
+    {
+      "mode": "native-curl-http",
+      "samples": [
+        {
+          "seconds": 0.250057643,
+          "operations": 24,
+          "operationsPerSecond": 95.978,
+          "medianMs": 33.858,
+          "p95Ms": 58.488,
+          "p99Ms": 65.082
+        },
+        {
+          "seconds": 0.178549492,
+          "operations": 24,
+          "operationsPerSecond": 134.417,
+          "medianMs": 25.754,
+          "p95Ms": 37.079,
+          "p99Ms": 40.737
+        },
+        {
+          "seconds": 0.185601026,
+          "operations": 24,
+          "operationsPerSecond": 129.31,
+          "medianMs": 27.963,
+          "p95Ms": 40.635,
+          "p99Ms": 40.75
+        }
+      ]
+    },
+    {
+      "mode": "php-fpm-4-workers",
+      "samples": [
+        {
+          "seconds": 0.22462738398462534,
+          "operations": 24,
+          "operationsPerSecond": 106.84360728539974,
+          "medianMs": 32.60903689078987,
+          "p95Ms": 56.08095903880894,
+          "p99Ms": 57.342709973454475
+        },
+        {
+          "seconds": 0.16971002402715385,
+          "operations": 24,
+          "operationsPerSecond": 141.41769254690556,
+          "medianMs": 24.82376480475068,
+          "p95Ms": 28.39016285724938,
+          "p99Ms": 31.231384025886655
+        },
+        {
+          "seconds": 0.20139932818710804,
+          "operations": 24,
+          "operationsPerSecond": 119.16623663065569,
+          "medianMs": 28.735082130879164,
+          "p95Ms": 43.9746689517051,
+          "p99Ms": 53.38973202742636
+        }
+      ]
+    },
+    {
+      "mode": "swoole-http",
+      "version": "6.2.3",
+      "samples": [
+        {
+          "seconds": 0.175678712,
+          "operations": 24,
+          "operationsPerSecond": 136.6130234379223,
+          "medianMs": 27.302376,
+          "p95Ms": 32.989307,
+          "p99Ms": 33.048398
+        },
+        {
+          "seconds": 0.161979182,
+          "operations": 24,
+          "operationsPerSecond": 148.16718854648866,
+          "medianMs": 23.473521,
+          "p95Ms": 28.981727,
+          "p99Ms": 31.063439
+        },
+        {
+          "seconds": 0.195237496,
+          "operations": 24,
+          "operationsPerSecond": 122.92720656487009,
+          "medianMs": 27.339737,
+          "p95Ms": 31.48656,
+          "p99Ms": 31.89347
+        }
+      ]
+    }
+  ]
+}
