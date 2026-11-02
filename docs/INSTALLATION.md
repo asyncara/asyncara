@@ -72,3 +72,23 @@ A source archive can be produced from a Git checkout with `python3 scripts/packa
 ## Removal
 
 For a local build, stop any fixture processes you started and remove the selected `build/`, `.local/`, `vendor/` and generated `ext/` artifacts as desired. They are ignored by Git. For an administrator-installed extension, remove its configuration entry from each SAPI, restart managed workers, then remove the corresponding installed `asyncara.so`. Do not delete unrelated PHP configuration or data directories.
+
+Local bootstrap/tool relocation now selects the running PHP8.3/8.4/8.5 version,
+or explicit `PHP_BIN` / `PHP_TOOL_VERSION`; it no longer hardcodes PHP8.5.
+`build-local.sh` derives the default header API from that PHP executable.
+`PHP_INCLUDE_DIR` remains an explicit override for separately installed SDKs.
+A clean archive test uses each version's own phpize/configure and installs only
+under its extraction's build/install directory:
+
+```sh
+python3 tests/audit/archive_install.py --archive build/NEW_ARCHIVE.tar.gz \
+  --output /tmp/new-install-audit --dependencies /path/to/development-debs \
+  --variants /path/to/variants.json
+```
+
+The variants JSON is an array of objects with `name`, absolute `php` executable
+and `devPackage` Debian SDK archive path. Common dependency packages are freshly
+extracted; generated extension/toolchain files from the working tree are not
+copied. Composer and the pinned Python peer are installed inside each extraction.
+The report records every step, dependency hash and installed-module hash. This
+Linux/Debian-package harness complements the normal source installation steps.

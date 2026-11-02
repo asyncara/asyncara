@@ -242,3 +242,14 @@ rewrite. Added the network edge suite to CI and extended FPM soak mixed batches
 with one streamed request alongside buffered I/O/pending shutdown, preserving
 all original assertions and recording code/binary provenance. Longer results
 will be recorded only when complete. Release remains EXPERIMENTAL.
+
+## Phase 3 continuation — PHP toolchain selection defect
+
+Found that bootstrap accepted a PHP8.3/8.4 development package but relocate-tools
+hardcoded phpize8.5/php-config8.5. This would fail those hosted CI entries before
+compilation. An isolated8.3-only SDK negative control reproduces the original
+failure; selecting PHP_BIN/PHP_TOOL_VERSION now succeeds. Default header API and
+bootstrap package follow the selected interpreter; phpize-local loads with it.
+No runtime implementation changed. Added actual phpize builds to each CI matrix
+entry and a clean-archive/own-SDK/install-root/full-test harness. Full three-version
+archive execution is the next validation step; hosted CI is still unexecuted.
