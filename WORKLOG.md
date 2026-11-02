@@ -281,3 +281,12 @@ apt indexes on disposable regression runners and preserved provisioning logs/
 error annotations so the exact package failure can be diagnosed. This does not
 claim the hosted tests passed. Local archive PHP8.3/.4/.5 builds/tests remain
 separate evidence. No host-wide package settings were changed.
+
+Hosted run41540310966 revealed the provisioning causes after single multiline
+annotations avoided GitHub's per-step annotation cap: cached setup-php builds
+had no PHP8.4/8.5 SDK/FPM apt source, and preinstalled libpq-dev18.6 had no current
+download source. Inspected upstream setup-php linux.sh: use_builds_cache=false
+selects its supported packaged-PHP/PPA path. CI now requests that mode; local
+bootstrap selects an actually downloadable apt-cache madison version instead
+of an unavailable installed candidate. No tests were disabled. Hosted rerun
+must establish the result; external source availability remains a dependency.
