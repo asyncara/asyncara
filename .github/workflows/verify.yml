@@ -30,6 +30,7 @@ jobs:
       - run: ASYNCARA_BACKEND=poll ./scripts/test.sh
       - run: make audit
       - run: ./scripts/audit-allocations.sh
+      - run: ./scripts/test-worker-signals.sh
       - run: ./scripts/fuzz-native.sh 10 build/fuzz-smoke
       - run: php -n -d extension=$PWD/build/asyncara.so tests/fuzz/protocol_mutation.php 5 10000
       - uses: actions/upload-artifact@v4
