@@ -2,8 +2,9 @@
 #include <arpa/inet.h>
 #include <mysql.h>
 #include <sys/socket.h>
-#if MARIADB_PACKAGE_VERSION_ID >= 30404 || \
-    (MARIADB_PACKAGE_VERSION_ID >= 30314 && MARIADB_PACKAGE_VERSION_ID < 30400)
+/* Distribution 3.3.x packages do not necessarily backport the callback/status
+ * API. Test its public feature macro rather than inferring it from a version. */
+#if defined(MARIADB_TLS_VERIFY_ERROR)
 #define AR_MYSQL_STRICT_TLS 1
 #include <openssl/ssl.h>
 #include <openssl/x509v3.h>
@@ -194,7 +195,7 @@ PHP_FUNCTION(asyncara_mysql_open) {
             goto error;
         }
 #else
-        zend_value_error("Verified MariaDB TLS requires Connector/C >= 3.4.4 or 3.3.14");
+        zend_value_error("Verified MariaDB TLS requires Connector/C TLS callback/status APIs (tested with 3.4.10)");
         goto error;
 #endif
     }
