@@ -4,7 +4,7 @@ namespace Asyncara\Pool;
 use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Queue;
 use Asyncara\Exception\{WorkerException,CapacityException};
-use Asyncara\Internal\JsonData;
+use Asyncara\Internal\IpcFrame;
 final class ProcessPool
 {
     private array $workers = [], $jobs = [];
@@ -46,10 +46,8 @@ final class ProcessPool
     }
     private function readFrame(mixed $stream): array
     {
-        $size = unpack('N', $this->readExact($stream, 4))[1];
-        if ($size < 1 || $size > 16777216) throw new WorkerException('Invalid IPC frame length');
-        $data = json_decode($this->readExact($stream, $size), true, 64, JSON_THROW_ON_ERROR);
-        if (!is_array($data)) throw new WorkerException('Invalid IPC payload'); return $data;
+        $size = IpcFrame::length($this->readExact($stream, 4));
+        return IpcFrame::decode($this->readExact($stream, $size));
     }
     public function submit(string|array $job, array $arguments = [], float $timeout = 30): Future
     {
@@ -59,9 +57,7 @@ final class ProcessPool
         if (is_array($job)) { if (count($job) !== 2 || !is_string($job[0]) || !is_string($job[1])) throw new \ValueError('Use a registered callable descriptor'); $job = implode('::', $job); }
         $id = ++$this->next;
         $request = ['id' => $id, 'job' => $job, 'arguments' => $arguments];
-        JsonData::validate($request);
-        $json = json_encode($request, JSON_THROW_ON_ERROR);
-        if (strlen($json) > 16777216) throw new \ValueError('Process request exceeds frame limit');
+        $json = IpcFrame::encode($request);
         $charge = strlen($json) + 4;
         if ($charge > $this->queueBytes - $this->pendingBytes) throw new CapacityException('Process pending byte limit reached');
         $task = Async::spawn(fn() => Async::timeout($timeout, function () use ($id, $json): mixed {

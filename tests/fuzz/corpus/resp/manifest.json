@@ -1,0 +1,80 @@
+{
+  "zero": {
+    "value": 0
+  },
+  "int-max": {
+    "value": 9223372036854775807
+  },
+  "int-min": {
+    "value": -9223372036854775808
+  },
+  "int-plus": {
+    "value": 17
+  },
+  "int-overflow": {
+    "error": true
+  },
+  "int-underflow": {
+    "error": true
+  },
+  "null": {
+    "value": null
+  },
+  "bulk": {
+    "value": "a\u0000b"
+  },
+  "array": {
+    "value": [
+      1,
+      "ok"
+    ]
+  },
+  "bool": {
+    "value": true
+  },
+  "double": {
+    "value": 125.0
+  },
+  "double-space": {
+    "error": true
+  },
+  "double-overflow": {
+    "error": true
+  },
+  "bigint-plus": {
+    "value": "+123456789012345678901234"
+  },
+  "verbatim": {
+    "value": "foo"
+  },
+  "verbatim-missing-colon": {
+    "error": true
+  },
+  "simple-cr": {
+    "error": true
+  },
+  "simple-lf": {
+    "error": true
+  },
+  "line-oversized": {
+    "error": true
+  },
+  "bulk-truncated": {
+    "error": true
+  },
+  "bulk-overflow": {
+    "error": true
+  },
+  "aggregate-overflow": {
+    "error": true
+  },
+  "nesting": {
+    "error": true
+  },
+  "unsupported-attributes": {
+    "error": true
+  },
+  "bad-terminator": {
+    "error": true
+  }
+}
