@@ -69,9 +69,14 @@ and cleanup. TLS/default-TCP/CA requests fail before opening a connection.
 
 The3.3 verification option itself enables TLS, as confirmed in upstream
 mariadb_lib.c and plugins/auth/my_auth.c. For the permitted non-TLS path only,
-the driver leaves that option unset and prohibits CA options that could turn
-TLS on. This does not permit unverified TLS: any requested TLS is rejected on
+the driver sets both TLS-enabling flags false and prohibits CA options that
+could turn TLS on. This does not permit unverified TLS: any requested TLS is rejected on
 this configuration. The separate plain Unix fixture now explicitly disables
 server TLS and asserts an empty session cipher. Strict private-CA tests remain
 separate and certificate verification remains enabled on the supported3.4.10
 path. No Oracle/MySQL or TLS support is inferred for this older client.
+
+The same explicit transport selection applies to3.4.10: `tls: false` (and default
+Unix sockets) selects plaintext, whereas default TCP / `tls: true` sets both
+TLS and verification true and installs the strict identity callback. Combining
+a CA with `tls: false` is rejected. There is no TLS-without-verification mode.
