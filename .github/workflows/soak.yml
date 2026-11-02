@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
+        env:
+          # Package repositories must supply matching SDK/FPM packages as well.
+          use_builds_cache: 'false'
         with:
           php-version: '8.5'
           coverage: none
