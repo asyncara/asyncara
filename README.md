@@ -4,7 +4,7 @@
 
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
 
-Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
+Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP with bounded streaming and file uploads, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
 
 ## Build and run
 
@@ -47,7 +47,7 @@ The [complete local concurrency tour](examples/python_concurrency_tour.php) exer
 - TLS verification is enabled. HTTP redirects are opt-in. Native buffers, rows, queues, tasks and connections have explicit limits, including a configurable aggregate budget for retained Asyncara native allocations.
 - Cancellation is cooperative. It cannot undo committed writes, kill arbitrary native calls, or preempt CPU-bound PHP. Process-job cancellation can terminate that worker.
 - Context isolates explicit key/value maps, not superglobals or arbitrary PHP extension state.
-- io_uring has passed a separate kernel NOP probe but is **not an Asyncara backend**. WebSocket, HTTP streaming/multipart, ZTS interpreter threads and platform backends beyond Linux remain incomplete or unimplemented.
+- io_uring has passed a separate kernel NOP probe but is **not an Asyncara backend**. WebSocket, ZTS interpreter threads and platform backends beyond Linux remain incomplete or unimplemented.
 
 See [API and semantics](docs/API.md), [architecture](docs/ARCHITECTURE.md), [driver details](docs/DRIVERS.md), [security](docs/SECURITY.md), [limitations](docs/LIMITATIONS.md), [measured performance](docs/PERFORMANCE.md), and the precise [roadmap](docs/ROADMAP.md). [WORKLOG](WORKLOG.md) records commands, failures, fixes and evidence. All benchmark samples are retained in [the raw results](benchmarks/results/latest.json).
 
@@ -60,5 +60,5 @@ A frozen one-hour mixed baseline completed; six-/24-hour certification remains
 outstanding. See [release readiness](docs/RELEASE_READINESS.md),
 [database matrix](docs/DATABASE_COMPATIBILITY.md), [filesystem contracts](docs/FILESYSTEM.md),
 [FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
-[ZTS scope](docs/ZTS_COMPATIBILITY.md). HTTP streaming, WebSocket, expanded hooks,
+[ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies and one-file MIME. WebSocket, expanded hooks,
 and framework certification remain unavailable. Release status stays EXPERIMENTAL.

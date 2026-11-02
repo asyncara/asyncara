@@ -2,8 +2,9 @@
 
 **EXPERIMENTAL. Phase 3 is partially completed.** This checkpoint substantially
 improves verified reliability; it is not a release candidate or completion of the
-universal-runtime directive. Runtime checkpoint: `8af2604`; later commits add
-regressions, evidence and documentation. The final delivery commit and archive
+universal-runtime directive. The earlier hardening runtime checkpoint was `8af2604`. A subsequent HTTP
+streaming checkpoint adds bounded response/upload buffers and curl MIME; see
+HTTP_STREAMING.md for its separate verification scope. The final delivery commit and archive
 SHA-256 are recorded by the separate package verification attestation; an archive
 cannot contain its own hash.
 
@@ -80,7 +81,7 @@ Long-duration FPM/framework and all process-tree failure modes remain unverified
 | Oracle MySQL 8.4.13 | Separate server; caching_sha2_password and legacy sha256_password over verified TLS | Additional Oracle versions and auth variants |
 | Redis 7.0.15 | RESP2/3, ACL/TLS, pipeline/transaction/PubSub, 200 reconnect/cancel cycles | Attributes/streaming aggregates/arbitrary pushes/cluster/sentinel |
 | Filesystem | pthread workers, stable streams/handles, errno, atomic visibility and sync calls | io_uring operations NOT_IMPLEMENTED; power-loss/ACL/mount certification |
-| HTTP | Existing concurrent curl multi, bounded buffered responses | Streaming uploads/downloads/multipart NOT_IMPLEMENTED |
+| HTTP | Concurrent curl multi, bounded buffered and HTTP/1.1 streamed responses, file/iterable uploads/downloads, one-file MIME | Long streaming soak, multi-file MIME and broader curl/proxy certification |
 | WebSocket | No implementation advertised | NOT_IMPLEMENTED |
 | Hooks | sleep/usleep PARTIALLY_SUPPORTED, tested ordinary timer path | All stream/curl/filesystem/database hook groups UNSUPPORTED |
 | ZTS | PHP8.5.11 ZTS DEBUG single-interpreter CLI core/poll/database tests | Concurrent interpreters unverified; userland ThreadPool BLOCKED |
@@ -109,8 +110,8 @@ requests, median wall seconds: sequential PHP cURL .73731, Asyncara/four active
 .18435, native curl multi .16016, FPM/four workers .17557, Swoole .16766. This
 loaded shared-host sample does not establish a stable ranking. Atomic-file
 median latencies span 0.728–1.141 ms; durable replacement 7.323–8.999 ms. Durability
-has extra semantics and syscall costs. No HTTP streaming/WebSocket/io_uring
-performance claim exists.
+has extra semantics and syscall costs. No WebSocket/io_uring performance claim exists; HTTP streaming measurements
+are recorded separately when executed.
 
 ## Reproduction and exact continuation
 
@@ -123,8 +124,8 @@ The final attestation records archive-source comparisons and test commands.
    longer FPM fault/recycling workloads using tests/soak. Retain provenance/trends.
 2. Follow up the upstream libpq unload allocation; expand server disconnect,
    remote TLS/auth, prepared cache and cancellation acknowledgement coverage.
-3. Extend curl multi with bounded streaming chunks, pause/resume and joined
-   cancellation/cleanup; complete uploads/multipart before WebSocket work.
+3. Extend the tested curl multi streaming paths with multi-file MIME and broader
+   long-duration/proxy/protocol certification before promoting their support.
 4. Implement full WebSocket framing/state/UTF-8/limits and independent interop,
    then fuzz it. Keep the capability unavailable until tests pass.
 5. Broaden filesystem durability/ACL/mount races and IPv6/TLS edge cases. Keep

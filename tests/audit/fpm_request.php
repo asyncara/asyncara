@@ -39,7 +39,12 @@ $result=Async::run(function()use($mode):array{
   if($db->query('select 42 as n')->await()[0]['n']!==42)throw new RuntimeException('SQL result');
   if(Files::read(__FILE__)->await()==='')throw new RuntimeException('File result');
   if($mode==='lifecycle'){usleep(1000);return ['ticks'=>0,'http'=>[]];}
-  $client=new HttpClient(4);$jobs=[];for($i=0;$i<4;$i++)$jobs[]=$client->get($_SERVER['AUDIT_URL']);
+  $client=new HttpClient(4);$jobs=[];
+  for($i=0;$i<4;$i++)$jobs[]=$mode==='stream'?Async::spawn(function()use($client):\Asyncara\HTTP\Response{
+   $stream=$client->getStream($_SERVER['AUDIT_URL']);
+   try{$head=$stream->headers()->await();$body='';foreach($stream as$chunk)$body.=$chunk;return new \Asyncara\HTTP\Response($head->status,$body,'');}
+   finally{$stream->close();}
+  }):$client->get($_SERVER['AUDIT_URL']);
   $ticks=0;$ticker=Async::spawn(function()use($jobs,&$ticks):void{while(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){Async::sleep(.005);if(count(array_filter($jobs,fn($j)=>!$j->isCompleted())))$ticks++;}});
   $responses=Async::gather($jobs);$ticker->await();
   $intervals=array_map(fn($r)=>$r->json(),$responses);

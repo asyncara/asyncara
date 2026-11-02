@@ -10,6 +10,7 @@
 #define AR_MAX_PENDING 1024
 #define AR_MAX_WATCHERS 16384
 #define AR_MEMORY_LIMIT (256u * 1024u * 1024u)
+#define AR_HTTP_STREAM_LIMIT 65536u
 
 typedef enum { V_NULL, V_BOOL, V_INT, V_DOUBLE, V_STRING, V_ARRAY } ar_type;
 typedef struct ar_value {
@@ -76,14 +77,21 @@ typedef struct ar_job {
     struct ar_engine *engine;
     struct ar_job *next, *queue_next, *done_next, *lifetime_next;
     CURL *curl;
+    curl_mime *mime;
     struct curl_slist *headers;
     char *body, *response_headers;
     size_t body_len, headers_len, body_capacity, headers_capacity;
+    int stream_response, receive_paused, headers_ready, headers_delivered, follow_redirects;
+    int stream_upload, send_paused, upload_eof;
+    char *upload;
+    size_t upload_len, upload_offset;
+    int64_t upload_size, upload_sent;
     long status;
     int done;
 } ar_job;
 typedef struct ar_socket {
     curl_socket_t fd;
+    CURL *owner;
     int events;
     struct ar_socket *next;
 } ar_socket;
@@ -101,7 +109,7 @@ typedef struct ar_engine {
     ar_file *files;
     CURLM *multi;
     ar_socket *sockets;
-    int running, use_epoll;
+    int running, use_epoll, http_wakeup;
 } ar_engine;
 typedef struct {
     int fd, events, ready, buffered;

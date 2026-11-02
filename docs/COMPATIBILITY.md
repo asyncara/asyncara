@@ -43,7 +43,7 @@ The native dispatch hook chains Zend's execute-internal hook and checks function
 | Capability | Category | Verification |
 |---|---|---|
 | TCP / UDP | nonblocking readiness | local TCP, 3 MB partial writes, EOF, refusal, 100 connections, UDP empty/binary datagrams |
-| HTTP/HTTPS | native nonblocking curl multi | overlap, timeout, cancellation, broken connection, chunking, compression, redirects, JSON/form, large response, TLS trust/hostname failure |
+| HTTP/HTTPS | native nonblocking curl multi | overlap, timeout, cancellation, broken connection, chunking, compression, redirects, JSON/form, large response, TLS trust/hostname failure; bounded HTTP/1.1 response/upload streaming and one-file MIME |
 | DNS | worker-backed async | localhost and deterministic invalid-name failure; no TTL cache |
 | Filesystem | worker-backed async | regular files, binary/empty/large chunks, copy/rename/remove/stat/list, cancellation drainage; stable handles, seek/sync, path replacement, handle limits and early stream cleanup |
 | SQLite | worker-backed async | bindings, serialized operations, rollback, interruption, connection closure |

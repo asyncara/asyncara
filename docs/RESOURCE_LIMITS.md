@@ -12,6 +12,8 @@ is an exception; applications should stop submitting work or reduce concurrency.
 | Timers | 100,000 live timers | REJECT_NEW_ITEM; cancelled heap entries are compacted |
 | Native jobs / descriptor registrations | 1,024 / 16,384 | REJECT_NEW_ITEM |
 | Asyncara native allocations | 256 MiB (`nativeMemoryLimit`) | Reject allocation; atomic ledger includes allocation headers |
+| HTTP streaming native response / upload | 64 KiB each per transfer; two PHP response chunks queued | BLOCK_PRODUCER using curl pause/resume; other per-transfer chunk copies are documented in HTTP_STREAMING.md |
+| HTTP multipart fields | 64 fields, 64 KiB each / 1 MiB total | Reject invalid input; one streamed file, no unbounded field copies |
 | HTTP buffered body / headers | 16 MiB / 64 KiB per transfer | Fail transfer and release native buffers |
 | SQLite values/rows and SQL text | 16 MiB; 10,000 bind variables | SQLite rejects construction before result conversion; Asyncara also limits copied results |
 | PostgreSQL buffered query | 16 MiB conversion budget / 100,000 rows | Fail query and close connection; per-cell metadata charge reduces empty-cell amplification |

@@ -151,6 +151,11 @@ cancel(): void
 ```php
 __construct(int $concurrency = 32, float $timeout = 30.0, ?string $proxy = NULL, ?string $caFile = NULL)
 get(string $url, array $headers = [], bool $followRedirects = false): Asyncara\Future
+getStream(string $url, array $headers = [], bool $followRedirects = false): Asyncara\HTTP\ResponseStream
+download(string $url, string $path, array $headers = [], bool $followRedirects = false): Asyncara\Future
+upload(string $url, string $path, string $method = 'PUT', array $headers = []): Asyncara\Future
+requestStream(string $method, string $url, iterable $body, ?int $contentLength = NULL, array $headers = []): Asyncara\Future
+multipart(string $url, array $fields, string $fileField, string $path, ?string $filename = NULL, string $contentType = 'application/octet-stream', array $headers = []): Asyncara\Future
 post(string $url, mixed $json = NULL, ?array $form = NULL, ?string $body = NULL, array $headers = []): Asyncara\Future
 request(string $method, string $url, ?string $body = NULL, array $headers = [], bool $followRedirects = false): Asyncara\Future
 ```
@@ -181,6 +186,21 @@ getRequest(): Psr\Http\Message\RequestInterface
 ```php
 __construct(int $status, string $body, string $rawHeaders)
 json(bool $associative = true): mixed
+```
+
+## `Asyncara\HTTP\ResponseHead`
+
+```php
+__construct(int $status, string $rawHeaders)
+```
+
+## `Asyncara\HTTP\ResponseStream`
+
+```php
+headers(): Asyncara\Future
+getIterator(): Traversable
+consume(callable $consumer): void
+close(): void
 ```
 
 ## `Asyncara\Hook`
@@ -427,6 +447,13 @@ close(): void
 ```php
 __construct(Asyncara\Concurrency\Queue $queue)
 emit(mixed $item): void
+```
+
+## `Asyncara\Stream\ReadableStream`
+
+```php
+consume(callable $consumer): void
+close(): void
 ```
 
 ## `Asyncara\Task`

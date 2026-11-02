@@ -19,6 +19,7 @@ Current limits:
 | stable native file handles | 128 |
 | native wait descriptors | 16,384 including curl/notification descriptors |
 | file/HTTP/IPC payload | generally 16 MiB per buffered operation/frame |
+| HTTP streaming response/upload buffers | 64 KiB each; HTTP/1.1 pause/resume, two PHP response chunks queued |
 | HTTP response headers | 64 KiB |
 | native HTTP connections | 64 total, eight per host |
 | HttpClient in-flight admission | configurable 1–256, default 32 |
