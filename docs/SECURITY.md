@@ -25,3 +25,17 @@ Valgrind found and prompted fixes for Connector/C statement handles on interrupt
 The independent audit built exact PHP 8.5.11 debug and fully ASan/UBSan-instrumented PHP/extension configurations and executed core/database workloads. Selected malloc/calloc/realloc failure injection and fatal file/PostgreSQL/SQLite/MariaDB conversion tests passed after repairing native PostgreSQL ownership. Exhaustive allocation-failure injection, protocol fuzzing, long-duration load, ZTS, SQL TLS/authentication variants and adversarial filesystem races remain incomplete. The standalone native harness also passes ThreadSanitizer; this does not instrument third-party library internals. GCC TSan on this host requires non-PIE and process-local ASLR disabling through setarch; no global setting is changed. Independent isolated FPM tests cover 100 sequential requests, concurrent operations inside requests and concurrent requests across four workers, with state, teardown, thread, descriptor and RSS checks. A deliberate fatal request is followed by a healthy request on the same PID; the failed request itself is not recovered. No critical invalid-memory access is known in the tested configuration; production certification is explicitly withheld. An aggregate budget bounds retained Asyncara-owned native allocations and tests cover rejection/recovery plus Zend memory-limit bailout cleanup. Third-party library allocations and bounded readiness control buffers are excluded; see BACKENDS.md. Time bounds on all shutdown paths remain incomplete.
 
 New native code must include ownership/error-path review and executed regressions. Report a suspected vulnerability privately to the project owner; this repository has no established public security-contact address yet.
+
+## Phase 3 findings
+
+Native worker signal inheritance, MariaDB local-address certificate identity bypass,
+Oracle transaction-control compatibility and PHP/TLS buffered-readiness loss were
+reproduced and repaired with regression tests. See FPM_LIFECYCLE.md and
+DATABASE_COMPATIBILITY.md. MariaDB strict TLS now requires the tested callback /
+OpenSSL configuration and fails closed otherwise. DNS TLS hostnames for that driver
+remain unsupported. A third-party 109-byte libpq TLS BIO_METHOD allocation remains
+lost on library unloading; the standalone libpq-only reproducer and complete scope
+are documented. Do not generalize earlier zero-loss non-TLS tests to this path.
+No invalid-memory access was found in the new instrumented tests; this is bounded
+evidence. Fuzzing, ZTS CLI and short multiworker fault tests now have executed
+results; multi-interpreter ZTS and six-/24-hour operation remain unverified.

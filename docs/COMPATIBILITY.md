@@ -47,10 +47,13 @@ The native dispatch hook chains Zend's execute-internal hook and checks function
 | DNS | worker-backed async | localhost and deterministic invalid-name failure; no TTL cache |
 | Filesystem | worker-backed async | regular files, binary/empty/large chunks, copy/rename/remove/stat/list, cancellation drainage; stable handles, seek/sync, path replacement, handle limits and early stream cleanup |
 | SQLite | worker-backed async | bindings, serialized operations, rollback, interruption, connection closure |
-| PostgreSQL | nonblocking libpq | local trust-auth Unix sockets, parameters, transaction, notifications, cancellation and independent connection overlap |
-| MariaDB | nonblocking Connector/C | local 11.8.9 Unix sockets, prepared bindings including binary, transaction, interruption and overlap |
+| PostgreSQL | nonblocking libpq | local Unix sockets and private-CA SCRAM/verify-full TCP, parameters, transactions, notifications, cancellation and independent connection overlap |
+| MariaDB | nonblocking Connector/C | 11.8.9 Unix sockets and private-CA TLS/IP SAN, prepared bindings, transactions, cancellation and overlap |
+| Oracle MySQL | nonblocking Connector/C | separately tested 8.4.13, caching_sha2_password / sha256_password over verified TLS; transaction control fixed; see MYSQL_COMPATIBILITY.md |
 | Redis | nonblocking RESP over TCP | local RESP2/RESP3, pipeline, errors, transactions, Pub/Sub and cancellation |
 | ProcessPool | multi-process CPU parallelism | distinct PIDs, overlapping CPU intervals, crash/timeout/replacement, framed data |
 | Native workers | native thread execution | filesystem/DNS/SQLite only; no PHP callback execution |
-| PHP ThreadPool | unavailable | NTS build; no silent process fallback |
+| PHP ThreadPool | unavailable | no interpreter-thread executor; ZTS CLI testing does not enable it |
 | io_uring | not implemented | separate kernel NOP probe succeeded; no Asyncara backend claim |
+
+Phase 3: private-CA database matrix is in [DATABASE_COMPATIBILITY.md](DATABASE_COMPATIBILITY.md); single-interpreter ZTS scope is in [ZTS_COMPATIBILITY.md](ZTS_COMPATIBILITY.md). Kernel readiness now includes PHP-buffered stream data, with a deterministic regression and repeated TLS reconnect tests.

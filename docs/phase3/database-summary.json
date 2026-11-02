@@ -1,0 +1,92 @@
+{
+  "rawEvidence": "/tmp/asyncara-phase3-cQBA3H",
+  "oraclePackages": [
+    {
+      "package": "mysql-community-client-core",
+      "version": "8.4.13-1ubuntu24.04",
+      "sha256": "2bcb554edd33141ac5d54579fd8ab9dc5dbeca255a0a5e29cca7ece9afa7d21e",
+      "url": "https://repo.mysql.com/apt/ubuntu/pool/mysql-8.4-lts/m/mysql-community/mysql-community-client-core_8.4.13-1ubuntu24.04_amd64.deb"
+    },
+    {
+      "package": "mysql-community-client-plugins",
+      "version": "8.4.13-1ubuntu24.04",
+      "sha256": "6812f8ab63482a3065da19a7cf807f0999073476ed6131561799e6ba9ec8bcc7",
+      "url": "https://repo.mysql.com/apt/ubuntu/pool/mysql-8.4-lts/m/mysql-community/mysql-community-client-plugins_8.4.13-1ubuntu24.04_amd64.deb"
+    },
+    {
+      "package": "mysql-community-server-core",
+      "version": "8.4.13-1ubuntu24.04",
+      "sha256": "66269aaf941bee02390df98c7b69ee01eb918298a18f10882202d113aa0f1e62",
+      "url": "https://repo.mysql.com/apt/ubuntu/pool/mysql-8.4-lts/m/mysql-community/mysql-community-server-core_8.4.13-1ubuntu24.04_amd64.deb"
+    }
+  ],
+  "tlsRuns": {
+    "database-tls-fixed": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ],
+    "database-tls-final-8.3": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ],
+    "database-tls-final-8.4": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ],
+    "database-tls-buffered-fixed": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ],
+    "database-tls-final-sanitized": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ],
+    "database-tls-ci-command": [
+      {
+        "phase": "server",
+        "exit": 0
+      },
+      {
+        "phase": "mismatch",
+        "exit": 0
+      }
+    ]
+  },
+  "upstreamFinding": {
+    "library": "libpq 16 TLS BIO_METHOD",
+    "bytes": 109,
+    "allocations": 2,
+    "standaloneAttempts": 20,
+    "status": "Unresolved bounded library-unload leak; no suppression"
+  }
+}

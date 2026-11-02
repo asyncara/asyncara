@@ -67,6 +67,11 @@ jobs:
       - run: ./scripts/test-databases.py --test-file tests/database/resource_bounds.php
       - run: make audit-fpm
       - run: python3 tests/soak/fpm.py --seconds 60 --output build/fpm-expanded
+      - name: Build pinned Connector/C for strict TLS regression
+        run: |
+          ./scripts/build-test-connector.sh "$PWD/build/tls-connector"
+          MARIADB_PREFIX="$PWD/build/tls-connector/install" ASYNCARA_OUTPUT=build/tls.so ./scripts/build-local.sh
+      - run: ASYNCARA_EXTENSION=build/tls.so ASYNCARA_TLS_ITERATIONS=100 python3 scripts/test-database-tls.py --output build/database-tls
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -76,5 +81,7 @@ jobs:
             build/ci-audit/
             build/audit-fpm/
             build/fpm-expanded/
+            build/database-tls/*client.log
+            build/database-tls/report.json
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit

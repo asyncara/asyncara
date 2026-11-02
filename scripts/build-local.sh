@@ -11,8 +11,10 @@ pq_flags=()
 if [[ -f .local/sysroot/usr/include/postgresql/libpq-fe.h ]]; then
   pq_flags=(-DHAVE_ASYNCARA_PQ=1 -I.local/sysroot/usr/include/postgresql -l:libpq.so.5)
 fi
-if [[ -f .local/sysroot/usr/include/mariadb/mysql.h ]]; then
-  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 -I.local/sysroot/usr/include/mariadb -l:libmariadb.so.3)
+if [[ -n "${MARIADB_PREFIX:-}" ]]; then
+  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 "-I$MARIADB_PREFIX/include/mariadb" -Iext/compat/mariadb "-L$MARIADB_PREFIX/lib/mariadb" "-Wl,-rpath,$MARIADB_PREFIX/lib/mariadb" -lmariadb -lssl -lcrypto)
+elif [[ -f .local/sysroot/usr/include/mariadb/mysql.h ]]; then
+  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 -I.local/sysroot/usr/include/mariadb -Iext/compat/mariadb -l:libmariadb.so.3 -lssl -lcrypto)
 fi
 "${CC:-cc}" -std=c11 -D_GNU_SOURCE -DCOMPILE_DL_ASYNCARA=1 -fPIC -shared \
   -O2 -g -Wall -Wextra -Werror -Wno-unused-parameter ${EXTRA_CFLAGS:-} \
