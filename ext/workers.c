@@ -6,10 +6,12 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/random.h>
 #include <unistd.h>
 
 ar_value *ar_value_new(ar_engine *e, ar_type type) {
@@ -85,6 +87,11 @@ static ar_value *integer(ar_engine *e, int64_t n) {
 static void failure(ar_job *j, const char *s) {
     snprintf(j->error, sizeof(j->error), "%s", s);
 }
+static void system_failure(ar_job *j) {
+    int code = errno;
+    j->system_errno = code;
+    failure(j, strerror(code));
+}
 static int stopped(ar_job *j) {
     if (atomic_load(&j->cancelled)) {
         failure(j, "Operation cancelled");
@@ -104,7 +111,7 @@ static int write_all(ar_job *j, int fd, const char *p, size_t n) {
         if (k < 0 && errno == EINTR)
             continue;
         if (k <= 0) {
-            failure(j, strerror(errno));
+            system_failure(j);
             return -1;
         }
         off += (size_t)k;
@@ -140,7 +147,7 @@ static void do_handle(ar_job *j) {
         failure(j, "Native memory limit or allocation failure");
         goto close_open;
     open_error:
-        failure(j, strerror(errno));
+        system_failure(j);
     close_open:
         close(file->fd);
         file->fd = -1;
@@ -157,7 +164,7 @@ static void do_handle(ar_job *j) {
             count = read(file->fd, buffer, j->length);
         } while (count < 0 && errno == EINTR && !stopped(j));
         if (count < 0)
-            failure(j, strerror(errno));
+            system_failure(j);
         else
             j->result = ar_string(j->engine, buffer, (size_t)count);
         ar_free(buffer);
@@ -190,9 +197,81 @@ static void do_handle(ar_job *j) {
     }
     return;
 system_error:
-    failure(j, strerror(errno));
+    system_failure(j);
+}
+/* Pin one directory for creation, rename and optional directory fsync. There
+ * is no cross-filesystem copy fallback. Publish only fully written contents. */
+static void do_atomic_write(ar_job *j) {
+    char *directory = ar_strdup(j->engine, j->a);
+    int dir = -1, fd = -1;
+    bool temporary = false;
+    char name[64] = {0};
+    if (!directory) {
+        failure(j, "Native memory limit or allocation failure");
+        return;
+    }
+    const char *base = strrchr(j->a, '/');
+    char *slash = strrchr(directory, '/');
+    if (!base || !base[1] || !strcmp(base + 1, ".") || !strcmp(base + 1, "..")) {
+        errno = EINVAL;
+        goto error;
+    }
+    base++;
+    if (slash == directory) slash[1] = 0; else *slash = 0;
+    dir = open(directory, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    if (dir < 0)
+        goto error;
+    j->result = integer(j->engine, (int64_t)j->b_len);
+    if (!j->result) {
+        failure(j, "Native memory limit or allocation failure");
+        goto finish;
+    }
+    for (int attempt = 0; attempt < 16; attempt++) {
+        unsigned char random[16];
+        size_t offset = 0;
+        while (offset < sizeof(random)) {
+            ssize_t count = getrandom(random + offset, sizeof(random) - offset, 0);
+            if (count < 0 && errno == EINTR) continue;
+            if (count <= 0) { if (!count) errno = EIO; goto error; }
+            offset += (size_t)count;
+        }
+        memcpy(name, ".asyncara-", 9);
+        for (size_t i = 0; i < sizeof(random); i++)
+            snprintf(name + 9 + 2 * i, 3, "%02x", random[i]);
+        fd = openat(dir, name, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0600);
+        if (fd >= 0) { temporary = true; break; }
+        if (errno != EEXIST) goto error;
+    }
+    if (fd < 0) goto error;
+    if (write_all(j, fd, j->b, j->b_len)) goto finish;
+    if (fchmod(fd, (mode_t)j->length) || (j->offset && fsync(fd))) goto error;
+    if (close(fd)) { fd = -1; goto error; }
+    fd = -1;
+    if (stopped(j)) goto finish;
+    if (renameat(dir, name, dir, base)) goto error;
+    temporary = false;
+    j->committed = 1;
+    if (j->offset && fsync(dir)) goto error;
+    goto finish;
+error:
+    system_failure(j);
+finish:
+    if (fd >= 0 && close(fd) && !j->error[0]) system_failure(j);
+    if (temporary && unlinkat(dir, name, 0)) {
+        int code = errno;
+        if (!j->error[0]) { errno = code; system_failure(j); }
+        size_t length = strlen(j->error);
+        snprintf(j->error + length, sizeof(j->error) - length,
+                 "; temporary %s cleanup failed: %s", name, strerror(code));
+    }
+    if (dir >= 0 && close(dir) && !j->error[0]) system_failure(j);
+    ar_free(directory);
 }
 static void do_file(ar_job *j) {
+    if (j->op == OP_ATOMIC_WRITE) {
+        do_atomic_write(j);
+        return;
+    }
     int fd = -1, out = -1;
     struct stat st;
     if (j->op == OP_READ || j->op == OP_READ_RANGE || j->op == OP_COPY) {
@@ -278,7 +357,7 @@ static void do_file(ar_job *j) {
             if (k < 0 && errno == EINTR)
                 continue;
             if (k < 0) {
-                failure(j, strerror(errno));
+                system_failure(j);
                 break;
             }
             if (!k)
@@ -291,7 +370,7 @@ static void do_file(ar_job *j) {
             if (k > 0)
                 failure(j, "File exceeds buffer limit; use read stream");
             if (k < 0)
-                failure(j, strerror(errno));
+                system_failure(j);
         }
         if (!j->error[0])
             j->result = ar_string(j->engine, buf, n);
@@ -344,7 +423,7 @@ static void do_file(ar_job *j) {
             }
         }
         if (errno)
-            failure(j, strerror(errno));
+            system_failure(j);
         closedir(dir);
     } else {
         int rc = j->op == OP_UNLINK   ? unlink(j->a)
@@ -359,12 +438,12 @@ static void do_file(ar_job *j) {
     }
     goto finish;
 system_error:
-    failure(j, strerror(errno));
+    system_failure(j);
 finish:
     if (fd >= 0 && close(fd) && !j->error[0])
-        failure(j, strerror(errno));
+        system_failure(j);
     if (out >= 0 && close(out) && !j->error[0])
-        failure(j, strerror(errno));
+        system_failure(j);
 }
 static void do_dns(ar_job *j) {
     struct addrinfo hints = {0}, *result = NULL;
@@ -557,7 +636,7 @@ static void *worker(void *arg) {
             e->queue_tail = NULL;
         pthread_mutex_unlock(&e->mutex);
         if (!stopped(j)) {
-            if (j->op >= OP_FILE_OPEN)
+            if (j->op >= OP_FILE_OPEN && j->op <= OP_FILE_CLOSE)
                 do_handle(j);
             else if (j->op == OP_DNS)
                 do_dns(j);
@@ -567,7 +646,10 @@ static void *worker(void *arg) {
                 do_file(j);
         }
         if (atomic_load(&j->cancelled)) {
-            failure(j, "Operation cancelled");
+            /* Atomic replacement must not hide a failed temp cleanup or a
+             * durability error behind concurrent cancellation. */
+            if (j->op != OP_ATOMIC_WRITE || !j->error[0])
+                failure(j, "Operation cancelled");
             if (j->op == OP_FILE_OPEN && j->file->fd >= 0) {
                 close(j->file->fd);
                 j->file->fd = -1;

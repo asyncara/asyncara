@@ -13,7 +13,7 @@ Updated 2026-11-02. Status describes implemented behavior and executed evidence,
 | epoll / poll | IMPLEMENTED_AND_TESTED | complete core suite with each Linux backend |
 | TCP / UDP / DNS / explicit TLS | PARTIALLY_IMPLEMENTED | tested local IPv4/TLS/DNS; IPv6 and TLS edge cases need expansion |
 | HTTP client | PARTIALLY_IMPLEMENTED | concurrent curl multi, pooling, HTTP(S), JSON/form, chunking/compression tested; streaming and multipart absent |
-| Native filesystem | PARTIALLY_IMPLEMENTED | basic operations, stable handles, seek/sync and chunk backpressure tested; atomic replacement and broader permission/race cases absent |
+| Native filesystem | PARTIALLY_IMPLEMENTED | basic operations, stable handles, seek/sync, chunk backpressure, typed errno and atomic replacement tested; crash durability / broader filesystem certification incomplete |
 | SQLite | IMPLEMENTED_AND_TESTED | worker C API, binds, ordering, transactions, cancellation and cleanup; buffered scope documented |
 | PostgreSQL | PARTIALLY_IMPLEMENTED | native nonblocking libpq, binds, transactions, notifications tested locally; private-CA SCRAM/verify-full tested; server-side prepare cache and cancellation acknowledgment incomplete |
 | MySQL / MariaDB | PARTIALLY_IMPLEMENTED | Connector/C tested separately on MariaDB 11.8.9 and Oracle MySQL 8.4.13; strict IP SAN TLS/auth; broader variants unverified |
@@ -44,7 +44,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | CI regression and database lifecycle workflows | IMPLEMENTED_BUT_NOT_FULLY_TESTED | local commands executed; hosted workflows added but not yet run remotely |
 | P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
 | P2 protocol/allocation fuzzing | IMPLEMENTED_AND_TESTED | committed seeds, 100 RESP cases, real IPC failures, 326,134 native ASan/UBSan fuzz inputs and 12,737 instrumented PHP mutations; bounded coverage in FUZZING.md |
-| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | 20.173-second smoke passed; one-hour run next; 6h/24h not executed; SOAK_TESTING.md |
+| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | one-hour frozen baseline: 20,855 cycles / 20.855m Tasks, flat fds/threads, +296 KiB RSS endpoint medians; 6h/24h not executed; SOAK_TESTING.md |
 | P4 expanded FPM lifecycle | IMPLEMENTED_AND_TESTED | 300.157 mixed seconds / 4,380 requests, recycling/reload/kill/timeout/fatal/pending isolation; longer soak remains untested; FPM_LIFECYCLE.md |
 | P5 database TLS/auth and protocol repairs | PARTIALLY_IMPLEMENTED | Private-CA matrix, Oracle 8.4.13, certificate identity fix, nonblocking transaction control and buffered TLS wakeups; WAN/mTLS/cancel acknowledgement remain unverified |
 | P6 ZTS investigation | PARTIALLY_IMPLEMENTED | PHP 8.5.11 ZTS DEBUG CLI full tests and database suite pass; concurrent interpreter threads unverified, ThreadPool BLOCKED |
