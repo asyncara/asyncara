@@ -1,0 +1,55 @@
+# Verified compatibility
+
+The following evidence is from this Linux x86_64 development host on 2026-11-02. Passing these cases does not establish production support on every build or extension combination.
+
+| PHP build | Native compile | Core/IO/hook/process suite | PostgreSQL/MariaDB/Redis suite |
+|---|---|---|---|
+| 8.3.36 NTS, locally extracted CLI/dev | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
+| 8.4.27 NTS, locally extracted CLI/dev | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
+| 8.5.11 NTS host CLI, 8.5.12 API-compatible dev headers | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
+| 8.5.11 with host's normal extension configuration (including Swoole 6.2.3) | same binary | 44 pass + four dedicated limit/lifecycle suites | not a separate SQL coexistence certification |
+| ZTS / debug PHP | not executed | not certified | not certified |
+
+All three CLI versions also pass native queue/size/permission limits, aggregate-budget rejection/recovery, PHP memory-limit bailout and stable-file-handle suites. The isolated 8.5 FPM test passes 100 requests through one worker, with idle descriptor/thread counts stable and context/hooks reset.
+
+PHP 8.5 also passes the core suite with `ASYNCARA_BACKEND=poll`. This verifies the Linux poll fallback, not BSD/macOS/Windows portability. PHP 8.1/8.2 and unreleased versions are intentionally outside the configured source range.
+
+## Function-by-function transparent hook matrix
+
+Hooks are disabled outside Async::run and disabled by default. HOOK_ALL/Hook::ALL means all implemented hook groups (currently TIME), not every PHP function. Runtime::enableHooks returns enabled names, unsupported groups and reasons.
+
+| Traditional operation | Classification inside configured runtime | Evidence and limits |
+|---|---|---|
+| sleep(integer >= 0) | asynchronous timer, partial compatibility | return 0, zero delay, negative argument and Fiber scheduling tested; signal interruption/remaining-seconds behavior differs and is not certified |
+| usleep(integer >= 0) | asynchronous timer, partial compatibility | null return, negative argument, overlapping timers tested; OS signal interruption semantics not reproduced |
+| fopen / fclose / fread / fwrite / stream_get_contents | blocking fallback / unsupported hook | use explicit IO APIs; arbitrary stream wrappers remain unchanged |
+| file_get_contents / file_put_contents | blocking fallback / unsupported hook | Files API runs native workers; HTTP API runs curl multi |
+| unlink / rename / mkdir / rmdir / copy / metadata | blocking fallback / unsupported hook | individual explicit Files counterparts tested |
+| stream_socket_client / stream_socket_server / fsockopen | blocking fallback / unsupported hook | TcpStream/TcpServer implement explicit async readiness |
+| stream_select | blocking fallback / unsupported hook | scheduler uses its native wait; no replacement |
+| curl_init / curl_setopt | ordinary PHP cURL functions | no replacement required or claimed |
+| curl_exec / curl_multi_* | unsupported transparent integration | separate native HttpClient implementation; no ownership of PHP CurlHandle objects |
+| PDO SQLite / PDO MySQL / MySQLi | unsupported hook | use tested independent drivers; no PDO compatibility claim |
+| ext-redis / ext-pgsql | unsupported hook | explicit Redis and libpq drivers are separate implementations |
+| SOAP / sockets extension / process functions | unsupported hook | no generic blocking interception |
+
+Policies: ALLOW_BLOCKING reports missing groups; WARN additionally emits a warning; STRICT rejects a request to enable unavailable groups. **STRICT does not intercept unknown blocking operations.** The scheduler measures long task steps after control returns and reports their duration without claiming to identify the native call responsible.
+
+The native dispatch hook chains Zend's execute-internal hook and checks function identity; it does not patch internal function handlers. It is registered at module startup and restored at module shutdown when still owned. Request-local flags are reset at request shutdown. Host coexistence tests do not establish safe composition with every profiler, debugger or coroutine hook extension.
+
+## Explicit operation matrix
+
+| Capability | Category | Verification |
+|---|---|---|
+| TCP / UDP | nonblocking readiness | local TCP, 3 MB partial writes, EOF, refusal, 100 connections, UDP empty/binary datagrams |
+| HTTP/HTTPS | native nonblocking curl multi | overlap, timeout, cancellation, broken connection, chunking, compression, redirects, JSON/form, large response, TLS trust/hostname failure |
+| DNS | worker-backed async | localhost and deterministic invalid-name failure; no TTL cache |
+| Filesystem | worker-backed async | regular files, binary/empty/large chunks, copy/rename/remove/stat/list, cancellation drainage; stable handles, seek/sync, path replacement, handle limits and early stream cleanup |
+| SQLite | worker-backed async | bindings, serialized operations, rollback, interruption, connection closure |
+| PostgreSQL | nonblocking libpq | local trust-auth Unix sockets, parameters, transaction, notifications, cancellation and independent connection overlap |
+| MariaDB | nonblocking Connector/C | local 11.8.9 Unix sockets, prepared bindings including binary, transaction, interruption and overlap |
+| Redis | nonblocking RESP over TCP | local RESP2/RESP3, pipeline, errors, transactions, Pub/Sub and cancellation |
+| ProcessPool | multi-process CPU parallelism | distinct PIDs, overlapping CPU intervals, crash/timeout/replacement, framed data |
+| Native workers | native thread execution | filesystem/DNS/SQLite only; no PHP callback execution |
+| PHP ThreadPool | unavailable | NTS build; no silent process fallback |
+| io_uring | not implemented | separate kernel NOP probe succeeded; no Asyncara backend claim |
