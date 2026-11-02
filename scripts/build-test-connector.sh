@@ -8,9 +8,14 @@ mkdir -p "$destination"
 curl -fL --retry 2 https://codeload.github.com/mariadb-corporation/mariadb-connector-c/tar.gz/refs/tags/v3.4.10 -o "$destination/source.tar.gz"
 printf '%s  %s\n' 28c38b597a51e8eddd685c675420dd15e290f72d89834a97063e50cdc386f500 "$destination/source.tar.gz" | sha256sum -c -
 tar -xf "$destination/source.tar.gz" -C "$destination"
+instrumentation=()
+if [[ "${ASYNCARA_CONNECTOR_VALGRIND:-0}" = 1 ]]; then
+  [[ -f "$PWD/.local/sysroot/usr/include/valgrind/valgrind.h" ]] || { echo 'Missing local Valgrind headers' >&2; exit 1; }
+  instrumentation=("-DCMAKE_C_FLAGS=-DHAVE_VALGRIND -I$PWD/.local/sysroot/usr/include")
+fi
 cmake -S "$destination/mariadb-connector-c-3.4.10" -B "$destination/build" \
   -DCMAKE_INSTALL_PREFIX="$destination/install" -DWITH_UNIT_TESTS=OFF \
-  -DWITH_SSL=OPENSSL -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  -DWITH_SSL=OPENSSL -DCMAKE_BUILD_TYPE=RelWithDebInfo "${instrumentation[@]}"
 cmake --build "$destination/build" -j2
 cmake --install "$destination/build"
 printf 'Use MARIADB_PREFIX=%s/install with scripts/build-local.sh\n' "$destination"

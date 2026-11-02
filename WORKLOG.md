@@ -416,3 +416,20 @@ soak runner snapshots its module before any worker/reload. A frozen rerun follow
 ASan fuzz quarantine is explicitly64MiB to keep instrumentation within the same
 512MiB RSS ceiling:306,396native and803,874HTTP inputs/61s each, peaks198/147MiB,
 no findings. See docs/phase3/deferred-oom-and-mappings.json.
+
+## Correct stack-aware memory tooling and patched SDK selection
+
+StockPHP8.5.12 plus distributionConnector reproduced Valgrind stack-related
+invalid reads; annotating Connector alone still left unregistered PHP Fibers.
+Pinned PHP8.5.12 DEBUG --with-valgrind plus Connector3.4.10 HAVE_VALGRIND passes
+the identical database suite:zero errors/losses,3,888bytes reachable. CI now
+builds these supported annotations, retaining stock functional DB tests and all
+Valgrind error checks. Added pinned source build script; no suppression or
+max-stackframe workaround. Exact officialPHPsourceSHA verified from releasesAPI.
+
+Clang18 full-PHP UBSan exposes upstream incompatible callback function-pointer
+types with no Asyncara loaded. Retained logs; this configuration is not clean.
+A separate GCCASan/UBSan build is underway, preserving the earlier tooling model.
+Both native build runners now verify exact SDK/interpreter patch versions to
+avoid accidentally loading the new fallible-allocation API into olderPHP.
+HostPHP8.5.11 was not replaced; tests explicitly select isolated8.5.12.

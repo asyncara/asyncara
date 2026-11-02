@@ -8,6 +8,7 @@ if [[ ! -f "$inc/main/php.h" ]]; then
   echo 'PHP headers missing. Set PHP_INCLUDE_DIR or run scripts/bootstrap-local.sh.' >&2
   exit 1
 fi
+python3 scripts/check-php-sdk.py "$inc" "${PHP_BIN:-php}"
 pq_flags=()
 if [[ -f .local/sysroot/usr/include/postgresql/libpq-fe.h ]]; then
   pq_flags=(-DHAVE_ASYNCARA_PQ=1 -I.local/sysroot/usr/include/postgresql -l:libpq.so.5)

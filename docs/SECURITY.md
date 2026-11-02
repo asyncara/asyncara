@@ -47,3 +47,22 @@ mechanism. Use the authorization callback and application access controls.
 Slow consumers are disconnected with an explicit capacity error. No compression
 extension is negotiated. Tests cover malformed frames and independent peers;
 no Autobahn/browser or hostile remote deployment certification is claimed.
+
+Latest-patch validation found two tooling boundaries. Unannotated distribution
+PHP/Connector coroutine stacks produced nondeterministic Valgrind invalid-read
+and uninitialised-value reports. Rebuilding both with their existing supported
+stack-registration hooks makes the same database workload clean (zero errors,
+zero definite/indirect/possible loss,3,888bytes reachable). CI now tests this
+annotated configuration and retains ordinary functional distribution-library
+coverage. Historical stock-Valgrind passes do not replace annotated coverage.
+
+A separate Clang18 full-PHP8.5.12 UBSan build reports incompatible callback
+function pointer types in unmodified Zend/date/opcache code even under `php -n
+-v` without Asyncara. These upstream diagnostics are retained; the Clang full-PHP
+run is not marked passed. GCC ASan/UBSan validation and native Clang fuzzing have
+different coverage; neither proves absence of those function-type issues.
+
+Supported deployment targets require patchedPHP8.3.36/8.4.27/8.5.12 and matching
+SDKs. Deferred soft OOM is handled at Asyncara conversion boundaries. A genuine
+PHP hard-limit exit, OS kill or process crash cannot run request cleanup. Use a
+process supervisor and do not rely on shutdown callbacks to undo external writes.

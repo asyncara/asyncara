@@ -105,3 +105,17 @@ extracted; generated extension/toolchain files from the working tree are not
 copied. Composer and the pinned Python peer are installed inside each extraction.
 The report records every step, dependency hash and installed-module hash. This
 Linux/Debian-package harness complements the normal source installation steps.
+
+Use current security patch releases and matching SDKs: the final Phase3 target
+patches are8.3.36,8.4.27 and8.5.12. The October2026 PHP allocator changes expose
+new functions without changing the major module API number. Both local build
+runners therefore reject a different SDK patch version before compiling. On this
+host, PHP8.5.12 CLI/FPM were extracted under the evidence directory; host8.5.11
+was not replaced. Select PHP_BIN and FPM_BIN explicitly for those tests. Older
+8.5.11 instrumentation results describe historical source configurations only.
+
+Valgrind requires properly registered coroutine stacks. `build-test-php.sh`
+builds pinned PHP8.5.12 DEBUG with --with-valgrind; set
+ASYNCARA_CONNECTOR_VALGRIND=1 for build-test-connector.sh to enable its upstream
+stack annotations too. Use the resulting PHP_BIN, PHP_INCLUDE_DIR and
+MARIADB_PREFIX when compiling the tested module. No error suppression is used.
