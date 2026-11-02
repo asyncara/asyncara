@@ -361,3 +361,16 @@ Connector3.4.10 Oracle/privateCA100-repeat tests pass after capability-gate
 correction. Evidence: docs/phase3/connector-and-audit-regressions.json. No TLS
 verification was disabled for a TLS connection; non-TLS Unix tests assert an
 empty session cipher. Next: corrected r3 source archive and isolated installs.
+
+The explicit plaintext fixture additionally exposed that3.4.10 also treats the
+verification flag as enablingTLS. Corrected transport selection for both series:
+TLSrequested => verification/enforcement true plus strict callback; noTLS => both
+TLS-enabling flags false, CA options rejected. Added a native parameter regression.
+Default TCP remains verifiedTLS. Full local make verify and Oracle/privateCA100
+repeat tests pass. Older3.3.17 Valgrind database integration has zero errors and
+zero definite/indirect/possible losses,77,515 reachable; no suppressions.
+
+Hosted run41543460857 now passes all PHP8.3/8.4/8.5 regression jobs. Its database
+job passes functional cases but exits99 under Valgrind; the runner now emits that
+native diagnostic on failure for investigation. Do not label the whole workflow
+passed. No test or Valgrind error check was disabled.
