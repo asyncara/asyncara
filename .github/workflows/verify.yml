@@ -37,6 +37,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-1.log bash -c 'composer install --no-interaction --ignore-platform-req=ext-asyncara'
       - run: ./scripts/ci-run.sh build/ci-step-2.log bash -c 'python3 scripts/install-test-websockets.py'
       - run: ./scripts/ci-run.sh build/ci-step-3.log bash -c 'make test'
+      - run: ./scripts/ci-run.sh build/ci-connector-gate.log ./scripts/test-connector-gate.sh
       - run: ./scripts/ci-run.sh build/ci-step-4.log bash -c './scripts/phpize-local.sh'
       - run: ./scripts/ci-run.sh build/ci-step-5.log bash -c 'ASYNCARA_EXTENSION=ext/modules/asyncara.so ./scripts/test.sh'
       - run: ./scripts/ci-run.sh build/ci-step-6.log bash -c 'ASYNCARA_BACKEND=poll ./scripts/test.sh'

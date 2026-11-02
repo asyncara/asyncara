@@ -24,7 +24,7 @@ host against the certificate's IP SAN **before authentication**. Failures force
 an error status that forbids connector password-based verification fallback.
 An encrypted cipher is also required after connection establishment.
 
-Supported strict path: Connector/C >=3.4.4 (or 3.3.14 in that series), OpenSSL 3,
+Supported strict path: Connector/C with the TLS callback/status API (tested3.4.10), OpenSSL 3,
 numeric IP host, matching IP SAN. Executed version: 3.4.10. Older connectors or
 other TLS backends fail closed when TLS is requested; Unix sockets/non-TLS remain
 available. DNS names and TLS on Unix sockets are not supported. The public API
