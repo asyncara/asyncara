@@ -118,4 +118,6 @@ try:
         results.append({'name':'request-timeout','status':'PASS','terminatedPid':before,'replacement':sample})
     finally:stop(process,log)
     (out/'report.json').write_text(json.dumps(results,indent=2)+'\n');print('FPM recycling/reload/kill/timeout/fatal/pending isolation: PASS',flush=True)
+except BaseException as error:
+    (out/'failure.json').write_text(json.dumps({'status':'FAIL','error':str(error),'completedCases':results,'provenance':provenance},indent=2)+'\n');raise
 finally:audit.server.shutdown();audit.server.server_close()

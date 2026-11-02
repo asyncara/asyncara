@@ -45,7 +45,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
 | P2 protocol/allocation fuzzing | IMPLEMENTED_AND_TESTED | committed seeds, 100 RESP cases, real IPC failures, 326,134 native ASan/UBSan fuzz inputs and 12,737 instrumented PHP mutations; bounded coverage in FUZZING.md |
 | P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | one-hour frozen baseline: 20,855 cycles / 20.855m Tasks, flat fds/threads, +296 KiB RSS endpoint medians; 6h/24h not executed; SOAK_TESTING.md |
-| P4 expanded FPM lifecycle | IMPLEMENTED_AND_TESTED | 300.157 mixed seconds / 4,380 requests, recycling/reload/kill/timeout/fatal/pending isolation; longer soak remains untested; FPM_LIFECYCLE.md |
+| P4 expanded FPM lifecycle | PARTIALLY_IMPLEMENTED | 300.157 mixed seconds / 4,380 requests, recycling/reload/kill/timeout/fatal/pending isolation; later streaming mix failed RSS-over-warmup criterion; allocator investigation remains open; FPM_LIFECYCLE.md |
 | P5 database TLS/auth and protocol repairs | PARTIALLY_IMPLEMENTED | Private-CA matrix, Oracle 8.4.13, certificate identity fix, nonblocking transaction control and buffered TLS wakeups; WAN/mTLS/cancel acknowledgement remain unverified |
 | P6 ZTS investigation | PARTIALLY_IMPLEMENTED | PHP 8.5.11 ZTS DEBUG CLI full tests and database suite pass; concurrent interpreter threads unverified, ThreadPool BLOCKED |
 | Third-party aggregate memory accounting | PARTIALLY_IMPLEMENTED | SQLite value limits; other foreign allocators remain outside native ledger |

@@ -86,8 +86,8 @@ indirect or possible losses; 77,515 bytes reachable. No suppression was added.
 Deterministic instrumented framing/close mutation campaigns ran 24,933 and
 47,262 inputs in 60 seconds each without a finding; this is not coverage-guided
 network/state-machine fuzzing. See FUZZING.md and phase3/websocket.json.
-A 10-second/16-connection smoke soak passed; longer runs are separately recorded
-in SOAK_TESTING.md when complete.
+A frozen300-second/16-connection soak passed24,686cycles with flat RSS/fd/thread
+samples and zero final pending work. Trends and limits are in SOAK_TESTING.md.
 
 ## Unavailable or unverified
 

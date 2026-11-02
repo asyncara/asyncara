@@ -253,3 +253,20 @@ bootstrap package follow the selected interpreter; phpize-local loads with it.
 No runtime implementation changed. Added actual phpize builds to each CI matrix
 entry and a clean-archive/own-SDK/install-root/full-test harness. Full three-version
 archive execution is the next validation step; hosted CI is still unexecuted.
+
+WebSocket checkpoint648c076 completed300.026s/24,686cycles/394,976echo jobs,
+246reconnect/cancel injections. FlatRSS26,008KiB/fds25/threads1/sockets16; final
+pending0. PHP endpoint+19,728bytes and task/timer outliers retained rather than
+claiming long-term stability. Evidence: docs/phase3/soak-websocket-5m.json.
+
+## Phase 3 continuation — expanded FPM RSS failure investigated
+
+The five-minute streamed/buffered/fatal FPM soak failed the existing8MiB RSS-over-
+warmup criterion: one worker exceeded it by27,256KiB. fd6/thread1 and request
+state checks passed. Preserved failure/raw ranges; did not raise/remove the
+threshold or label the run passed. Added separate test-only glibc allocator
+probe and100-cycle diagnostic: in-use2.14–2.23MiB versus up to113.64MiB free
+arena bytes, substantial RSS reclamation after diagnostic trim, native ledger0.
+Evidence supports cache/fragmentation effects; the operational RSS criterion
+remains open rather than claiming proven long-term bounds. No production trim
+or allocator settings changed. Added failure.json preservation to the FPM runner.
