@@ -430,7 +430,11 @@ PHP_FUNCTION(asyncara_mysql_step) {
                     zend_throw_exception(zend_ce_exception, "MariaDB result limit exceeded", 0);
                     goto failed;
                 }
-                zend_string *s = zend_string_alloc(p->out_lengths[i], 0);
+                zend_string *s = ar_php_string_alloc(p->out_lengths[i]);
+                if (!s) {
+                    zval_ptr_dtor(&row);
+                    goto oom;
+                }
                 MYSQL_BIND bind = {0};
                 bind.buffer_type = MYSQL_TYPE_STRING;
                 bind.buffer = ZSTR_VAL(s);
@@ -442,9 +446,14 @@ PHP_FUNCTION(asyncara_mysql_step) {
                 }
                 ZSTR_VAL(s)[p->out_lengths[i]] = 0;
                 add_assoc_str(&row, fields[i].name, s);
+                if (ar_php_oom()) {
+                    zval_ptr_dtor(&row);
+                    goto oom;
+                }
             }
             add_next_index_zval(&rows, &row);
             records++;
+            if (ar_php_oom()) goto oom;
             p->waiting = mysql_stmt_fetch_start(&p->result, p->stmt);
             if (records >= 128)
                 break;
@@ -463,6 +472,9 @@ PHP_FUNCTION(asyncara_mysql_step) {
     add_assoc_long(return_value, "events", p->waiting);
     add_assoc_long(return_value, "fd", (zend_long)mysql_get_socket(p->conn));
     add_assoc_long(return_value, "timeoutMs", mysql_get_timeout_value_ms(p->conn));
+    return;
+oom:
+    zval_ptr_dtor(&rows);
     return;
 error:
     my_error(p);

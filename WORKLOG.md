@@ -374,3 +374,26 @@ Hosted run41543460857 now passes all PHP8.3/8.4/8.5 regression jobs. Its databas
 job passes functional cases but exits99 under Valgrind; the runner now emits that
 native diagnostic on failure for investigation. Do not label the whole workflow
 passed. No test or Valgrind error check was disabled.
+
+## PHP security-release delayed OOM correction
+
+The hosted fatal-burst reset was reproduced locally with isolated PHP8.5.12:
+its error log reports the16MiB hard memory limit and exit137, not a segfault.
+The October security release defers ordinary OOM until a safe engine boundary;
+Asyncara kept converting native results in one call. The old binary negative
+control in fatal_batch.php exits137. Bulk file/SQLite/HTTP/SQL conversion now
+uses the public fallible string API when available and stops on pending OOM,
+retaining native ownership until request teardown. Legacy SDK fallback remains.
+PHP8.3.36/8.4.27 independent audits and core suites pass;8.5.12 core/audit,
+fatal PostgreSQL/SQLite/MariaDB Valgrind children, and60s expandedFPM pass.
+The later300s FPM RSS criterion still fails (14,792KiB beyond warmup on onePID).
+It remains a separate finding; an allocator change is now under investigation.
+
+Latest hosted run also exposes nondeterministic Valgrind stack-registration
+errors and libFuzzer512MiB RSS-budget exhaustion. Preserve these failures;
+independent annotated dependency builds and sanitizer-budget analysis follow.
+No error suppression or RSS assertion change has been applied.
+
+PHP upstream reference: https://www.php.net/manual/en/ini.core.php#ini.memory-hard-limit-percent.
+Use matching PHP SDK/runtime builds; final validation moves to patched8.5.12.
+The older8.5.11 sanitizer/ZTS evidence is historical, not a deployment recommendation.

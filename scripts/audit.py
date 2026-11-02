@@ -33,4 +33,11 @@ subprocess.run(['cc','-Wall','-Wextra','-Werror','-fPIC','-shared','tests/audit/
 with tempfile.TemporaryDirectory(prefix='slow-path-',dir=output)as temporary:
     run('slow-path',['tests/audit/slow_files.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_EXTENSION':str(extension),'ASYNCARA_AUDIT_MARKER':str(pathlib.Path(temporary)/'started')})
 run('slow-io',['tests/audit/io.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_EXTENSION':str(extension),'ASYNCARA_AUDIT_DNS':'1'})
+with tempfile.NamedTemporaryFile(prefix='fatal-batch-',dir=output)as large:
+    large.truncate(12*1024*1024);large.flush()
+    result=subprocess.run(base+['tests/audit/fatal_batch.php',large.name],text=True,capture_output=True,timeout=30)
+    (output/'fatal-batch.log').write_text(result.stdout+result.stderr)
+    if result.returncode!=255 or 'Allowed memory size'not in result.stdout+result.stderr:
+        raise RuntimeError('Fatal batch must end the PHP request, not exit137/segfault; inspect fatal-batch.log')
+    print('fatal-batch: PASS',flush=True)
 print('Evidence: '+str(output))
