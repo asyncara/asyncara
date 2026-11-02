@@ -32,6 +32,7 @@ jobs:
       - run: ./scripts/audit-allocations.sh
       - run: ./scripts/test-worker-signals.sh
       - run: ./scripts/test-atomic-failures.sh
+      - run: python3 tests/audit/package_repro.py --output build/package-repro
       - run: ./scripts/fuzz-native.sh 10 build/fuzz-smoke
       - run: php -n -d extension=$PWD/build/asyncara.so tests/fuzz/protocol_mutation.php 5 10000
       - uses: actions/upload-artifact@v4
