@@ -2,7 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p build
-inc="${PHP_INCLUDE_DIR:-$PWD/.local/sysroot/usr/include/php/20250925}"
+php_api="$("${PHP_BIN:-php}" -n -i | awk '/^PHP API => / { print $4 }')"
+inc="${PHP_INCLUDE_DIR:-$PWD/.local/sysroot/usr/include/php/$php_api}"
 if [[ ! -f "$inc/main/php.h" ]]; then
   echo 'PHP headers missing. Set PHP_INCLUDE_DIR or run scripts/bootstrap-local.sh.' >&2
   exit 1
