@@ -5,6 +5,7 @@ use Asyncara\{Async,Future,Scheduler};
 use Asyncara\Exception\OperationException;
 use Asyncara\Exception\FilesystemException;
 use Asyncara\Stream\AsyncStream;
+use Asyncara\Stream\ReadableStream;
 final class Files
 {
     public static function open(string $path, string $mode = 'r'): Future { return File::open($path, $mode); }
@@ -60,7 +61,7 @@ final class Files
                     },
                     static fn(File $file) => $file->close(),
                 );
-            } finally { if ($chunks instanceof AsyncStream) $chunks->close(); }
+            } finally { if ($chunks instanceof ReadableStream) $chunks->close(); }
         });
     }
 }

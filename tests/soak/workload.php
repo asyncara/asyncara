@@ -53,6 +53,12 @@ try{Async::run(function()use($seconds,$taskCount,$start,$path,&$cycles):void{
                         $url=getenv('ASYNCARA_SOAK_URL');$tasks=[];
                         for($i=0;$i<4;$i++)$tasks[]=$http->get($url);
                         foreach(Async::gather($tasks)as$r)check($r->status===200&&strlen($r->body)===8192,'HTTP response');
+                        $stream=$http->getStream($url);$bytes=0;
+                        try{
+                            check($stream->headers()->await()->status===200,'HTTP stream status');
+                            foreach($stream as$chunk)$bytes+=strlen($chunk);
+                            check($bytes===8192,'HTTP stream bytes');
+                        }finally{$stream->close();}
                     });
                     $g->spawn(function():void{
                         $server=new TcpServer();$port=(int)substr(strrchr($server->address(),':'),1);

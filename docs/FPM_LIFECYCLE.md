@@ -61,3 +61,12 @@ HTTP barrier establishes overlap deterministically under CPU load.
 [Durable summary](phase3/fpm-summary.json) links raw evidence. Longer FPM soak,
 other FPM versions, and real framework request lifecycles remain unverified.
 The CI command is configured; hosted CI has not yet executed this change.
+
+## Streaming continuation
+
+The existing A/B/C audit is preserved. D-streaming adds 12 concurrent requests
+through four FPM workers, each containing four streamed curl operations. It
+checks the same barrier-established overlap, timer progress, clean request state
+and idle resources. All four cases pass. This is separate short evidence; the
+earlier five-minute expanded FPM run predates HTTP streaming. Paused transfer
+normal/fatal cleanup is additionally exercised in CLI subprocesses.

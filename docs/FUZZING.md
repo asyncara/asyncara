@@ -70,3 +70,14 @@ CI runs regression seeds and short fuzz smoke tests. These runs are evidence of
 bounded testing, not proof of parser completeness or production safety.
 
 Final native ASan/UBSan rerun after the filesystem changes: 294,043 inputs in 61 seconds, 867 new corpus units, peak RSS 297 MiB, no finding. Raw log/corpus: final-native-fuzz under build/phase3-path. This target exercises allocator/value/job ownership; atomic syscall faults are a separate tests/audit/atomic_write.c harness, not falsely counted as coverage-guided filesystem fuzzing.
+
+## HTTP buffer continuation
+
+The new `tests/fuzz/http_buffers.c` compiles the production body/header/upload
+callbacks directly. It mutates buffer fill/drain, pause/redelivery, EOF, partial
+upload reads, cancellation, arithmetic overflow and allocation failures. It does
+not implement or claim to fuzz curl HTTP/chunk/TLS parsing. Seed corpus is under
+`tests/fuzz/corpus/http-buffers`. Run `./scripts/fuzz-http-buffers.sh 60 NEW_DIR`.
+ASan/UBSan campaigns completed 704,679 and 602,547 inputs in 61s each, peaks 373/369MiB,
+with no finding. Native targets exclude Zend; separately instrumented PHP and
+real local HTTP tests cover the integration. No crashing corpus was produced.

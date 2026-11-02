@@ -716,12 +716,14 @@ void ar_job_free(ar_job *j) {
         entry = &(*entry)->lifetime_next;
     if (*entry)
         *entry = j->lifetime_next;
+    curl_mime_free(j->mime);
     if (j->curl)
         curl_easy_cleanup(j->curl);
     curl_slist_free_all(j->headers);
     ar_free(j->a);
     ar_free(j->b);
     ar_free(j->body);
+    ar_free(j->upload);
     ar_free(j->response_headers);
     ar_value_free(j->params);
     ar_value_free(j->result);

@@ -34,6 +34,7 @@ jobs:
       - run: ./scripts/test-atomic-failures.sh
       - run: python3 tests/audit/package_repro.py --output build/package-repro
       - run: ./scripts/fuzz-native.sh 10 build/fuzz-smoke
+      - run: ./scripts/fuzz-http-buffers.sh 10 build/fuzz-http-smoke
       - run: php -n -d extension=$PWD/build/asyncara.so tests/fuzz/protocol_mutation.php 5 10000
       - uses: actions/upload-artifact@v4
         if: always()
@@ -43,6 +44,7 @@ jobs:
             build/*.log
             build/ci-audit/
             build/fuzz-smoke/run.log
+            build/fuzz-http-smoke/run.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
   database-lifecycle:

@@ -43,7 +43,7 @@ def exact(s,n):
         out+=value
     return out
 def request(port,index,mode):
-    parallel=4 if mode=='io' else 1
+    parallel=4 if mode in ('io','stream') else 1
     params={'SCRIPT_FILENAME':str(root/'tests/audit/fpm_request.php'),'REQUEST_METHOD':'GET','QUERY_STRING':'mode='+mode,'SERVER_PROTOCOL':'HTTP/1.1','GATEWAY_INTERFACE':'CGI/1.1','REMOTE_ADDR':'127.0.0.1','CONTENT_LENGTH':'0','AUDIT_ID':str(index),'AUDIT_URL':f'http://127.0.0.1:{server.server_port}/slow?id={index}&parallel={parallel}','AUDIT_LARGE_FILE':str(large)}
     def length(n):return bytes([n])if n<128 else struct.pack('!I',n|0x80000000)
     body=b''.join(length(len(k.encode()))+length(len(v.encode()))+k.encode()+v.encode()for k,v in params.items())
@@ -116,7 +116,7 @@ def run(name,workers,count,mode,parallel=False):
 def main():
     try:
         results=[]
-        for args in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True)]:
+        for args in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True),('D-streaming',4,12,'stream',True)]:
             if os.environ.get('AUDIT_FPM_CASE') and os.environ['AUDIT_FPM_CASE']!=args[0]:continue
             result=run(*args);results.append(result);print(result['name'],result['status'],flush=True)
         (out/'results.json').write_text(json.dumps(results,indent=2)+'\n')

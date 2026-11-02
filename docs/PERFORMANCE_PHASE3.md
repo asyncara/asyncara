@@ -32,3 +32,25 @@ Atomic file comparison: 100 sequential 64 KiB worker writes per sample; three sa
 [Raw atomic samples, including every operation latency](../benchmarks/results/phase3-atomic.json). Reproduce with `./benchmarks/run.py --output benchmarks/results/NEW.json` and `php -n -d extension=$PWD/build/asyncara.so benchmarks/atomic.php`.
 
 No HTTP streaming, WebSocket, io_uring or broad platform benchmark is claimed because those implementations are absent.
+
+## HTTP streaming continuation
+
+Fresh PHP process per sample; local HTTP/1.1, three samples per mode. All raw
+samples and allocation/RSS peaks are in `benchmarks/results/phase3-http-streaming.json`.
+The slow consumer intentionally sleeps 0.2ms per chunk. These tests ran alongside
+engineering validation; do not infer a stable implementation ranking.
+
+| Mode | Wall seconds, all samples | Native peak bytes, all samples |
+|---|---|---|
+| buffered-8m | 0.07448, 0.08052, 0.05257 | 25172412, 25172412, 25172412 |
+| streamed-8m | 0.02214, 0.02818, 0.02140 | 137828, 105177, 121444 |
+| streamed-32m | 0.05043, 0.06583, 0.06994 | 137828, 136708, 72292 |
+| slow-consumer-32m | 0.62395, 0.79840, 0.99557 | 105060, 121444, 115300 |
+| download-32m | 0.67111, 0.57168, 0.63281 | 155149, 188139, 204405 |
+| upload-32m | 0.42518, 0.50031, 0.60271 | 203669, 203669, 203669 |
+
+Reproduce with `python3 benchmarks/run-http-streaming.py --output NEW_RESULTS.json`.
+Buffered and streamed 8MiB cases use the same payload; 32MiB cases exceed the
+buffered API limit and are not a same-size buffered throughput comparison.
+Native peaks exclude PHP/curl/OpenSSL/OS memory; PHP/RSS peaks are separately
+retained. Three samples do not justify meaningful p95/p99 tail estimates.
