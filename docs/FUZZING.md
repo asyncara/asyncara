@@ -108,3 +108,15 @@ selected audit module so the actual installed binary reaches the delay hooks.
 Production loading is unchanged. The file test fails within two seconds if the
 injector never reaches open; no endless marker wait or weakened responsiveness
 assertion is accepted. Normal/instrumented runtime tests remain separate.
+
+## Hosted instrumented-memory budget
+
+Hosted native smoke runs exhausted the existing512MiB RSS ceiling: diagnostics
+showed25MiB live allocations,147MiB quarantined frees and sanitizer metadata.
+The failures remain recorded. ASan quarantine is now explicitly64MiB rather than
+its implicit256MiB default; leak checks, invalid-access checks, UBSan and the
+512MiB process ceiling remain enabled. This bounds instrumentation retention and
+shortens the stale-pointer detection window; it is not a runtime quota increase
+or an error suppression. Reruns:306,396native inputs/61s/198MiB peak,803,874HTTP
+buffer inputs/61s/147MiB peak, no findings. Both targets preserve crash artifacts
+in CI. Mapped-buffer tail poisoning has an independent intentional-failure test.

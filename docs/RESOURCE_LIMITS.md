@@ -11,7 +11,7 @@ is an exception; applications should stop submitting work or reduce concurrency.
 | Future completion listeners | 65,536 per Future | FAIL_WITH_CAPACITY_EXCEPTION |
 | Timers | 100,000 live timers | REJECT_NEW_ITEM; cancelled heap entries are compacted |
 | Native jobs / descriptor registrations | 1,024 / 16,384 | REJECT_NEW_ITEM |
-| Asyncara native allocations | 256 MiB (`nativeMemoryLimit`) | Reject allocation; atomic ledger includes allocation headers |
+| Asyncara native allocations | 256 MiB (`nativeMemoryLimit`) | Reject allocation; atomic ledger includes allocation headers and mapped page rounding |
 | HTTP streaming native response / upload | 64 KiB each per transfer; two PHP response chunks queued | BLOCK_PRODUCER using curl pause/resume; other per-transfer chunk copies are documented in HTTP_STREAMING.md |
 | HTTP multipart fields | 64 fields, 64 KiB each / 1 MiB total | Reject invalid input; one streamed file, no unbounded field copies |
 | HTTP buffered body / headers | 16 MiB / 64 KiB per transfer | Fail transfer and release native buffers |
@@ -72,3 +72,13 @@ WebSocket: default 1 MiB message / 16 queued messages / 4 MiB queued payload,
 DISCONNECT_SLOW_CONSUMER with explicit error after already queued messages.
 Frame/message/string temporaries and waiting send callers use PHP heap outside
 the native ledger. Exact configurable bounds/ownership: WEBSOCKET.md.
+
+Asyncara-owned allocations of at least1MiB use dedicated anonymous mappings on
+the tested Linux platform. Freeing them unmaps their pages instead of leaving
+large buffers in per-thread malloc arenas across FPM requests. Small allocations
+and third-party library allocators keep their existing behavior. No global malloc
+tuning is applied. Resizing across or within the mapped range temporarily counts
+both allocations; insufficient aggregate capacity fails without losing the old
+buffer. Mapping/page/allocator metadata outside the charged region still affects
+RSS. ASan builds explicitly poison unused mapped tails; a deliberate overrun
+negative control verifies detection. See tests/audit/mappings.c.

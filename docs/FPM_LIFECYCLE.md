@@ -102,3 +102,23 @@ was0/27,340/12,600/14,356KiB across four workers, with4,692 idle samples.
 This confirms the criterion is not reliable under the current fatal-allocation
 mix; it has not been marked passed based on a lucky rerun. Allocation-state
 instrumentation and an explicit RSS capacity policy need further work.
+
+## PHP8.5.12 and mapped-buffer follow-up
+
+The October2026 PHP security releases defer soft OOM and terminate the process at
+the hard limit. Asyncara's native batch conversion could continue allocating
+after soft OOM and kill a worker (exit137). A four-result negative control
+reproduces it. Fallible string conversion and pending-OOM checks now preserve
+ordinary request fatal teardown on8.3.36/8.4.27/8.5.12. Genuine hard-limit process
+termination still skips cleanup; it is never advertised as recoverable.
+[PHP memory-limit semantics](https://www.php.net/manual/en/ini.core.php#ini.memory-hard-limit-percent).
+
+The first8.5.12 five-minute rerun retained the RSS failure: one worker exceeded
+warmup by14,792KiB. Dedicated mappings for Asyncara buffers >=1MiB then passed
+the unchanged five-minute test:3,912mixed requests/300.193s, all lifecycle faults
+passed, idle RSS16,968–19,420KiB, maximum growth beyond warmup2,968KiB. All native
+threads were reaped and descriptors returned to six. Earlier failed reports stay
+valid historical evidence. This fixes the reproduced allocator-retention case;
+it does not establish a universal process-memory bound or6h/24h certification.
+Evidence: phase3/deferred-oom-and-mappings.json. The soak now snapshots the selected
+module so subsequent builds cannot change the artifact during a graceful reload.
