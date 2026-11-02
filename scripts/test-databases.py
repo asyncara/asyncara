@@ -39,6 +39,8 @@ try:
   env|={'USE_ZEND_ALLOC':'0','VALGRIND_LIB':str(root/'.local/sysroot/usr/libexec/valgrind')}
   command=[str(root/'.local/sysroot/usr/bin/valgrind'),'--extra-debuginfo-path='+str(root/'.local/debug'),'--keep-debuginfo=yes','--leak-check=full','--show-leak-kinds=definite','--errors-for-leak-kinds=definite','--error-exitcode=99','--log-file=build/valgrind-databases.log']+command
  result=subprocess.run(command,env=env,timeout=options.timeout)
+ if options.valgrind and result.returncode:
+  print((root/'build/valgrind-databases.log').read_text(),flush=True)
 finally:
  for p in processes:
   if p.poll() is None:p.terminate()
