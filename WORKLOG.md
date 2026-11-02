@@ -307,3 +307,10 @@ upstream setup_php checks update separately. CI now requests update=true and
 installs runtime C libraries on the disposable runner. Isolated local bootstrap
 with explicit downloadable versions completed successfully. Hosted proof remains
 pending; the previous failed jobs are preserved, not counted as tests passing.
+
+Preserved r2 archive4390f19e8444701e829554d34e3f0086f2ab8da29e58150c27173dd9a67587ca,
+285files at4cdb4f5. Clean private-umask bytes match. Own phpize/install-root/full
+suites pass across8.3/8.4/8.5; additional installed8.5DB/fatal/TLS/FPM audit passes.
+Attestation: docs/phase3/package-streaming-checkpoint.json. Later CI-only changes
+are distinct; archive remains unchanged. API reference generator now omits
+classes explicitly marked internal, preserving the public WebSocket API boundary.
