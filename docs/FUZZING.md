@@ -101,3 +101,10 @@ USE_ZEND_ALLOC=0; an earlier reported zero is not zero memory use. Current input
 is written before each execution; unexpected failures preserve it. This is
 bounded deterministic mutation testing under ASan/UBSan, not native libFuzzer
 coverage or full RFC conformance certification.
+
+The independent slow-path audit uses test-only syscall interposition. On PHP
+builds that use RTLD_DEEPBIND, its loader shim clears that flag only for the exact
+selected audit module so the actual installed binary reaches the delay hooks.
+Production loading is unchanged. The file test fails within two seconds if the
+injector never reaches open; no endless marker wait or weakened responsiveness
+assertion is accepted. Normal/instrumented runtime tests remain separate.

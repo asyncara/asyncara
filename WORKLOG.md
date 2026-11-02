@@ -343,3 +343,21 @@ separate verifiedTLS fixture unchanged. OldSDK/runtime plain query/bind/large/
 transaction/cancellation/lifecycle tests and fail-closed matrix now pass. Earlier
 failures preserved. Native3.4.10 Oracle/privateCA100-repeat matrix also passed
 following the feature-gate fix; further final-source instrumentation follows.
+
+## Hosted audit portability correction and final Connector validation
+
+Hosted8.5 regression job passed at8122946. Hosted8.3/8.4 reached slow-file audit
+then timed out: PHP loaded the selected module with RTLD_DEEPBIND, bypassing the
+existing LD_PRELOAD fault injector. Added test-only dlopen interposition clearing
+that flag only for the exact explicitly selected audit module. The actual
+compiled artifact stays under test; no production loader/engine setting changes.
+Added a two-second injector-reached assertion rather than an unbounded marker
+wait. Negative control without the audit target reproduces the failure; complete
+8.3/.4 audits now pass slow-path and delayed I/O while retaining all assertions.
+
+Connector3.3.17 final query and fail-closed suites also pass under fully
+ASan/UBSan-instrumented PHP8.5.11 with its actual older runtime library. Strict
+Connector3.4.10 Oracle/privateCA100-repeat tests pass after capability-gate
+correction. Evidence: docs/phase3/connector-and-audit-regressions.json. No TLS
+verification was disabled for a TLS connection; non-TLS Unix tests assert an
+empty session cipher. Next: corrected r3 source archive and isolated installs.
