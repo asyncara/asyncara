@@ -12,7 +12,7 @@ set +e
 build/native-mappings invalid-tail > build/native-mapping-negative.log 2>&1
 status=$?
 set -e
-if [[ "$status" != 1 ]] || ! rg -q 'ERROR: AddressSanitizer: use-after-poison' build/native-mapping-negative.log; then
+if [[ "$status" != 1 ]] || ! grep -q 'ERROR: AddressSanitizer: use-after-poison' build/native-mapping-negative.log; then
   cat build/native-mapping-negative.log
   echo 'Mapped tail overrun was not diagnosed by ASan' >&2
   exit 1
