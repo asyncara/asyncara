@@ -18,6 +18,12 @@ if($mode==='fatal'||$mode==='fatal-burst'){
  if($mode==='fatal-burst')usleep(100000); // Deliberate fault fixture: populate all worker allocator arenas before conversion.
  while(true)asyncara_poll([],[],1000);
 }
+if($mode==='allocator'||$mode==='allocator-trim'){
+ if(!function_exists('asyncara_test_allocator'))throw new RuntimeException('Test allocator module absent');
+ usleep(25000); // Test-only occupancy barrier for independent worker observations.
+ header('Content-Type: application/json');
+ echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'allocator'=>asyncara_test_allocator($mode==='allocator-trim'),'before'=>$before]);exit;
+}
 Runtime::configure(['taskLimit'=>1234,'futureLimit'=>4321]);Runtime::enableHooks(Hook::TIME);
 if($mode==='timeout')Async::run(function():void{
     for($i=0;$i<8;$i++)asyncara_submit('file_open',[__FILE__,'r']);
