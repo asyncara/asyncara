@@ -30,8 +30,9 @@ final class Connection
         foreach ($command as $arg) {
             if (!is_string($arg) && !is_int($arg) && !is_float($arg)) throw new \TypeError('Redis arguments must be strings or numbers');
             $arg = (string)$arg;
-            if (strlen($arg) + strlen($data) > 16777216) throw new \OverflowException('Redis request limit exceeded');
-            $data .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
+            $prefix = '$' . strlen($arg) . "\r\n";
+            if (strlen($arg) + strlen($data) + strlen($prefix) + 2 > 16777216) throw new \OverflowException('Redis request limit exceeded');
+            $data .= $prefix . $arg . "\r\n";
         }
         return $data;
     }
@@ -45,11 +46,12 @@ final class Connection
         if ($this->subscribed) throw new \LogicException('Subscribed connections are dedicated to Pub/Sub');
         if (count($commands) > 10000) throw new \OverflowException('Redis pipeline limit exceeded');
         $request = '';
-        foreach ($commands as $command) { $request .= self::encode($command); if (strlen($request) > 16777216) throw new \OverflowException('Redis pipeline byte limit exceeded'); }
+        foreach ($commands as $command) { $encoded = self::encode($command); if (strlen($request) + strlen($encoded) > 16777216) throw new \OverflowException('Redis pipeline byte limit exceeded'); $request .= $encoded; }
         return Async::spawn(fn() => Async::timeout($this->timeout, fn() => $this->gate->withPermit(function () use ($request,$commands): array {
             try {
                 $this->stream->write($request); $results = [];
-                foreach ($commands as $_) $results[] = $this->readReply();
+                $this->bytes = $this->elements = 0;
+                foreach ($commands as $_) $results[] = $this->parse(0);
                 return $results;
             } catch (\Throwable $e) { $this->close(); throw $e; }
         })));

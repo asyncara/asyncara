@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+require dirname(__DIR__).'/autoload.php';
+use Asyncara\Internal\JsonData;
 // Private inherited pipes only. Bootstrap is trusted local application code.
 const MAX_FRAME = 16777216;
 function readExact(int $bytes): ?string {
@@ -8,6 +10,7 @@ function readExact(int $bytes): ?string {
     return $data;
 }
 function sendFrame(array $data): void {
+    JsonData::validate($data);
     $json = json_encode($data, JSON_THROW_ON_ERROR);
     if (strlen($json) > MAX_FRAME) $json = json_encode(['id' => $data['id'], 'error' => 'Worker result exceeds frame limit'], JSON_THROW_ON_ERROR);
     $frame = pack('N', strlen($json)) . $json; $offset = 0;

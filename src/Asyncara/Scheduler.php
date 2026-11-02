@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara;
-use Asyncara\Exception\{CancelledException,DeadlockException,OperationException};
+use Asyncara\Exception\{CancelledException,CapacityException,DeadlockException,OperationException};
 final class Scheduler
 {
     private static ?self $active = null;
@@ -22,7 +22,10 @@ final class Scheduler
     public static function now(): float { return hrtime(true) / 1e9; }
     public function spawn(callable $body, bool $inherit = true): Task
     {
-        if (count($this->tasks) >= $this->taskLimit) throw new \OverflowException('Task limit reached');
+        if (count($this->tasks) + count($this->failures) >= $this->taskLimit) {
+            $this->failures = array_filter($this->failures, static fn(Task $t): bool => !$t->observed);
+            if (count($this->tasks) + count($this->failures) >= $this->taskLimit) throw new CapacityException('Task limit reached (includes retained unobserved failures)');
+        }
         $task = new Task(++$this->next, $this, $body, $inherit ? ($this->task?->context ?? []) : []);
         $this->tasks[$task->id] = $task; $this->enqueue($task); return $task;
     }
@@ -114,7 +117,8 @@ final class Scheduler
     }
     public function native(string $op, array $args): Future
     {
-        $id = asyncara_submit($op, $args); $future = new Future();
+        // Reserve the PHP-visible completion before submitting native work.
+        $future = new Future(); $id = asyncara_submit($op, $args);
         $future->canceller = static fn() => asyncara_cancel($id);
         $this->native[$id] = $future; return $future;
     }
@@ -162,7 +166,7 @@ final class Scheduler
     public function run(callable $body): mixed
     {
         if (self::$active) throw new \LogicException('Nested Async::run() is not supported');
-        self::$active = $this; $root = $this->spawn($body); $root->observed = true;
+        $root = $this->spawn($body); $root->observed = true; self::$active = $this;
         $oldHooks = asyncara_hooks(Runtime::timeHooksEnabled());
         try {
             while ($this->tasks || $this->native || $this->timers) {
@@ -185,6 +189,6 @@ final class Scheduler
     }
     public function statistics(): array
     {
-        return $this->metrics + ['activeTasks' => count($this->tasks), 'activeTimers' => count($this->timers), 'ioWatchers' => count($this->readers) + count($this->writers), 'pendingNative' => count($this->native), 'memoryBytes' => memory_get_usage(true)];
+        return $this->metrics + ['activeTasks' => count($this->tasks), 'pendingFutures' => Future::pendingCount(), 'retainedFailures' => count($this->failures), 'readyTasks' => $this->ready->count(), 'activeTimers' => count($this->timers), 'ioWatchers' => count($this->readers) + count($this->writers), 'pendingNative' => count($this->native), 'memoryBytes' => memory_get_usage(true)];
     }
 }
