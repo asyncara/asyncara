@@ -10,7 +10,6 @@
 #include <sys/epoll.h>
 #endif
 static int socket_changed(CURL *easy, curl_socket_t fd, int action, void *ctx, void *socketp) {
-    (void)easy;
     (void)socketp;
     ar_engine *e = ctx;
     ar_socket **p = &e->sockets;
@@ -32,6 +31,7 @@ static int socket_changed(CURL *easy, curl_socket_t fd, int action, void *ctx, v
     }
     (*p)->events = (action == CURL_POLL_IN || action == CURL_POLL_INOUT ? POLLIN : 0) |
                    (action == CURL_POLL_OUT || action == CURL_POLL_INOUT ? POLLOUT : 0);
+    (*p)->owner = easy;
     return 0;
 }
 static size_t receive_buffer(char *data, size_t size, size_t count, void *ctx, int header) {
@@ -41,7 +41,12 @@ static size_t receive_buffer(char *data, size_t size, size_t count, void *ctx, i
     size_t n = size * count, *len = header ? &j->headers_len : &j->body_len;
     size_t *capacity = header ? &j->headers_capacity : &j->body_capacity;
     char **buf = header ? &j->response_headers : &j->body;
-    size_t limit = header ? 65536 : AR_LIMIT;
+    size_t limit = header ? 65536 : (j->stream_response ? AR_HTTP_STREAM_LIMIT : AR_LIMIT);
+    if (!header && j->stream_response && n <= limit && n > limit - *len) {
+        /* Consume nothing: curl redelivers this entire chunk after resume. */
+        j->receive_paused = 1;
+        return CURL_WRITEFUNC_PAUSE;
+    }
     if (n > limit - *len) {
         snprintf(j->error, sizeof(j->error), "HTTP %s limit exceeded", header ? "header" : "body");
         return 0;
@@ -70,7 +75,37 @@ static size_t receive_body(char *p, size_t s, size_t n, void *ctx) {
     return receive_buffer(p, s, n, ctx, 0);
 }
 static size_t receive_header(char *p, size_t s, size_t n, void *ctx) {
-    return receive_buffer(p, s, n, ctx, 1);
+    size_t received = receive_buffer(p, s, n, ctx, 1);
+    ar_job *j = ctx;
+    if (received && j->stream_response &&
+        ((received == 2 && !memcmp(p, "\r\n", 2)) || (received == 1 && *p == '\n'))) {
+        long status = 0;
+        curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &status);
+        if (status >= 200 && !(j->follow_redirects && status >= 300 && status < 400)) j->headers_ready = 1;
+    }
+    return received;
+}
+static size_t send_body(char *buffer, size_t size, size_t count, void *ctx) {
+    ar_job *j = ctx;
+    if ((size && count > SIZE_MAX / size) || atomic_load(&j->cancelled)) return CURL_READFUNC_ABORT;
+    size_t available = j->upload_len - j->upload_offset;
+    if (!available) {
+        if (j->upload_eof) return 0;
+        j->send_paused = 1;
+        return CURL_READFUNC_PAUSE;
+    }
+    size_t n = size * count;
+    if (n > available) n = available;
+    memcpy(buffer, j->upload + j->upload_offset, n);
+    j->upload_offset += n;
+    j->upload_sent += (int64_t)n;
+    if (j->upload_offset == j->upload_len) j->upload_len = j->upload_offset = 0;
+    return n;
+}
+static ar_value *http_option(ar_job *j, const char *name) {
+    if (j->params) for (size_t i = 0; i < j->params->count; i++)
+        if (j->params->keys[i] && !strcmp(j->params->keys[i], name)) return j->params->items[i];
+    return NULL;
 }
 void ar_http_start(ar_engine *e, ar_job *j) {
     if (!e->multi) {
@@ -110,7 +145,16 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     SET(CURLOPT_WRITEDATA, j);
     SET(CURLOPT_HEADERFUNCTION, receive_header);
     SET(CURLOPT_HEADERDATA, j);
-    SET(CURLOPT_ACCEPT_ENCODING, "");
+    if (j->stream_response) {
+        /* Avoid unbounded decompression/multiplexed-stream buffers inside curl
+         * while paused. Deliver encoded bytes if a peer ignores identity. */
+        SET(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        SET(CURLOPT_ACCEPT_ENCODING, "identity");
+        SET(CURLOPT_HTTP_CONTENT_DECODING, 0L);
+        SET(CURLOPT_SUPPRESS_CONNECT_HEADERS, 1L);
+    } else {
+        SET(CURLOPT_ACCEPT_ENCODING, "");
+    }
     if (j->params)
         for (size_t i = 0; i < j->params->count; i++) {
             const char *key = j->params->keys[i];
@@ -127,6 +171,7 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             } else if (!strcmp(key, "caFile")) {
                 SET(CURLOPT_CAINFO, v->string);
             } else if (!strcmp(key, "followRedirects")) {
+                j->follow_redirects = (int)v->integer;
                 SET(CURLOPT_FOLLOWLOCATION, (long)v->integer);
             } else if (!strcmp(key, "headers")) {
                 for (size_t h = 0; h < v->count; h++) {
@@ -140,6 +185,32 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     if (j->b) {
         SET(CURLOPT_POSTFIELDS, j->b);
         SET(CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)j->b_len);
+    }
+    if (j->stream_upload) {
+        ar_value *fields = http_option(j, "multipart");
+        if (fields) {
+            j->mime = curl_mime_init(j->curl);
+            if (!j->mime) goto error;
+            for (size_t i = 0; i < fields->count; i++) {
+                curl_mimepart *part = curl_mime_addpart(j->mime);
+                if (!part || curl_mime_name(part, fields->keys[i]) != CURLE_OK ||
+                    curl_mime_data(part, fields->items[i]->string, fields->items[i]->length) != CURLE_OK) goto error;
+            }
+            curl_mimepart *part = curl_mime_addpart(j->mime);
+            ar_value *field = http_option(j, "fileField"), *name = http_option(j, "fileName"), *type = http_option(j, "fileType");
+            if (!part || !field || !name || !type ||
+                curl_mime_name(part, field->string) != CURLE_OK ||
+                curl_mime_filename(part, name->string) != CURLE_OK ||
+                curl_mime_type(part, type->string) != CURLE_OK ||
+                curl_mime_data_cb(part, (curl_off_t)j->upload_size, send_body, NULL, NULL, j) != CURLE_OK) goto error;
+            SET(CURLOPT_MIMEPOST, j->mime);
+        } else {
+            SET(CURLOPT_UPLOAD, 1L);
+            SET(CURLOPT_READFUNCTION, send_body);
+            SET(CURLOPT_READDATA, j);
+            SET(CURLOPT_INFILESIZE_LARGE, (curl_off_t)j->upload_size);
+        }
+        SET(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
     }
     if (j->headers) {
         SET(CURLOPT_HTTPHEADER, j->headers);
@@ -230,6 +301,14 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int timeout) {
     return poll(fds, n, timeout);
 }
 int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
+    if (e->http_wakeup) {
+        e->http_wakeup = 0;
+        if (e->multi) curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
+        /* New application data can consume an upload buffer immediately, or
+         * resume can redeliver response bytes. Dispatch those state changes to
+         * Fibers before blocking on another network event. */
+        timeout = 0;
+    }
     ar_http_progress(e);
     pthread_mutex_lock(&e->mutex);
     int done = e->done_head != NULL;
@@ -276,8 +355,22 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     }
     size_t curl_start = count;
     for (ar_socket *s = e->sockets; s; s = s->next) {
+        int events = s->events;
+        /* curl 8.5 can retain its read interest while a write callback is
+         * paused. A readable peer would then wake epoll forever. Streaming
+         * responses force HTTP/1.1, so their active socket is not multiplexed.
+         * Do not watch a fully paused socket: HUP also wakes a zero-event poll.
+         * Completion/cancellation deadlines and worker wakeups still apply. */
+        for (ar_job *job = e->jobs; job; job = job->next) {
+            if (job->op != OP_HTTP || job->done) continue;
+            if (job->curl == s->owner) {
+                if (job->receive_paused) events &= ~POLLIN;
+                if (job->send_paused) events &= ~POLLOUT;
+            }
+        }
+        if (!events) continue;
         fds[count].fd = s->fd;
-        fds[count++].events = s->events;
+        fds[count++].events = events;
     }
     int rc = wait_fds(e, fds, count, timeout);
     if (rc >= 0) {

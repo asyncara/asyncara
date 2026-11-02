@@ -4,7 +4,7 @@ namespace Asyncara\Stream;
 use Asyncara\{Async,Task};
 use Asyncara\Concurrency\Queue;
 use Asyncara\Exception\QueueClosedException;
-final class AsyncStream implements \IteratorAggregate
+final class AsyncStream implements ReadableStream
 {
     private Queue $queue;
     private Task $producer;
@@ -15,6 +15,8 @@ final class AsyncStream implements \IteratorAggregate
         $this->producer = Async::spawn(function () use ($producer): void { try { $producer(new Emitter($this->queue)); } finally { $this->queue->close(); } });
     }
     public static function fromProducer(callable $producer, int $capacity = 16): self { return new self($producer, $capacity); }
+    /** @internal Producer completion for resource metadata and cleanup observers. */
+    public function completion(): \Asyncara\Future { return $this->producer; }
     public function getIterator(): \Traversable
     {
         if ($this->iterated) throw new \LogicException('Stream can only be consumed once'); $this->iterated = true;
