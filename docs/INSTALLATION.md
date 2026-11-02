@@ -80,7 +80,7 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 2 \
 
 ## Source archive
 
-A source archive can be produced from a Git checkout with `python3 scripts/package.py`. It packages tracked working-tree files (including staged new files), verifies their contents and writes a deterministic `build/asyncara-0.1.0-dev.tar.gz` plus SHA-256 sidecar. It includes no local development packages, database data, TLS keys, vendor directory or compiled binaries. Recipients still need the documented PHP/library toolchain and Composer installation.
+A source archive can be produced from a Git checkout with `python3 scripts/package.py --output build/asyncara-NEW-NAME.tar.gz`. It packages tracked working-tree files (including staged new files), verifies their contents and writes a deterministic explicitly named archive plus SHA-256 sidecar. Existing artifacts are never overwritten. It includes no local development packages, database data, TLS keys, vendor directory or compiled binaries. Recipients still need the documented PHP/library toolchain and Composer installation.
 
 ## Removal
 

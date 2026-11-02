@@ -46,8 +46,18 @@ Initial smoke: 20.173 seconds of workload, 126 mixed cycles, all four database
 drivers, one injected worker crash/replacement, clean cleanup, no stderr. The
 reported 28.479-second wall duration also includes database fixture startup and
 shutdown. Timer lag reached 221.8 ms in this short run; this is retained as a
-measurement, not hidden or presented as a latency guarantee. A one-hour baseline
-is the next execution. Six- and 24-hour tests are **not yet executed**. Consult
+measurement, not hidden or presented as a latency guarantee. The one-hour frozen baseline subsequently passed: 3,600.149 workload seconds,
+20,855 cycles / 20.855 million burst Tasks, 208 injected worker crashes and
+recoveries, no unexpected errors, no pending Tasks/Futures/timers or managed
+native bytes after cleanup. Across 706 samples, steady-state descriptors=20,
+threads=5, sockets=7. RSS endpoint-median increase was 296 KiB; measured linear
+slope 389.7 KiB/hour. Live PHP endpoint change was 216 bytes. Worst timer lag was
+586.8 ms under simultaneous build/test CPU load; no latency guarantee follows.
+
+This run froze commit `cad761e`, before later worker-signal, TLS-readiness and
+filesystem changes. It is a baseline result, **not** a one-hour soak of the final
+binary. Provenance and trends are in [phase3/soak-1h.json](phase3/soak-1h.json).
+Six- and 24-hour tests are **not yet executed**. Consult
 `docs/phase3/` and WORKLOG for completed run evidence before inferring coverage.
 
 The separate scheduled workflow runs the one-hour test; its remote status is

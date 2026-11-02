@@ -1,3 +1,5 @@
+> Historical Phase 2 report at baseline `4d90dbe`. Phase 3 changes and later evidence are recorded in [ROADMAP.md](ROADMAP.md), [DATABASE_COMPATIBILITY.md](DATABASE_COMPATIBILITY.md), [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md) and [SOAK_TESTING.md](SOAK_TESTING.md). The original findings and measurements below are preserved.
+
 # Independent engineering audit — 2026-11-02
 
 **Release assessment: EXPERIMENTAL.** The implementation provides real cooperative scheduling, asynchronous I/O and process parallelism on the tested Linux NTS builds. The audit found seven high-severity defects that the original test suite missed. The working tree repairs them and contains executed regression tests. The preserved original distribution contains those defects and must not be published as the corrected implementation. This assessment does not certify production use.

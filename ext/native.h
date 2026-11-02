@@ -57,7 +57,8 @@ typedef enum {
     OP_FILE_SEEK,
     OP_FILE_STAT,
     OP_FILE_SYNC,
-    OP_FILE_CLOSE
+    OP_FILE_CLOSE,
+    OP_ATOMIC_WRITE
 } ar_op;
 typedef struct ar_job {
     long id;
@@ -68,6 +69,7 @@ typedef struct ar_job {
     size_t length;
     ar_value *params, *result;
     char error[512];
+    int system_errno, committed;
     atomic_int cancelled;
     ar_db *db;
     ar_file *file;

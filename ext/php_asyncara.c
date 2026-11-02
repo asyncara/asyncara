@@ -286,7 +286,7 @@ PHP_FUNCTION(asyncara_submit) {
                                   "mkdir",      "rmdir",       "stat",         "list",         "copy",
                                   "dns",        "sqlite_open", "sqlite_query", "sqlite_close", "http",
                                   "read_range", "write_range", "file_open",    "file_read",    "file_write",
-                                  "file_seek",  "file_stat",   "file_sync",    "file_close"};
+                                  "file_seek",  "file_stat",   "file_sync",    "file_close", "atomic_write"};
     size_t op;
     for (op = 0; op < sizeof(names) / sizeof(*names); op++)
         if (strlen(names[op]) == len && !memcmp(names[op], name, len))
@@ -307,7 +307,7 @@ PHP_FUNCTION(asyncara_submit) {
         zend_throw_exception(zend_ce_exception, "Native memory limit or allocation failure", 0);
         RETURN_THROWS();
     }
-    if (op >= OP_FILE_OPEN) {
+    if (op >= OP_FILE_OPEN && op <= OP_FILE_CLOSE) {
         if (op == OP_FILE_OPEN) {
             j->a = string_arg(e, args, 0, false, NULL);
             if (!j->a)
@@ -402,19 +402,29 @@ PHP_FUNCTION(asyncara_submit) {
         j->a = string_arg(e, args, 0, false, NULL);
         if (!j->a)
             goto error;
-        if (op <= OP_COPY || op == OP_READ_RANGE || op == OP_WRITE_RANGE ||
+        if (op <= OP_COPY || op == OP_READ_RANGE || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE ||
             (op == OP_DB_OPEN && strcmp(j->a, ":memory:")))
             if (!capture_path(e, &j->a)) {
                 goto error;
             }
-        if (op == OP_WRITE || op == OP_APPEND || op == OP_RENAME || op == OP_COPY || op == OP_WRITE_RANGE) {
+        if (op == OP_WRITE || op == OP_APPEND || op == OP_RENAME || op == OP_COPY || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE) {
             j->b =
-                string_arg(e, args, 1, op == OP_WRITE || op == OP_APPEND || op == OP_WRITE_RANGE, &j->b_len);
+                string_arg(e, args, 1, op == OP_WRITE || op == OP_APPEND || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE, &j->b_len);
             if (!j->b)
                 goto error;
             if ((op == OP_RENAME || op == OP_COPY) && !capture_path(e, &j->b)) {
                 goto error;
             }
+        }
+        if (op == OP_ATOMIC_WRITE) {
+            zval *durable = zend_hash_index_find(args, 2), *mode = zend_hash_index_find(args, 3);
+            if (!durable || (Z_TYPE_P(durable) != IS_TRUE && Z_TYPE_P(durable) != IS_FALSE) ||
+                !mode || Z_TYPE_P(mode) != IS_LONG || Z_LVAL_P(mode) < 0 || Z_LVAL_P(mode) > 0777) {
+                zend_value_error("Atomic write requires a boolean durability flag and permissions 0000..0777");
+                goto error;
+            }
+            j->offset = Z_TYPE_P(durable) == IS_TRUE;
+            j->length = (size_t)Z_LVAL_P(mode);
         }
         if (op == OP_READ_RANGE || op == OP_WRITE_RANGE) {
             zval *off = zend_hash_index_find(args, 2), *length = zend_hash_index_find(args, 3);
@@ -577,6 +587,8 @@ PHP_FUNCTION(asyncara_poll) {
         zval item, value;
         array_init(&item);
         add_assoc_long(&item, "id", j->id);
+        add_assoc_long(&item, "errno", j->system_errno);
+        add_assoc_bool(&item, "committed", j->committed);
         if (j->error[0])
             add_assoc_string(&item, "error", j->error);
         else
