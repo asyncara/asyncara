@@ -73,10 +73,12 @@ static ar_value *copy_value(ar_engine *e, zval *z, unsigned depth, size_t *bytes
         return NULL;
     }
 }
-static void export_value(ar_value *v, zval *z) {
+static bool export_value(ar_value *v, zval *z) {
+    ZVAL_NULL(z);
+    if (ar_php_oom())
+        return false;
     if (!v) {
-        ZVAL_NULL(z);
-        return;
+        return true;
     }
     switch (v->type) {
     case V_NULL:
@@ -91,20 +93,34 @@ static void export_value(ar_value *v, zval *z) {
     case V_DOUBLE:
         ZVAL_DOUBLE(z, v->number);
         break;
-    case V_STRING:
-        ZVAL_STRINGL(z, v->string, v->length);
+    case V_STRING: {
+        zend_string *string = ar_php_string_init(v->string, v->length);
+        if (!string)
+            return false;
+        ZVAL_STR(z, string);
         break;
+    }
     case V_ARRAY:
         array_init_size(z, v->count);
         for (size_t i = 0; i < v->count; i++) {
             zval item;
-            export_value(v->items[i], &item);
+            if (!export_value(v->items[i], &item)) {
+                zval_ptr_dtor(z);
+                ZVAL_NULL(z);
+                return false;
+            }
             if (v->keys[i])
                 zend_hash_str_update(Z_ARRVAL_P(z), v->keys[i], strlen(v->keys[i]), &item);
             else
                 add_next_index_zval(z, &item);
         }
     }
+    if (ar_php_oom()) {
+        zval_ptr_dtor(z);
+        ZVAL_NULL(z);
+        return false;
+    }
+    return true;
 }
 static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool binary, size_t *length) {
     zval *z = zend_hash_index_find(args, index);
@@ -646,7 +662,15 @@ PHP_FUNCTION(asyncara_poll) {
             add_assoc_string(&item, "error", j->error);
         else
             add_assoc_null(&item, "error");
-        export_value(j->result, &value);
+        if (!export_value(j->result, &value)) {
+            zval_ptr_dtor(&item);
+            zval_ptr_dtor(&r);
+            zval_ptr_dtor(&wr);
+            zval_ptr_dtor(&results);
+            /* The native allocation list retains this and remaining jobs for
+             * RSHUTDOWN. Return to Zend to deliver the pending fatal error. */
+            return;
+        }
         add_assoc_zval(&item, "value", &value);
         add_next_index_zval(&results, &item);
         ar_job_free(j);
@@ -682,7 +706,9 @@ PHP_FUNCTION(asyncara_http_head) {
     curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &status);
     array_init(return_value);
     add_assoc_long(return_value, "status", status);
-    add_assoc_stringl(return_value, "headers", j->response_headers ? j->response_headers : "", j->headers_len);
+    zend_string *headers = ar_php_string_init(j->response_headers ? j->response_headers : "", j->headers_len);
+    if (!headers) return;
+    add_assoc_str(return_value, "headers", headers);
     j->headers_delivered = 1;
 }
 PHP_FUNCTION(asyncara_http_read) {
@@ -696,7 +722,9 @@ PHP_FUNCTION(asyncara_http_read) {
     }
     /* Copy before clearing: a Zend allocation bailout leaves native ownership
      * intact for RSHUTDOWN. Unpausing may synchronously refill this buffer. */
-    RETVAL_STRINGL(j->body ? j->body : "", j->body_len);
+    zend_string *body = ar_php_string_init(j->body ? j->body : "", j->body_len);
+    if (!body) return;
+    RETVAL_STR(body);
     j->body_len = 0;
     if (j->receive_paused && !j->done) {
         engine->http_wakeup = 1;

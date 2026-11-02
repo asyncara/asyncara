@@ -239,11 +239,22 @@ PHP_FUNCTION(asyncara_pg_read) {
                 }
                 if (PQgetisnull(r, row, col))
                     add_assoc_null(&item, PQfname(r, col));
-                else
-                    add_assoc_stringl(&item, PQfname(r, col), PQgetvalue(r, row, col), size);
+                else {
+                    zend_string *value = ar_php_string_init(PQgetvalue(r, row, col), size);
+                    if (!value) {
+                        zval_ptr_dtor(&item);
+                        goto oom;
+                    }
+                    add_assoc_str(&item, PQfname(r, col), value);
+                }
+                if (ar_php_oom()) {
+                    zval_ptr_dtor(&item);
+                    goto oom;
+                }
             }
             add_next_index_zval(&rows, &item);
             records++;
+            if (ar_php_oom()) goto oom;
         }
         PQclear(r);
         p->result = NULL;
@@ -270,6 +281,7 @@ PHP_FUNCTION(asyncara_pg_read) {
         add_next_index_zval(&notifications, &item);
         PQfreemem(note);
         p->notification = NULL;
+        if (ar_php_oom()) goto oom;
     }
     add_assoc_zval(return_value, "rows", &rows);
     add_assoc_zval(return_value, "notifications", &notifications);
@@ -277,6 +289,12 @@ PHP_FUNCTION(asyncara_pg_read) {
     add_assoc_bool(return_value, "read", p->pending && PQisBusy(p->conn));
     add_assoc_bool(return_value, "write", flush > 0);
     add_assoc_long(return_value, "fd", PQsocket(p->conn));
+    return;
+oom:
+    /* p retains native result/notification ownership until resource teardown. */
+    zval_ptr_dtor(&rows);
+    zval_ptr_dtor(&notifications);
+    return;
 }
 PHP_FUNCTION(asyncara_pg_close) {
     zval *z;
