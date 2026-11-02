@@ -7,7 +7,9 @@ $text="# Public API reference\n\nGenerated from source signatures by `scripts/ap
 foreach($files as$file){
  $class='Asyncara\\'.str_replace('/','\\',substr($file,strlen($root),-4));
  if(!class_exists($class)&&!interface_exists($class))continue;
- $reflection=new ReflectionClass($class);$text.="\n## `$class`\n\n";
+ $reflection=new ReflectionClass($class);
+ if(str_contains($reflection->getDocComment()?:'','@internal'))continue;
+ $text.="\n## `$class`\n\n";
  $lines=[];
  foreach($reflection->getMethods(ReflectionMethod::IS_PUBLIC)as$method){
   if($method->getDeclaringClass()->getName()!==$class||str_contains($method->getDocComment()?:'','@internal'))continue;

@@ -509,29 +509,6 @@ exception(): ?Throwable
 statistics(): array
 ```
 
-## `Asyncara\WebSocket\FrameCodec`
-
-```php
-__construct(bool $expectMasked, int $limit = 1048576)
-push(string $bytes): void
-clear(): void
-next(): ?array
-static encode(int $opcode, string $data, bool $masked, bool $fin = true): string
-static utf8(string $value): bool
-static closePayload(string $data): array
-```
-
-## `Asyncara\WebSocket\Handshake`
-
-```php
-static read(Asyncara\IO\TcpStream $stream): array
-static one(array $headers, string $name): string
-static tokens(array $headers, string $name): array
-static upgrade(array $headers): void
-static accept(string $key): string
-static protocols(array $protocols): void
-```
-
 ## `Asyncara\WebSocket\Message`
 
 ```php
