@@ -89,3 +89,14 @@ from `--databases` mixed HTTP/files/SQL/process work. A 10.033s workload smoke
 completed 1,140 cycles with zero final pending tasks/Futures/sockets. Two samples
 are insufficient for a leak trend claim. Longer results must record their own
 source commit; no earlier mixed soak is relabeled as covering WebSocket.
+
+The frozen WebSocket checkpoint `648c076` completed300.026 workload seconds,
+24,686cycles /394,976echo jobs with16persistent connections,246 reconnect/read
+cancellation injections and no unexpected errors. Steady RSS was26,008KiB,
+fds25/threads1/sockets16; managed native bytes0. Live PHP endpoint medians rose
+19,728bytes with a54,979.9bytes/hour short-window slope; this fluctuating short
+run is not extrapolated to a leak rate. Maximum task step376.7ms and timer lag
+162.8ms occurred under simultaneous benchmarks/instrumented tests. Final Tasks,
+Futures,timers/watchers/sockets were zero. Full trends/provenance are retained in
+[phase3/soak-websocket-5m.json](phase3/soak-websocket-5m.json). This is five-minute
+WebSocket evidence, not six-/24-hour certification.

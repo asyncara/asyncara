@@ -69,7 +69,10 @@ each; C=12 concurrent requests / four workers. Expanded 300.157s workload handle
 fatal memory requests, timeout and pending-I/O teardown. Idle workers returned
 to six descriptors / one thread. FPM process_control_timeout must allow active
 requests to drain; the fixture uses five seconds. Final A/B/C rerun passes.
-Long-duration FPM/framework and all process-tree failure modes remain unverified.
+A later expanded streaming soak FAILED its unchanged RSS-growth criterion.
+A separate allocator probe supports cached/free arena pages as the cause, but
+the failed criterion remains open; see FPM_LIFECYCLE.md. No universal FPM
+stability or process memory bound is established.
 
 ## Database, networking and filesystem matrix
 

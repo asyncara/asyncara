@@ -1,0 +1,141 @@
+{
+  "provenance": {
+    "commit": "648c0767452717582e738e502defb9e1a037b6fa",
+    "gitStatus": "",
+    "sourceManifestSha256": "176fe4f1c6661664efe8bb862ef7402dce6ae4bf8daba54871d6b7f819ba5039",
+    "extensionSha256": "266dfe87377a2c869e34997f2089d921b090edc8bc1a7af30a4dde404bfca293",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "cpuCount": 6,
+    "php": "PHP 8.5.11 (cli) (built: Sep 24 2026 13:49:29) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.11, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.11, Copyright (c), by Zend Technologies\n",
+    "requestedSeconds": 300.0,
+    "tasksPerCycle": 1000,
+    "databases": false,
+    "startedUtc": "2026-11-02T22:27:50Z",
+    "workload": "websocket",
+    "websocketConnections": 16
+  },
+  "report": {
+    "status": "PASS",
+    "wallSeconds": 300.58857248700224,
+    "workloadExit": 0,
+    "samples": 60,
+    "complete": [
+      {
+        "type": "complete",
+        "seconds": 300.02584535302594,
+        "cycles": 24686,
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 0,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 0,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 290295,
+          "taskSteps": 3678264,
+          "maxStepSeconds": 0.37671008496545255,
+          "maxTimerLagSeconds": 0.16278461297042668,
+          "activeTasks": 0,
+          "pendingFutures": 0,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 0,
+          "ioWatchers": 0,
+          "pendingNative": 0,
+          "memoryBytes": 4194304
+        },
+        "os": {
+          "rssKiB": 25840,
+          "threads": 1,
+          "fds": 9,
+          "sockets": 0
+        }
+      }
+    ],
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 26008,
+        "max": 26008,
+        "median": 26008.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "phpBytes": {
+        "min": 1897152,
+        "max": 1917440,
+        "median": 1916992.0,
+        "endMinusStartMedian": 19728,
+        "slopePerHour": 54979.90395093618
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "median": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 25,
+        "max": 25,
+        "median": 25.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "threads": {
+        "min": 1,
+        "max": 1,
+        "median": 1.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 16,
+        "max": 16,
+        "median": 16.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      }
+    },
+    "failures": [],
+    "parseErrors": [],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers."
+    ]
+  },
+  "rawEvidence": "/tmp/asyncara-phase3-cQBA3H/soak-ws-5min",
+  "hashes": {
+    "metadata.json": "4f3d5145380c641df5709d02853d8cec28281554e386efb59dd0f517a5ef6452",
+    "report.json": "e3f3850558215655fbe6d9002d5aa43d44136c88db9ee01dc5d73e84c69c07a1",
+    "samples.jsonl": "b0edd9af28b2071a54af4eab4729169f39c9f1c3c0f3adc169b45dc78f57e16f",
+    "source-manifest.json": "176fe4f1c6661664efe8bb862ef7402dce6ae4bf8daba54871d6b7f819ba5039"
+  }
+}

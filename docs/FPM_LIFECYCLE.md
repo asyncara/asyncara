@@ -70,3 +70,29 @@ checks the same barrier-established overlap, timer progress, clean request state
 and idle resources. All four cases pass. This is separate short evidence; the
 earlier five-minute expanded FPM run predates HTTP streaming. Paused transfer
 normal/fatal cleanup is additionally exercised in CLI subprocesses.
+
+## Expanded streaming soak: open RSS finding
+
+The first five-minute expanded run at cdea225 passed A/B/C/D, recycling,
+reload/replacement, request state and idle fd/thread checks, but **FAILED** the
+unchanged8,192KiB growth-over-warmup assertion. One worker peaked27,256KiB above
+its recorded warmup. The failure prevented this run's final timeout case; prior
+timeout evidence remains separate. Raw ranges and samples are preserved in
+phase3/fpm-stream-investigation.json. The threshold was not raised or removed.
+
+A separate100-cycle diagnostic (80 fatal-burst requests,320 streamed requests,
+400 allocator observations) measured glibc in-use bytes2,136,832–2,225,472 while
+free arena bytes reached113,636,704. Native request accounting was zero and idle
+workers had6fds/1thread. Test-only malloc_trim reduced RSS substantially without
+freeing additional application objects; exact per-worker values are retained.
+This is strong evidence of allocator caching/fragmentation under the deliberate
+fatal-allocation workload, not proof that every RSS fluctuation is harmless.
+No allocator settings or production trimming were introduced. The failed RSS
+criterion remains an open reliability/capacity investigation. Size FPM process
+limits/recycling from measured RSS, not only Asyncara's native ledger.
+
+`tests/audit/fpm_allocator.py --output NEW_DIR` compiles a separate test-only
+PHP8.5/glibc diagnostic module. Its functions are absent from production builds.
+The ordinary FPM soak now writes a failure.json on unsuccessful runs so partial
+successful cases and provenance survive. Longer mixed/FPM certification remains
+incomplete regardless of earlier passing short runs.
