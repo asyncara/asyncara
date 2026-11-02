@@ -4,7 +4,7 @@ import json,os,pathlib,subprocess,tempfile,time
 root=pathlib.Path(__file__).resolve().parent.parent
 os.chdir(root)
 marker=root/'build/audit-path'
-output=pathlib.Path(os.environ.get('ASYNCARA_AUDIT_DIR',marker.read_text().strip() if marker.exists() else tempfile.mkdtemp(prefix='asyncara-audit-')))
+output=pathlib.Path(os.environ.get('ASYNCARA_AUDIT_DIR',marker.read_text().strip() if marker.exists() else tempfile.mkdtemp(prefix='asyncara-audit-'))).resolve()
 output.mkdir(parents=True,exist_ok=True);marker.parent.mkdir(exist_ok=True);marker.write_text(str(output.resolve())+'\n')
 php=os.environ.get('PHP_BIN','php');extension=(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')).resolve()
 subprocess.run(['python3','scripts/check-build.py',str(extension)],check=True)

@@ -408,6 +408,11 @@ static void do_sqlite(ar_job *j) {
             db->handle = NULL;
             return;
         }
+        /* Restrict foreign allocations before constructing values, not merely
+         * when copying the result into Asyncara-owned buffers. */
+        sqlite3_limit(db->handle, SQLITE_LIMIT_LENGTH, AR_LIMIT);
+        sqlite3_limit(db->handle, SQLITE_LIMIT_SQL_LENGTH, AR_LIMIT);
+        sqlite3_limit(db->handle, SQLITE_LIMIT_VARIABLE_NUMBER, 10000);
         sqlite3_busy_timeout(db->handle, 1000);
         j->result = integer(j->engine, db->id);
         if (!j->result) {
