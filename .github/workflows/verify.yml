@@ -66,6 +66,7 @@ jobs:
       - run: ASYNCARA_AUDIT_FATAL_PG=1 ./scripts/test-databases.py --test-file tests/audit/databases.php
       - run: ./scripts/test-databases.py --test-file tests/database/resource_bounds.php
       - run: make audit-fpm
+      - run: python3 tests/soak/fpm.py --seconds 60 --output build/fpm-expanded
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -74,5 +75,6 @@ jobs:
             build/*.log
             build/ci-audit/
             build/audit-fpm/
+            build/fpm-expanded/
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
