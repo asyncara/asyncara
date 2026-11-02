@@ -96,3 +96,9 @@ PHP8.5/glibc diagnostic module. Its functions are absent from production builds.
 The ordinary FPM soak now writes a failure.json on unsuccessful runs so partial
 successful cases and provenance survive. Longer mixed/FPM certification remains
 incomplete regardless of earlier passing short runs.
+
+An unchanged300-second repeat also failed: growth beyond recorded warmup peaks
+was0/27,340/12,600/14,356KiB across four workers, with4,692 idle samples.
+This confirms the criterion is not reliable under the current fatal-allocation
+mix; it has not been marked passed based on a lucky rerun. Allocation-state
+instrumentation and an explicit RSS capacity policy need further work.

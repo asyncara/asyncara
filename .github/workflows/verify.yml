@@ -19,6 +19,7 @@ jobs:
         env:
           # Package repositories must supply matching SDK/FPM packages as well.
           use_builds_cache: 'false'
+          update: 'true'
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -27,7 +28,7 @@ jobs:
           PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
         run: |
           mkdir -p build
-          if sudo apt-get update > build/ci-bootstrap.log 2>&1 && ./scripts/bootstrap-local.sh >> build/ci-bootstrap.log 2>&1; then
+          if sudo apt-get update > build/ci-bootstrap.log 2>&1 && sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 >> build/ci-bootstrap.log 2>&1 && ./scripts/bootstrap-local.sh >> build/ci-bootstrap.log 2>&1; then
             cat build/ci-bootstrap.log
           else
             cat build/ci-bootstrap.log
@@ -74,6 +75,7 @@ jobs:
         env:
           # Package repositories must supply matching SDK/FPM packages as well.
           use_builds_cache: 'false'
+          update: 'true'
         with:
           php-version: '8.5'
           coverage: none

@@ -290,3 +290,20 @@ selects its supported packaged-PHP/PPA path. CI now requests that mode; local
 bootstrap selects an actually downloadable apt-cache madison version instead
 of an unavailable installed candidate. No tests were disabled. Hosted rerun
 must establish the result; external source availability remains a dependency.
+
+Expanded FPM repeat again failed unchangedRSS criterion (0/27,340/12,600/
+14,356KiB beyond warmup);4,692 idle samples preserved. This is an open capacity/
+allocator investigation, not a passing long-run claim. The extracted r2 package
+independently passed ownSDK phpize/configure/install and all NTS suites on8.3/
+8.4/8.5, both backends, WS/network tests, externalDB integration/bounds, fatal
+DB cleanup, shortFPM A/B/C/D and Oracle/privateCA TLS. First fatalDB audit lacked
+its optional Valgrind tooling; after fresh tool/debug-package extraction all
+expected fatal255 exits passed. Original failed fixture log remains preserved.
+
+The next hosted run confirmed download-version selection fixed libpq, then
+exposed a missing libmariadb runtime on the regression image. It also showed
+setup-php reused an already installed PHP without entering its package path;
+upstream setup_php checks update separately. CI now requests update=true and
+installs runtime C libraries on the disposable runner. Isolated local bootstrap
+with explicit downloadable versions completed successfully. Hosted proof remains
+pending; the previous failed jobs are preserved, not counted as tests passing.

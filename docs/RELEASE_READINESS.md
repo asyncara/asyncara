@@ -39,7 +39,9 @@ Fresh phpize/configure builds load and pass the runner. PHP 8.5.11 fully
 ASan/UBSan-instrumented debug tests, native ASan/UBSan/TSan, allocation injection,
 GCC static analysis and Valgrind workloads pass in their documented scopes.
 No compiler warning was ignored; phpize's upstream obsolete libtool macro notice
-remains visible. Hosted CI is configured but **not executed remotely**.
+remains visible. Hosted CI has executed and failed provisioning before runtime tests; fixes and
+subsequent run status are recorded in the delivery attestation. Do not infer
+hosted success from local validation.
 
 Final core/network/file/pending-shutdown/database Valgrind workloads have zero
 errors and zero definite/indirect/possible losses. This excludes the separately
@@ -69,7 +71,7 @@ each; C=12 concurrent requests / four workers. Expanded 300.157s workload handle
 fatal memory requests, timeout and pending-I/O teardown. Idle workers returned
 to six descriptors / one thread. FPM process_control_timeout must allow active
 requests to drain; the fixture uses five seconds. Final A/B/C rerun passes.
-A later expanded streaming soak FAILED its unchanged RSS-growth criterion.
+Two later expanded streaming soaks FAILED the unchanged RSS-growth criterion.
 A separate allocator probe supports cached/free arena pages as the cause, but
 the failed criterion remains open; see FPM_LIFECYCLE.md. No universal FPM
 stability or process memory bound is established.
@@ -84,7 +86,7 @@ stability or process memory bound is established.
 | Oracle MySQL 8.4.13 | Separate server; caching_sha2_password and legacy sha256_password over verified TLS | Additional Oracle versions and auth variants |
 | Redis 7.0.15 | RESP2/3, ACL/TLS, pipeline/transaction/PubSub, 200 reconnect/cancel cycles | Attributes/streaming aggregates/arbitrary pushes/cluster/sentinel |
 | Filesystem | pthread workers, stable streams/handles, errno, atomic visibility and sync calls | io_uring operations NOT_IMPLEMENTED; power-loss/ACL/mount certification |
-| HTTP | Concurrent curl multi, bounded buffered and HTTP/1.1 streamed responses, file/iterable uploads/downloads, one-file MIME | Long streaming soak, multi-file MIME and broader curl/proxy certification |
+| HTTP | Concurrent curl multi, bounded buffered and HTTP/1.1 streamed responses, file/iterable uploads/downloads, one-file MIME | Mixed-stream soak recorded separately; multi-file MIME and broader curl/proxy certification |
 | WebSocket | ws/wss client, raw TCP server, bounded framing/messages, controls, cancellation, Python17.4 interop | Extensions, server WSS, browser/Autobahn and endurance certification |
 | Hooks | sleep/usleep PARTIALLY_SUPPORTED, tested ordinary timer path | All stream/curl/filesystem/database hook groups UNSUPPORTED |
 | ZTS | PHP8.5.11 ZTS DEBUG single-interpreter CLI core/poll/database tests | Concurrent interpreters unverified; userland ThreadPool BLOCKED |
@@ -113,8 +115,9 @@ requests, median wall seconds: sequential PHP cURL .73731, Asyncara/four active
 .18435, native curl multi .16016, FPM/four workers .17557, Swoole .16766. This
 loaded shared-host sample does not establish a stable ranking. Atomic-file
 median latencies span 0.728–1.141 ms; durable replacement 7.323–8.999 ms. Durability
-has extra semantics and syscall costs. No WebSocket/io_uring performance claim exists; HTTP streaming measurements
-are recorded separately when executed.
+has extra semantics and syscall costs. HTTP streaming and WebSocket results are separately recorded in
+PERFORMANCE_PHASE3.md. WebSocket is slower than Python websockets17.4 in the
+measured1/16/128-connection echo workloads; no io_uring performance claim exists.
 
 ## Reproduction and exact continuation
 
