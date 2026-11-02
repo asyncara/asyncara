@@ -31,6 +31,6 @@ for count in (1000,10000):
 library=output/'slow_io.so'
 subprocess.run(['cc','-Wall','-Wextra','-Werror','-fPIC','-shared','tests/audit/slow_io.c','-o',str(library),'-ldl'],check=True)
 with tempfile.TemporaryDirectory(prefix='slow-path-',dir=output)as temporary:
-    run('slow-path',['tests/audit/slow_files.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_MARKER':str(pathlib.Path(temporary)/'started')})
-run('slow-io',['tests/audit/io.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_DNS':'1'})
+    run('slow-path',['tests/audit/slow_files.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_EXTENSION':str(extension),'ASYNCARA_AUDIT_MARKER':str(pathlib.Path(temporary)/'started')})
+run('slow-io',['tests/audit/io.php'],{'LD_PRELOAD':str(library),'ASYNCARA_AUDIT_EXTENSION':str(extension),'ASYNCARA_AUDIT_DNS':'1'})
 print('Evidence: '+str(output))
