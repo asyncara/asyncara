@@ -43,3 +43,8 @@ No io_uring filesystem, kqueue or IOCP implementation was added. Database TLS
 capabilities and synchronous trust-file/crypto setup boundaries are documented
 in DATABASE_COMPATIBILITY.md. Single-interpreter ZTS CLI evidence does not enable
 PHP userland threads. Native aggregate accounting still excludes external libraries.
+
+WebSocket uses the existing nonblocking TCP/PHP OpenSSL stream readiness path
+(epoll or poll), with bounded PHP framing and message queues. No native worker
+or curl pool executes WebSocket framing. See WEBSOCKET.md for verified WSS
+client and raw plain-server scope; server-side TLS is not certified.

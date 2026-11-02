@@ -57,3 +57,8 @@ The native dispatch hook chains Zend's execute-internal hook and checks function
 | io_uring | not implemented | separate kernel NOP probe succeeded; no Asyncara backend claim |
 
 Phase 3: private-CA database matrix is in [DATABASE_COMPATIBILITY.md](DATABASE_COMPATIBILITY.md); single-interpreter ZTS scope is in [ZTS_COMPATIBILITY.md](ZTS_COMPATIBILITY.md). Kernel readiness now includes PHP-buffered stream data, with a deterministic regression and repeated TLS reconnect tests.
+
+WebSocket client and raw TCP server upgrade are explicit APIs tested with an
+independent Python websockets17.4 peer on PHP8.3/8.4/8.5. WSS client certificate
+failures are tested. Extensions, browser/framework integration, FPM upgrades
+and server-WSS certification are unavailable/unverified; see WEBSOCKET.md.

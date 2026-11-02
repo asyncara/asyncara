@@ -44,7 +44,7 @@ header-to-array conversion. This is deterministic mutation testing, **not**
 coverage-guided PHP fuzzing. Native libFuzzer coverage is limited to the compiled
 target's executed paths. Curl owns HTTP wire/chunked parsing; OpenSSL owns TLS;
 libpq/Connector/C/SQLite own their protocol/file formats. AsyncStream transports
-PHP values through Queue and has no wire framing parser. WebSocket is absent.
+PHP values through Queue and has no wire framing parser. WebSocket framing and close validation are now separate PHP mutation targets, described below.
 No fuzz coverage is claimed for these external or absent parsers.
 
 Reproduce from a built checkout:
@@ -81,3 +81,23 @@ not implement or claim to fuzz curl HTTP/chunk/TLS parsing. Seed corpus is under
 ASan/UBSan campaigns completed 704,679 and 602,547 inputs in 61s each, peaks 373/369MiB,
 with no finding. Native targets exclude Zend; separately instrumented PHP and
 real local HTTP tests cover the integration. No crashing corpus was produced.
+
+## WebSocket framing mutations
+
+`tests/fuzz/websocket_mutation.php` uses the production FrameCodec and ten seed
+files, deterministic seed 20261102, truncated/duplicated/flipped/appended inputs
+and partial feeds of 1–31 bytes. It checks successful round trips and close
+payload validation. Input size is capped at 2048 bytes. Network handshake and
+message-assembly states are integration tests, not this fuzz target.
+
+```sh
+USE_ZEND_ALLOC=0 ASAN_OPTIONS=detect_leaks=1:abort_on_error=1 \
+  /isolated/php-sanitized/bin/php -n tests/fuzz/websocket_mutation.php 60 1000000 /tmp/new-ws-fuzz
+```
+
+Actual fully instrumented PHP8.5 campaigns: 24,933/60.001s and 47,262/60.002s,
+no finding. Final RSS peak 322,620 KiB. PHP allocator peak is unavailable with
+USE_ZEND_ALLOC=0; an earlier reported zero is not zero memory use. Current input
+is written before each execution; unexpected failures preserve it. This is
+bounded deterministic mutation testing under ASan/UBSan, not native libFuzzer
+coverage or full RFC conformance certification.

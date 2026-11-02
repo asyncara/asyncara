@@ -74,3 +74,18 @@ justified. The sample range and slopes are retained in
 [phase3/soak-final-5m.json](phase3/soak-final-5m.json). Final-binary long-duration
 stability remains unverified. Atomic replacement has separate fault/race tests;
 this mixed workload exercises ordinary file operations.
+
+## Separate WebSocket workload
+
+```sh
+python3 scripts/install-test-websockets.py
+python3 tests/soak/run.py --seconds 300 --workload websocket --connections 16 --output /tmp/new-ws-soak
+```
+
+The frozen workload retains connections across cycles, sends 1 KiB echoes on
+each, interleaves pings, reconnects/cancels receivers every 100 cycles, includes
+idle intervals, and records queue/counter/resource samples. This is separate
+from `--databases` mixed HTTP/files/SQL/process work. A 10.033s workload smoke
+completed 1,140 cycles with zero final pending tasks/Futures/sockets. Two samples
+are insufficient for a leak trend claim. Longer results must record their own
+source commit; no earlier mixed soak is relabeled as covering WebSocket.

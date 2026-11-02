@@ -23,7 +23,7 @@ Updated 2026-11-02. Status describes implemented behavior and executed evidence,
 | Userland ThreadPool | BLOCKED | NTS and single-interpreter ZTS CLI tested; no safe interpreter-thread executor |
 | io_uring filesystem | NOT_IMPLEMENTED | separate kernel NOP probe succeeded; no Asyncara operations integrated |
 | kqueue / IOCP / non-Linux ports | NOT_IMPLEMENTED | fallback architecture exists; no platform certification |
-| WebSocket | NOT_IMPLEMENTED | full framing/handshake/fragmentation implementation required |
+| WebSocket | PARTIALLY_IMPLEMENTED | ws/wss client, raw TCP server upgrade, bounded framing/messages, controls, cancellation and independent Python17.4 interop tested; extensions/server-WSS/browser/long-run certification incomplete |
 | Composer / PSR-18 and PSR-17 adapter | IMPLEMENTED_AND_TESTED | Composer validation; Nyholm PSR-7 integration case |
 | Laravel / Symfony / WordPress / PSR-3 / alternate loops | NOT_IMPLEMENTED | integration guidance only, no framework lifecycle certification |
 | Diagnostics | PARTIALLY_IMPLEMENTED | measured max task step/timer lag, live counts/memory; native aggregate allocation accounting; full traces and third-party memory accounting incomplete |
@@ -54,7 +54,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 1. Execute hosted CI and six-/24-hour frozen soaks; extend multiworker FPM endurance. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
-3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket protocol support, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
+3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket endurance/interoperability coverage, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
 4. Extend individual transparent hooks with exact parameter/warning/resource/return/signal behavior tests; keep unsupported groups explicit.
 5. Add common DB manual transaction APIs where missing, server-side prepared caches, richer Redis types and safe notification/pipeline policies.
 6. Add framework/PSR-3/loop adapters and production telemetry, then certify supported OS/PHP/SAPI combinations. Only after a stable boundary consider ZTS interpreter-thread execution.

@@ -37,3 +37,7 @@ thread-affine request state, callable/result transfer and concurrency certificat
 ZTS CLI smoke compatibility: **IMPLEMENTED_AND_TESTED** for the configuration
 above; general multithreaded ZTS compatibility: **NOT_IMPLEMENTED**. NTS native
 workers and ProcessPool remain independently functional.
+
+The later HTTP-streaming native build and complete runner, plus WebSocket
+independent interop tests, also pass this same ZTS DEBUG single-interpreter CLI.
+This does not expand the concurrent-interpreter compatibility claim.
