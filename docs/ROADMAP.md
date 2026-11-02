@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-11-02. Status describes implemented behavior and executed evidence, not interface declarations. This is a development release. Broad production readiness is not complete.
+Updated 2026-11-02. Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
 
 | Area | Status | Evidence / remaining work |
 |---|---|---|
@@ -27,8 +27,8 @@ Updated 2026-11-02. Status describes implemented behavior and executed evidence,
 | Composer / PSR-18 and PSR-17 adapter | IMPLEMENTED_AND_TESTED | Composer validation; Nyholm PSR-7 integration case |
 | Laravel / Symfony / WordPress / PSR-3 / alternate loops | NOT_IMPLEMENTED | integration guidance only, no framework lifecycle certification |
 | Diagnostics | PARTIALLY_IMPLEMENTED | measured max task step/timer lag, live counts/memory; native aggregate allocation accounting; full traces and third-party memory accounting incomplete |
-| Memory hardening | PARTIALLY_IMPLEMENTED | standalone native ASan/UBSan/TSan, budget/bailout tests; core/network/files/DB Valgrind; debug/ZTS/fuzzing incomplete |
-| Stress | PARTIALLY_IMPLEMENTED | 100 mixed runtime cycles, 100 requests in one FPM worker and 10,000 timers/tasks; extended soak incomplete |
+| Memory hardening | PARTIALLY_IMPLEMENTED | independent native and fully instrumented PHP ASan/UBSan, native TSan, debug PHP, allocation injection and fatal file/SQL cleanup; Valgrind clean in tested paths; ZTS/fuzzing/foreign allocator coverage incomplete |
+| Stress | PARTIALLY_IMPLEMENTED | 300 independent mixed cycles; FPM sequential, within-request and four-worker concurrency; 1,000/10,000 tasks and latency samples; extended soak incomplete |
 | Benchmarks | PARTIALLY_IMPLEMENTED | raw three-sample HTTP/FPM/Swoole/native, AMP timers, file, SQLite, queue, CPU results; remaining workload matrix incomplete |
 | Developer/API/installation/security documentation | IMPLEMENTED_AND_TESTED | executable examples and documented commands; docs distinguish unsupported features |
 
@@ -38,11 +38,11 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 ## Next engineering work, in order
 
-1. Expand native allocation-failure and lifecycle/fuzz tests; run PHP debug and fully instrumented PHP builds, extend FPM soak tests, and add third-party memory/process quotas. Preserve bounded-buffer failure recovery.
+1. Review the audit fixes and corrected source archive; add the independent regressions to CI. Expand protocol/allocation fuzzing, sustained multiworker FPM soak, remote SQL auth/TLS and ZTS coverage. Establish third-party memory/process quotas and bounded notification/result queues. Preserve the independently verified debug/instrumented PHP and fatal-teardown tests.
 2. Add typed errno reporting, atomic replacement and io_uring file operations only after real completion/cancellation/fallback tests. Preserve the worker fallback.
 3. Complete HTTP streaming/backpressure and multipart, WebSocket protocol support, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
 4. Extend individual transparent hooks with exact parameter/warning/resource/return/signal behavior tests; keep unsupported groups explicit.
 5. Add common DB manual transaction APIs where missing, server-side prepared caches, richer Redis types and safe notification/pipeline policies.
 6. Add framework/PSR-3/loop adapters and production telemetry, then certify supported OS/PHP/SAPI combinations. Only after a stable boundary consider ZTS interpreter-thread execution.
 
-Continuation commands: `make verify`, `ASYNCARA_BACKEND=poll ./scripts/test.sh`, `./scripts/phpize-local.sh`, `./benchmarks/run.py`. Consult WORKLOG.md and build logs before changing a status. All source and scripts are in the repository; external dependencies/build products are isolated and ignored.
+Continuation commands: `make audit`, `make audit-fpm`, `./scripts/audit-allocations.sh`, `make verify`, `ASYNCARA_BACKEND=poll ./scripts/test.sh`, `./scripts/phpize-local.sh`, `./benchmarks/run.py`. Consult WORKLOG.md and build logs before changing a status. All source and scripts are in the repository; external dependencies/build products are isolated and ignored.

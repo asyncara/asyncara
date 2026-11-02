@@ -90,6 +90,7 @@ final class ProcessPool
     }
     private function retire(array $worker): void
     {
+        if (!is_resource($worker['out'])) { $this->stop($worker); return; }
         if (is_resource($worker['in'])) { Scheduler::current()->closed($worker['in']); fclose($worker['in']); }
         try {
             Async::timeout(1.0, static function () use ($worker): void {

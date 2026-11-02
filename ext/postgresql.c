@@ -8,13 +8,23 @@
 #define PG_BUFFER_LIMIT (16u * 1024u * 1024u)
 typedef struct {
     PGconn *conn;
+    PGresult *result;
+    PGnotify *notification;
     bool pending;
 } asyncara_pg;
 static int pg_resource_type;
-static void pg_destroy(zend_resource *resource) {
-    asyncara_pg *p = resource->ptr;
+static void pg_close_handle(asyncara_pg *p) {
+    if (p->result) PQclear(p->result);
+    if (p->notification) PQfreemem(p->notification);
+    p->result = NULL;
+    p->notification = NULL;
     if (p->conn)
         PQfinish(p->conn);
+    p->conn = NULL;
+}
+static void pg_destroy(zend_resource *resource) {
+    asyncara_pg *p = resource->ptr;
+    pg_close_handle(p);
     efree(p);
 }
 static asyncara_pg *pg_fetch(zval *z) {
@@ -77,17 +87,18 @@ PHP_FUNCTION(asyncara_pg_open) {
     keys[count] = NULL;
     values[count] = NULL;
     asyncara_pg *p = ecalloc(1, sizeof(*p));
+    /* Register before acquiring foreign allocations: Zend may bail out later. */
+    zend_resource *resource = zend_register_resource(p, pg_resource_type);
     p->conn = PQconnectStartParams(keys, values, 0);
     if (!p->conn || PQstatus(p->conn) == CONNECTION_BAD) {
         if (p->conn) {
             pg_error(p);
-            PQfinish(p->conn);
         } else
             zend_throw_exception(zend_ce_exception, "libpq allocation failed", 0);
-        efree(p);
+        zend_list_delete(resource);
         RETURN_THROWS();
     }
-    RETURN_RES(zend_register_resource(p, pg_resource_type));
+    RETURN_RES(resource);
 }
 PHP_FUNCTION(asyncara_pg_poll) {
     zval *z;
@@ -196,7 +207,7 @@ PHP_FUNCTION(asyncara_pg_read) {
     size_t bytes = 0, records = 0;
     const char *error = NULL;
     while (p->pending && !PQisBusy(p->conn) && records < 256) {
-        PGresult *r = PQgetResult(p->conn);
+        PGresult *r = p->result = PQgetResult(p->conn);
         if (!r) {
             p->pending = false;
             break;
@@ -216,6 +227,7 @@ PHP_FUNCTION(asyncara_pg_read) {
                 if (bytes > PG_BUFFER_LIMIT) {
                     zval_ptr_dtor(&item);
                     PQclear(r);
+                    p->result = NULL;
                     zval_ptr_dtor(&rows);
                     zval_ptr_dtor(&notifications);
                     zval_ptr_dtor(return_value);
@@ -232,9 +244,10 @@ PHP_FUNCTION(asyncara_pg_read) {
             records++;
         }
         PQclear(r);
+        p->result = NULL;
     }
     PGnotify *note;
-    while ((note = PQnotifies(p->conn))) {
+    while ((note = p->notification = PQnotifies(p->conn))) {
         zval item;
         array_init(&item);
         add_assoc_string(&item, "channel", note->relname);
@@ -242,6 +255,7 @@ PHP_FUNCTION(asyncara_pg_read) {
         add_assoc_long(&item, "pid", note->be_pid);
         add_next_index_zval(&notifications, &item);
         PQfreemem(note);
+        p->notification = NULL;
     }
     add_assoc_zval(return_value, "rows", &rows);
     add_assoc_zval(return_value, "notifications", &notifications);
@@ -256,8 +270,7 @@ PHP_FUNCTION(asyncara_pg_close) {
     asyncara_pg *p = pg_fetch(z);
     if (!p)
         RETURN_THROWS();
-    PQfinish(p->conn);
-    p->conn = NULL;
+    pg_close_handle(p);
     RETURN_NULL();
 }
 static void asyncara_pg_init(int module_number) {

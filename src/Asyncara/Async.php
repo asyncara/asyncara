@@ -27,7 +27,7 @@ final class Async
     {
         $scheduler = Scheduler::current();
         $scheduler->suspend(function (\Closure $resume) use ($scheduler, $seconds): \Closure {
-            $timer = $scheduler->delay($seconds, $resume); return $timer->cancel(...);
+            $timer = $scheduler->delay($seconds, $resume, true); return $timer->cancel(...);
         }, $scheduler->currentCancellation());
     }
     public static function cancel(Task|Future $task): void { $task->cancel(); }
@@ -48,7 +48,7 @@ final class Async
         $task = self::spawn($body); $expired = false;
         $timer = Scheduler::current()->delay($seconds, static function () use ($task, &$expired): void {
             $expired = true; $task->cancellation->cancel(new TimeoutException('Operation deadline exceeded'));
-        });
+        }, true);
         try {
             $result = $task->await();
             if ($expired) throw new TimeoutException('Operation deadline exceeded');
@@ -81,7 +81,7 @@ final class Async
                 $unsubscribes[] = $task->subscribe($check);
             }
             $check();
-            if ($timeout !== null) $timer = Scheduler::current()->delay($timeout, static function () use ($future): void { if (!$future->isCompleted()) $future->resolve(); });
+            if ($timeout !== null) $timer = Scheduler::current()->delay($timeout, static function () use ($future): void { if (!$future->isCompleted()) $future->resolve(); }, true);
             $future->await(); $done = $pending = [];
             foreach ($tasks as $key => $task) { if ($task->isCompleted()) $done[$key] = $task; else $pending[$key] = $task; }
             return new WaitResult($done, $pending);

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara\Pool;
-use Asyncara\{Async,Awaitable,Future};
+use Asyncara\{Async,Awaitable,Future,Scheduler};
 use Asyncara\Concurrency\Queue;
 /** Explicit scoped leases; factory and closer execute on the borrowing task. */
 final class ConnectionPool
@@ -17,21 +17,38 @@ final class ConnectionPool
     public function withConnection(callable $body): mixed
     {
         if ($this->closed) throw new \LogicException('Connection pool closed');
-        $connection = $this->idle->get(); $this->leased++;
+        // Count queued acquisitions too: a resolved Queue waiter can own a
+        // connection before its Fiber resumes. close() must not overlook it.
+        $this->leased++;
         try {
-            if ($connection === null) { $connection = ($this->factory)(); if ($connection instanceof Awaitable) $connection = $connection->await(); }
-            return $body($connection);
-        } catch (\Throwable $e) {
-            if ($connection !== null && !$connection instanceof Awaitable) Async::shield(function () use ($connection): void { $result = ($this->closer)($connection); if ($result instanceof Awaitable) $result->await(); });
-            $connection = null; throw $e;
-        } finally { $this->leased--; $this->idle->taskDone(); $this->idle->tryPut($connection); }
+            $connection = $this->idle->get();
+            try {
+                if ($connection === null) $connection = Async::shield(function (): mixed {
+                    $value = ($this->factory)(); return $value instanceof Awaitable ? $value->await() : $value;
+                });
+                Scheduler::current()->currentCancellation()?->throwIfRequested();
+                return $body($connection);
+            } catch (\Throwable $e) {
+                $discard = $connection; $connection = null;
+                if ($discard !== null) Async::shield(function () use ($discard): void { $result = ($this->closer)($discard); if ($result instanceof Awaitable) $result->await(); });
+                throw $e;
+            } finally { $this->idle->taskDone(); $this->idle->tryPut($connection); }
+        } finally { $this->leased--; }
     }
     public function close(): void
     {
         if ($this->closed) return;
         if ($this->leased) throw new \LogicException('Join borrowers before closing the pool');
         $this->closed = true;
-        Async::shield(function (): void { while ($this->idle->count()) { $connection = $this->idle->get(); $this->idle->taskDone(); if ($connection !== null) { $result = ($this->closer)($connection); if ($result instanceof Awaitable) $result->await(); } } });
-        $this->idle->close();
+        $failure = null;
+        try { Async::shield(function () use (&$failure): void {
+            while ($this->idle->count()) {
+                $connection = $this->idle->get(); $this->idle->taskDone();
+                if ($connection === null) continue;
+                try { $result = ($this->closer)($connection); if ($result instanceof Awaitable) $result->await(); }
+                catch (\Throwable $error) { $failure ??= $error; }
+            }
+        }); } finally { $this->idle->close(); }
+        if ($failure) throw $failure;
     }
 }

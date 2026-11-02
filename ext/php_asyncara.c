@@ -126,6 +126,41 @@ static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool bi
     memcpy(s, Z_STRVAL_P(z), Z_STRLEN_P(z) + 1);
     return s;
 }
+/* Snapshot PHP's working directory before handing a path to another thread.
+ * Do not resolve symlinks here: unlink/rename must retain link semantics. */
+static bool capture_path(ar_engine *e, char **path) {
+    if (!(*path)[0]) {
+        zend_value_error("Filesystem path must not be empty");
+        return false;
+    }
+    if ((*path)[0] != '/') {
+        char cwd[MAXPATHLEN];
+        if (!VCWD_GETCWD(cwd, sizeof(cwd))) {
+            zend_throw_exception(zend_ce_exception, "Cannot capture working directory", 0);
+            return false;
+        }
+        size_t a = strlen(cwd), b = strlen(*path);
+        if (a + b + 2 > MAXPATHLEN) {
+            zend_value_error("Filesystem path is too long");
+            return false;
+        }
+        char *absolute = ar_alloc(e, a + b + 2);
+        if (!absolute) {
+            zend_throw_exception(zend_ce_exception, "Native memory limit or allocation failure", 0);
+            return false;
+        }
+        memcpy(absolute, cwd, a);
+        absolute[a] = '/';
+        memcpy(absolute + a + 1, *path, b + 1);
+        ar_free(*path);
+        *path = absolute;
+    }
+    if (php_check_open_basedir(*path)) {
+        zend_value_error("Path violates open_basedir");
+        return false;
+    }
+    return true;
+}
 static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
         return false;
@@ -268,8 +303,7 @@ PHP_FUNCTION(asyncara_submit) {
             j->a = string_arg(e, args, 0, false, NULL);
             if (!j->a)
                 goto error;
-            if (php_check_open_basedir(j->a)) {
-                zend_value_error("Path violates open_basedir");
+            if (!capture_path(e, &j->a)) {
                 goto error;
             }
             j->b = string_arg(e, args, 1, false, NULL);
@@ -361,8 +395,7 @@ PHP_FUNCTION(asyncara_submit) {
             goto error;
         if (op <= OP_COPY || op == OP_READ_RANGE || op == OP_WRITE_RANGE ||
             (op == OP_DB_OPEN && strcmp(j->a, ":memory:")))
-            if (php_check_open_basedir(j->a)) {
-                zend_value_error("Path violates open_basedir");
+            if (!capture_path(e, &j->a)) {
                 goto error;
             }
         if (op == OP_WRITE || op == OP_APPEND || op == OP_RENAME || op == OP_COPY || op == OP_WRITE_RANGE) {
@@ -370,8 +403,7 @@ PHP_FUNCTION(asyncara_submit) {
                 string_arg(e, args, 1, op == OP_WRITE || op == OP_APPEND || op == OP_WRITE_RANGE, &j->b_len);
             if (!j->b)
                 goto error;
-            if ((op == OP_RENAME || op == OP_COPY) && php_check_open_basedir(j->b)) {
-                zend_value_error("Destination violates open_basedir");
+            if ((op == OP_RENAME || op == OP_COPY) && !capture_path(e, &j->b)) {
                 goto error;
             }
         }

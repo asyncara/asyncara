@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Start only isolated project-owned database fixtures; never touch host services."""
-import os, pathlib, socket, subprocess, sys, time
+import argparse, os, pathlib, socket, subprocess, sys, time
+parser=argparse.ArgumentParser()
+parser.add_argument('--valgrind',action='store_true')
+parser.add_argument('--test-file',default='tests/databases.php')
+options=parser.parse_args()
 root=pathlib.Path(__file__).resolve().parent.parent
 os.chdir(root)
 subprocess.run([sys.executable,'scripts/check-build.py',os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')],check=True)
@@ -28,8 +32,9 @@ try:
   time.sleep(.05)
  else:raise RuntimeError('Database fixture startup timeout')
  env=os.environ|{'ASYNCARA_PG_SOCKET':str(pg),'ASYNCARA_MY_SOCKET':str(my/'mysql.sock'),'ASYNCARA_REDIS_PORT':str(port)}
- command=[os.environ.get('PHP_BIN','php'),'-n','-d','extension='+str(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')),'tests/databases.php']
- if '--valgrind' in sys.argv:
+ env['ASYNCARA_AUDIT_EXTENSION']=str(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so'))
+ command=[os.environ.get('PHP_BIN','php'),'-n','-d','extension='+env['ASYNCARA_AUDIT_EXTENSION'],options.test_file]
+ if options.valgrind:
   env|={'USE_ZEND_ALLOC':'0','VALGRIND_LIB':str(root/'.local/sysroot/usr/libexec/valgrind')}
   command=[str(root/'.local/sysroot/usr/bin/valgrind'),'--extra-debuginfo-path='+str(root/'.local/debug'),'--keep-debuginfo=yes','--leak-check=full','--show-leak-kinds=definite','--errors-for-leak-kinds=definite','--error-exitcode=99','--log-file=build/valgrind-databases.log']+command
  result=subprocess.run(command,env=env,timeout=180)

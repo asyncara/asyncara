@@ -1,9 +1,13 @@
-.PHONY: all build test databases stress sanitize thread-sanitize fpm valgrind benchmark phpize-local verify clean
+.PHONY: all build test audit audit-fpm databases stress sanitize thread-sanitize fpm valgrind benchmark phpize-local verify clean
 all: build
 build:
 	./scripts/build-local.sh
 test: build
 	./scripts/test.sh
+audit: build
+	python3 scripts/audit.py
+audit-fpm: build
+	python3 scripts/audit-fpm.py
 databases: build
 	./scripts/test-databases.py
 stress: build
