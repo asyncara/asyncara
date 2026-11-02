@@ -1,17 +1,18 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara\MySQL;
-use Asyncara\{Async,Future,Scheduler};
+use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Semaphore;
 use Asyncara\IO\Dns;
 use Asyncara\Exception\OperationException;
 final class Connection
 {
     private Semaphore $gate;
+    private Semaphore $operations;
     private bool $closed=false;
     private int $fd=-1;
-    private ?int $transactionOwner=null;
-    private function __construct(private mixed $handle,private float $timeout){$this->gate=new Semaphore(1);}
+    private ?Task $transactionOwner=null;
+    private function __construct(private mixed $handle,private float $timeout){$this->gate=new Semaphore(1);$this->operations=new Semaphore(1);}
     public static function connect(array $options,float $timeout=30):Future
     {
         if(!function_exists('asyncara_mysql_open'))throw new \LogicException('Build Asyncara with MariaDB Connector/C');
@@ -44,11 +45,11 @@ final class Connection
     }
     public function query(string $sql,array $parameters=[]):Future
     {
-        $caller=Scheduler::current()->task?->id;
+        $caller=Scheduler::current()->task;
         return Async::spawn(fn()=>Async::timeout($this->timeout,function()use($sql,$parameters,$caller):array {
             $owns=$this->transactionOwner!==null&&$this->transactionOwner===$caller;
             if(!$owns)$this->gate->acquire();
-            try{if($this->closed)throw new \LogicException('MariaDB connection closed');asyncara_mysql_query($this->handle,$sql,$parameters);return $this->drain();}
+            try{return $this->operations->withPermit(function()use($sql,$parameters):array{if($this->closed)throw new \LogicException('MariaDB connection closed');asyncara_mysql_query($this->handle,$sql,$parameters);return $this->drain();});}
             catch(\Throwable $e){$this->close();throw $e;}
             finally{if(!$owns)$this->gate->release();}
         }));
@@ -58,7 +59,7 @@ final class Connection
     public function transaction(callable $body):Future
     {
         return Async::spawn(function()use($body):mixed {
-            $this->gate->acquire();$this->transactionOwner=Scheduler::current()->task->id;
+            $this->gate->acquire();$this->transactionOwner=Scheduler::current()->task;
             try{
                 $this->query('START TRANSACTION')->await();
                 try{$value=$body($this);Async::shield(fn()=>$this->query('COMMIT')->await());return $value;}

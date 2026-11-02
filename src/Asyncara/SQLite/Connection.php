@@ -1,31 +1,34 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara\SQLite;
-use Asyncara\{Async,Future,Scheduler};
+use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Semaphore;
 final class Connection
 {
     private Semaphore $gate;
+    private Semaphore $operations;
     private bool $closed = false;
-    private ?int $transactionOwner = null;
-    private function __construct(private int $id) { $this->gate = new Semaphore(1); }
+    private ?Task $transactionOwner = null;
+    private function __construct(private int $id) { $this->gate = new Semaphore(1); $this->operations = new Semaphore(1); }
     public static function open(string $path): Future
     {
         return Async::spawn(static fn() => Async::shield(static fn() => new self(Scheduler::current()->native('sqlite_open', [$path])->await())));
     }
     public function query(string $sql, array $parameters = []): Future
     {
-        $caller = Scheduler::current()->task?->id;
+        $caller = Scheduler::current()->task;
         return Async::spawn(function () use ($caller, $sql, $parameters): array {
             $owns = $this->transactionOwner !== null && $this->transactionOwner === $caller;
             if (!$owns) $this->gate->acquire();
             try {
+                return $this->operations->withPermit(function () use ($sql, $parameters): array {
                 $this->assertOpen();
                 $future = Scheduler::current()->native('sqlite_query', [$this->id, $sql, array_values($parameters)]);
                 $remove = Scheduler::current()->currentCancellation()?->subscribe(static fn() => $future->cancel());
                 try { $result = Async::shield($future->await(...)); } finally { if ($remove) $remove(); }
                 Scheduler::current()->currentCancellation()?->throwIfRequested();
                 return $result;
+                });
             } finally { if (!$owns) $this->gate->release(); }
         });
     }
@@ -33,7 +36,7 @@ final class Connection
     public function prepare(string $sql): Statement { return new Statement($this, $sql); }
     public function beginTransaction(): Future
     {
-        $caller = Scheduler::current()->task?->id ?? throw new \LogicException('Transaction requires a task');
+        $caller = Scheduler::current()->task ?? throw new \LogicException('Transaction requires a task');
         if ($this->transactionOwner === $caller) throw new \LogicException('Nested transactions are not supported');
         return Async::spawn(function () use ($caller): void {
             $this->gate->acquire();
@@ -43,9 +46,9 @@ final class Connection
     }
     private function endTransaction(string $sql): Future
     {
-        if ($this->transactionOwner !== Scheduler::current()->task?->id) throw new \LogicException('Transaction belongs to another task or is not active');
+        if ($this->transactionOwner !== Scheduler::current()->task) throw new \LogicException('Transaction belongs to another task or is not active');
         return Async::spawn(function () use ($sql): void {
-            Async::shield(fn() => Scheduler::current()->native('sqlite_query', [$this->id, $sql, []])->await());
+            Async::shield(fn() => $this->operations->withPermit(fn() => Scheduler::current()->native('sqlite_query', [$this->id, $sql, []])->await()));
             $this->transactionOwner = null; $this->gate->release();
         });
     }

@@ -39,6 +39,7 @@ final class Scheduler
     public function suspend(\Closure $register, ?CancellationToken $token = null): mixed
     {
         $task = $this->task ?? throw new \LogicException('Await requires a scheduled Fiber');
+        if (\Fiber::getCurrent() !== $task->fiber) throw new \LogicException('Await requires the current Task Fiber; independent Fibers cannot register its waits');
         $token?->throwIfRequested();
         $settled = false; $suspended = false; $value = null; $error = null;
         $resume = function (mixed $v = null, ?\Throwable $e = null) use (&$settled, &$suspended, &$value, &$error, $task): void {
@@ -54,13 +55,13 @@ final class Scheduler
             return $value;
         } finally { $remove(); if ($unsubscribe) $unsubscribe(); }
     }
-    public function delay(float $seconds, \Closure $callback): Timer
+    public function delay(float $seconds, \Closure $callback, bool $waitTimer = false): Timer
     {
         if (!is_finite($seconds) || $seconds < 0 || $seconds > 31536000) throw new \ValueError('Delay must be finite and between 0 and one year');
         if (count($this->timers) >= 100000) throw new \OverflowException('Timer limit reached');
         $id = ++$this->nextTimer; $at = self::now() + $seconds;
         $timer = new Timer(function () use ($id): void { unset($this->timers[$id]); });
-        $this->timers[$id] = [$at, $callback, $timer]; $this->heap->insert($id, [-$at, -$id]); return $timer;
+        $this->timers[$id] = [$at, $callback, $timer, $waitTimer]; $this->heap->insert($id, [-$at, -$id]); return $timer;
     }
     private function timers(): void
     {
@@ -100,7 +101,7 @@ final class Scheduler
             $read = $write = null; $timer = null;
             if ($events & 1) { $read = ++$this->nextWatch; $this->readers[$read] = [$fd, static fn() => $resume(1)]; }
             if ($events & 2) { $write = ++$this->nextWatch; $this->writers[$write] = [$fd, static fn() => $resume(2)]; }
-            if ($timeout !== null) $timer = $this->delay($timeout, static fn() => $resume(8));
+            if ($timeout !== null) $timer = $this->delay($timeout, static fn() => $resume(8), true);
             return function () use ($read, $write, $timer): void { unset($this->readers[$read], $this->writers[$write]); $timer?->cancel(); };
         }, $this->currentCancellation());
     }
@@ -139,7 +140,7 @@ final class Scheduler
             else $future->resolve($item['value']);
         }
     }
-    private function turn(): void
+    private function turn(?Task $root = null): void
     {
         $this->metrics['turns']++;
         $this->timers();
@@ -150,7 +151,12 @@ final class Scheduler
             $duration = self::now() - $start; $this->metrics['taskSteps']++;
             $this->metrics['maxStepSeconds'] = max($this->metrics['maxStepSeconds'], $duration);
             if (Runtime::configuration()['slowTaskSeconds'] > 0 && $duration > Runtime::configuration()['slowTaskSeconds']) trigger_error(sprintf('Asyncara: Task #%d occupied the event-loop thread for %.3f ms (measured, cause unknown)', $task->id, $duration * 1000), E_USER_WARNING);
+            // Observe root failure before entering an otherwise unbounded I/O wait.
+            if ($root?->isCompleted() && $root->exception()) return;
         }
+        // A cancelled task's finally block can create another delayed callback.
+        // Draining must discard those too before it computes a blocking wait.
+        if ($root === null) foreach ($this->timers as [, , $timer, $waitTimer]) if (!$waitTimer) $timer->cancel();
         if ($this->tasks || $this->native || $this->timers) $this->poll();
     }
     public function run(callable $body): mixed
@@ -160,19 +166,21 @@ final class Scheduler
         $oldHooks = asyncara_hooks(Runtime::timeHooksEnabled());
         try {
             while ($this->tasks || $this->native || $this->timers) {
-                $this->turn();
-                if ($root->isCompleted() && $root->exception()) foreach ($this->tasks as $task) $task->cancel();
+                $this->turn($root);
+                if ($root->isCompleted() && $root->exception()) $root->result();
             }
             $value = $root->result();
             foreach ($this->failures as $task) if (!$task->observed) throw $task->exception();
             return $value;
         } finally {
             try {
-                foreach ($this->timers as [, , $timer]) $timer->cancel();
+                // Suspension timers may belong to shielded acquisition/cleanup.
+                // Cancellation removes ordinary waits; shielded waits must finish.
+                foreach ($this->timers as [, , $timer, $waitTimer]) if (!$waitTimer) $timer->cancel();
                 foreach ($this->tasks as $task) $task->cancel();
                 foreach ($this->native as $future) $future->cancel();
                 while ($this->tasks || $this->native) $this->turn();
-            } finally { $this->failures = []; Runtime::recordMetrics($this->statistics()); asyncara_hooks($oldHooks); self::$active = null; }
+            } finally { foreach ($this->timers as [, , $timer]) $timer->cancel(); $this->failures = []; Runtime::recordMetrics($this->statistics()); asyncara_hooks($oldHooks); self::$active = null; }
         }
     }
     public function statistics(): array

@@ -95,9 +95,10 @@ PHP_FUNCTION(asyncara_mysql_open) {
     ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_ARRAY_HT(options) ZEND_PARSE_PARAMETERS_END();
     const char *names[] = {"host", "user", "password", "database", "socket", "caFile"};
     ar_mysql *p = ecalloc(1, sizeof(*p));
+    zend_resource *resource = zend_register_resource(p, mysql_resource_type);
     p->conn = mysql_init(NULL);
     if (!p->conn) {
-        efree(p);
+        zend_list_delete(resource);
         zend_throw_exception(zend_ce_exception, "MariaDB allocation failed", 0);
         RETURN_THROWS();
     }
@@ -145,13 +146,9 @@ PHP_FUNCTION(asyncara_mysql_open) {
     p->waiting = mysql_real_connect_start(&p->connected, p->conn, p->options[4] ? "localhost" : p->options[0],
                                           p->options[1], p->options[2], p->options[3],
                                           port ? (unsigned int)Z_LVAL_P(port) : 3306, p->options[4], 0);
-    RETURN_RES(zend_register_resource(p, mysql_resource_type));
+    RETURN_RES(resource);
 error:
-    my_close(p);
-    for (size_t i = 0; i < 6; i++)
-        if (p->options[i])
-            efree(p->options[i]);
-    efree(p);
+    zend_list_delete(resource);
     RETURN_THROWS();
 }
 PHP_FUNCTION(asyncara_mysql_query) {

@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 """Package tracked working-tree source; omit toolchains, secrets and binaries."""
-import gzip, hashlib, io, pathlib, subprocess, tarfile
+import argparse, gzip, hashlib, io, pathlib, subprocess, tarfile
 
 root = pathlib.Path(__file__).resolve().parent.parent
+parser = argparse.ArgumentParser()
+parser.add_argument('--output', default='build/asyncara-0.1.0-dev.tar.gz')
+parser.add_argument('--include-untracked', action='store_true', help='Include reviewed, non-ignored new source files')
+options = parser.parse_args()
 paths = sorted(p for p in subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0') if p)
+if options.include_untracked:
+    paths = sorted(set(paths) | {p for p in subprocess.check_output(['git', '-C', str(root), 'ls-files', '--others', '--exclude-standard', '-z']).decode().split('\0') if p})
 if not paths:
     raise SystemExit('No tracked source: stage the intended source files before packaging.')
-target = root / 'build/asyncara-0.1.0-dev.tar.gz'
+target = root / options.output
 target.parent.mkdir(exist_ok=True)
 with target.open('wb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed:
     with tarfile.open(fileobj=compressed, mode='w|', format=tarfile.PAX_FORMAT) as archive:
