@@ -29,6 +29,7 @@ jobs:
       - run: python3 scripts/install-test-websockets.py
       - run: make test
       - run: ASYNCARA_BACKEND=poll ./scripts/test.sh
+      - run: ./scripts/test-network-edges.sh
       - run: ./scripts/test-websocket.sh
       - run: ASYNCARA_BACKEND=poll ./scripts/test-websocket.sh
       - run: php -n tests/fuzz/websocket_mutation.php 5 100000 build/ws-fuzz-smoke

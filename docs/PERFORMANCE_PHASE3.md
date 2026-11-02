@@ -54,3 +54,28 @@ Buffered and streamed 8MiB cases use the same payload; 32MiB cases exceed the
 buffered API limit and are not a same-size buffered throughput comparison.
 Native peaks exclude PHP/curl/OpenSSL/OS memory; PHP/RSS peaks are separately
 retained. Three samples do not justify meaningful p95/p99 tail estimates.
+
+## WebSocket connection counts
+
+Three fresh client processes per implementation/count, one persistent connection
+set with50 serial1KiB text echoes per connection, identical Python websockets17.4
+server, compression disabled. Local plain ws on the recorded shared host while
+mixed soak was running. Setup/cleanup are separately retained as totalSeconds.
+Each cell below is the median of the three sample statistics; all per-message
+latencies and samples remain in `benchmarks/results/phase3-websocket.json`.
+
+| Connections | Client | msg/s | median ms | p95 ms | p99 ms | peak RSS KiB |
+|---|---|---:|---:|---:|---:|---:|
+| 1 | Asyncara | 904.441 | 1.047 | 2.229 | 2.466 | 23880.000 |
+| 1 | Python websockets17.4 | 1551.052 | 0.335 | 1.019 | 2.409 | 25956.000 |
+| 16 | Asyncara | 2214.994 | 5.774 | 13.184 | 31.644 | 25216.000 |
+| 16 | Python websockets17.4 | 3774.898 | 3.025 | 10.145 | 12.482 | 26340.000 |
+| 128 | Asyncara | 2427.697 | 49.347 | 80.201 | 96.078 | 35452.000 |
+| 128 | Python websockets17.4 | 6610.526 | 18.590 | 28.615 | 39.277 | 28388.000 |
+
+Asyncara is slower in this measured workload, increasingly so at128 connections.
+No native-parser speedup or production ranking is claimed. The result motivates
+profiling scheduling/readiness/locking costs before optimization; it does not
+justify weakening frame validation, fairness or resource bounds. Reproduce with
+`python3 benchmarks/run-websocket.py --output /tmp/new-ws-benchmark.json` after
+installing the pinned peer and building the extension.

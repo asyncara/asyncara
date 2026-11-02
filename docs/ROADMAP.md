@@ -11,7 +11,7 @@ Updated 2026-11-02. Status describes implemented behavior and executed evidence,
 | Groups / Lock / Semaphore / Event / Queue | IMPLEMENTED_AND_TESTED | fairness, contention, deadlocks, cancellation handoffs |
 | Explicit context / async producer streams | IMPLEMENTED_AND_TESTED | inheritance/isolation, backpressure, failures, early close |
 | epoll / poll | IMPLEMENTED_AND_TESTED | complete core suite with each Linux backend |
-| TCP / UDP / DNS / explicit TLS | PARTIALLY_IMPLEMENTED | tested local IPv4/TLS/DNS; IPv6 and TLS edge cases need expansion |
+| TCP / UDP / DNS / explicit TLS | PARTIALLY_IMPLEMENTED | tested local IPv4/IPv6 TCP/UDP, dual-address DNS, TLS1.2/1.3 SNI/ALPN, partial I/O and cancellation; WAN/TLS state edge cases remain |
 | HTTP client | PARTIALLY_IMPLEMENTED | concurrent curl multi, pooling, HTTP(S), JSON/form, chunking/compression tested; bounded HTTP/1.1 response/file/iterable streaming and one-file curl MIME tested; broader protocol/upload matrix incomplete |
 | Native filesystem | PARTIALLY_IMPLEMENTED | basic operations, stable handles, seek/sync, chunk backpressure, typed errno and atomic replacement tested; crash durability / broader filesystem certification incomplete |
 | SQLite | IMPLEMENTED_AND_TESTED | worker C API, binds, ordering, transactions, cancellation and cleanup; buffered scope documented |

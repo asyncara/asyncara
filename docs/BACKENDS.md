@@ -48,3 +48,28 @@ WebSocket uses the existing nonblocking TCP/PHP OpenSSL stream readiness path
 (epoll or poll), with bounded PHP framing and message queues. No native worker
 or curl pool executes WebSocket framing. See WEBSOCKET.md for verified WSS
 client and raw plain-server scope; server-side TLS is not certified.
+
+## Expanded local networking matrix
+
+`./scripts/test-network-edges.sh` now exercises IPv4 and IPv6 TCP listeners/
+connections, IPv6 UDP including empty datagrams, localhost dual-address DNS and
+fallback after an IPv6 refusal, TLS1.2 on IPv4 and TLS1.3 on IPv6, SNI localhost,
+ALPN http/1.1, verified CA/hostname rejection, deliberately slow partial uploads/
+downloads, abrupt peer disconnect, refused connections and handshake timeout/
+cancellation. An unrelated timer advances throughout slow transfers. Tests pass
+on PHP8.3/8.4/8.5 NTS, epoll/poll and instrumented8.5; Valgrind reports zero errors
+and zero definite/indirect/possible losses (77,515 reachable bytes).
+
+DNS remains worker-getaddrinfo. A test-only linker wrapper delays one reserved
+hostname200ms; deadlines/cancellation return to the Fiber and timers continue,
+while runtime cleanup still waits for that native call to return. There is no
+claim of interrupting libc or supplying DNS TTL/cache controls. The first
+LD_PRELOAD fixture did not interpose on the8.3 module and failed; explicit linker
+wrapping makes the injected path reproducible without changing production code.
+
+Scope remains Linux loopback/OpenSSL3.0.13. No WAN, IPv6 scope-ID/link-local,
+Happy Eyeballs, renegotiation, TLS key-update or WANT_WRITE saturation coverage.
+TcpStream handshake currently awaits readability after incomplete crypto; broad
+TLS transport-state certification remains incomplete. Trust-file/crypto setup
+is synchronous library work. Successful local transfer tests do not establish
+universal TLS compatibility or server-side TLS listener support.

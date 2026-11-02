@@ -85,7 +85,7 @@ Long-duration FPM/framework and all process-tree failure modes remain unverified
 | WebSocket | ws/wss client, raw TCP server, bounded framing/messages, controls, cancellation, Python17.4 interop | Extensions, server WSS, browser/Autobahn and endurance certification |
 | Hooks | sleep/usleep PARTIALLY_SUPPORTED, tested ordinary timer path | All stream/curl/filesystem/database hook groups UNSUPPORTED |
 | ZTS | PHP8.5.11 ZTS DEBUG single-interpreter CLI core/poll/database tests | Concurrent interpreters unverified; userland ThreadPool BLOCKED |
-| Platforms/frameworks | Tested Linux x86_64; existing Composer/PSR-17/18 preserved | IPv6/TLS edge matrix, other OSes, Laravel/Symfony/WordPress/loop adapters |
+| Platforms/frameworks | Tested Linux x86_64; existing Composer/PSR-17/18 preserved | WAN/TLS state edge matrix, other OSes, Laravel/Symfony/WordPress/loop adapters |
 
 TLS tests use local isolated TCP servers and private CA material. Wrong CA,
 identity and password rejection are tested; no verification-disable workaround

@@ -62,3 +62,8 @@ WebSocket client and raw TCP server upgrade are explicit APIs tested with an
 independent Python websockets17.4 peer on PHP8.3/8.4/8.5. WSS client certificate
 failures are tested. Extensions, browser/framework integration, FPM upgrades
 and server-WSS certification are unavailable/unverified; see WEBSOCKET.md.
+
+Expanded Linux loopback networking tests now cover IPv4/IPv6 TCP/UDP, dual-address
+DNS, TLS1.2/1.3 SNI/ALPN, partial I/O and cancellation on PHP8.3/8.4/8.5.
+See [BACKENDS.md](BACKENDS.md#expanded-local-networking-matrix) for executed
+commands, injected DNS cleanup behavior and unverified TLS/remote boundaries.

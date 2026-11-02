@@ -223,3 +223,22 @@ The one-hour mixed HTTP streaming soak is still running at this checkpoint and
 will be attested separately. API/reference/security/resource/status docs now
 state the tested WebSocket scope and remaining interoperability/endurance gaps.
 Release remains EXPERIMENTAL. No universal WebSocket or ZTS certification claim.
+
+## Phase 3 continuation — IPv6/TLS edge tests and measured WebSocket overhead
+
+Added deterministic IPv4/IPv6 TLS1.2/1.3 peer and assertions for TCP/UDP,
+localhost address fallback, SNI/ALPN, trust/name rejection, slow2MiB upload,
+partial reads, EOF/refusal and handshake cancellation. Tests pass on8.3/.4/.5,
+poll, ASan/UBSan and Valgrind (zero errors/losses,77,515 reachable). First test
+had a Runtime information object-vs-array assertion error; corrected the test.
+DNS delay fixture initially used LD_PRELOAD and did not interpose on8.3; replaced
+with a test-only linker wrapper rather than altering production resolution.
+
+Measured three fresh WebSocket client samples at1/16/128connections against the
+same independent server and Python17.4 client. Asyncara median throughput904/
+2215/2428msg/s versus1551/3775/6611; all raw latencies retained. Asyncara is slower
+in this loaded-host workload; no selective fastest-sample claim or speculative
+rewrite. Added the network edge suite to CI and extended FPM soak mixed batches
+with one streamed request alongside buffered I/O/pending shutdown, preserving
+all original assertions and recording code/binary provenance. Longer results
+will be recorded only when complete. Release remains EXPERIMENTAL.
