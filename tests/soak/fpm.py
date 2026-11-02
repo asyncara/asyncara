@@ -119,5 +119,14 @@ try:
     finally:stop(process,log)
     (out/'report.json').write_text(json.dumps(results,indent=2)+'\n');print('FPM recycling/reload/kill/timeout/fatal/pending isolation: PASS',flush=True)
 except BaseException as error:
+    # Preserve the actual worker failure (signal, allocator error, timeout or
+    # fatal request) in CI output as well as artifacts. Never retry/reset it.
+    for diagnostic in sorted(out.rglob('*log')):
+        if diagnostic.name in ('error.log','php-errors.log','startup.log'):
+            lines=diagnostic.read_text(errors='replace').splitlines()
+            if lines:print(str(diagnostic.relative_to(out))+':\n'+'\n'.join(lines[-12:]),flush=True)
+    for counter in ('memory.events','memory.max','memory.peak'):
+        path=pathlib.Path('/sys/fs/cgroup')/counter
+        if path.is_file():print('cgroup '+counter+': '+path.read_text().strip(),flush=True)
     (out/'failure.json').write_text(json.dumps({'status':'FAIL','error':str(error),'completedCases':results,'provenance':provenance},indent=2)+'\n');raise
 finally:audit.server.shutdown();audit.server.server_close()
