@@ -1,6 +1,6 @@
 # Limitations and non-goals of this build
 
-This is a substantive development implementation, not the finished universal runtime in the project directive. The roadmap distinguishes tested paths from unfinished coverage.
+Release assessment: **EXPERIMENTAL**; see [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md). The original 0.1.0-dev archive contains audit-reproduced defects; use the corrected, separately named snapshot after review. This is a substantive development implementation, not the finished universal runtime in the project directive. The roadmap distinguishes tested paths from unfinished coverage.
 
 - WebSocket is not implemented. There is no framing, fragmentation or close-handshake claim.
 - io_uring, kqueue, IOCP and PHP interpreter threads are not implemented. Linux NTS is the executed platform matrix.

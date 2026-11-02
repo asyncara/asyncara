@@ -1,6 +1,8 @@
 # Asyncara
 
-Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is a tested development release, not a production-readiness certification.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
+**Independent audit:** [findings, repaired defects and evidence](docs/INDEPENDENT_AUDIT.md). Release assessment: **EXPERIMENTAL**. The preserved original source archive contains known defects; the corrected audit snapshot is separately named.
+
+Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
 
 Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
 

@@ -1,6 +1,6 @@
 # Verified compatibility
 
-The following evidence is from this Linux x86_64 development host on 2026-11-02. Passing these cases does not establish production support on every build or extension combination.
+The following evidence is from this Linux x86_64 development host on 2026-11-02. The [independent audit](INDEPENDENT_AUDIT.md) supersedes earlier readiness claims and provides the complete function-by-function hook matrix and reproduced defects. Passing these cases does not establish production support on every build or extension combination.
 
 | PHP build | Native compile | Core/IO/hook/process suite | PostgreSQL/MariaDB/Redis suite |
 |---|---|---|---|
@@ -8,9 +8,10 @@ The following evidence is from this Linux x86_64 development host on 2026-11-02.
 | 8.4.27 NTS, locally extracted CLI/dev | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
 | 8.5.11 NTS host CLI, 8.5.12 API-compatible dev headers | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
 | 8.5.11 with host's normal extension configuration (including Swoole 6.2.3) | same binary | 44 pass + four dedicated limit/lifecycle suites | not a separate SQL coexistence certification |
-| ZTS / debug PHP | not executed | not certified | not certified |
+| 8.5.11 debug / ASan+UBSan debug | independently built from source | 44 pass plus dedicated suites and audit regressions | instrumented database suites pass |
+| ZTS | not executed | not certified | not certified |
 
-All three CLI versions also pass native queue/size/permission limits, aggregate-budget rejection/recovery, PHP memory-limit bailout and stable-file-handle suites. The isolated 8.5 FPM test passes 100 requests through one worker, with idle descriptor/thread counts stable and context/hooks reset.
+All three CLI versions also pass native queue/size/permission limits, aggregate-budget rejection/recovery, PHP memory-limit bailout and stable-file-handle suites. Independent 8.5 FPM tests separately pass 100 sequential requests, four overlapping operations per request, and 12 requests across four workers. Idle descriptors/threads remain stable; context/configuration/hooks reset. A fatal request is torn down before the same worker serves a fresh request.
 
 PHP 8.5 also passes the core suite with `ASYNCARA_BACKEND=poll`. This verifies the Linux poll fallback, not BSD/macOS/Windows portability. PHP 8.1/8.2 and unreleased versions are intentionally outside the configured source range.
 

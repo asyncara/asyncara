@@ -1,18 +1,19 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara\PostgreSQL;
-use Asyncara\{Async,Future,Scheduler};
+use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Semaphore;
 use Asyncara\IO\Dns;
 use Asyncara\Exception\OperationException;
 final class Connection
 {
     private Semaphore $gate;
+    private Semaphore $operations;
     private bool $closed = false;
     private array $notifications = [];
     private int $fd = -1;
-    private ?int $transactionOwner = null;
-    private function __construct(private mixed $handle, private float $timeout) { $this->gate = new Semaphore(1); }
+    private ?Task $transactionOwner = null;
+    private function __construct(private mixed $handle, private float $timeout) { $this->gate = new Semaphore(1); $this->operations = new Semaphore(1); }
     public static function connect(array $options, float $timeout = 30): Future
     {
         if (!function_exists('asyncara_pg_open')) throw new \LogicException('Build Asyncara with libpq support');
@@ -35,11 +36,11 @@ final class Connection
     }
     public function query(string $sql,array $parameters=[]): Future
     {
-        $caller=Scheduler::current()->task?->id;
+        $caller=Scheduler::current()->task;
         return Async::spawn(fn()=>Async::timeout($this->timeout,function()use($sql,$parameters,$caller):array {
             $owns=$this->transactionOwner!==null && $this->transactionOwner===$caller;
             if(!$owns)$this->gate->acquire();
-            try {
+            try { return $this->operations->withPermit(function () use ($sql,$parameters): array {
                 $this->assertOpen();asyncara_pg_query($this->handle,$sql,$parameters);$rows=[];$bytes=0;
                 do {
                     $state=asyncara_pg_read($this->handle);$this->fd=$state['fd'];
@@ -50,7 +51,7 @@ final class Connection
                     elseif($state['pending'])Async::sleep(0);
                 }while($state['pending']);
                 return $rows;
-            }catch(\Throwable $e){$this->close();throw $e;}
+            }); }catch(\Throwable $e){$this->close();throw $e;}
             finally{if(!$owns)$this->gate->release();}
         }));
     }
@@ -59,7 +60,7 @@ final class Connection
     public function transaction(callable $body): Future
     {
         return Async::spawn(function()use($body):mixed {
-            $this->gate->acquire();$this->transactionOwner=Scheduler::current()->task->id;
+            $this->gate->acquire();$this->transactionOwner=Scheduler::current()->task;
             try {
                 $this->query('BEGIN')->await();
                 try { $value=$body($this);Async::shield(fn()=>$this->query('COMMIT')->await());return $value; }

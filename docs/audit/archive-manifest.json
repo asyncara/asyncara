@@ -1,0 +1,637 @@
+[
+  {
+    "path": "asyncara-0.1.0-dev/.clang-format",
+    "size": 189,
+    "sha256": "ca9a2b761ff2787971e15f8752f79edcb8a222db71dbc6ad69f81abcfea3ab1a"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/.gitignore",
+    "size": 282,
+    "sha256": "c87990f1f3bd8a45e1eb19b766d1e11587595c3f9414932db705b339b95dcc09"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/CONTRIBUTING.md",
+    "size": 2207,
+    "sha256": "f01bfd4ee221fd6d40f1b1ff81d5a2039b2be00d2d45162d7953164ee076e243"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/LICENSE",
+    "size": 1078,
+    "sha256": "e01379ad7cb69f17e6d009b2f43593b92c417d307376608fc725e0f87dcc11ba"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/Makefile",
+    "size": 707,
+    "sha256": "70630336abfd7b6a6766056e55fe3f3e1ef9a0354be361a29e8d607a40531fe0"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/README.md",
+    "size": 3581,
+    "sha256": "b418d8976a5909730f79ba979853b472c62350116f032b0478c287e6c0ba2dde"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/WORKLOG.md",
+    "size": 14883,
+    "sha256": "a12efd0888443efefb45dd3a069083979b62e7a0ca0ebb8906bcacf0d535a155"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/autoload.php",
+    "size": 272,
+    "sha256": "8a2a4d0295c05cd907b16d5fe0ee83aece35b1837d8c5756e6fde906115c0703"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/curl_baseline.c",
+    "size": 3415,
+    "sha256": "b79d977374f6ef459e967647ea227715e1521b20f5a388092804ca454bd48976"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/fpm.py",
+    "size": 3100,
+    "sha256": "712672c9f6c727350697c4c5eb24d8ac406522e4bbbadd90045d26e78c169cc1"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/fpm_target.php",
+    "size": 178,
+    "sha256": "ac118da3bbf367438ef0ce90755939a9ae35d4beb31747eb79a2fedfe93077f6"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/report.py",
+    "size": 7217,
+    "sha256": "fb285a03bc59c664fa2934c5e27087c478e6db934d512f1907b9bace5aa473fa"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/results/README.md",
+    "size": 919,
+    "sha256": "b456e47cf4d1b793669005adcfcc6d5462276747507fa738a7aa407e16eec894"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/results/before-small-read-allocation.json",
+    "size": 23659,
+    "sha256": "c8da6a259bbcb5f32a13b2e595e040b17a198f09a6391fe160e0c4ac2f9e8715"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/results/latest.json",
+    "size": 30796,
+    "sha256": "36a1b02074225e9c5e5fe7fe034f961df04813a927b04fe9c3a8d5a33a6e8abc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/results/stale-artifact-run.json",
+    "size": 23699,
+    "sha256": "9d5a3da239fa3c19251274e86075926b2e8cdf7fae393c14572c15fee6428d4f"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/run.php",
+    "size": 4945,
+    "sha256": "86c7aaea191954d59cd1276aa889f51f50e14da8051ee03e26b2d34e15ab5cf7"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/run.py",
+    "size": 3185,
+    "sha256": "60e84e96913430e746e086c9b44becd3162082be618933ce48615f5e6759b6cd"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/benchmarks/swoole.php",
+    "size": 965,
+    "sha256": "2557a9d898f80cd3a756964cfe77299ab6a8b18b363d8f560d4b94aeb2cc59f3"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/bin/worker.php",
+    "size": 1955,
+    "sha256": "5649cc44add0165bb96524f558479d9a353f55a14447d0d059e4335357741c41"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/composer.json",
+    "size": 573,
+    "sha256": "311730346cedb1444252b61a0a79cd4ceb93bbf98f5656a39cba9fea3c1337fa"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/composer.lock",
+    "size": 13937,
+    "sha256": "4459b4295249ae7da673c0f7c5601ee7ce44151427ff1977bd514e867d03c250"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/API.md",
+    "size": 7834,
+    "sha256": "f8d7bceaa58b3fd90d0acb545cf6ddb342e50361c092e932aa2f5d8462ef0448"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/API_REFERENCE.md",
+    "size": 10952,
+    "sha256": "4b680ba22740ed356cd6996207d9cc3852fe547ac64942a8e130c5044bc31868"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/ARCHITECTURE.md",
+    "size": 3279,
+    "sha256": "f5d9e08925e7d559b71fea4f1db043352a112d08bf8595856f1bc3d980ff2e3b"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/BACKENDS.md",
+    "size": 4332,
+    "sha256": "c57f9de0ef26eddba0869de553c405487c5f5bcfc0a55d3ff37c184c72c58797"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/COMPATIBILITY.md",
+    "size": 5935,
+    "sha256": "a9318525297b22a60338db6f42653d38984060f10b2368f4266a5f21fe3dd6d8"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/DRIVERS.md",
+    "size": 9838,
+    "sha256": "3dc4e87d507ce2c164035bd7595feac0018037a0547ef6ee99402936cff781a7"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/ECOSYSTEM.md",
+    "size": 1818,
+    "sha256": "e770ff4351215704c44574cea97b16234c2c12a1b1fe786eb868ade2c32b68fc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/INSTALLATION.md",
+    "size": 5631,
+    "sha256": "bf8586ef04b3302f3fbd53da6fec797b43a18d2839a40eaed662461c6418f7f7"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/LIMITATIONS.md",
+    "size": 3636,
+    "sha256": "04f7262cb87434130efa84732dee91632fb21b728f801adc405341cdd5a8539a"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/PERFORMANCE.md",
+    "size": 7355,
+    "sha256": "c9d4f36d6017abae9a94e9f6d78b44875397fc6747d635fd457ce7d115a62048"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/RESEARCH.md",
+    "size": 7614,
+    "sha256": "eac62039363cf10db04850bb7e48b587b22b747b6ea2317727fa2cd9b2d01a24"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/ROADMAP.md",
+    "size": 5992,
+    "sha256": "0754153a460cec858fcf3a7526d176e94465c3ec83e53d7422880ca17351b446"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/docs/SECURITY.md",
+    "size": 4859,
+    "sha256": "3fe20c6acc4b2df461a0a653b253c901d04a60be9cdc8f01135541ad471e97f0"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/examples/hello.php",
+    "size": 305,
+    "sha256": "6e2ef659eda2297df170427f58fa37dd6c002c6fd99143c9e7e6d40311f9bdf6"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/examples/jobs.php",
+    "size": 260,
+    "sha256": "a005f60a85e58e3e2863ab12b9feac19cd5b535bbf83efaf3896ea368628124c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/examples/process_pool.php",
+    "size": 345,
+    "sha256": "da7083d4d98bebb564e9fa5fa651c671ec0bf248f3083304aebf42b051c4c46d"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/examples/python_concurrency_tour.php",
+    "size": 4274,
+    "sha256": "4e3050d68be748ba48b466dfd3d1b48a1935e0519f7d907c62dfbe2b85eaa8dc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/examples/transparent_hooks.php",
+    "size": 466,
+    "sha256": "331c276bfc649a4f81fc058c311c5d120c502434389b0a4e0b7558a7a0cec5a8"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/backend.c",
+    "size": 11291,
+    "sha256": "f3f4d5e8708c6e66f02849d4d695035287f1125a06c41719b8abc84cee600fcf"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/config.m4",
+    "size": 1658,
+    "sha256": "9051de14709747fcd5b4aef6426a340faef8ecb9bee77ec6c022669d9d9f5ceb"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/driver_arginfo.h",
+    "size": 398,
+    "sha256": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/memory.c",
+    "size": 3149,
+    "sha256": "37db723c5cd3674e899cb105c18e5f23d3c615354c3185b47044ff9579d5f214"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/mysql.c",
+    "size": 14302,
+    "sha256": "dd370ed868bfe9bc1a885d7c9f71309944656284d961c1ad5ad00c31bb045e0a"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/native.h",
+    "size": 3394,
+    "sha256": "f92de22efce8e18a071b7d0fc5eab130193e42383ee152f69921bd37b28c201d"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/php_asyncara.c",
+    "size": 27009,
+    "sha256": "4f792b885d9c58e10957757e644f9666f3c1c849c04e7ad5ad5d8dab678c3dc5"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/php_asyncara.h",
+    "size": 210,
+    "sha256": "7beb4ad13c21b23f9f3ef40b53ae6d869b08225b9b87bd62f8334142b4f54281"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/postgresql.c",
+    "size": 9732,
+    "sha256": "238c5a299fa36fc8cec7868cdcd38231946b71cb138214b40d138b0c20e9a2ed"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/ext/workers.c",
+    "size": 25107,
+    "sha256": "4a6104b97a1c569a5c606b24afd7588d86923d132054c576fa28e2466f6beebe"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/api-reference.php",
+    "size": 1809,
+    "sha256": "59068dcff003e96b3a66848d243ff5bf3e95c5e1f2fd075429f2973ddc2c0302"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/bootstrap-local.sh",
+    "size": 635,
+    "sha256": "aaf22a7bfdb54be1fefe5f53221fe19e4991390188d1e5908aae082475e5129f"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/build-local.sh",
+    "size": 1192,
+    "sha256": "2610489f2099f7c430765c9d81f8f89e5680f61e91887f61258b43ec39bffa4c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/check-build.py",
+    "size": 541,
+    "sha256": "2511897b6eac119b153d193089bbaf65d80f55512ea8b94727821f085c3dff1c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/package.py",
+    "size": 1620,
+    "sha256": "bc17a806a389b27fe5272a9dbbea4056a637cee1f72e272509484f9fcfaa6a24"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/phpize-local.sh",
+    "size": 1376,
+    "sha256": "1431da06774ce63533bf92a9ff724ec70d9b2ca054e927c7a9ec220ad9763fee"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/prepare-test-certs.sh",
+    "size": 457,
+    "sha256": "b0dd5c6e9bba5ae56efffca582bd09d0939b713c3824ec3407bb0db658500ab0"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/relocate-tools.py",
+    "size": 1608,
+    "sha256": "dd679204f54d8e8076f0fea5edc34802e30f53f27a1d6cfc6f9643bf59be99cb"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/sanitize.sh",
+    "size": 501,
+    "sha256": "6c4afb7b5fa70afec7608fd11cbfdecd2dfe5cc63eabb6be5ebab9106ca112bc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/test-databases.py",
+    "size": 3273,
+    "sha256": "1479386544fb7690630c644a167e2f7aef340982972ae535bf3d8760383767dc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/test-fatal-memory.py",
+    "size": 902,
+    "sha256": "ca8f5a84cc6c80fdb0b796bc752238e889417c0f6962de7c99154dcc783b268b"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/test-fpm.py",
+    "size": 5486,
+    "sha256": "b271294a25401c9c1652005a88fe91680c6f330346726bbca470efc6e29d1b24"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/test.sh",
+    "size": 705,
+    "sha256": "04f6abd11cd6f0ec030d4e73b9d8f9bee25e71068dec1f0c201b731746176314"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/thread-sanitize.sh",
+    "size": 626,
+    "sha256": "53141b5b51e626005f45193af0e98efdd9eb1326c0d79025c9236d748ae8df10"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/scripts/valgrind.sh",
+    "size": 1632,
+    "sha256": "858d827c0126101c664ad7884da905fa7b797cbbe82257a5ee1cd7783a7fb052"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Async.php",
+    "size": 6138,
+    "sha256": "7eba1f962ae7275640be8b188e95914ed4249a4e3d26cfb2af0c522a6b1a111b"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Awaitable.php",
+    "size": 146,
+    "sha256": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/CancellationSource.php",
+    "size": 358,
+    "sha256": "6ee77f915835da75738c03b19d14873471d40dabf8c9fc5cdcb7ebd249e214ba"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/CancellationToken.php",
+    "size": 1108,
+    "sha256": "44db0f2ca78a9f293d16336cd813b31a5b8fd8ac49a8b31d5ba41f31dffa157a"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Concurrency/Event.php",
+    "size": 603,
+    "sha256": "f8d87723ecfa2e11ae5d1023ad12246d325f594b53a9e29754ec3366c8532b78"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Concurrency/Lock.php",
+    "size": 935,
+    "sha256": "5cb86c5e61d6f7e20140681c606ca93422d2297f6f1454713fba215a59dbb62b"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Concurrency/Queue.php",
+    "size": 3263,
+    "sha256": "8564060c3806ce428576b8adb735a15861dd64b13da4e3b7aa9f2d821a8a1fce"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Concurrency/Semaphore.php",
+    "size": 1317,
+    "sha256": "08815ad0269938d5e9de04345c903003c959d0fad34d193292dea33028bb3c38"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Context.php",
+    "size": 754,
+    "sha256": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Database/Database.php",
+    "size": 671,
+    "sha256": "dfb3c4862bfea48558c1013473f79c7a026402dc925fb4bcbc512cf350e8275d"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/CancelledException.php",
+    "size": 115,
+    "sha256": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/DeadlockException.php",
+    "size": 114,
+    "sha256": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/OperationException.php",
+    "size": 115,
+    "sha256": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/QueueClosedException.php",
+    "size": 117,
+    "sha256": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/TimeoutException.php",
+    "size": 114,
+    "sha256": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Exception/WorkerException.php",
+    "size": 112,
+    "sha256": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Future.php",
+    "size": 2477,
+    "sha256": "49704f63942de5c6a4adb124b73484b562b18df63fdbf13160cc1b1089d79e62"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HTTP/HttpClient.php",
+    "size": 2470,
+    "sha256": "a707cc8d934c4a06b7976d767a3d7d13605570f6a0363d5f3504c809c39025e4"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HTTP/Psr/Client.php",
+    "size": 1913,
+    "sha256": "660c1c03440e041fd0e7127cca05ba5467b0b577d1089515926480f5eb1bb670"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HTTP/Psr/NetworkException.php",
+    "size": 498,
+    "sha256": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HTTP/Psr/RequestException.php",
+    "size": 497,
+    "sha256": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HTTP/Response.php",
+    "size": 719,
+    "sha256": "43e2b2d49b489067933d84afdebc7cf7fb93c40cd55800b1433a2c3d06a6f90c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Hook.php",
+    "size": 264,
+    "sha256": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/HookReport.php",
+    "size": 373,
+    "sha256": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/Dns.php",
+    "size": 221,
+    "sha256": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/File.php",
+    "size": 3083,
+    "sha256": "a6c5b8d0d605724460f504aa3693e8d377aab2df3696ee5d3f1846303d623cce"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/Files.php",
+    "size": 3523,
+    "sha256": "5937842ee881412e03f51c463c92a8b4aba60d066a365a1be3f96fd8f07e4195"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/TcpServer.php",
+    "size": 1583,
+    "sha256": "034c88539af9751da983ef6c2b220d11ccb2d11d2815ddf58f314fd18e6387c0"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/TcpStream.php",
+    "size": 4994,
+    "sha256": "b9dd4ef21394f3668bcec82f2e2cf830e855bb8807741f4b1dfb886483e90ab8"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/IO/UdpSocket.php",
+    "size": 1954,
+    "sha256": "e2977e8f930dfd96e1d22337e5bdbbc133bf30d38c243eaefcb191aa2448f55d"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/MySQL/Connection.php",
+    "size": 4005,
+    "sha256": "994406028bc7a80c81da1a29c6d6b36a29adaae426f007c62beddf068456d357"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/MySQL/Statement.php",
+    "size": 305,
+    "sha256": "53a8827b71c2d97c2c63245db12bd573fff7053b08a6110729cb2272d9f6eca2"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Pool/ConnectionPool.php",
+    "size": 1929,
+    "sha256": "c1d2155d08d30b3c9638374ff7faa2ae3f477a25abb295c1bd8a1c95fce102c4"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Pool/ProcessPool.php",
+    "size": 6786,
+    "sha256": "1760f6079d62ee98ece8b9d3c2fd0cbb3a9573a77f347fcde3e04e4375efb2d1"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/PostgreSQL/Connection.php",
+    "size": 4925,
+    "sha256": "c164c6a87e6cf5a2581bbe41a96f29410398955e67112e4e2a92583764edc441"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/PostgreSQL/Statement.php",
+    "size": 389,
+    "sha256": "398c32c0bb10c96e0647f500765e22f359ad82c36c2d22544355ff08aa6839e1"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Redis/Connection.php",
+    "size": 8047,
+    "sha256": "f55e60f292387a61409c7e89b9bd8ed061c3e7082351c424e3ca2c70c2ab571f"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Redis/ServerException.php",
+    "size": 114,
+    "sha256": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Runtime.php",
+    "size": 3131,
+    "sha256": "07c321f45971b5e7b5dfeb28d3eb88b865479829480d60a1c86f3d4faa6a9897"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/SQLite/Connection.php",
+    "size": 4109,
+    "sha256": "9602c2b4bed8551f90b3a823f429b9962ca93cde5dc48b4419550aa3980299ab"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/SQLite/Statement.php",
+    "size": 397,
+    "sha256": "3effe5d775a641bdcb47bff590566a4e6bd4056c7c7c04c1d56bb187ffb1779c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Scheduler.php",
+    "size": 10875,
+    "sha256": "38168105dc976588bfcb5f5a5d2cc2578816c145bebcd8861375e4f75e080090"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Stream/AsyncStream.php",
+    "size": 1624,
+    "sha256": "7c9e72b0b187bb1e5b7f280545eba2dcc38de721a5acd1bff164116391de54b7"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Stream/Emitter.php",
+    "size": 245,
+    "sha256": "8954d47c6e2432331691e83d0b1a929c69d1fe24a7693ae307014682c7b7dc7c"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Task.php",
+    "size": 1472,
+    "sha256": "b519f7999589936ed54624299ac2daade216cfad75e81c5efe4d5baf8dfb8c63"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/TaskGroup.php",
+    "size": 1196,
+    "sha256": "02e4e7f28357a7f102479c91c52d79e1db57597d27d00661b78c92fc7b262c13"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/TaskResult.php",
+    "size": 339,
+    "sha256": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/Timer.php",
+    "size": 334,
+    "sha256": "8a1c4398a8a6e61890ca28f7a751ba0aca8a3c43daac429ba01e3165ce4c6b8e"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/src/Asyncara/WaitResult.php",
+    "size": 175,
+    "sha256": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/databases.php",
+    "size": 5696,
+    "sha256": "4c1576f3c139c11ec755ebb372d5ad7600a4c1d6192eff1a2e8b13d3d8dc8b50"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/fatal_memory.php",
+    "size": 391,
+    "sha256": "7b2bad098f6e59dab5caa2d05e51ba35400934ddde12eddf364efe468a92c9a8"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/file_handles.php",
+    "size": 4864,
+    "sha256": "13f6d71f8ad569c23aa9e9228c6fc50653fea1c020f1beba3bee134848f42abe"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/fixtures/http_server.py",
+    "size": 2179,
+    "sha256": "71f4887a6a2b80b9aa1830a61477d0f2692a91b62da9f96fa009025a656bf1be"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/fixtures/jobs.php",
+    "size": 643,
+    "sha256": "f2c3ed29a038c138bba1d964f31170db32bbbe4a750589075c2903582ac7cdd8"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/fpm_request.php",
+    "size": 1464,
+    "sha256": "fc1f831f9cf741d24f5396e1d911f730aa0ebf3a95c086d6a7cdcf0969739778"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/native_limits.php",
+    "size": 1395,
+    "sha256": "b85684400bd43e41523bacd629cd83d5e12af08d34e2a14b8070027862efc20e"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/native_memory.php",
+    "size": 1656,
+    "sha256": "bc740fa230d82a7fc8409522e08a89c6cf41fa581dee80d4d9e4fd638ad45fa6"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/native_sanitizer.c",
+    "size": 3914,
+    "sha256": "3f692cf0018a5c4a72de2031c20643cba5a927928f71213bf95b1ba019055799"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/network_memory.php",
+    "size": 1996,
+    "sha256": "d248d2e3c21c787e0ad863783d4d397c06ca74f537f16be637d243fea8f7d38a"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/request_shutdown.php",
+    "size": 359,
+    "sha256": "4dee38eff4eae7e3039af7e398edfffd3747438362d94eac48baca1d2106bbbc"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/run.php",
+    "size": 18979,
+    "sha256": "51f8518206e9ef2359f3c58d7f0859195e1e77f1ef5f84659b782e2c89d81486"
+  },
+  {
+    "path": "asyncara-0.1.0-dev/tests/stress.php",
+    "size": 1696,
+    "sha256": "a2feee26cb09803223a765a7a7ddc1aa87a3c5fe7522174149f2a31b250fd805"
+  }
+]
