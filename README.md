@@ -2,20 +2,23 @@
 
 **Independent audit:** [findings, repaired defects and evidence](docs/INDEPENDENT_AUDIT.md). Release assessment: **EXPERIMENTAL**. The preserved original source archive contains known defects; the corrected audit snapshot is separately named.
 
+**Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
+
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
 
 Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP with bounded streaming and file uploads, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
 
 ## Build and run
 
-On the initialization host, dependencies are extracted locally:
+For the local Debian/Ubuntu build, dependencies are extracted without global installation. Select a PHP interpreter and development SDK with the same patch version; the final validation used PHP 8.3.36, 8.4.27 and 8.5.12. When using an isolated interpreter, set `PHP_BIN` to its absolute path first:
 
 ```sh
+export PHP_BIN="${PHP_BIN:-php}"
 ./scripts/bootstrap-local.sh
 make build
-php -d extension="$PWD/build/asyncara.so" /usr/local/bin/composer install
-php -n -d extension="$PWD/build/asyncara.so" --ri asyncara
-php -n -d extension="$PWD/build/asyncara.so" examples/python_concurrency_tour.php
+"$PHP_BIN" -d extension="$PWD/build/asyncara.so" /usr/local/bin/composer install
+"$PHP_BIN" -n -d extension="$PWD/build/asyncara.so" --ri asyncara
+"$PHP_BIN" -n -d extension="$PWD/build/asyncara.so" examples/python_concurrency_tour.php
 make test
 ```
 
