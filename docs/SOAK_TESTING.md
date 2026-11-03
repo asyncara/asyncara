@@ -65,7 +65,7 @@ unverified until hosted CI executes it. Longer commands require a machine/sessio
 that can remain available for the full duration. Do not label a smoke test as a
 one-hour soak or extrapolate successful short runs to 24 hours.
 
-Final runtime checkpoint `8af2604` also passed a frozen 300.106-second mixed run:
+Earlier runtime checkpoint `8af2604` also passed a frozen 300.106-second mixed run:
 1,894 cycles / 1.894m burst Tasks, 18 injected worker restarts, no unexpected
 errors or final pending runtime objects. Stable sampled fds20/threads5/sockets7;
 RSS endpoint medians +444 KiB and live PHP +16,168 bytes. The short-window RSS
@@ -116,4 +116,25 @@ This certifies the tested workload at the recorded source/native hash only. It
 predates WebSocket and the later older-Connector/C capability-gate correction.
 Those have separate tests; no six-/24-hour or final-binary endurance claim is
 inferred. Raw provenance/trends: phase3/soak-http-1h.json. The separate expanded
-FPM RSS failures remain open despite this CLI mixed-soak success.
+FPM RSS failures required a later mapping repair; the unchanged follow-up checks
+are documented in [FPM_LIFECYCLE](FPM_LIFECYCLE.md).
+
+## Final native source: five-minute verification
+
+Frozen clean commit `e5d94fd8dd959b88474332a05aaa1c9eb61f318f`, PHP 8.5.12 NTS,
+completed 300.073 workload seconds (309.367 seconds including fixture setup and
+teardown), 1,331 mixed cycles / 1.331 million burst Tasks and 13 injected
+ProcessPool crash recoveries. No unexpected errors or final pending Tasks,
+Futures, timers or native jobs remained. Native worker threads are still owned
+by the active PHP request at the final sample and terminate during request
+shutdown; they are not mislabeled as already reaped.
+
+Steady samples had 20 descriptors, five threads and seven sockets. Native bytes
+were zero at cycle boundaries. RSS ranged from 42,356 to 42,624 KiB; endpoint
+medians increased 200 KiB and live PHP endpoint medians were unchanged. Maximum
+task step was 287.8 ms and timer lag 410.1 ms on the loaded host. These remain
+measured outliers, not a latency guarantee. Full provenance and trends are in
+[final-native-validation.json](phase3/final-native-validation.json).
+
+Final-source one-hour, six-hour and 24-hour runs are **not executed**. Neither
+earlier one-hour checkpoint nor this short final run establishes that endurance.

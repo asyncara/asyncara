@@ -1,0 +1,2173 @@
+{
+  "classification": "EXPERIMENTAL",
+  "archive": "asyncara-0.1.0-dev-phase3-r5.tar.gz",
+  "archiveBytes": 622584,
+  "sha256": "b0f544b3da61789a9cc649a8bc24869308787c9c63ca37358afd69e39ef1ec38",
+  "sourceCommit": "f3d63ac9abf528af0cd5b24086976912c28e4a75",
+  "sourceFileCount": 304,
+  "manifest": [
+    {
+      "path": ".clang-format",
+      "bytes": 189,
+      "mode": "0o644",
+      "sha256": "ca9a2b761ff2787971e15f8752f79edcb8a222db71dbc6ad69f81abcfea3ab1a"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 27,
+      "mode": "0o644",
+      "sha256": "b973535364a5df49f446678205691b478e1947aa8b7823c039d909d1c61a7d1e"
+    },
+    {
+      "path": ".github/workflows/soak.yml",
+      "bytes": 1020,
+      "mode": "0o644",
+      "sha256": "068d964325956c35cd3cdba5cc39e0f8d1c7ada05fadee20c197c72f2b7493a6"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "bytes": 7640,
+      "mode": "0o644",
+      "sha256": "0fa25fba3fc42392d281523ddbfe895e7526aaa94b3f2a0610f5018064ab32c8"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 282,
+      "mode": "0o644",
+      "sha256": "c87990f1f3bd8a45e1eb19b766d1e11587595c3f9414932db705b339b95dcc09"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 2207,
+      "mode": "0o644",
+      "sha256": "f01bfd4ee221fd6d40f1b1ff81d5a2039b2be00d2d45162d7953164ee076e243"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1078,
+      "mode": "0o644",
+      "sha256": "e01379ad7cb69f17e6d009b2f43593b92c417d307376608fc725e0f87dcc11ba"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 831,
+      "mode": "0o644",
+      "sha256": "48116e777542361f24f30dc7c8050091ed95fe867e9d818da36d989e39a17100"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5159,
+      "mode": "0o644",
+      "sha256": "4cbd72108c97f58493ffc18013ac05149c8816c481e321756ea3fb31b604eff8"
+    },
+    {
+      "path": "WORKLOG.md",
+      "bytes": 61842,
+      "mode": "0o644",
+      "sha256": "6f00ef55bd045d3721569a5e387244b239aa8ccbb97ce83784e029e6687b6c56"
+    },
+    {
+      "path": "autoload.php",
+      "bytes": 272,
+      "mode": "0o644",
+      "sha256": "8a2a4d0295c05cd907b16d5fe0ee83aece35b1837d8c5756e6fde906115c0703"
+    },
+    {
+      "path": "benchmarks/atomic.php",
+      "bytes": 1516,
+      "mode": "0o644",
+      "sha256": "3aacfc9629ea45de9a477b7984dda57eba17dea79f6122a27582c06a5a1373d2"
+    },
+    {
+      "path": "benchmarks/curl_baseline.c",
+      "bytes": 3415,
+      "mode": "0o644",
+      "sha256": "b79d977374f6ef459e967647ea227715e1521b20f5a388092804ca454bd48976"
+    },
+    {
+      "path": "benchmarks/fpm.py",
+      "bytes": 3100,
+      "mode": "0o644",
+      "sha256": "712672c9f6c727350697c4c5eb24d8ac406522e4bbbadd90045d26e78c169cc1"
+    },
+    {
+      "path": "benchmarks/fpm_target.php",
+      "bytes": 178,
+      "mode": "0o644",
+      "sha256": "ac118da3bbf367438ef0ce90755939a9ae35d4beb31747eb79a2fedfe93077f6"
+    },
+    {
+      "path": "benchmarks/http_streaming.php",
+      "bytes": 1255,
+      "mode": "0o644",
+      "sha256": "af5fcadae7776db6f078b290710fa5d6c44aef75ff834c123c968510a0012b9c"
+    },
+    {
+      "path": "benchmarks/native_mappings.php",
+      "bytes": 999,
+      "mode": "0o644",
+      "sha256": "c384e98319719da054c24cbf083bff8b699245aec9dea0b5cff661b18c517eed"
+    },
+    {
+      "path": "benchmarks/report.py",
+      "bytes": 7217,
+      "mode": "0o644",
+      "sha256": "fb285a03bc59c664fa2934c5e27087c478e6db934d512f1907b9bace5aa473fa"
+    },
+    {
+      "path": "benchmarks/results/README.md",
+      "bytes": 919,
+      "mode": "0o644",
+      "sha256": "b456e47cf4d1b793669005adcfcc6d5462276747507fa738a7aa407e16eec894"
+    },
+    {
+      "path": "benchmarks/results/before-small-read-allocation.json",
+      "bytes": 23659,
+      "mode": "0o644",
+      "sha256": "c8da6a259bbcb5f32a13b2e595e040b17a198f09a6391fe160e0c4ac2f9e8715"
+    },
+    {
+      "path": "benchmarks/results/latest.json",
+      "bytes": 30796,
+      "mode": "0o644",
+      "sha256": "36a1b02074225e9c5e5fe7fe034f961df04813a927b04fe9c3a8d5a33a6e8abc"
+    },
+    {
+      "path": "benchmarks/results/phase3-atomic.json",
+      "bytes": 27047,
+      "mode": "0o644",
+      "sha256": "89fc0c720fe32365cfc1ace97987f765963388b43e1e6b1467120fbc8c3160e4"
+    },
+    {
+      "path": "benchmarks/results/phase3-http-streaming.json",
+      "bytes": 30508,
+      "mode": "0o644",
+      "sha256": "f9d8f427dbe701441449423000b3925849e19e517723c1cabe2ffc2655a3030e"
+    },
+    {
+      "path": "benchmarks/results/phase3-native-mappings-repeat.json",
+      "bytes": 12990,
+      "mode": "0o644",
+      "sha256": "a5f464f6792bd7697799cf2eba178c4ab24c49fac27c80dec5a4f8b37a56118d"
+    },
+    {
+      "path": "benchmarks/results/phase3-native-mappings.json",
+      "bytes": 12737,
+      "mode": "0o644",
+      "sha256": "15a0b229b34d1e26fc26cbf8111bb4702c0f23ef70e9c52c9b0aa352081fa5d6"
+    },
+    {
+      "path": "benchmarks/results/phase3-native-owned-buffer.json",
+      "bytes": 12964,
+      "mode": "0o644",
+      "sha256": "05a209f0a27d9122206533e14585ac8338b8f0f48784ce783f758826b5e943fc"
+    },
+    {
+      "path": "benchmarks/results/phase3-websocket.json",
+      "bytes": 1021167,
+      "mode": "0o644",
+      "sha256": "27cde01022beef4de7c5568fd920bc4a4dfd619f1e800c7513c396e4e978d9b5"
+    },
+    {
+      "path": "benchmarks/results/phase3.json",
+      "bytes": 33438,
+      "mode": "0o644",
+      "sha256": "7813b0cb1e0d177c044a4b4066ca725ce7f25258eb7852167fdbdb9a41a63787"
+    },
+    {
+      "path": "benchmarks/results/stale-artifact-run.json",
+      "bytes": 23699,
+      "mode": "0o644",
+      "sha256": "9d5a3da239fa3c19251274e86075926b2e8cdf7fae393c14572c15fee6428d4f"
+    },
+    {
+      "path": "benchmarks/run-http-streaming.py",
+      "bytes": 1924,
+      "mode": "0o644",
+      "sha256": "90146594b67410ef312091fcff5c9c9ad129ef6d8adebad2a4ffe9b8f02b1a0a"
+    },
+    {
+      "path": "benchmarks/run-native-mappings.py",
+      "bytes": 1551,
+      "mode": "0o644",
+      "sha256": "5a0fb2364e6fa549dc48f72b714fc0a117002ca042cbf2d2088c748fb74199f9"
+    },
+    {
+      "path": "benchmarks/run-websocket.py",
+      "bytes": 1800,
+      "mode": "0o644",
+      "sha256": "8345f0a76c2ed877fb54cc508d893f66070b0ac1f11c3694119bb46c97257c64"
+    },
+    {
+      "path": "benchmarks/run.php",
+      "bytes": 4945,
+      "mode": "0o644",
+      "sha256": "86c7aaea191954d59cd1276aa889f51f50e14da8051ee03e26b2d34e15ab5cf7"
+    },
+    {
+      "path": "benchmarks/run.py",
+      "bytes": 3326,
+      "mode": "0o755",
+      "sha256": "c51c02770f1f2780c7b25db1664b04c0ed4fb22e3f2965f9bb48c2082d37e0c2"
+    },
+    {
+      "path": "benchmarks/swoole.php",
+      "bytes": 965,
+      "mode": "0o644",
+      "sha256": "2557a9d898f80cd3a756964cfe77299ab6a8b18b363d8f560d4b94aeb2cc59f3"
+    },
+    {
+      "path": "benchmarks/websocket.php",
+      "bytes": 1621,
+      "mode": "0o644",
+      "sha256": "30bf136445b2131a3d530aa3002a2109f4e04c0aa47684af0da6d76ae2da3136"
+    },
+    {
+      "path": "benchmarks/websocket_peer.py",
+      "bytes": 1193,
+      "mode": "0o644",
+      "sha256": "ed06fc0e796ccc0347684d7aefe67b041a023df7e01715d0eb9e8f7d7cd9d538"
+    },
+    {
+      "path": "bin/worker.php",
+      "bytes": 2007,
+      "mode": "0o644",
+      "sha256": "d0dce8ece154f17a60f26965350073691142c21ab60049fa780eb88f595061b8"
+    },
+    {
+      "path": "composer.json",
+      "bytes": 573,
+      "mode": "0o644",
+      "sha256": "311730346cedb1444252b61a0a79cd4ceb93bbf98f5656a39cba9fea3c1337fa"
+    },
+    {
+      "path": "composer.lock",
+      "bytes": 13937,
+      "mode": "0o644",
+      "sha256": "4459b4295249ae7da673c0f7c5601ee7ce44151427ff1977bd514e867d03c250"
+    },
+    {
+      "path": "docs/API.md",
+      "bytes": 8293,
+      "mode": "0o644",
+      "sha256": "ec04d67fe9d8c97a07d8bea69c409696ee8440390d04ba4ccdf74e0bedfbe234"
+    },
+    {
+      "path": "docs/API_REFERENCE.md",
+      "bytes": 13922,
+      "mode": "0o644",
+      "sha256": "d2c4abc782eb0580e919481fa57df3eb9f9658c30749fcd95035260b8f0f8549"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 3279,
+      "mode": "0o644",
+      "sha256": "f5d9e08925e7d559b71fea4f1db043352a112d08bf8595856f1bc3d980ff2e3b"
+    },
+    {
+      "path": "docs/BACKENDS.md",
+      "bytes": 6908,
+      "mode": "0o644",
+      "sha256": "50c5926f713dedf944166abf2bce9377870b41ba870d809749beeab4b9d68165"
+    },
+    {
+      "path": "docs/COMPATIBILITY.md",
+      "bytes": 8774,
+      "mode": "0o644",
+      "sha256": "10fe73f18ec44ec5931e443783560cb261502b3c61aca7605ef941eb466cfd13"
+    },
+    {
+      "path": "docs/DATABASE_COMPATIBILITY.md",
+      "bytes": 4728,
+      "mode": "0o644",
+      "sha256": "2e80c0ae6af2786772dfff913cbdf607cf55d1387ac818e2fbc69cb7ce3ba6e6"
+    },
+    {
+      "path": "docs/DRIVERS.md",
+      "bytes": 9838,
+      "mode": "0o644",
+      "sha256": "3dc4e87d507ce2c164035bd7595feac0018037a0547ef6ee99402936cff781a7"
+    },
+    {
+      "path": "docs/ECOSYSTEM.md",
+      "bytes": 1818,
+      "mode": "0o644",
+      "sha256": "e770ff4351215704c44574cea97b16234c2c12a1b1fe786eb868ade2c32b68fc"
+    },
+    {
+      "path": "docs/FILESYSTEM.md",
+      "bytes": 3040,
+      "mode": "0o644",
+      "sha256": "b56e2ae0c34b7a31c967ae86bf087a5b49fb43a16e3f79b04fca0a60c4aab947"
+    },
+    {
+      "path": "docs/FPM_LIFECYCLE.md",
+      "bytes": 7584,
+      "mode": "0o644",
+      "sha256": "05653c5664392fc05091c711ec90f49cda6f63c07835a4ab4b637299f6f7e3e3"
+    },
+    {
+      "path": "docs/FUZZING.md",
+      "bytes": 7740,
+      "mode": "0o644",
+      "sha256": "7b3a11939e6d64b6b7278df05c70c638beac123ac13ee97fac861d7567b94021"
+    },
+    {
+      "path": "docs/HOOK_COMPATIBILITY.md",
+      "bytes": 5768,
+      "mode": "0o644",
+      "sha256": "62bbe56f8614302810c793810d0502f23a316ad8b7c1cc8870c6f52e79e836f8"
+    },
+    {
+      "path": "docs/HTTP_STREAMING.md",
+      "bytes": 6762,
+      "mode": "0o644",
+      "sha256": "fca5b78e651efa821afd03a459c0ea014e19f40aad5fd1edc51523572dbd7a86"
+    },
+    {
+      "path": "docs/INDEPENDENT_AUDIT.md",
+      "bytes": 43170,
+      "mode": "0o644",
+      "sha256": "138584a6f79dd2d953de0cd7a2008bd267c0624a0d65a5f0876dd584cee1fa6e"
+    },
+    {
+      "path": "docs/INSTALLATION.md",
+      "bytes": 8026,
+      "mode": "0o644",
+      "sha256": "2de030364cf4c23557a4e96dc6f2d7d8bd3d9e8deb0bfe7e36db98cfa79e30c8"
+    },
+    {
+      "path": "docs/LIMITATIONS.md",
+      "bytes": 4513,
+      "mode": "0o644",
+      "sha256": "d321291006dcd6ddfaa4eb92f505a9764560134e1a8b2bf7b7a00db7488522db"
+    },
+    {
+      "path": "docs/MYSQL_COMPATIBILITY.md",
+      "bytes": 4890,
+      "mode": "0o644",
+      "sha256": "92ee24e7f2e63c3b864253a3cdb1eebf9bac2f7fbe1a1e6cae3c4fe10a51c5ab"
+    },
+    {
+      "path": "docs/PERFORMANCE.md",
+      "bytes": 7502,
+      "mode": "0o644",
+      "sha256": "5d9de086823ee9b34ba2e000de743a7c59774ed4a079757c11bf900e91e6bd59"
+    },
+    {
+      "path": "docs/PERFORMANCE_PHASE3.md",
+      "bytes": 6076,
+      "mode": "0o644",
+      "sha256": "860ad89f559b0485e84885c772ad6a5ec93fa5ed465bb2809b74bd6398f177e7"
+    },
+    {
+      "path": "docs/RELEASE_READINESS.md",
+      "bytes": 11352,
+      "mode": "0o644",
+      "sha256": "5e559648c14c58ab5de98df3231e6ef68956c3dd789b34915e147fc6a76c3c96"
+    },
+    {
+      "path": "docs/RESEARCH.md",
+      "bytes": 7614,
+      "mode": "0o644",
+      "sha256": "eac62039363cf10db04850bb7e48b587b22b747b6ea2317727fa2cd9b2d01a24"
+    },
+    {
+      "path": "docs/RESOURCE_LIMITS.md",
+      "bytes": 6934,
+      "mode": "0o644",
+      "sha256": "c60a434a7b7f8b3b99839c4a4d797a55ce9eb0cca9a19f1706e378d15aa2c253"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "bytes": 9259,
+      "mode": "0o644",
+      "sha256": "9b5ad27d711b24a277310ec2f272375a418c6159708ca3a13d286adb5280b709"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "bytes": 8778,
+      "mode": "0o644",
+      "sha256": "244101a5c574d4d797b53034c9b30fc094cf6c3d59d99b94fcd8d1fe22384c7a"
+    },
+    {
+      "path": "docs/SOAK_TESTING.md",
+      "bytes": 7594,
+      "mode": "0o644",
+      "sha256": "f22b26600121e4167526d98280e2dfb9ffa9acfbe5a4f947a1e7d23ef8177c32"
+    },
+    {
+      "path": "docs/WEBSOCKET.md",
+      "bytes": 5531,
+      "mode": "0o644",
+      "sha256": "3e6f894445019fa4bb5c544142707402d6cae4c4400ec18ceffac402b16b723b"
+    },
+    {
+      "path": "docs/ZTS_COMPATIBILITY.md",
+      "bytes": 2382,
+      "mode": "0o644",
+      "sha256": "2e07d23b8e093b1920f27ea42d170048043c874d6c401fe95234f5569c5b32ca"
+    },
+    {
+      "path": "docs/audit/archive-manifest.json",
+      "bytes": 21243,
+      "mode": "0o644",
+      "sha256": "bb9d5b5bcd6ba1c63e375955557bc7663765833ea153e462fa9e21df3f6fdb80"
+    },
+    {
+      "path": "docs/audit/evidence.json",
+      "bytes": 96440,
+      "mode": "0o644",
+      "sha256": "6a45554e61dc86f491b446b80191fe61920635850939a8ec514d576ef77b792c"
+    },
+    {
+      "path": "docs/phase3/baseline.json",
+      "bytes": 261,
+      "mode": "0o644",
+      "sha256": "44dd572447dc47ce5421683477fb67e021ae9b7871f96290eb0f252ae21ad95f"
+    },
+    {
+      "path": "docs/phase3/connector-and-audit-regressions.json",
+      "bytes": 2870,
+      "mode": "0o644",
+      "sha256": "856e96032f6e6d26de351bf4b83a29bff348aaba9664861a03c486132ac2f7a8"
+    },
+    {
+      "path": "docs/phase3/database-summary.json",
+      "bytes": 2292,
+      "mode": "0o644",
+      "sha256": "c568de5d68c22cb94ccb8268d1fb81b413de8739ae4f0e8038414c20b0c0761b"
+    },
+    {
+      "path": "docs/phase3/deferred-oom-and-mappings.json",
+      "bytes": 7429,
+      "mode": "0o644",
+      "sha256": "db63c90fa983357762649a71ad375a1ce31e3ced7fe4fbb772f3dc2eba50476a"
+    },
+    {
+      "path": "docs/phase3/fpm-stream-investigation.json",
+      "bytes": 9418,
+      "mode": "0o644",
+      "sha256": "b4c7e5d089bdcff5d360b2ad56b4d2043c11955ebeeb60c97245e6a963fe8059"
+    },
+    {
+      "path": "docs/phase3/fpm-summary.json",
+      "bytes": 1686,
+      "mode": "0o644",
+      "sha256": "9efb6eed2869d6ba53f457862f50c94438d506d8c23856990b672ef8ff715d4a"
+    },
+    {
+      "path": "docs/phase3/frozen-mapped-validation.json",
+      "bytes": 12903,
+      "mode": "0o644",
+      "sha256": "c0538674de3602c8a7f5a01097bf0fb6efdfce19c586f5b3feb00571e0002860"
+    },
+    {
+      "path": "docs/phase3/http-streaming.json",
+      "bytes": 2947,
+      "mode": "0o644",
+      "sha256": "fa69249a56e8e09c17248e6455f050dc7e13b7f34755abe733a856e8aa3a1dd2"
+    },
+    {
+      "path": "docs/phase3/network-edges.json",
+      "bytes": 1321,
+      "mode": "0o644",
+      "sha256": "5f126a2799e78dee464bdc0691b41dc31b274b1641b17d25b00f3e608f8c985c"
+    },
+    {
+      "path": "docs/phase3/package-hardening-checkpoint.json",
+      "bytes": 2442,
+      "mode": "0o644",
+      "sha256": "0d94a7e4c2cecdb917bb2463a9457dc188a11257e235102773d0b7781eec2f0a"
+    },
+    {
+      "path": "docs/phase3/package-streaming-checkpoint.json",
+      "bytes": 15273,
+      "mode": "0o644",
+      "sha256": "6e745d1f64f9b98560a87a6ee00ace424349e8befd776db114edc41bf8e59f11"
+    },
+    {
+      "path": "docs/phase3/soak-1h.json",
+      "bytes": 3970,
+      "mode": "0o644",
+      "sha256": "f213cffff69448a405e5e5adac126de04d1842650a9570e1ca55b0e728ff5819"
+    },
+    {
+      "path": "docs/phase3/soak-final-5m.json",
+      "bytes": 3985,
+      "mode": "0o644",
+      "sha256": "e27aa50a4ce2ebd56eeaf41ef8a650ec33647346da70180b6ae2d85d61173166"
+    },
+    {
+      "path": "docs/phase3/soak-http-1h.json",
+      "bytes": 4628,
+      "mode": "0o644",
+      "sha256": "581059cbbc276d22a9b010c5c0eeeed701055ce6d871853d856723d1c4064469"
+    },
+    {
+      "path": "docs/phase3/soak-websocket-5m.json",
+      "bytes": 4680,
+      "mode": "0o644",
+      "sha256": "3b6660ef1e1b1a6c08a27efbf816889c81a543a1248988d31fdf4cea444d6916"
+    },
+    {
+      "path": "docs/phase3/validation.json",
+      "bytes": 3296,
+      "mode": "0o644",
+      "sha256": "87a6b8fef3e644fd74127394c56cd60df9d4852de82c63c49945f1f2c73a8a4c"
+    },
+    {
+      "path": "docs/phase3/websocket.json",
+      "bytes": 5983,
+      "mode": "0o644",
+      "sha256": "0e4531ffc24343a05e05f1f1a022e4088364aaa34b934af46f9f5305c0c378bf"
+    },
+    {
+      "path": "examples/hello.php",
+      "bytes": 305,
+      "mode": "0o644",
+      "sha256": "6e2ef659eda2297df170427f58fa37dd6c002c6fd99143c9e7e6d40311f9bdf6"
+    },
+    {
+      "path": "examples/jobs.php",
+      "bytes": 260,
+      "mode": "0o644",
+      "sha256": "a005f60a85e58e3e2863ab12b9feac19cd5b535bbf83efaf3896ea368628124c"
+    },
+    {
+      "path": "examples/process_pool.php",
+      "bytes": 345,
+      "mode": "0o644",
+      "sha256": "da7083d4d98bebb564e9fa5fa651c671ec0bf248f3083304aebf42b051c4c46d"
+    },
+    {
+      "path": "examples/python_concurrency_tour.php",
+      "bytes": 4274,
+      "mode": "0o644",
+      "sha256": "4e3050d68be748ba48b466dfd3d1b48a1935e0519f7d907c62dfbe2b85eaa8dc"
+    },
+    {
+      "path": "examples/transparent_hooks.php",
+      "bytes": 466,
+      "mode": "0o644",
+      "sha256": "331c276bfc649a4f81fc058c311c5d120c502434389b0a4e0b7558a7a0cec5a8"
+    },
+    {
+      "path": "ext/backend.c",
+      "bytes": 16049,
+      "mode": "0o644",
+      "sha256": "102d9df47db7864148f8a4d89a1db6d4caf807dc51eace6e01bdcc6307a8764e"
+    },
+    {
+      "path": "ext/compat/mariadb/ma_hash.h",
+      "bytes": 302,
+      "mode": "0o644",
+      "sha256": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40"
+    },
+    {
+      "path": "ext/config.m4",
+      "bytes": 1892,
+      "mode": "0o644",
+      "sha256": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb"
+    },
+    {
+      "path": "ext/driver_arginfo.h",
+      "bytes": 398,
+      "mode": "0o644",
+      "sha256": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5"
+    },
+    {
+      "path": "ext/memory.c",
+      "bytes": 5256,
+      "mode": "0o644",
+      "sha256": "83cf4cb7999b470a78be6e07b5cc97fe448ccabd8e01ab2321987b58fdf6bdab"
+    },
+    {
+      "path": "ext/mysql.c",
+      "bytes": 18860,
+      "mode": "0o644",
+      "sha256": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9"
+    },
+    {
+      "path": "ext/native.h",
+      "bytes": 3780,
+      "mode": "0o644",
+      "sha256": "e41f1802bcb402bffbad37841ffd935434276e5fc93cb7c69a181abc14169426"
+    },
+    {
+      "path": "ext/php_asyncara.c",
+      "bytes": 38441,
+      "mode": "0o644",
+      "sha256": "6c6f16a205e674b057040f8a52e8fbd67a3268fb5a9681d44cbdcf84dc5a1a1a"
+    },
+    {
+      "path": "ext/php_asyncara.h",
+      "bytes": 1026,
+      "mode": "0o644",
+      "sha256": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f"
+    },
+    {
+      "path": "ext/postgresql.c",
+      "bytes": 11658,
+      "mode": "0o644",
+      "sha256": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3"
+    },
+    {
+      "path": "ext/workers.c",
+      "bytes": 29791,
+      "mode": "0o644",
+      "sha256": "769c7cd15f0a3ab577c71398232554e906aeebe1ae9156f72fe37de220f7c428"
+    },
+    {
+      "path": "scripts/api-reference.php",
+      "bytes": 1884,
+      "mode": "0o644",
+      "sha256": "a9a732f19684495cadd2900fe98326ae9adc51dfddb2ea507aeeb5c0342fb6b2"
+    },
+    {
+      "path": "scripts/audit-allocations.sh",
+      "bytes": 581,
+      "mode": "0o755",
+      "sha256": "710d9c48c862280d2a4d94378ce513ba7da395fc1e6fd0b32946fc846012a9d8"
+    },
+    {
+      "path": "scripts/audit-fpm.py",
+      "bytes": 7984,
+      "mode": "0o644",
+      "sha256": "12af80f5bad18d3247eaef07d210e2bf088b1a6af379a93a23a765780506ceae"
+    },
+    {
+      "path": "scripts/audit.py",
+      "bytes": 3381,
+      "mode": "0o755",
+      "sha256": "38b9406a48f01c30200fce5494a134e87bb2bd96374c0945ec7182ece671252a"
+    },
+    {
+      "path": "scripts/bootstrap-local.sh",
+      "bytes": 1196,
+      "mode": "0o755",
+      "sha256": "916b00a627622ee3ca2563088774efcc6f384882855830874cb18b39d3aefc75"
+    },
+    {
+      "path": "scripts/build-local.sh",
+      "bytes": 1594,
+      "mode": "0o755",
+      "sha256": "0446d938399f0ac5385bb1b75a9860403c22cd9d54fd6d8770e80e263bea7a31"
+    },
+    {
+      "path": "scripts/build-test-connector.sh",
+      "bytes": 1330,
+      "mode": "0o755",
+      "sha256": "750a11590b16e8c075487b323166153f9599cad669a77f70295966e7bb4b33fe"
+    },
+    {
+      "path": "scripts/build-test-php.sh",
+      "bytes": 1114,
+      "mode": "0o755",
+      "sha256": "059d0d57794e16a2ff0c941158d49a83959e7b26d38f8b6e2772da1f3f945409"
+    },
+    {
+      "path": "scripts/check-build.py",
+      "bytes": 568,
+      "mode": "0o644",
+      "sha256": "9cdca6d9c6a37ba1fe69c95c81fcd26f12b247c65f209f24c8da392651dee3ad"
+    },
+    {
+      "path": "scripts/check-php-sdk.py",
+      "bytes": 621,
+      "mode": "0o644",
+      "sha256": "ad3437afefc4d36146fc9d8d423324aa5c75e438b9b535324399eed29a075346"
+    },
+    {
+      "path": "scripts/ci-run.sh",
+      "bytes": 510,
+      "mode": "0o755",
+      "sha256": "3612c213d3f650c96590c09713e2c90fcad86c630b33b61ca0076000110ae0b7"
+    },
+    {
+      "path": "scripts/fuzz-http-buffers.sh",
+      "bytes": 936,
+      "mode": "0o755",
+      "sha256": "24a5494f4372dfa3a95b0177be8ca92abff3313081813e0e1d490561b5e196ea"
+    },
+    {
+      "path": "scripts/fuzz-native.sh",
+      "bytes": 957,
+      "mode": "0o755",
+      "sha256": "f29944b572888bebd0e0c2c9a1d938ae367fc550b949b80214253b596b14fa12"
+    },
+    {
+      "path": "scripts/install-test-websockets.py",
+      "bytes": 1373,
+      "mode": "0o644",
+      "sha256": "453371600bb66ba8524bb7122b571042fcd529394ac7e7b20399b469a4948c31"
+    },
+    {
+      "path": "scripts/package.py",
+      "bytes": 2409,
+      "mode": "0o644",
+      "sha256": "8778bb4b0afd1400f94df53ba99fc77c3410a82cf1322ac117219655bf238a3f"
+    },
+    {
+      "path": "scripts/phpize-local.sh",
+      "bytes": 1482,
+      "mode": "0o755",
+      "sha256": "80d384e508dab3c6b1822b2575098107b8b0f30b15ed9ebfd62bbf111f38788e"
+    },
+    {
+      "path": "scripts/prepare-test-certs.sh",
+      "bytes": 457,
+      "mode": "0o755",
+      "sha256": "b0dd5c6e9bba5ae56efffca582bd09d0939b713c3824ec3407bb0db658500ab0"
+    },
+    {
+      "path": "scripts/relocate-tools.py",
+      "bytes": 1934,
+      "mode": "0o644",
+      "sha256": "ced74a2c8c33a8907997f75251d4019eba42fe1d0243fdcb8c25431721d55b01"
+    },
+    {
+      "path": "scripts/sanitize.sh",
+      "bytes": 501,
+      "mode": "0o755",
+      "sha256": "6c4afb7b5fa70afec7608fd11cbfdecd2dfe5cc63eabb6be5ebab9106ca112bc"
+    },
+    {
+      "path": "scripts/test-atomic-failures.sh",
+      "bytes": 565,
+      "mode": "0o755",
+      "sha256": "764f2c7852350e2725abc4041ae85b98f48263a2490f0fbbcda83ddb69d13ded"
+    },
+    {
+      "path": "scripts/test-connector-gate.sh",
+      "bytes": 551,
+      "mode": "0o755",
+      "sha256": "5802b5319ef6cc74850dc71251595510169b90a919768168aa2b6f8a93d4d8a1"
+    },
+    {
+      "path": "scripts/test-database-tls.py",
+      "bytes": 7239,
+      "mode": "0o755",
+      "sha256": "0e38461c3da6ca1a2c698d8dbf2c8c5fd3adf75efd6ece78281f1e7c1ab704d8"
+    },
+    {
+      "path": "scripts/test-databases.py",
+      "bytes": 3775,
+      "mode": "0o755",
+      "sha256": "ef1140c27bae4c6e695666f5ad4502bb1f6d761267d5694f69534779f45cc4b2"
+    },
+    {
+      "path": "scripts/test-fatal-memory.py",
+      "bytes": 1130,
+      "mode": "0o644",
+      "sha256": "7087122ac42a97b2d8c4b9e08716b63a5fa453428717613517d29bc31d808906"
+    },
+    {
+      "path": "scripts/test-fpm.py",
+      "bytes": 5486,
+      "mode": "0o755",
+      "sha256": "b271294a25401c9c1652005a88fe91680c6f330346726bbca470efc6e29d1b24"
+    },
+    {
+      "path": "scripts/test-native-mappings.sh",
+      "bytes": 850,
+      "mode": "0o755",
+      "sha256": "2dfff0092bfdea30ec886fa7ea8bfe24b6a7bf5cfbdff280a10dec10a95ac233"
+    },
+    {
+      "path": "scripts/test-network-edges.sh",
+      "bytes": 456,
+      "mode": "0o755",
+      "sha256": "2facfd387e78d3b0ba859fb8223584b9896d7a018021ff4cb79abda884cd902a"
+    },
+    {
+      "path": "scripts/test-websocket.sh",
+      "bytes": 426,
+      "mode": "0o755",
+      "sha256": "6ffae72902333ce0b960175be4748620ca19af6b32d07c56113613bbbbec5e71"
+    },
+    {
+      "path": "scripts/test-worker-signals.sh",
+      "bytes": 509,
+      "mode": "0o755",
+      "sha256": "eb148aa9d9a3a15526cd918c207fa07488ccb8b4a76fc0b5e70a5f0c5fda3fbf"
+    },
+    {
+      "path": "scripts/test.sh",
+      "bytes": 1619,
+      "mode": "0o755",
+      "sha256": "ee483eb6c5009874372e67b96adf434921adb9a013ca2390212c5d4177d7bdba"
+    },
+    {
+      "path": "scripts/thread-sanitize.sh",
+      "bytes": 626,
+      "mode": "0o755",
+      "sha256": "53141b5b51e626005f45193af0e98efdd9eb1326c0d79025c9236d748ae8df10"
+    },
+    {
+      "path": "scripts/valgrind.sh",
+      "bytes": 1745,
+      "mode": "0o755",
+      "sha256": "05e9050a6c62b10235e94dbc57c8456499ddadfdcc6a2e1b129d98e995ce6bf8"
+    },
+    {
+      "path": "src/Asyncara/Async.php",
+      "bytes": 6156,
+      "mode": "0o644",
+      "sha256": "6aef31a17e744b9ebb5d337b030ea19ff98f0932be82cb6a04ab52be7c821797"
+    },
+    {
+      "path": "src/Asyncara/Awaitable.php",
+      "bytes": 146,
+      "mode": "0o644",
+      "sha256": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d"
+    },
+    {
+      "path": "src/Asyncara/CancellationSource.php",
+      "bytes": 358,
+      "mode": "0o644",
+      "sha256": "6ee77f915835da75738c03b19d14873471d40dabf8c9fc5cdcb7ebd249e214ba"
+    },
+    {
+      "path": "src/Asyncara/CancellationToken.php",
+      "bytes": 1108,
+      "mode": "0o644",
+      "sha256": "44db0f2ca78a9f293d16336cd813b31a5b8fd8ac49a8b31d5ba41f31dffa157a"
+    },
+    {
+      "path": "src/Asyncara/Concurrency/Event.php",
+      "bytes": 603,
+      "mode": "0o644",
+      "sha256": "f8d87723ecfa2e11ae5d1023ad12246d325f594b53a9e29754ec3366c8532b78"
+    },
+    {
+      "path": "src/Asyncara/Concurrency/Lock.php",
+      "bytes": 935,
+      "mode": "0o644",
+      "sha256": "5cb86c5e61d6f7e20140681c606ca93422d2297f6f1454713fba215a59dbb62b"
+    },
+    {
+      "path": "src/Asyncara/Concurrency/Queue.php",
+      "bytes": 3529,
+      "mode": "0o644",
+      "sha256": "1c662e56d7157389e67336581fef4db561d845c3bbf7f4a6d84c1bb8bb938368"
+    },
+    {
+      "path": "src/Asyncara/Concurrency/Semaphore.php",
+      "bytes": 1317,
+      "mode": "0o644",
+      "sha256": "08815ad0269938d5e9de04345c903003c959d0fad34d193292dea33028bb3c38"
+    },
+    {
+      "path": "src/Asyncara/Context.php",
+      "bytes": 754,
+      "mode": "0o644",
+      "sha256": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2"
+    },
+    {
+      "path": "src/Asyncara/Database/Database.php",
+      "bytes": 671,
+      "mode": "0o644",
+      "sha256": "dfb3c4862bfea48558c1013473f79c7a026402dc925fb4bcbc512cf350e8275d"
+    },
+    {
+      "path": "src/Asyncara/Exception/CancelledException.php",
+      "bytes": 115,
+      "mode": "0o644",
+      "sha256": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39"
+    },
+    {
+      "path": "src/Asyncara/Exception/CapacityException.php",
+      "bytes": 195,
+      "mode": "0o644",
+      "sha256": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746"
+    },
+    {
+      "path": "src/Asyncara/Exception/DeadlockException.php",
+      "bytes": 114,
+      "mode": "0o644",
+      "sha256": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2"
+    },
+    {
+      "path": "src/Asyncara/Exception/FilesystemException.php",
+      "bytes": 476,
+      "mode": "0o644",
+      "sha256": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea"
+    },
+    {
+      "path": "src/Asyncara/Exception/OperationException.php",
+      "bytes": 115,
+      "mode": "0o644",
+      "sha256": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00"
+    },
+    {
+      "path": "src/Asyncara/Exception/QueueClosedException.php",
+      "bytes": 117,
+      "mode": "0o644",
+      "sha256": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4"
+    },
+    {
+      "path": "src/Asyncara/Exception/TimeoutException.php",
+      "bytes": 114,
+      "mode": "0o644",
+      "sha256": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa"
+    },
+    {
+      "path": "src/Asyncara/Exception/WorkerException.php",
+      "bytes": 112,
+      "mode": "0o644",
+      "sha256": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3"
+    },
+    {
+      "path": "src/Asyncara/Future.php",
+      "bytes": 3079,
+      "mode": "0o644",
+      "sha256": "ffe2f56e200f6d079aeddf32b33439947ea2e77702f95ace16fe84461a8a2c9d"
+    },
+    {
+      "path": "src/Asyncara/HTTP/HttpClient.php",
+      "bytes": 8953,
+      "mode": "0o644",
+      "sha256": "86bd022e446ad6fc11c71217d762ef60bbfd2831b66329bcd59f243d8b7f60fb"
+    },
+    {
+      "path": "src/Asyncara/HTTP/Psr/Client.php",
+      "bytes": 1913,
+      "mode": "0o644",
+      "sha256": "660c1c03440e041fd0e7127cca05ba5467b0b577d1089515926480f5eb1bb670"
+    },
+    {
+      "path": "src/Asyncara/HTTP/Psr/NetworkException.php",
+      "bytes": 498,
+      "mode": "0o644",
+      "sha256": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f"
+    },
+    {
+      "path": "src/Asyncara/HTTP/Psr/RequestException.php",
+      "bytes": 497,
+      "mode": "0o644",
+      "sha256": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84"
+    },
+    {
+      "path": "src/Asyncara/HTTP/Response.php",
+      "bytes": 719,
+      "mode": "0o644",
+      "sha256": "43e2b2d49b489067933d84afdebc7cf7fb93c40cd55800b1433a2c3d06a6f90c"
+    },
+    {
+      "path": "src/Asyncara/HTTP/ResponseHead.php",
+      "bytes": 290,
+      "mode": "0o644",
+      "sha256": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b"
+    },
+    {
+      "path": "src/Asyncara/HTTP/ResponseStream.php",
+      "bytes": 1061,
+      "mode": "0o644",
+      "sha256": "b98a83751e2ba940b11287aee3f1ff3cb96a74ca3b7fe145628b17cbe1d65ece"
+    },
+    {
+      "path": "src/Asyncara/Hook.php",
+      "bytes": 264,
+      "mode": "0o644",
+      "sha256": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654"
+    },
+    {
+      "path": "src/Asyncara/HookReport.php",
+      "bytes": 373,
+      "mode": "0o644",
+      "sha256": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0"
+    },
+    {
+      "path": "src/Asyncara/IO/Dns.php",
+      "bytes": 221,
+      "mode": "0o644",
+      "sha256": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63"
+    },
+    {
+      "path": "src/Asyncara/IO/File.php",
+      "bytes": 3083,
+      "mode": "0o644",
+      "sha256": "a6c5b8d0d605724460f504aa3693e8d377aab2df3696ee5d3f1846303d623cce"
+    },
+    {
+      "path": "src/Asyncara/IO/Files.php",
+      "bytes": 3863,
+      "mode": "0o644",
+      "sha256": "8e1217f97a14e2243922f9880bc556a245e1a760d3a60175e698805b4c27578a"
+    },
+    {
+      "path": "src/Asyncara/IO/TcpServer.php",
+      "bytes": 1583,
+      "mode": "0o644",
+      "sha256": "034c88539af9751da983ef6c2b220d11ccb2d11d2815ddf58f314fd18e6387c0"
+    },
+    {
+      "path": "src/Asyncara/IO/TcpStream.php",
+      "bytes": 4994,
+      "mode": "0o644",
+      "sha256": "b9dd4ef21394f3668bcec82f2e2cf830e855bb8807741f4b1dfb886483e90ab8"
+    },
+    {
+      "path": "src/Asyncara/IO/UdpSocket.php",
+      "bytes": 1954,
+      "mode": "0o644",
+      "sha256": "e2977e8f930dfd96e1d22337e5bdbbc133bf30d38c243eaefcb191aa2448f55d"
+    },
+    {
+      "path": "src/Asyncara/Internal/IpcFrame.php",
+      "bytes": 1973,
+      "mode": "0o644",
+      "sha256": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e"
+    },
+    {
+      "path": "src/Asyncara/Internal/JsonData.php",
+      "bytes": 921,
+      "mode": "0o644",
+      "sha256": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a"
+    },
+    {
+      "path": "src/Asyncara/MySQL/Connection.php",
+      "bytes": 4150,
+      "mode": "0o644",
+      "sha256": "7e0094cc47c47113a8d63e747064325db985aaf2c545f6d7d33d0ee0fb2981b9"
+    },
+    {
+      "path": "src/Asyncara/MySQL/Statement.php",
+      "bytes": 305,
+      "mode": "0o644",
+      "sha256": "53a8827b71c2d97c2c63245db12bd573fff7053b08a6110729cb2272d9f6eca2"
+    },
+    {
+      "path": "src/Asyncara/Pool/ConnectionPool.php",
+      "bytes": 3135,
+      "mode": "0o644",
+      "sha256": "3f464125c3bf88a94fbd06bf710b300338b31decf1036813631f4a8cebecfedb"
+    },
+    {
+      "path": "src/Asyncara/Pool/ProcessPool.php",
+      "bytes": 7165,
+      "mode": "0o644",
+      "sha256": "af0af3f7f8f0ed7fc13f0bd9806d298318543651cd05b925f123ff0e05e58556"
+    },
+    {
+      "path": "src/Asyncara/PostgreSQL/Connection.php",
+      "bytes": 6791,
+      "mode": "0o644",
+      "sha256": "892abb90c3a2d6707c273dd70fb4a3ea8602025dfda0758d0fa1c5035abaaaee"
+    },
+    {
+      "path": "src/Asyncara/PostgreSQL/Statement.php",
+      "bytes": 389,
+      "mode": "0o644",
+      "sha256": "398c32c0bb10c96e0647f500765e22f359ad82c36c2d22544355ff08aa6839e1"
+    },
+    {
+      "path": "src/Asyncara/Redis/Connection.php",
+      "bytes": 9143,
+      "mode": "0o644",
+      "sha256": "c75feb4727f93045d6ecb733d791e8da5171af0e9b7342fcd19809dce80e5e97"
+    },
+    {
+      "path": "src/Asyncara/Redis/ServerException.php",
+      "bytes": 114,
+      "mode": "0o644",
+      "sha256": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e"
+    },
+    {
+      "path": "src/Asyncara/Runtime.php",
+      "bytes": 3340,
+      "mode": "0o644",
+      "sha256": "2aa8cdc4d031270970745b9cf4501ddcf28a3323bad7ddfac8de6e5da75d1e95"
+    },
+    {
+      "path": "src/Asyncara/SQLite/Connection.php",
+      "bytes": 4330,
+      "mode": "0o644",
+      "sha256": "5b87683bc9d5c80532de1460c19b6d79d2c77b4774c170229482a85054a6feca"
+    },
+    {
+      "path": "src/Asyncara/SQLite/Statement.php",
+      "bytes": 397,
+      "mode": "0o644",
+      "sha256": "3effe5d775a641bdcb47bff590566a4e6bd4056c7c7c04c1d56bb187ffb1779c"
+    },
+    {
+      "path": "src/Asyncara/Scheduler.php",
+      "bytes": 14161,
+      "mode": "0o644",
+      "sha256": "36d99bcec7ba28d27004be0c98aec2aabf803330b129e9530b378d7cad661525"
+    },
+    {
+      "path": "src/Asyncara/Stream/AsyncStream.php",
+      "bytes": 1785,
+      "mode": "0o644",
+      "sha256": "d4557a5f4e8c25d96c53dd24612b11a0712e7a87048bcabceb5867950f67de40"
+    },
+    {
+      "path": "src/Asyncara/Stream/Emitter.php",
+      "bytes": 245,
+      "mode": "0o644",
+      "sha256": "8954d47c6e2432331691e83d0b1a929c69d1fe24a7693ae307014682c7b7dc7c"
+    },
+    {
+      "path": "src/Asyncara/Stream/ReadableStream.php",
+      "bytes": 282,
+      "mode": "0o644",
+      "sha256": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f"
+    },
+    {
+      "path": "src/Asyncara/Task.php",
+      "bytes": 1503,
+      "mode": "0o644",
+      "sha256": "102a7f13e434fa7cfd8b89c7b501e7bc1bd6f188ffe727bc808852d3f7fea79d"
+    },
+    {
+      "path": "src/Asyncara/TaskGroup.php",
+      "bytes": 1196,
+      "mode": "0o644",
+      "sha256": "02e4e7f28357a7f102479c91c52d79e1db57597d27d00661b78c92fc7b262c13"
+    },
+    {
+      "path": "src/Asyncara/TaskResult.php",
+      "bytes": 339,
+      "mode": "0o644",
+      "sha256": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7"
+    },
+    {
+      "path": "src/Asyncara/Timer.php",
+      "bytes": 334,
+      "mode": "0o644",
+      "sha256": "8a1c4398a8a6e61890ca28f7a751ba0aca8a3c43daac429ba01e3165ce4c6b8e"
+    },
+    {
+      "path": "src/Asyncara/WaitResult.php",
+      "bytes": 175,
+      "mode": "0o644",
+      "sha256": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/Client.php",
+      "bytes": 3429,
+      "mode": "0o644",
+      "sha256": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/Connection.php",
+      "bytes": 8635,
+      "mode": "0o644",
+      "sha256": "ed027281bbc262f43e788249895e303c8d1abcea0b60cfded42b1f2aff500528"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/FrameCodec.php",
+      "bytes": 4137,
+      "mode": "0o644",
+      "sha256": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/Handshake.php",
+      "bytes": 2931,
+      "mode": "0o644",
+      "sha256": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/Message.php",
+      "bytes": 188,
+      "mode": "0o644",
+      "sha256": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/ProtocolException.php",
+      "bytes": 293,
+      "mode": "0o644",
+      "sha256": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef"
+    },
+    {
+      "path": "src/Asyncara/WebSocket/Server.php",
+      "bytes": 2540,
+      "mode": "0o644",
+      "sha256": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375"
+    },
+    {
+      "path": "tests/audit/allocations.c",
+      "bytes": 1653,
+      "mode": "0o644",
+      "sha256": "1cbbdbddb02001b42c3ab7da6eb02eb9df8992922435651ed98fb60613f48892"
+    },
+    {
+      "path": "tests/audit/allocator_probe.c",
+      "bytes": 1078,
+      "mode": "0o644",
+      "sha256": "d0860e2812022238a1b0c627cf80c3b9344e9035db0d8e92c702fc245299c82f"
+    },
+    {
+      "path": "tests/audit/archive_install.py",
+      "bytes": 4228,
+      "mode": "0o644",
+      "sha256": "1d87f2b285917adcf1b416eff253953e2bc610b40aa4677fdb7ab262ba4073a6"
+    },
+    {
+      "path": "tests/audit/atomic_write.c",
+      "bytes": 3247,
+      "mode": "0o644",
+      "sha256": "8baca4f2157a2c0a68be287b0a8bf7b4b81644c9b623271c3b1ed1ea89d53756"
+    },
+    {
+      "path": "tests/audit/cpu_jobs.php",
+      "bytes": 493,
+      "mode": "0o644",
+      "sha256": "07f66edc5b63c3ce30b6d7227488369e65df3c01ef8c9d2e197c785886391f92"
+    },
+    {
+      "path": "tests/audit/databases.php",
+      "bytes": 4737,
+      "mode": "0o644",
+      "sha256": "d841b5103eff9b5730fe5695086070452c1edb89a08fa35502cf2e4e80e064a6"
+    },
+    {
+      "path": "tests/audit/fatal_batch.php",
+      "bytes": 332,
+      "mode": "0o644",
+      "sha256": "9bd41ff7ccf8f532a8775c5b9880b943a235b2fb7f8527e46c34af8c4afce729"
+    },
+    {
+      "path": "tests/audit/fatal_database.php",
+      "bytes": 596,
+      "mode": "0o644",
+      "sha256": "0660e29b453264469ff3811b21906336d22d5e281181b6626be8313bd2e65f6d"
+    },
+    {
+      "path": "tests/audit/fatal_pg.php",
+      "bytes": 472,
+      "mode": "0o644",
+      "sha256": "7e13d9adf2de061eb7501111dd2ef07b1fa2aa8cc62f77caa512a23a20bf896f"
+    },
+    {
+      "path": "tests/audit/fpm_allocator.py",
+      "bytes": 3044,
+      "mode": "0o644",
+      "sha256": "d4396232b097a16d41e13666c596c27429fe34f7c248ff6b33b91adc43c64bec"
+    },
+    {
+      "path": "tests/audit/fpm_request.php",
+      "bytes": 4257,
+      "mode": "0o644",
+      "sha256": "fca97379d8d697a079d64fa2468e188190e6f8b5d7fcfc8e08f6cbf5df62d7fc"
+    },
+    {
+      "path": "tests/audit/hooks.php",
+      "bytes": 1374,
+      "mode": "0o644",
+      "sha256": "952303783b2af5c6af6aa2d998803a5df7e8f4eddf5227427842676a51b5ecc9"
+    },
+    {
+      "path": "tests/audit/io.php",
+      "bytes": 2701,
+      "mode": "0o644",
+      "sha256": "f44ac1271e40c359a0c8d94b23096abcdc17a3448e841dc9341494c228e99f87"
+    },
+    {
+      "path": "tests/audit/io_server.py",
+      "bytes": 1695,
+      "mode": "0o644",
+      "sha256": "471a1703ef56e98667587c1b6174a953ffcd2293b0c3eb9bb04216fb0a12ecb2"
+    },
+    {
+      "path": "tests/audit/libpq_tls_unload.c",
+      "bytes": 883,
+      "mode": "0o644",
+      "sha256": "00d1e03cb6140f304cce54f4947403eb7320369e32419ef8dded77369cfba670"
+    },
+    {
+      "path": "tests/audit/mappings.c",
+      "bytes": 2437,
+      "mode": "0o644",
+      "sha256": "20b777b8170d510c463c5f58dd7fa434660a724b9747a46c3e319bc28b0f63f9"
+    },
+    {
+      "path": "tests/audit/package_repro.py",
+      "bytes": 1528,
+      "mode": "0o644",
+      "sha256": "ec1cabd6313be50f5ef95506e8df4916fff4a0a6ca0b22b991c6f6bb85a0b4a1"
+    },
+    {
+      "path": "tests/audit/process_cpu.php",
+      "bytes": 883,
+      "mode": "0o644",
+      "sha256": "0903d8b9dc186020068e244a326fc00c95d8f7b145b73b3c288d74574f8da558"
+    },
+    {
+      "path": "tests/audit/regressions.php",
+      "bytes": 6565,
+      "mode": "0o644",
+      "sha256": "f826a188be3bd8a0c13c4d0a2c0e4cf65479f7de1c99f4c4d88e9e0d7d104989"
+    },
+    {
+      "path": "tests/audit/slow_files.php",
+      "bytes": 1280,
+      "mode": "0o644",
+      "sha256": "2c4cd3c45b37eeee2085061948e62b9bbb53007498b48b684219fdf4fd8833b6"
+    },
+    {
+      "path": "tests/audit/slow_io.c",
+      "bytes": 2023,
+      "mode": "0o644",
+      "sha256": "fc2441e37dec144dcd94a0320b046b14df87166bfb7f0030d8bcb3674005dc5f"
+    },
+    {
+      "path": "tests/audit/thread_reaping.c",
+      "bytes": 1154,
+      "mode": "0o644",
+      "sha256": "eee6f7ccece55424bf4dc12e32a2e415eb9ee5add41b47451618c5cb180b7dc1"
+    },
+    {
+      "path": "tests/audit/worker_signals.c",
+      "bytes": 1364,
+      "mode": "0o644",
+      "sha256": "3011338c9f6bdcb6837e5746c472ce80a748c7a7a1a7a46e234131ccafb5be55"
+    },
+    {
+      "path": "tests/database/connector_gate.php",
+      "bytes": 627,
+      "mode": "0o644",
+      "sha256": "75a0ade2bcb58892014700a83c90fe4e93e200ca12d58c6a420a117da51c1b24"
+    },
+    {
+      "path": "tests/database/resource_bounds.php",
+      "bytes": 2453,
+      "mode": "0o644",
+      "sha256": "cf16d9541c584250bb9c0334a112ad1fca2bb281ed3a28407ec3131bb8d43ce9"
+    },
+    {
+      "path": "tests/database/tls.php",
+      "bytes": 9147,
+      "mode": "0o644",
+      "sha256": "29ddba75fa1e92aeffaf0b59427139ecf634920abcc619e363257ebfe570a8e0"
+    },
+    {
+      "path": "tests/databases.php",
+      "bytes": 5888,
+      "mode": "0o644",
+      "sha256": "a4a94cbb9464a45a9be60bdd257441a1113f5243c5d4b532ec44405246f0da6f"
+    },
+    {
+      "path": "tests/dns_deadline.php",
+      "bytes": 1174,
+      "mode": "0o644",
+      "sha256": "66cc480061328366f65277a16a9200e9943e9f31f3c19a16e0474cf8cb466a19"
+    },
+    {
+      "path": "tests/fatal_memory.php",
+      "bytes": 391,
+      "mode": "0o644",
+      "sha256": "7b2bad098f6e59dab5caa2d05e51ba35400934ddde12eddf364efe468a92c9a8"
+    },
+    {
+      "path": "tests/file_handles.php",
+      "bytes": 4864,
+      "mode": "0o644",
+      "sha256": "13f6d71f8ad569c23aa9e9228c6fc50653fea1c020f1beba3bee134848f42abe"
+    },
+    {
+      "path": "tests/filesystem_atomic.php",
+      "bytes": 3602,
+      "mode": "0o644",
+      "sha256": "053085022e6a689af52d05388ae06a5620809df5abadd83185279f194ac6a9c6"
+    },
+    {
+      "path": "tests/filesystem_buffer_ownership.php",
+      "bytes": 1257,
+      "mode": "0o644",
+      "sha256": "7c45518963c428a6305442056252825af527ef8d83899f01bbd1d103d7d3a5ac"
+    },
+    {
+      "path": "tests/fixtures/dns_delay.c",
+      "bytes": 616,
+      "mode": "0o644",
+      "sha256": "f65e4864d8a7a18595b90b68ed6c015f891dc180d9ec65c98c3a1f4d8efa1cc7"
+    },
+    {
+      "path": "tests/fixtures/http_server.py",
+      "bytes": 2957,
+      "mode": "0o644",
+      "sha256": "4cb0ca80a4473f8a16baa59a6bdb341e1216c0f7de7d85440f872c9bbef9c0b8"
+    },
+    {
+      "path": "tests/fixtures/http_stream_server.py",
+      "bytes": 5699,
+      "mode": "0o644",
+      "sha256": "20a60662144721ce269938ff8ab70a4d883316882d429959728c034012ed0a9e"
+    },
+    {
+      "path": "tests/fixtures/jobs.php",
+      "bytes": 1193,
+      "mode": "0o644",
+      "sha256": "9ede7d1396b26c344eb3875e1cb80b3027c8811b58a92bb7c044ccd1b987ba13"
+    },
+    {
+      "path": "tests/fixtures/network_edges.py",
+      "bytes": 2531,
+      "mode": "0o644",
+      "sha256": "6499747cfad97011ae96c9cc8cdf7fbab65abe08d2396573e2b4f01392912ef9"
+    },
+    {
+      "path": "tests/fixtures/websocket_peer.py",
+      "bytes": 5422,
+      "mode": "0o644",
+      "sha256": "9e9b49a47bf159ec2410e0c227b0b1b123beea502bc7d5f01f0151832bcef7fc"
+    },
+    {
+      "path": "tests/fpm_request.php",
+      "bytes": 1464,
+      "mode": "0o644",
+      "sha256": "fc1f831f9cf741d24f5396e1d911f730aa0ebf3a95c086d6a7cdcf0969739778"
+    },
+    {
+      "path": "tests/fuzz/corpus/http-buffers/alloc-cancel",
+      "bytes": 14,
+      "mode": "0o644",
+      "sha256": "5254b401ba3eef4bc7d0746ce5746e19196249d4ff03242e8729f2c1dd90fc74"
+    },
+    {
+      "path": "tests/fuzz/corpus/http-buffers/pause-redeliver",
+      "bytes": 14,
+      "mode": "0o644",
+      "sha256": "6bce6b263f88f4e16578c42c87d37a796d60fc2cce2857753bd0311124496d31"
+    },
+    {
+      "path": "tests/fuzz/corpus/http-buffers/send-eof",
+      "bytes": 17,
+      "mode": "0o644",
+      "sha256": "996474ab352c68dca093f6a38b964c6cc19ecdb4072ea16925ab0dfb08c8ec64"
+    },
+    {
+      "path": "tests/fuzz/corpus/native/budget",
+      "bytes": 146,
+      "mode": "0o644",
+      "sha256": "627354f5f4ffd101f23fc95530d6a57867deb5691aa22112b5870ef4c7b46343"
+    },
+    {
+      "path": "tests/fuzz/corpus/native/failures",
+      "bytes": 11,
+      "mode": "0o644",
+      "sha256": "6d1526ac48c2a1fd0cf76033a7c628f7acae7913ad922b8b90cce3aa572efa5b"
+    },
+    {
+      "path": "tests/fuzz/corpus/native/ownership",
+      "bytes": 128,
+      "mode": "0o644",
+      "sha256": "471fb943aa23c511f6f72f8d1652d9c880cfa392ad80503120547703e56a2be5"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/aggregate-overflow.resp",
+      "bytes": 9,
+      "mode": "0o644",
+      "sha256": "83d4c77d5a47527e2457cd807916acddc697259d2b083dc6562be25c0e01ed50"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/array.resp",
+      "bytes": 13,
+      "mode": "0o644",
+      "sha256": "87e1d5a97413dec64b29f7c088aed72b7625a24a54eeb8f19df5a0583eb7c0c0"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bad-terminator.resp",
+      "bytes": 7,
+      "mode": "0o644",
+      "sha256": "23e88cad141aefbd265f5e21f282fb5396c0b1107d6b83d657eba2090082644a"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bigint-plus.resp",
+      "bytes": 28,
+      "mode": "0o644",
+      "sha256": "2ad00b52bf27f69b04a97f400f4c6e77d9625b159845005c92c1ec9b8b9c36bd"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bool.resp",
+      "bytes": 4,
+      "mode": "0o644",
+      "sha256": "d1840e2c3b4f57e7fda3ac76cb703a66d922ad2bbca996d10af1b2604aa1738c"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bulk-overflow.resp",
+      "bytes": 23,
+      "mode": "0o644",
+      "sha256": "46488fbb2be1bda6a45bfb6740c40801d0433821eb73b48dec7f6dabe821bbda"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bulk-truncated.resp",
+      "bytes": 7,
+      "mode": "0o644",
+      "sha256": "bf1d88cd61f4eee2554fe8e40ae77c0ac60e09ed0592b2eee057a6f02d92340e"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/bulk.resp",
+      "bytes": 9,
+      "mode": "0o644",
+      "sha256": "5569604770da547c979d69c43094f059a2812dbdc3bfd8b320c40a6702b7f046"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/double-overflow.resp",
+      "bytes": 8,
+      "mode": "0o644",
+      "sha256": "acfc88185037587f654510d4c73cca779f17f615eed2042ae4d5b45e728d45ef"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/double-space.resp",
+      "bytes": 7,
+      "mode": "0o644",
+      "sha256": "9fc8f7e3c07ad8e9dafd9fa1e6df755a4357ed56ee6935f9a88b357dce4baae4"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/double.resp",
+      "bytes": 10,
+      "mode": "0o644",
+      "sha256": "86145df2dd6945ea9ac2d485e0765adeefdbecc99deb843318c206ecaefb8797"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/int-max.resp",
+      "bytes": 22,
+      "mode": "0o644",
+      "sha256": "9a8f4574b09c12fd53c18732001587636680606e89bf1463cd23a920fabf2ede"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/int-min.resp",
+      "bytes": 23,
+      "mode": "0o644",
+      "sha256": "057f31fbed0c6e4f4b647151e50bd549fce993cb679be932ff4cec51b1aed3cf"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/int-overflow.resp",
+      "bytes": 22,
+      "mode": "0o644",
+      "sha256": "b2907ddcd4d361335161058c53a36c4df7eb5ea156bffee5076aa1fa4a94f1a0"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/int-plus.resp",
+      "bytes": 6,
+      "mode": "0o644",
+      "sha256": "9d636e969d41ba487e2988498bf116eaa374696c7e34e0d2d7dda05c003169ff"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/int-underflow.resp",
+      "bytes": 23,
+      "mode": "0o644",
+      "sha256": "1b4eb26e09f96398f96fa9544fd2f7394fa47a7501abdb52685f62f9829475ac"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/line-oversized.resp",
+      "bytes": 65540,
+      "mode": "0o644",
+      "sha256": "01f586fb4b3ee5ebb485c5125902177d13f6e6f6a6f5ff1ca307e95fc82f0ad0"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/manifest.json",
+      "bytes": 1120,
+      "mode": "0o644",
+      "sha256": "31625a0910cf255cd4f57654d4e9702105f67d2235b7af1b9a9ea1ed918837e9"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/nesting.resp",
+      "bytes": 140,
+      "mode": "0o644",
+      "sha256": "5c7a1f134482918b9b868d6e386c4f76973f51de61770d7555eda2a43496040e"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/null.resp",
+      "bytes": 5,
+      "mode": "0o644",
+      "sha256": "8b731f85850fac625747bb8f9e4d99f93a230f8ba98898830ade3698b666fc6b"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/simple-cr.resp",
+      "bytes": 6,
+      "mode": "0o644",
+      "sha256": "2763c7c85a2beb7ee41a80c61f5d54581fe3f6d0344a89f5d30d26647ac459f2"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/simple-lf.resp",
+      "bytes": 6,
+      "mode": "0o644",
+      "sha256": "6b6563a3e5f21b523227bb957dd0127d97b1212f51dc5c340cab3b4d26542974"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/unsupported-attributes.resp",
+      "bytes": 4,
+      "mode": "0o644",
+      "sha256": "f5ffb4af4c9ae3700d593783cd5e7859db5a9c643143119cc3c5cc474b431eee"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/verbatim-missing-colon.resp",
+      "bytes": 13,
+      "mode": "0o644",
+      "sha256": "e020f39be2e1f87da7744d1ff3a77dca04484e8fb2bd5aec248bd919b99ee4bf"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/verbatim.resp",
+      "bytes": 13,
+      "mode": "0o644",
+      "sha256": "042c4b4dd1b74025fe9d6decc69fef629d19d84c845e4fd1acbd3442aa876c0d"
+    },
+    {
+      "path": "tests/fuzz/corpus/resp/zero.resp",
+      "bytes": 4,
+      "mode": "0o644",
+      "sha256": "f3b4cb77478ec9e7388d907937dad039f9204482b7038f21ccabce096918ea23"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/bad-utf8-close",
+      "bytes": 5,
+      "mode": "0o644",
+      "sha256": "ae67dc9b5c5b10634ff935f4529819975ac73c96825bfe12ba053b4eb1b561a5"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/close",
+      "bytes": 4,
+      "mode": "0o644",
+      "sha256": "65b3ad9d667d74c69019fc7f9f135460c01eb550f7690e301df3e0f9b2714399"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/empty",
+      "bytes": 2,
+      "mode": "0o644",
+      "sha256": "9037f92bc91fdcc764a89d9144c341d887ffc83351cc8cf0530555c89920a47d"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/fragmented",
+      "bytes": 6,
+      "mode": "0o644",
+      "sha256": "0ad54710f173fa383bcd1a1068ff7d05104ed3dda9dfd8edb3b458b88d88056f"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/masked",
+      "bytes": 10,
+      "mode": "0o644",
+      "sha256": "b519256236e3a87aebdd5fe0f008f3f0fc56bbb97d6e7dc7fe18f9771e7f7ad0"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/nonminimal",
+      "bytes": 5,
+      "mode": "0o644",
+      "sha256": "601c05d36409be2e3c8aa71b468e47fee58cf4d299b0850c007a18355f558577"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/oversize",
+      "bytes": 10,
+      "mode": "0o644",
+      "sha256": "7096952f2565e0df2fb1206b5545c6c3ae461de151ccca3d0669f4bdb1a0e200"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/ping",
+      "bytes": 3,
+      "mode": "0o644",
+      "sha256": "12d608933058fc0750278b6c3f7d128d13105733c375fc218390dc79472a92a0"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/signed",
+      "bytes": 10,
+      "mode": "0o644",
+      "sha256": "bb8c6f95f14a7e82d191703d97620f431e5cd385d1c45f7314ceff4745e7491f"
+    },
+    {
+      "path": "tests/fuzz/corpus/websocket/text",
+      "bytes": 6,
+      "mode": "0o644",
+      "sha256": "e9662f055bc01700d61f97333384d0707c2a54708474d2365772977b23848d0c"
+    },
+    {
+      "path": "tests/fuzz/http_buffers.c",
+      "bytes": 2684,
+      "mode": "0o644",
+      "sha256": "b698cbf82a5e260f3ef45cfab6d93f22d5ac64b81ac83e2133da9469813d6be3"
+    },
+    {
+      "path": "tests/fuzz/ipc_jobs.php",
+      "bytes": 296,
+      "mode": "0o644",
+      "sha256": "e999486b34557fbf070303024cf7675c5e33027653d559793af9f3da453eb175"
+    },
+    {
+      "path": "tests/fuzz/ipc_regressions.php",
+      "bytes": 1393,
+      "mode": "0o644",
+      "sha256": "df191cf364909eb1dac867ddbb4ce8705524024d47a42684ce503a0da583b0f5"
+    },
+    {
+      "path": "tests/fuzz/native_allocations.c",
+      "bytes": 2043,
+      "mode": "0o644",
+      "sha256": "1c06f3750a97a2bafed7815086215f957444f2a6beeabc1225b5fbe2019b3250"
+    },
+    {
+      "path": "tests/fuzz/protocol_mutation.php",
+      "bytes": 2696,
+      "mode": "0o644",
+      "sha256": "e9de9ab2e4b64a9e44ef0cfd5c69d9661b06082c996dc798df6f5437a4b2694e"
+    },
+    {
+      "path": "tests/fuzz/resp_harness.php",
+      "bytes": 698,
+      "mode": "0o644",
+      "sha256": "9fca8bd7c5491065df86ada25a9bbeaf3c314eb454cde7c9eb4087f29e40c61a"
+    },
+    {
+      "path": "tests/fuzz/resp_regressions.php",
+      "bytes": 1198,
+      "mode": "0o644",
+      "sha256": "5ae8bc9ee08bd7b707bf9da761a27a2ae23161af94ff605aafe6dcba31ad0688"
+    },
+    {
+      "path": "tests/fuzz/websocket_mutation.php",
+      "bytes": 2824,
+      "mode": "0o644",
+      "sha256": "60a50f17428151aafcdd1f5ef4db0175517c0930257d4f7f95b60c43b2684751"
+    },
+    {
+      "path": "tests/http_stream_shutdown.php",
+      "bytes": 639,
+      "mode": "0o644",
+      "sha256": "82b963747fa5c9a4bb416baae9d9c8a73d70c43fe78ab7c0a41925d62c9fd249"
+    },
+    {
+      "path": "tests/http_streaming.php",
+      "bytes": 11560,
+      "mode": "0o644",
+      "sha256": "e61810cc5b8e65ccf588910afffab9b721fac90e561221a675da7c8764950dc5"
+    },
+    {
+      "path": "tests/native_limits.php",
+      "bytes": 1564,
+      "mode": "0o644",
+      "sha256": "6b9674b957066ea67e0805ad25c926efd7ace968c2a2d44a5bd5b38c82d4118a"
+    },
+    {
+      "path": "tests/native_memory.php",
+      "bytes": 1656,
+      "mode": "0o644",
+      "sha256": "bc740fa230d82a7fc8409522e08a89c6cf41fa581dee80d4d9e4fd638ad45fa6"
+    },
+    {
+      "path": "tests/native_sanitizer.c",
+      "bytes": 3914,
+      "mode": "0o644",
+      "sha256": "3f692cf0018a5c4a72de2031c20643cba5a927928f71213bf95b1ba019055799"
+    },
+    {
+      "path": "tests/network_edges.php",
+      "bytes": 5220,
+      "mode": "0o644",
+      "sha256": "3e7e52cc41fd4366c67372cc0f6875fdabf9fd50a31acb1909510d8f98b991c6"
+    },
+    {
+      "path": "tests/network_memory.php",
+      "bytes": 1996,
+      "mode": "0o644",
+      "sha256": "d248d2e3c21c787e0ad863783d4d397c06ca74f537f16be637d243fea8f7d38a"
+    },
+    {
+      "path": "tests/request_shutdown.php",
+      "bytes": 359,
+      "mode": "0o644",
+      "sha256": "4dee38eff4eae7e3039af7e398edfffd3747438362d94eac48baca1d2106bbbc"
+    },
+    {
+      "path": "tests/resource_bounds.php",
+      "bytes": 4001,
+      "mode": "0o644",
+      "sha256": "c4c0b7d7c2a5f09880ba7a2342c0b2461b3c65fb9ea4dd0841952352ae04ad7a"
+    },
+    {
+      "path": "tests/run.php",
+      "bytes": 19243,
+      "mode": "0o644",
+      "sha256": "60a8861d11c263c6d7d8129ccd847fa054c7169c27d29cad8679692d936b8369"
+    },
+    {
+      "path": "tests/soak/fpm.py",
+      "bytes": 10378,
+      "mode": "0o644",
+      "sha256": "e84d347162b9d582929a6a115f19f5e3a15eaa30d41bba0351be0abf36f7edc4"
+    },
+    {
+      "path": "tests/soak/run.py",
+      "bytes": 6907,
+      "mode": "0o755",
+      "sha256": "7cc30cfd7e95009c07dc6858a558cb30a5d7a60d9ccfd54b999e02502d64b6bd"
+    },
+    {
+      "path": "tests/soak/websocket.php",
+      "bytes": 3597,
+      "mode": "0o644",
+      "sha256": "82838bbcc0e0c217e075a71e5012d9a9773beafb0f727e41f11cbbf59ab8e5b5"
+    },
+    {
+      "path": "tests/soak/workload.php",
+      "bytes": 7962,
+      "mode": "0o644",
+      "sha256": "02d0b13b0623131f8d1ce1f41374cf93f5702e5d91d99af7145e667ec50e7806"
+    },
+    {
+      "path": "tests/stream_readiness.php",
+      "bytes": 1305,
+      "mode": "0o644",
+      "sha256": "3fcbc10d33bdd6f4bddeefab7c543fe0ebcb47d156e4b4fd1b336f712c7bcdee"
+    },
+    {
+      "path": "tests/stress.php",
+      "bytes": 1696,
+      "mode": "0o644",
+      "sha256": "a2feee26cb09803223a765a7a7ddc1aa87a3c5fe7522174149f2a31b250fd805"
+    },
+    {
+      "path": "tests/websocket.php",
+      "bytes": 7711,
+      "mode": "0o644",
+      "sha256": "fae373356ab6cf294e3c0aa3d68a675db100e07fc5abb8730ce1ca56b06bfabb"
+    },
+    {
+      "path": "tests/websocket_protocol.php",
+      "bytes": 1836,
+      "mode": "0o644",
+      "sha256": "986e32e97f95dde44c023a7fb13fb16c8f17b75cfea094d3ad0b4c843ce7de65"
+    }
+  ],
+  "reproducibility": "Byte-identical clean private-umask checkout; all archive bytes compared with Git source",
+  "installedValidation": {
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase3-r5.tar.gz",
+    "sha256": "b0f544b3da61789a9cc649a8bc24869308787c9c63ca37358afd69e39ef1ec38",
+    "variants": [
+      {
+        "name": "8.3",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 20.92035921383649,
+            "log": "8.3-phpize.log",
+            "sha256": "6bc7877f4ae314f82fbaa5709f833af7240e67e8771aabe98e6c7cbad8eb2193"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 0.7064983050804585,
+            "log": "8.3-install.log",
+            "sha256": "63ea9b556235ca046c58e0c66bc0c5c80b69426175262fc829022115c710489a"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.033918516943231225,
+            "log": "8.3-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 0.9049764110241085,
+            "log": "8.3-composer.log",
+            "sha256": "b0693d259af66f3d23758d0e59d7a1d9a3face99b77717e8fc644e7b944ef259"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.2997367351781577,
+            "log": "8.3-peer.log",
+            "sha256": "66ca5d8a9bafdc352ac19ac64329b6adf5b2d57de59b3f8c5e925d88a9856967"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 25.25454518594779,
+            "log": "8.3-tests.log",
+            "sha256": "7cc4e94a6242a241595ce4ca3d1e8064d0160224cb632addf6efea5b583cd325"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 20.701310622040182,
+            "log": "8.3-poll.log",
+            "sha256": "474396f7f46e7b16749ecff4b320178cc2869e422d7db78946ed4df09765f847"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 3.550621831091121,
+            "log": "8.3-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 12.92657239199616,
+            "log": "8.3-network.log",
+            "sha256": "6ba6952eec5692c3672ccef38ec1548176a89fba58193360beb007592db205a6"
+          }
+        ],
+        "sourceFiles": 304,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.3-dev_8.3.36-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "c56578281d97977ab0a7df8f9e6ff733f917c600fb234c40fa7c30dc639e26ab"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.3/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20230831/asyncara.so",
+        "extensionSha256": "0b175c30b962359fea9896524c091d61b52758bc0f64f4449bd4d869712d3575",
+        "status": "PASS"
+      },
+      {
+        "name": "8.4",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 21.75441980897449,
+            "log": "8.4-phpize.log",
+            "sha256": "2520bd6e9a0339ae71925414431defff497e4345c1a07b447c2fbadabaf93dbd"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 0.5083345798775554,
+            "log": "8.4-install.log",
+            "sha256": "3c403f2eb31f98e224455b3b1bc25eda691d74b5b312e648f2060bb1023de2e0"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.06587922293692827,
+            "log": "8.4-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 1.2938987358938903,
+            "log": "8.4-composer.log",
+            "sha256": "b0693d259af66f3d23758d0e59d7a1d9a3face99b77717e8fc644e7b944ef259"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.4701868649572134,
+            "log": "8.4-peer.log",
+            "sha256": "fdc1fec9a9aa63c07d3c35a5f13f0164dd46843ebbc5f8a34d24ea341987bd95"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 20.559909221017733,
+            "log": "8.4-tests.log",
+            "sha256": "4301b212da2b3c5417eff7eb424c7efe01179af48eb4891b114e937b1ee0389d"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 17.83547625481151,
+            "log": "8.4-poll.log",
+            "sha256": "46cc041b635cc296712ae2daf31fb74aa5e09e27046b87a79ed5397c08751f08"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 3.5099215591326356,
+            "log": "8.4-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 12.049284538021311,
+            "log": "8.4-network.log",
+            "sha256": "9fb82faa3a4f28aa57dc7125660ff732f95c73fb272e9e9b5011a8bfd64c5b97"
+          }
+        ],
+        "sourceFiles": 304,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.4-dev_8.4.27-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "794302300b2a412073623628395d73685488b9dc8bca606fcf4efd1117694b95"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.4/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20240924/asyncara.so",
+        "extensionSha256": "6464979d2b152e5eda8bd207b8e5a96c18fd493c12c598033d40eaa004063048",
+        "status": "PASS"
+      },
+      {
+        "name": "8.5",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 20.44976174389012,
+            "log": "8.5-phpize.log",
+            "sha256": "6e46cc4953649b5a836cbcd4c239a9d8c03617fada5473339e2312c986177347"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 0.5238712539430708,
+            "log": "8.5-install.log",
+            "sha256": "f2e8c729d8f650aa9ee09b20e83e06f209b73d397dd20ee92abe6aca25358b35"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.2070791779551655,
+            "log": "8.5-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 1.2477730959653854,
+            "log": "8.5-composer.log",
+            "sha256": "b0693d259af66f3d23758d0e59d7a1d9a3face99b77717e8fc644e7b944ef259"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.6029148690868169,
+            "log": "8.5-peer.log",
+            "sha256": "829ff9a132d08c4a12bbdf068ba8cb3081c785f706057051af43509acb455eef"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 21.49995137192309,
+            "log": "8.5-tests.log",
+            "sha256": "65ca98cc9f575cee2fe77742791fcad4e029d7ab762044f1e36b819aa4cd9c19"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 21.3989888089709,
+            "log": "8.5-poll.log",
+            "sha256": "06e43beb59b6441895889242f650c6c067e461a1ac4a7ce776f9db2bfe3d4388"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 3.9333011279813945,
+            "log": "8.5-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 11.862575663020834,
+            "log": "8.5-network.log",
+            "sha256": "030f0309865b4380976deda0ab8e595fa282555aeddf7050b95b96d1d98b51d9"
+          }
+        ],
+        "sourceFiles": 304,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.5-dev_8.5.12-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "079ea91fa76a77627bd5cdb4727b0e4c2b56ae18bbea364b9c6a570dab911c9d"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20250925/asyncara.so",
+        "extensionSha256": "9bff21fbdb52479ec79f30be00d5da1ec58e4e5817164a2ab0a88ab5aa481607",
+        "status": "PASS"
+      }
+    ],
+    "status": "PASS"
+  },
+  "installedExtraValidation": [
+    {
+      "name": "audit",
+      "exit": 0,
+      "seconds": 16.38900755904615,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-audit.log",
+      "sha256": "72a3d12443d5ffc2f94532990ad0e68b0faf92ed3cca8d44be38d58ac0323a03"
+    },
+    {
+      "name": "databases",
+      "exit": 0,
+      "seconds": 7.306762136053294,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-databases.log",
+      "sha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+    },
+    {
+      "name": "database-bounds",
+      "exit": 0,
+      "seconds": 1.8037551420275122,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-database-bounds.log",
+      "sha256": "2f667be744592abfe2412d609dc6ce004dd2ed3eb9ffa300b43bc57cc43e4c73"
+    },
+    {
+      "name": "database-audit",
+      "exit": 0,
+      "seconds": 2.03360152291134,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-database-audit.log",
+      "sha256": "74916415f22c2d9c05df860626e3ccfa66347076ccfa0b2e0df9f38544f16b70"
+    },
+    {
+      "name": "fpm",
+      "exit": 0,
+      "seconds": 8.347539657028392,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-fpm.log",
+      "sha256": "5ddf2d16f3b4ed4533dc152102c10cf00551cc97aae11c21ec97198d6bd76cd8"
+    },
+    {
+      "name": "oracle-tls",
+      "exit": 0,
+      "seconds": 25.301673800917342,
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.5-extra-oracle-tls.log",
+      "sha256": "cb56eafdb5038660a7533fde7678d4acdde98e696f6419addf36a14aec3c19a2"
+    }
+  ],
+  "additionalAudits": {
+    "8.3": {
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.3-extra-audit.log",
+      "sha256": "808dc203d567ffddee5b7dec79e515b4b10b4b0763ea75de9faf7a74bd75ff42"
+    },
+    "8.4": {
+      "log": "/tmp/asyncara-phase3-cQBA3H/package-r5-installed/8.4-extra-audit.log",
+      "sha256": "9d7dfe1422a3614fa915cad7570fc53056c45539e6806ea8bb7aa6890a2c2808"
+    }
+  },
+  "preservedPreviousArchiveFailures": {
+    "r3": "Explicit plaintext fixture exposed TLS-enabling flag behavior, corrected in later source",
+    "r4": "8.5 poll failed a total-wall-time HTTP overlap proxy under load; replaced with strict server-arrival and timer-release barriers, then r5 passed"
+  },
+  "nativeValidation": "final-native-validation.json",
+  "staticAnalysis": {
+    "memory": {
+      "log": "/tmp/asyncara-phase3-cQBA3H/static-final/memory.log",
+      "bytes": 0
+    },
+    "workers": {
+      "log": "/tmp/asyncara-phase3-cQBA3H/static-final/workers.log",
+      "bytes": 0
+    },
+    "backend": {
+      "log": "/tmp/asyncara-phase3-cQBA3H/static-final/backend.log",
+      "bytes": 0
+    }
+  }
+}

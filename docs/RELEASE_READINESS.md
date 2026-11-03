@@ -2,11 +2,11 @@
 
 **EXPERIMENTAL. Phase 3 is partially completed.** This checkpoint substantially
 improves verified reliability; it is not a release candidate or completion of the
-universal-runtime directive. The earlier hardening runtime checkpoint was `8af2604`. A subsequent HTTP
-streaming checkpoint adds bounded response/upload buffers and curl MIME; see
-HTTP_STREAMING.md for its separate verification scope. The final delivery commit and archive
-SHA-256 are recorded by the separate package verification attestation; an archive
-cannot contain its own hash.
+universal-runtime directive. Final native/test source is `e5d94fd`; archive source
+is `f3d63ac`. The [delivery report](PHASE3_DELIVERY.md) records the r5 archive,
+SHA-256, compatibility matrix and exact remaining work. Its
+[package attestation](phase3/package-final.json) follows the archive and records
+independent clean installations; an archive cannot contain its own final hash.
 
 ## Implemented and repaired
 
@@ -43,11 +43,13 @@ Fresh phpize/configure builds load and pass the runner. PHP 8.5.12 fully
 GCC ASan/UBSan-instrumented debug core/database/WebSocket/network tests, native ASan/UBSan/TSan, allocation injection,
 GCC static analysis and Valgrind workloads pass in their documented scopes.
 No compiler warning was ignored; phpize's upstream obsolete libtool macro notice
-remains visible. Hosted CI has executed actual runtime tests. Earlier full PHP matrix jobs passed,
-then later runs exposed PHP deferred-OOM handling, missing stack annotations,
+remains visible. Hosted CI exposed PHP deferred-OOM handling, missing stack annotations,
 fuzzer instrumentation capacity and a missing test utility. Those findings were
-reproduced and corrected; the delivery attestation records the final hosted
-status. Do not infer hosted success from local validation.
+reproduced and corrected. All four final native-source jobs passed:
+[PHP 8.3/8.4/8.5 regression and database lifecycle](https://github.com/asyncara/asyncara/actions/runs/41549782614).
+The r5 archive independently passed clean own-SDK build/install, core/poll,
+network/WebSocket and audit suites on all three versions, plus installed 8.5.12
+database, bounds, FPM and private-CA Oracle tests.
 
 Final core/network/file/pending-shutdown/database Valgrind workloads have zero
 errors and zero definite/indirect/possible losses. This excludes the separately
@@ -64,16 +66,19 @@ not claimed as Asyncara fuzz targets. See FUZZING.md.
 
 Soak: frozen baseline `cad761e` passed 3,600.149 workload seconds, 20,855 cycles /
 20.855m burst Tasks, 208 worker crash/recovery injections; RSS endpoint medians
-+296 KiB, flat descriptors/threads, zero final pending runtime objects. Final
++296 KiB, flat descriptors/threads, zero final pending runtime objects. Earlier
 runtime `8af2604` passed a separate 300.106-second run, 1,894 cycles / 1.894m Tasks,
 18 injected restarts; RSS endpoint medians +444 KiB. The earlier hour does not
 certify the later binary. A separate HTTP-streaming checkpoint1f792ef passed3,600.110s/19,761cycles,
 19.761m burst Tasks and197worker recoveries, RSS endpoint+380KiB and zero final
 pending work. WebSocket checkpoint648c076 passed300.026s/24,686cycles with16
 connections. Each report retains its exact source scope; later Connector gate
-changes are independently tested. Six-/24-hour tests are **not executed**. Short-window
-slopes and latency outliers remain in the evidence; no leak-free/low-latency
-production guarantee is inferred.
+changes are independently tested. Final native source `e5d94fd` passed a frozen
+300.073-second mixed run with 1,331 cycles, 13 worker recoveries, RSS endpoint
+medians +200 KiB, flat descriptors/threads and zero final pending runtime objects.
+Final-source one-/six-/24-hour tests are **not executed**. Short-window slopes
+and latency outliers remain in the evidence; no leak-free/low-latency production
+guarantee is inferred.
 
 FPM: A=100 sequential / one worker; B=10 requests with four overlapping operations
 each; C=12 concurrent requests / four workers. Expanded 300.157s workload handled
@@ -83,10 +88,11 @@ to six descriptors / one thread. FPM process_control_timeout must allow active
 requests to drain; the fixture uses five seconds. Final A/B/C rerun passes.
 Expanded streaming soaks repeatedly FAILED the unchanged RSS-growth criterion.
 Dedicated mappings for large Asyncara buffers repaired the reproduced retention:
-two subsequent five-minute runs passed at approximately 17–19 MiB idle RSS and
-under 3 MiB growth beyond warmup. Historical failures remain preserved. A later
-file-result ownership improvement avoids a redundant native copy. Exact frozen
-source scopes and final reruns are in the delivery attestation and
+three subsequent five-minute runs passed with under 3 MiB growth beyond warmup.
+Final native source `e5d94fd` handled 3,756 main requests in 300.106 seconds,
+maximum 2,888 KiB beyond warmup, including the later file-result ownership
+improvement that avoids a redundant native copy. Historical failures remain
+preserved. Exact frozen source scopes and final reruns are in the attestation and
 FPM_LIFECYCLE.md; no universal process-memory bound is established.
 
 ## Database, networking and filesystem matrix
@@ -144,8 +150,8 @@ own ext sources/config.m4, using independently available PHP/dependency headers.
 The final attestation records archive-source comparisons and test commands.
 
 1. Extend the repaired FPM memory/lifecycle coverage to frozen final-binary
-   one-/six-/24-hour workloads, retaining the same assertions. Complete any
-   remaining hosted validation shown in the delivery attestation.
+   one-/six-/24-hour workloads, retaining the same assertions. The four hosted
+   regression/database jobs have passed; scheduled endurance remains separate.
 2. Follow up the upstream libpq unload allocation; expand server disconnect,
    remote TLS/auth, prepared cache and cancellation acknowledgement coverage.
 3. Extend the tested curl multi streaming paths with multi-file MIME and broader

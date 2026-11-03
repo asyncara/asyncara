@@ -468,3 +468,54 @@ Private-CA MariaDB and separate Oracle8.4.13 suites each pass with100Redis TLS
 repeat cycles. The Clang full-PHP callback-type diagnostics remain explicitly
 unclean upstream evidence. Final snapshot soaks and clean source distribution
 verification are in progress; no longer-soak or release-candidate claim is made.
+
+## Final Phase 3 package and evidence checkpoint — 2026-11-03
+
+Final native/test source e5d94fd8dd959b88474332a05aaa1c9eb61f318f is preserved.
+Documentation source f3d63ac9abf528af0cd5b24086976912c28e4a75 produced
+build/asyncara-0.1.0-dev-phase3-r5.tar.gz (304 regular source files), SHA-256:
+b0f544b3da61789a9cc649a8bc24869308787c9c63ca37358afd69e39ef1ec38.
+All source bytes match that Git commit; packaging a clean private-umask checkout
+is byte-identical. Earlier archives and failed reports remain untouched.
+
+Executed tests/audit/archive_install.py from independent extractions with matching
+8.3.36, 8.4.27 and 8.5.12 SDKs: phpize/configure, isolated install, load,
+Composer, full runner, poll, independent WebSocket peer and network-edge suites
+all PASS. Installed independent audits also PASS on all three versions, including
+1,000/10,000 Tasks and deferred fatal-batch cleanup. Installed 8.5.12 additionally
+passes ordinary databases, database bounds/audit, FPM A/B/C/D and separate
+private-CA Oracle TLS tests with 50 Redis TLS repeat cycles. Raw logs/manifests
+are in /tmp/asyncara-phase3-cQBA3H/package-r5-installed; durable checksums and
+step statuses are in docs/phase3/package-final.json.
+
+Final native validation also passes make verify, allocation/mapping failures,
+native ASan/UBSan/TSan, GCC -fanalyzer/-Wall/-Wextra/-Werror for memory/workers/
+backend, full GCC ASan/UBSan PHP 8.5.12 DEBUG core/database/WebSocket/network
+tests, annotated PHP/Connector Valgrind core/file/network/pending/database and
+fatal SQL teardown. Valgrind reports zero errors and definite/indirect/possible
+losses without suppressions. Separate MariaDB and Oracle private-CA suites each
+pass with 100 Redis TLS repeats. The separately reproduced libpq TLS unload leak
+and Clang full-PHP callback-type diagnostics remain documented unresolved findings.
+
+Frozen final-source mixed soak: 300.073 workload seconds, 1,331 cycles / 1.331m
+burst Tasks, 13 worker crash recoveries, no unexpected errors or final pending
+Tasks/Futures/timers/native jobs. Steady fds20/threads5/sockets7, native bytes0 at
+cycle boundaries, RSS endpoint medians +200 KiB. Frozen final-source FPM:
+3,756 main requests / 300.106 seconds, A/B/C/D, recycling/reload/kill/fatal/pending/
+timeout assertions pass, maximum 2,888 KiB growth beyond warmup, idle fds6/thread1.
+This is the third unchanged five-minute FPM pass after mapped-buffer repair.
+Final-source one-hour, six-hour and 24-hour endurance have not been run.
+
+Hosted run https://github.com/asyncara/asyncara/actions/runs/41549782614 at e5d94fd
+completed all four jobs successfully: regression 8.3/8.4/8.5 and database-lifecycle.
+Final evidence/provenance is in docs/phase3/final-native-validation.json. Updated
+README, ROADMAP, RELEASE_READINESS, FPM_LIFECYCLE and SOAK_TESTING to distinguish
+historical failures from the reproduced repair and tested checkpoint. Added
+docs/PHASE3_DELIVERY.md with all requested delivery fields and exact continuation
+commands. These final evidence/docs follow the archive; no native source changed.
+
+Release remains EXPERIMENTAL; Phase 3 is partial. Next: frozen final-source
+one-/six-/24-hour mixed and FPM workloads, upstream memory/tool follow-up, remote
+database TLS/auth and cancellation acknowledgement, prepared caches/transactions,
+broader HTTP/WebSocket certification, then individual hooks/framework adapters.
+Keep io_uring filesystem NOT_IMPLEMENTED and userland ThreadPool BLOCKED.

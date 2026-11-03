@@ -58,9 +58,9 @@ check waits within its existing five-second deadline for both an accepting
 worker and one thread. Persistent extra threads still fail. A four-party local
 HTTP barrier establishes overlap deterministically under CPU load.
 
-[Durable summary](phase3/fpm-summary.json) links raw evidence. Longer FPM soak,
-other FPM versions, and real framework request lifecycles remain unverified.
-The CI command is configured; hosted CI has not yet executed this change.
+[Durable summary](phase3/fpm-summary.json) links this historical run's raw
+evidence. Later patched-PHP and hosted results are recorded below. Longer FPM
+soak, other FPM versions and real framework request lifecycles remain unverified.
 
 ## Streaming continuation
 
@@ -71,7 +71,7 @@ and idle resources. All four cases pass. This is separate short evidence; the
 earlier five-minute expanded FPM run predates HTTP streaming. Paused transfer
 normal/fatal cleanup is additionally exercised in CLI subprocesses.
 
-## Expanded streaming soak: open RSS finding
+## Expanded streaming soak: historical RSS finding
 
 The first five-minute expanded run at cdea225 passed A/B/C/D, recycling,
 reload/replacement, request state and idle fd/thread checks, but **FAILED** the
@@ -88,8 +88,8 @@ freeing additional application objects; exact per-worker values are retained.
 This is strong evidence of allocator caching/fragmentation under the deliberate
 fatal-allocation workload, not proof that every RSS fluctuation is harmless.
 No allocator settings or production trimming were introduced. The failed RSS
-criterion remains an open reliability/capacity investigation. Size FPM process
-limits/recycling from measured RSS, not only Asyncara's native ledger.
+criterion required the dedicated-mapping repair described below. Size FPM
+process limits/recycling from measured RSS, not only Asyncara's native ledger.
 
 `tests/audit/fpm_allocator.py --output NEW_DIR` compiles a separate test-only
 PHP8.5/glibc diagnostic module. Its functions are absent from production builds.
@@ -99,9 +99,9 @@ incomplete regardless of earlier passing short runs.
 
 An unchanged300-second repeat also failed: growth beyond recorded warmup peaks
 was0/27,340/12,600/14,356KiB across four workers, with4,692 idle samples.
-This confirms the criterion is not reliable under the current fatal-allocation
-mix; it has not been marked passed based on a lucky rerun. Allocation-state
-instrumentation and an explicit RSS capacity policy need further work.
+This reproduced the failure under the then-current fatal-allocation mix; it was
+not marked passed based on a lucky rerun. The later repair retained the same
+assertion and workload.
 
 ## PHP8.5.12 and mapped-buffer follow-up
 
@@ -122,3 +122,21 @@ valid historical evidence. This fixes the reproduced allocator-retention case;
 it does not establish a universal process-memory bound or6h/24h certification.
 Evidence: phase3/deferred-oom-and-mappings.json. The soak now snapshots the selected
 module so subsequent builds cannot change the artifact during a graceful reload.
+
+## Final native source verification
+
+Frozen commit `e5d94fd8dd959b88474332a05aaa1c9eb61f318f`, PHP 8.5.12 NTS,
+passed A/B/C/D, 25 recycling requests, and a separate 300.106-second mixed run
+with 3,756 main requests. Graceful reload, abnormal worker replacement, fatal
+requests, pending shutdown and timeout recovery passed. Maximum growth beyond
+warmup was 2,888 KiB; idle workers returned to six descriptors and one thread.
+This is the third five-minute pass after the mapping repair; the intervening
+frozen `df7d061` run handled 3,716 requests in 300.492 seconds with a 2,904 KiB
+maximum. All use the unchanged 8,192 KiB investigation limit.
+
+The installed r5 archive separately passed A/B/C/D. Hosted database-lifecycle CI
+also passed at e5d94fd. Full provenance is in
+[final-native-validation.json](phase3/final-native-validation.json) and
+[package-final.json](phase3/package-final.json). No final-source one-hour,
+six-hour or 24-hour FPM run has completed; these short tests establish the
+reproduced repair and lifecycle behavior, not long-term deployment capacity.
