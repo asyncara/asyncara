@@ -1,0 +1,18 @@
+{
+  "observedUtc": "2026-11-03T13:26:41.623734+00:00",
+  "classification": "INTERRUPTED",
+  "reason": "Turn was interrupted; harnesses no longer running and neither has a completion report. Partial samples are not endurance success.",
+  "runs": {
+    "mixed-baseline-1h": {
+      "records": 234,
+      "lastRecordedSeconds": 1195.4905501799658,
+      "completionReportPresent": false
+    },
+    "fpm-baseline-1h-built": {
+      "records": 15036,
+      "lastRecordedSeconds": 1166.9095448828302,
+      "completionReportPresent": false
+    }
+  },
+  "ownedFixtureCleanup": "PostgreSQL fast shutdown and FPM graceful SIGQUIT completed"
+}

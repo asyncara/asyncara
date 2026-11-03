@@ -58,3 +58,8 @@ Explicit Files/SQLite/DNS APIs are **WORKER_BACKED_ASYNC** in their execution ph
 The dispatch chains the previous Zend execute-internal handler and restores it only while still owned. Request flags reset at RINIT/RSHUTDOWN. Hook::ALL is TIME only. STRICT rejects unavailable requested groups; it cannot discover/intercept every blocking call. Long-step diagnostics measure elapsed time after return, not the identity of an unknown native function. Coexistence with the host extension set is tested separately; arbitrary profiler/debugger/hook combinations remain unverified.
 
 Phase 3 preserves this limited hook scope. The full core/audit suites continue to test these paths on PHP 8.3/8.4/8.5. The new PHP-buffered readiness fix serves explicit asynchronous streams; it does not intercept fread, stream_select or PDO. Userland alternatives remain TcpStream, HttpClient, Files and explicit database drivers. No new hook group is certified.
+
+
+Phase 4 makes no hook implementation changes. Explicit Asyncara HTTP/TCP/TLS/SQL
+activity in expanded soak workloads is not transparent compatibility evidence.
+The existing function-by-function classifications above remain unchanged.

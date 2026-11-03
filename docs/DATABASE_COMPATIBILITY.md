@@ -61,3 +61,12 @@ Remaining: real remote deployment certification, PostgreSQL prepared statement
 cache and acknowledged cancellation, broader Oracle/MariaDB versions, certificate
 rotation/mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
 streaming aggregates, cluster/sentinel and complete notification buffering policy.
+
+
+Phase 4 expanded mixed smoke separately exercises PostgreSQL16.15,
+MariaDB11.8.9, Oracle MySQL8.4.13 and Redis7.0.15 alongside worker SQLite3.45.1.
+Both epoll and poll60-second runs passed. The Oracle fixture is private Unix
+socket transport; this does not expand the existing remote TLS/authentication
+matrix. Standalone libpq16.15/17.11/18.6 lifetime probes test the dependency,
+not Asyncara driver certification against newer PostgreSQL servers. Unresolved
+findings and reproduction are in DEPENDENCY_FINDINGS.md.

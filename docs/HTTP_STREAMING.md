@@ -114,3 +114,9 @@ finding. This fuzz target does not claim coverage of curl's HTTP parser.
 Further instrumentation, benchmark and soak evidence is recorded separately in
 WORKLOG and docs/phase3. Long-duration streaming soak, other curl versions,
 HTTP/2/3, multi-file MIME and proxy/remote deployment matrices remain unverified.
+
+
+Phase 4 extended mixed smoke adds verified HTTPS buffered and streamed bodies
+with slow iteration, alongside existing plaintext streaming. Both epoll and poll
+60-second runs passed. These8KiB local transfers add no multiple-file multipart,
+proxy, redirect or larger-upload capability claim; see PHASE4_DELIVERY.md.

@@ -157,4 +157,13 @@ remain unchanged. Random-trace regression comparisons match the old formulas.
 A real 60.161-second FPM smoke passed 780 main requests plus A/B/C/D and lifecycle
 faults, with 772 steady samples and maximum 2,788 KiB beyond warmup. This tests
 the collector; the separate baseline one-hour campaign uses frozen old harness
-source and must complete before receiving a passing status.
+source and was interrupted after 1,166.910 seconds. It is not passed.
+
+
+Phase 4 adds `afterState` PHP memory/peak, scheduler and pending-Future observations
+before deliberately submitting teardown work. A separate OS process observer
+records virtual memory, sockets and child identities. Idle assertions still require
+six descriptors and one thread, and original cross-request isolation checks remain.
+A 60.243-second monitor smoke passed 660 requests; final observer rerun/endurance
+are tracked in PHASE4_DELIVERY.md. External process permission gaps are recorded
+explicitly and never weaken the strict idle-worker checks.

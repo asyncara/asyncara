@@ -82,3 +82,12 @@ both allocations; insufficient aggregate capacity fails without losing the old
 buffer. Mapping/page/allocator metadata outside the charged region still affects
 RSS. ASan builds explicitly poison unused mapped tails; a deliberate overrun
 negative control verifies detection. See tests/audit/mappings.c.
+
+
+Phase 4 test-resource boundary: endurance observers now stream JSONL and use
+bounded aggregates rather than retaining every FPM response. Raw disk usage grows
+with duration and must be budgeted separately. The OS observer counts descendants
+and validated private PostgreSQL daemons; inaccessible /proc metrics are explicit
+nulls, not zero. It does not impose cgroup limits or change application defaults.
+Repeated libpq unloads accumulate foreign BIO allocations outside the ledger;
+resident connection churn has separate controls in DEPENDENCY_FINDINGS.md.

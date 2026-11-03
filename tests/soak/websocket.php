@@ -6,9 +6,9 @@ use Asyncara\WebSocket\Client;
 use Asyncara\Exception\CancelledException;
 function ensure(bool $ok,string $why):void{if(!$ok)throw new RuntimeException($why);}
 function osSample():array{
-    $status=file_get_contents('/proc/self/status');preg_match('/VmRSS:\s+(\d+)/',$status,$rss);preg_match('/Threads:\s+(\d+)/',$status,$threads);
+    $status=file_get_contents('/proc/self/status');preg_match('/VmRSS:\s+(\d+)/',$status,$rss);preg_match('/VmSize:\s+(\d+)/',$status,$virtual);preg_match('/Threads:\s+(\d+)/',$status,$threads);
     $fds=glob('/proc/self/fd/*');$sockets=0;foreach($fds as$fd)if(is_link($fd)&&str_starts_with(readlink($fd),'socket:'))$sockets++;
-    return ['rssKiB'=>(int)$rss[1],'threads'=>(int)$threads[1],'fds'=>count($fds),'sockets'=>$sockets];
+    return ['rssKiB'=>(int)$rss[1],'virtualKiB'=>(int)$virtual[1],'threads'=>(int)$threads[1],'fds'=>count($fds),'sockets'=>$sockets];
 }
 $root=dirname(__DIR__,2);$seconds=(float)(getenv('ASYNCARA_SOAK_SECONDS')?:60);$connections=(int)(getenv('ASYNCARA_WS_CONNECTIONS')?:16);
 $peer=proc_open(['python3',$root.'/tests/fixtures/websocket_peer.py',"$root/build/test-certs/cert.pem","$root/build/test-certs/key.pem"],[0=>['pipe','r'],1=>['pipe','w'],2=>['file',"$root/build/ws-soak-peer.log",'a']],$pipes,null,array_merge(getenv(),['PYTHONPATH'=>$root.'/.local/ws-peer-17.4']));

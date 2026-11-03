@@ -54,12 +54,14 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 Phase 4 starts from verified pushed commit `179aa54`. The preserved r5 archive
 matches `f3d63ac` and includes final native source `e5d94fd`. Fresh three-version
-archive installs and baseline regression commands pass. Final-runtime one-hour
-mixed and FPM campaigns are running; no completion or six-/24-hour result is
-claimed yet. See [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and
-[phase4/baseline.json](phase4/baseline.json). Native/public runtime source is
-frozen while these campaigns execute. The long-duration FPM harness needs
-bounded evidence collection before larger runs.
+archive installs and baseline regression commands pass. First one-hour mixed/FPM
+attempts were interrupted after about 20 minutes; neither passed. Test collectors
+now use bounded memory and explicit process-resource observations. The expanded
+60-second epoll/poll mixed smokes passed, including existing DNS/UDP/TLS/HTTPS/ws/wss
+and a separate Oracle fixture. FPM observer smoke and failed-barrier regression
+passed. Final-source endurance remains pending. Standalone dependency probes
+reproduce libpq unload and PHP callback-type findings (DEPENDENCY_FINDINGS.md). No native/public runtime source has changed. See
+[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and its durable evidence.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__,2).'/autoload.php';
+require __DIR__.'/network.php';
 use Asyncara\{Async,Runtime,Scheduler,Future};
 use Asyncara\Concurrency\Queue;
 use Asyncara\IO\{Files,TcpServer,TcpStream};
@@ -13,30 +14,38 @@ use Asyncara\Redis\Connection as Redis;
 use Asyncara\Exception\{CancelledException,TimeoutException,WorkerException};
 function check(bool $ok,string $why):void{if(!$ok)throw new RuntimeException($why);}
 function osSample():array {
-    $status=file_get_contents('/proc/self/status');preg_match('/VmRSS:\s+(\d+)/',$status,$rss);preg_match('/Threads:\s+(\d+)/',$status,$threads);
+    $status=file_get_contents('/proc/self/status');preg_match('/VmRSS:\s+(\d+)/',$status,$rss);preg_match('/VmSize:\s+(\d+)/',$status,$virtual);preg_match('/Threads:\s+(\d+)/',$status,$threads);
     $fds=glob('/proc/self/fd/*');$sockets=0;
     foreach($fds as$fd)if(is_link($fd)&&str_starts_with(readlink($fd),'socket:'))$sockets++;
-    return ['rssKiB'=>(int)$rss[1],'threads'=>(int)$threads[1],'fds'=>count($fds),'sockets'=>$sockets];
+    return ['rssKiB'=>(int)$rss[1],'virtualKiB'=>(int)$virtual[1],'threads'=>(int)$threads[1],'fds'=>count($fds),'sockets'=>$sockets];
 }
 $seconds=(float)(getenv('ASYNCARA_SOAK_SECONDS')?:60);$taskCount=(int)(getenv('ASYNCARA_SOAK_TASKS')?:1000);
 if($seconds<=0||$taskCount<1||$taskCount>10000)throw new ValueError('Invalid soak duration/task count');
 $start=Scheduler::now();$path=tempnam(sys_get_temp_dir(),'asyncara-soak-');$cycles=0;
 try{Async::run(function()use($seconds,$taskCount,$start,$path,&$cycles):void{
     $pool=new ProcessPool(2,dirname(__DIR__).'/fixtures/jobs.php');$http=new HttpClient(4,timeout:2);
-    $q=new Queue(8);$pg=$my=$redis=null;$dbCount=0;$ticks=0;$timeouts=0;$cancellations=0;$taskSteps=0;$latency=[];
+    $q=new Queue(8);$pg=$my=$oracle=$redis=$network=null;$dbCount=0;$ticks=0;$timeouts=0;$cancellations=0;$taskSteps=0;$latency=[];
     $ticker=Async::spawn(function()use(&$ticks):void{while(true){Async::sleep(.005);$ticks++;}});
     try{
         if(getenv('ASYNCARA_PG_SOCKET')){
             $pg=Pg::connect(['host'=>getenv('ASYNCARA_PG_SOCKET'),'port'=>'55499','dbname'=>'postgres','sslmode'=>'disable'])->await();
             $my=Maria::connect(['socket'=>getenv('ASYNCARA_MY_SOCKET'),'user'=>'root','database'=>'mysql'])->await();
             $redis=Redis::connect('127.0.0.1',(int)getenv('ASYNCARA_REDIS_PORT'),resp3:true)->await();$dbCount=3;
+            if(getenv('ASYNCARA_ORACLE_SOCKET')){
+                $oracle=Maria::connect(['socket'=>getenv('ASYNCARA_ORACLE_SOCKET'),'user'=>'root','database'=>'mysql'])->await();$dbCount++;
+            }
+            echo json_encode(['type'=>'configuration','postgresql'=>$pg->query('SELECT version() AS version')->await(),
+                'mariadb'=>$my->query('SELECT VERSION() AS version')->await(),
+                'oracle'=>$oracle?->query('SELECT VERSION() AS version')->await(),
+                'redis'=>$redis->command(['INFO','server'])->await()],JSON_THROW_ON_ERROR),"\n";
         }
+        if(getenv('ASYNCARA_SOAK_NETWORK'))$network=new MixedNetwork(json_decode(getenv('ASYNCARA_SOAK_NETWORK'),true,32,JSON_THROW_ON_ERROR));
         $nextSample=0;
         while(Scheduler::now()-$start<$seconds){
             $db=Sqlite::open(':memory:')->await();
             try{
                 $db->query('CREATE TABLE t(n INTEGER)')->await();
-                Async::taskGroup(function($g)use($q,$db,$path,$pool,$http,$pg,$my,$redis,$taskCount,&$latency,&$taskSteps):void{
+                Async::taskGroup(function($g)use($q,$db,$path,$pool,$http,$pg,$my,$oracle,$redis,$network,$taskCount,&$latency,&$taskSteps):void{
                     $g->spawn(function()use($taskCount,&$latency,&$taskSteps):void{
                         $tasks=[];$dispatch=Scheduler::now();
                         for($i=0;$i<$taskCount;$i++)$tasks[]=Async::spawn(function()use($i,$dispatch,&$latency):int{
@@ -71,7 +80,9 @@ try{Async::run(function()use($seconds,$taskCount,$start,$path,&$cycles):void{
                     });
                     if($pg)$g->spawn(fn()=>$pg->transaction(fn($c)=>$c->query('SELECT 42 AS n')->await())->await());
                     if($my)$g->spawn(fn()=>$my->transaction(fn($c)=>$c->query('SELECT 42 AS n')->await())->await());
+                    if($oracle)$g->spawn(function()use($oracle):void{check((int)$oracle->transaction(fn($c)=>$c->query('SELECT 42 AS n')->await())->await()[0]['n']===42,'Oracle transaction result');});
                     if($redis)$g->spawn(function()use($redis):void{check($redis->pipeline([['PING'],['ECHO','ok']])->await()===['PONG','ok'],'Redis pipeline');});
+                    if($network)$g->spawn($network->cycle(...));
                 });
                 check($db->query('SELECT sum(n) AS n FROM t')->await()[0]['n']===496,'SQLite results');
             }finally{$db->close()->await();}
@@ -87,13 +98,13 @@ try{Async::run(function()use($seconds,$taskCount,$start,$path,&$cycles):void{
                 sort($latency);$percentile=fn($p)=>$latency?1000*$latency[min(count($latency)-1,(int)floor($p*count($latency)))]:null;
                 $native=Runtime::information();
                 check($native->pendingOperations===0&&$native->openFileHandles===0&&$native->sqliteConnections===0,'Retained native work at cycle boundary');
-                echo json_encode(['type'=>'sample','seconds'=>$elapsed,'cycles'=>$cycles,'tasksExecuted'=>$taskSteps,'phpBytes'=>memory_get_usage(),'phpAllocatedBytes'=>memory_get_usage(true),'os'=>osSample(),'native'=>$native,'scheduler'=>Runtime::diagnostics(),'processPool'=>$pool->statistics(),'queue'=>$q->statistics(),'databaseConnections'=>$dbCount,'ticks'=>$ticks,'timeouts'=>$timeouts,'cancellations'=>$cancellations,'unexpectedErrors'=>0,'schedulingLatencyMs'=>['median'=>$percentile(.5),'p95'=>$percentile(.95),'p99'=>$percentile(.99)]],JSON_THROW_ON_ERROR),"\n";
+                echo json_encode(['type'=>'sample','seconds'=>$elapsed,'cycles'=>$cycles,'tasksExecuted'=>$taskSteps,'phpBytes'=>memory_get_usage(),'phpAllocatedBytes'=>memory_get_usage(true),'os'=>osSample(),'native'=>$native,'scheduler'=>Runtime::diagnostics(),'processPool'=>$pool->statistics(),'queue'=>$q->statistics(),'databaseConnections'=>$dbCount,'network'=>$network?->statistics(),'ticks'=>$ticks,'timeouts'=>$timeouts,'cancellations'=>$cancellations,'unexpectedErrors'=>0,'schedulingLatencyMs'=>['median'=>$percentile(.5),'p95'=>$percentile(.95),'p99'=>$percentile(.99)]],JSON_THROW_ON_ERROR),"\n";
                 $latency=[];$nextSample=$elapsed+5;
             }elseif(count($latency)>1024)$latency=array_slice($latency,-1024);
         }
     }finally{
         $ticker->cancel();try{$ticker->await();}catch(CancelledException){}
-        $pg?->close();$my?->close();$redis?->close();$pool->close();$q->close();
+        try{$network?->close();}finally{$pg?->close();$my?->close();$oracle?->close();$redis?->close();$pool->close();$q->close();}
     }
 });
 gc_collect_cycles();check(Future::pendingCount()===0,'Pending Futures after shutdown');

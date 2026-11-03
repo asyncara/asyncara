@@ -36,6 +36,8 @@ jobs:
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
       - run: ./scripts/ci-run.sh build/ci-step-1.log bash -c 'composer install --no-interaction --ignore-platform-req=ext-asyncara'
       - run: ./scripts/ci-run.sh build/ci-soak-metrics.log python3 tests/soak/test_metrics.py
+      - run: ./scripts/ci-run.sh build/ci-soak-monitor.log python3 tests/soak/test_monitor.py
+      - run: ./scripts/ci-run.sh build/ci-soak-peer.log python3 tests/soak/test_fpm_peer.py
       - run: ./scripts/ci-run.sh build/ci-step-2.log bash -c 'python3 scripts/install-test-websockets.py'
       - run: ./scripts/ci-run.sh build/ci-step-3.log bash -c 'make test'
       - run: ./scripts/ci-run.sh build/ci-connector-gate.log ./scripts/test-connector-gate.sh

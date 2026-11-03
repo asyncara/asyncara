@@ -560,3 +560,40 @@ Added them to fast CI. Real60s FPM smoke PASS:780main requests,772samples,maximu
 Commands: python3 tests/soak/test_metrics.py; tests/soak/fpm.py --seconds60;
 tests/soak/run.py --seconds20 --databases (new evidence directories each time).
 The separate3600s baseline campaigns remain running, not marked passed.
+
+
+## Phase 4 interruption recovery and expanded workload — 2026-11-03
+
+On resumption, neither baseline3600s runner existed. Preserved234mixed samples
+(last1195.491s) and15,036FPM samples(last1166.910s) as INTERRUPTED, not success.
+Verified and stopped only the two surviving owned PostgreSQL/FPM fixtures.
+Durable evidence: docs/phase4/interrupted-campaigns.json. Historical archives and
+all raw evidence remain intact; ext/ and src/ remain byte-identical to baseline.
+
+Added bounded Linux process observations, request PHP/native diagnostics, optional
+DNS/dual-stack UDP/TLS1.2+1.3/HTTPS/ws+wss mixed work and independent Oracle fixture.
+All existing workload cases/thresholds remain. Two expanded smoke attempts failed
+the observer on /proc permission races despite completed PHP work. Added a
+regression test; missing descriptor observations are explicit nulls with reasons.
+Four observer tests and six collector tests PASS. Expanded epoll rerun PASS:
+60.260s,115cycles,all five database implementations,ProcessPool/WebSocket recovery.
+Poll and final FPM observer reruns remain in progress; no endurance is inferred.
+Standalone libpq and matching-Clang PHP investigation continues separately.
+
+
+Expanded corrected poll smoke PASS60.156s/136cycles; final FPM observer smoke
+PASS60.597s/416main requests plus all lifecycle cases. The HTTP test peer retained
+barrier bookkeeping after a deliberate incomplete concurrent request: independent
+negative test failed with {'incomplete':1}. Moved cleanup to guaranteed finally;
+regression and A/B/C/D audit PASS. Added observer/peer regressions to fast CI.
+New fixture directories use0700; all original resource thresholds stay unchanged.
+
+Dependency controls complete: standalone C without PHP/Asyncara, verified TLS,
+libpq16.15/17.11/18.6; ASan/UBSan+LSan and Valgrind, zero suppressions. Resident500
+connections show no lost allocations; unload after1or500 gives109bytes;20reloads
+accumulate2180BIO bytes, plus2907GSS bytes for system16.15. Retain all failed
+fixture attempts; pg_isready fixes startup race, negative Valgrind3s deadline
+reproduces timeout, instrumented fixture now30s. Matching Clang18/PHP8.5.12/extension
+probes still report PHP callback-type UB without or with Asyncara. No fix/clean
+Clang pass claimed. docs/DEPENDENCY_FINDINGS.md and phase4/dependency-findings.json
+contain commands, versions, stacks and hashes. No ext/ or src/ changes.

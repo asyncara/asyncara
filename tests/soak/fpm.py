@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Reuse audit FastCGI/concurrency assertions; extend process lifecycle faults."""
-import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, shutil, signal, socket, subprocess, time
+import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, shutil, signal, socket, subprocess, sys, time
 from collections import deque
 from metrics import FpmGrowth
+from monitor import ProcessMonitor
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser();parser.add_argument('--seconds',type=float,default=60);parser.add_argument('--output',required=True);args=parser.parse_args()
 if args.seconds<=0:parser.error('Duration must be positive')
@@ -37,9 +38,9 @@ def stop(process,log):
 def children(process):
     path=pathlib.Path(f'/proc/{process.pid}/task/{process.pid}/children')
     return {int(v)for v in path.read_text().split()}
-provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'extension':{'selected':str(selected),'snapshot':str(extension),'sha256':hashlib.sha256(extension.read_bytes()).hexdigest()}, 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['tests/soak/fpm.py','tests/soak/metrics.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
+provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'extension':{'selected':str(selected),'snapshot':str(extension),'sha256':hashlib.sha256(extension.read_bytes()).hexdigest()}, 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['tests/soak/fpm.py','tests/soak/metrics.py','tests/soak/monitor.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
 (out/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
-results=[]
+results=[];monitor=ProcessMonitor(out/'os-processes.jsonl');monitor.__enter__()
 try:
     # Preserve the original three distinct assertions as the first phase.
     for case in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True),('D-streaming',4,12,'stream',True)]:
@@ -117,6 +118,7 @@ try:
         sample=audit.idle(after);assert sample['threads']==1 and sample['fds']==6
         results.append({'name':'request-timeout','status':'PASS','terminatedPid':before,'replacement':sample})
     finally:stop(process,log)
+    monitor.__exit__(None,None,None)
     (out/'report.json').write_text(json.dumps(results,indent=2)+'\n');print('FPM recycling/reload/kill/timeout/fatal/pending isolation: PASS',flush=True)
 except BaseException as error:
     # Preserve the actual worker failure (signal, allocator error, timeout or
@@ -129,4 +131,6 @@ except BaseException as error:
         path=pathlib.Path('/sys/fs/cgroup')/counter
         if path.is_file():print('cgroup '+counter+': '+path.read_text().strip(),flush=True)
     (out/'failure.json').write_text(json.dumps({'status':'FAIL','error':str(error),'completedCases':results,'provenance':provenance},indent=2)+'\n');raise
-finally:audit.server.shutdown();audit.server.server_close()
+finally:
+    audit.server.shutdown();audit.server.server_close()
+    monitor.__exit__(*sys.exc_info())

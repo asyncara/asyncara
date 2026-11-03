@@ -97,3 +97,10 @@ certification, browser/framework certification or Autobahn conformance run.
 Long-duration/high-count workloads and remote adversarial deployments need
 broader validation. Application payloads are bounded whole messages, not a
 streaming message API. The overall release remains EXPERIMENTAL.
+
+
+Phase 4 extended mixed smoke retains one ws and one verified wss connection
+alongside HTTP/files/SQL/process work. Echo, ping, periodic reconnect and cancelled
+receive reuse passed in60-second epoll/poll runs using the independent Python peer.
+This is smoke evidence, not browser/Autobahn/WSS-server or endurance certification.
+See PHASE4_DELIVERY.md for campaign status.

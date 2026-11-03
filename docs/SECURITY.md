@@ -72,3 +72,13 @@ Their unused tails are explicitly poisoned for ASan bounds checks; mapping
 release is independently checked with mincore, the aggregate ledger, native
 worker lifecycle tests and FPM RSS trends. Do not interpret a clean LSan report
 alone as proof that all anonymous mappings were released.
+
+
+Phase 4 independently reproduced the libpq TLS method lifetime on16.15/17.11/18.6
+without PHP/Asyncara. Resident500-connection controls show no lost allocations;
+repeated library unloads accumulate109bytes per load, with additional system GSS
+losses in the16.15 configuration. No private cleanup or suppression was added.
+Matching Clang18/PHP8.5.12 runs still produce callback-type UBSan findings without
+Asyncara. See DEPENDENCY_FINDINGS.md for exact scope and unresolved status.
+New mixed/FPM output directories and newly created database fixture directories
+are private0700. No host configuration or deployed services are changed.

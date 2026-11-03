@@ -141,7 +141,7 @@ earlier one-hour checkpoint nor this short final run establishes that endurance.
 
 ## Phase 4 harness memory
 
-The unchanged Phase 3 runtime is undergoing separate one-hour mixed/FPM tests;
+The first Phase 4 one-hour mixed/FPM attempts were interrupted, not passed;
 see PHASE4_DELIVERY.md for current completion status. The longer-run harness now
 aggregates mixed JSONL in two sequential passes with bounded statistics. It
 retains the exact warmup exclusion, endpoint median windows and growth limits.
@@ -154,3 +154,30 @@ the raw workload evidence and fail explicitly.
 formulas, boundary failures, malformed/duplicate completion and 200,000 FPM
 observations with under 64 KiB traced collector memory. A 20-second mixed smoke
 passed after this change; it is harness validation, not endurance evidence.
+
+
+## Expanded mixed scope and OS observations
+
+`--extended-network` adds private deterministic IPv4/IPv6 UDP, localhost DNS,
+TLS1.2/1.3 (verified CA/hostname, SNI and ALPN), HTTPS buffered/streamed responses
+and two persistent ws/wss connections. Ping, reconnect and receive cancellation
+are included. `--oracle-prefix /path/to/extracted/oracle` adds Oracle MySQL to
+`--databases`; MariaDB remains a separate simultaneous fixture. This uses private
+Unix sockets and does not add remote SQL TLS coverage. Exact versions appear in
+the configuration record. Install the pinned WebSocket peer first using the
+existing `scripts/install-test-websockets.py`.
+
+`os-processes.jsonl` samples the harness, descendants and validated private
+PostgreSQL daemon PID every five seconds. It records PID/start ticks, RSS, virtual
+memory, descriptors, sockets and threads without collecting command lines or
+credentials. Processes exiting or hidden by Linux `/proc` restrictions can be
+missed. Descriptor/socket EACCES observations are null with explicit reasons;
+these are gaps, not zero usage. Sampling is not a peak RSS/cgroup measurement.
+Existing PHP/FPM assertions continue independently. `test_monitor.py` checks this
+observer, including ownership mismatch and simulated permission failure.
+
+The expanded epoll smoke passed 60.260 seconds / 115 cycles. Earlier epoll/poll
+smokes failed the observer after their workloads completed; preserve their failed
+reports. See phase4/harness-validation.json. Final-source one-hour attempts at
+baseline179aa54 were interrupted after1195.491s mixed/1166.910s FPM. They do not
+establish one-hour endurance. Restart each campaign in a new directory.
