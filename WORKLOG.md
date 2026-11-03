@@ -752,3 +752,30 @@ scope adds existing extended network cases, but does not include the local Oracl
 fixture. Longer hosted campaigns are not claimed. YAML parse/diff checks pass;
 hosted execution must provide the remaining validation. No system dependency was
 installed on this shared development host.
+
+## Phase 4 independent host and UDP diagnosis — 2026-11-03
+
+Hosted624cbe9 fast CI passed all four jobs. Its mixed one-hour job failed after
+445.844 wall seconds at IPv4 UDP receive; all other network stages completed,
+maximum timer lag9.486ms. This narrows the symptom independently of the local
+host timing delays. Downloaded public artifact13244506530; its SHA256 matches
+GitHub's artifact digest. Preserve docs/phase4/hosted-mixed-failure.json and all
+raw files. Hosted FPM remains running; no completion claim.
+
+A local50,000-cycle UDP churn control stopped on duplicate live IPv4 endpoints.
+The new deterministic tests/udp_ownership.php fails on the unchanged implementation:
+a second bind to the first socket's address/port succeeds. PHP network.c sets
+SO_REUSEADDR unconditionally during stream server bind. This can redirect a
+single datagram into the newer endpoint. Exact endpoint addresses were absent
+from the hosted failure, so that event's collision is not directly proven.
+The local frozen mixed retry is deliberately interrupted before changing runtime
+source; its prior samples are historical, not a one-hour pass. Original timing,
+resource and protocol assertions stay unchanged. A new source checkpoint and
+fresh endurance are required after the ownership fix.
+
+Before this finding, the repository poll-profile diagnostic passed10.376s/84
+four-worker requests; the default syscall mode passed10.555s/15requests. Three
+PHP-version forwarding controls verify return values, original exceptions,
+global function preservation and fatal records. These smoke controls are added
+to CI. The earlier external600.256s/5,312request profile and overlapping bare
+C epoll control are preserved independently, with no retrospective source claim.

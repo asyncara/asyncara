@@ -1,0 +1,79 @@
+{
+  "tests": {
+    "fpm-profile-repository-smoke": {
+      "status": "PASS",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "-n",
+        "-F",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "-d",
+        "display_errors=0",
+        "-y",
+        "/tmp/asyncara-phase4-nrtjh3t1/fpm-profile-repository-smoke/fpm.conf",
+        "-d",
+        "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-profile-repository-smoke/fpm_poll_profile.php"
+      ],
+      "requestedSeconds": 10.0,
+      "instrumentation": "poll",
+      "workers": 4,
+      "source": "624cbe95d29f6cb779e73e320af3946008a99491",
+      "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/fpm_trace.py\n?? docs/phase4/fpm-poll-profile.json\n?? tests/soak/fpm_poll_profile.php\n?? tests/soak/test_poll_profile.py\n",
+      "extensionSha256": "8cf895be81021b9be69cb2b12ef406cb58dbcefd29175c70a2d24677d2434996",
+      "requestSha256": "ecce171d630670fa4d8934c464123589336808fce1391370a2563c0c6cfa8186",
+      "observerFiles": {
+        "tests/soak/fpm_trace.py": "dfe21957575b5b364710d4597d66dd9a4ad092025bdbefb2e7f3135b5eba67e0",
+        "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+        "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+      },
+      "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+      "seconds": 10.376335429027677,
+      "requests": 84
+    },
+    "fpm-syscall-repository-smoke": {
+      "status": "PASS",
+      "command": [
+        "strace",
+        "-D",
+        "-f",
+        "-ttt",
+        "-T",
+        "-e",
+        "trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise",
+        "-o",
+        "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-repository-smoke/syscalls.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "-n",
+        "-F",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "-d",
+        "display_errors=0",
+        "-y",
+        "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-repository-smoke/fpm.conf"
+      ],
+      "requestedSeconds": 10.0,
+      "instrumentation": "syscall",
+      "workers": 1,
+      "source": "624cbe95d29f6cb779e73e320af3946008a99491",
+      "gitStatus": " M .github/workflows/verify.yml\n M docs/FPM_LIFECYCLE.md\n M docs/PHASE4_DELIVERY.md\n M docs/ROADMAP.md\n M docs/SOAK_TESTING.md\n M tests/soak/fpm_trace.py\n?? docs/phase4/fpm-poll-profile.json\n?? tests/soak/fpm_poll_profile.php\n?? tests/soak/test_poll_profile.py\n",
+      "extensionSha256": "8cf895be81021b9be69cb2b12ef406cb58dbcefd29175c70a2d24677d2434996",
+      "requestSha256": "ecce171d630670fa4d8934c464123589336808fce1391370a2563c0c6cfa8186",
+      "observerFiles": {
+        "tests/soak/fpm_trace.py": "dfe21957575b5b364710d4597d66dd9a4ad092025bdbefb2e7f3135b5eba67e0",
+        "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+        "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+      },
+      "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+      "seconds": 10.555276755942032,
+      "requests": 15
+    }
+  },
+  "forwardingControls": {
+    "PHP8.3.36": "PASS",
+    "PHP8.4.27": "PASS",
+    "PHP8.5.12": "PASS"
+  },
+  "note": "New repository diagnostic smoke only; does not certify endurance or replace earlier raw runs."
+}

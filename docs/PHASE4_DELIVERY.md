@@ -3,6 +3,22 @@
 **EXPERIMENTAL — work in progress.** This report separates completed checks
 from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
 
+## Current evidence at 2026-11-03 15:40 UTC
+
+| Check | Tested source | Result |
+|---|---|---|
+| Clean r2 package builds and installed tests, PHP 8.3/8.4/8.5 NTS | `3587740` | PASS; source/checksum below |
+| Hosted regression 8.3/8.4/8.5 and database lifecycle | `624cbe9` | All four jobs PASS; [run 41662855774](https://github.com/asyncara/asyncara/actions/runs/41662855774) |
+| Local one-hour mixed retry, including separate Oracle fixture | frozen `3587740` | Interruption requested after reproducing UDP ownership defect |
+| Local one-hour FPM retry | frozen `3587740` | FAIL; ticker assertion, evidence below |
+| Hosted one-hour mixed and FPM on separate runners | `624cbe9` | Mixed FAIL at UDP receive; FPM RUNNING; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
+| Six-/24-hour campaigns | — | NOT EXECUTED; failed local stage cannot advance |
+
+The hosted mixed workload includes extended networking and local PostgreSQL,
+MariaDB and Redis fixtures, but not the separate Oracle fixture. Hosted and local
+scopes must remain distinct. Later CI/documentation changes do not alter the
+runtime or packaged r2 test implementations. Running jobs are not passes.
+
 ## Verified baseline
 
 The initial branch and remote were `phase3-hardening` at
@@ -213,3 +229,34 @@ No local build/fuzz/benchmark was running. [Retry failure](phase4/fpm-retry-fail
 preserves the new diagnostics and raw hashes. The mixed one-hour job continues;
 this FPM failure prevents the campaign from advancing to six-/24-hour stages.
 Separate traced diagnostics investigate the wait; they do not replace this result.
+
+## Poll timing investigation
+
+The four-worker test-only PHP poll profile completed 600.256 seconds and 5,312
+HTTP/stream/SQLite/files requests. It preserved the request assertions and logged
+2,530 native calls with a requested timeout at most 5 ms that took over 50 ms.
+The longest 5 ms call took 934.382 ms with 124 microseconds of CPU time. A
+simultaneous standalone C control, without PHP or Asyncara, completed 120.001
+seconds / 13,271 epoll waits; 194 exceeded 50 ms, with a maximum 623.114 ms.
+Overlapping delays strengthen the evidence of host timing effects. They do not
+resolve the exact cause of earlier untraced failures or the mixed timeout.
+
+[Profile evidence](phase4/fpm-poll-profile.json) retains timings, overlap samples,
+commands and hashes. [Syscall investigation](phase4/fpm-syscall-investigation.json)
+preserves the failed traced runs, including a failed worker's requested 5 ms
+epoll wait lasting 202.361 ms. No timeout, ticker assertion or resource threshold
+was relaxed. Instrumentation changes timing; the profile pass is neither a full
+FPM lifecycle pass nor one-hour endurance evidence.
+
+## UDP endpoint ownership defect
+
+Hosted mixed testing failed after 445.844 wall seconds, waiting for IPv4 UDP.
+All other network stages completed and maximum timer lag was 9.486 ms.
+[Failure evidence](phase4/hosted-mixed-failure.json) retains the original artifact
+digest, report and operation state. A separate local churn control reproduced
+duplicate live endpoints, and `tests/udp_ownership.php` deterministically fails
+because a second bind to an owned address/port succeeds. PHP stream-server bind
+enables `SO_REUSEADDR`; a new endpoint can receive the first endpoint's datagram.
+Exact endpoint addresses were not captured in the hosted failure, so direct
+attribution of that individual timeout remains unproven. The frozen local retry
+is interrupted to repair this demonstrated defect and start a fresh campaign.

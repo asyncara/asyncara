@@ -194,3 +194,25 @@ readiness, synchronization and memory-management syscalls, not payloads or
 credentials. It changes timing and is not endurance certification. No global
 ptrace, scheduler or PHP settings are modified. Use a new directory every time.
 See [PHASE4_DELIVERY](PHASE4_DELIVERY.md) for current gate status and evidence.
+
+The diagnostic now also accepts `--workers 4 --instrumentation poll`. This uses
+a test-only namespaced forwarding function to time the unchanged global native
+poll call, without ptrace. It records calls over 50 ms to `native-polls.jsonl`
+and uncaught fatal errors to `fatal-requests.jsonl`, retaining request/PID identity.
+Logs are restricted to the private output directory. No payload syscalls or
+application traffic are recorded. This adds CPU queries and synchronous log
+writes: do not use it for performance certification or load it in applications.
+Fatal memory exhaustion may prevent diagnostic logging and is not claimed safe.
+
+```sh
+python3 tests/soak/fpm_trace.py --seconds 600 --workers 4 --instrumentation poll --output build/new-fpm-poll-profile
+python3 tests/soak/test_poll_profile.py
+```
+
+The original external profile completed 600.256 seconds / 5,312 requests. An
+overlapping 120.001-second C control had 194 waits over 50 ms, maximum 623.114 ms
+for a requested 5 ms wait. See [profile evidence](phase4/fpm-poll-profile.json).
+The later repository diagnostic has separate smoke validation; it is not
+retroactively identified as the source of that earlier run. Host delays are
+demonstrated, while exact attribution of the earlier failures remains unresolved.
+Original responsiveness assertions and growth thresholds are unchanged.

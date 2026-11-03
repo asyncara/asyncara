@@ -44,7 +44,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | CI regression and database lifecycle workflows | IMPLEMENTED_AND_TESTED | all four hosted jobs passed at final native source e5d94fd: PHP 8.3/8.4/8.5 regression and database lifecycle; [run 41549782614](https://github.com/asyncara/asyncara/actions/runs/41549782614); scheduled endurance is separate |
 | P1 admission and buffer limits | IMPLEMENTED_AND_TESTED | resource_bounds.php, database/resource_bounds.php; 8.3/8.4/8.5 and instrumented core; notification overflow/fatal cleanup Valgrind; see RESOURCE_LIMITS.md |
 | P2 protocol/allocation fuzzing | IMPLEMENTED_AND_TESTED | committed seeds, 100 RESP cases, real IPC failures, 326,134 native ASan/UBSan fuzz inputs and 12,737 instrumented PHP mutations; bounded coverage in FUZZING.md |
-| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | earlier baseline 20,855 cycles and HTTP-streaming checkpoint 19,761 cycles each ran one hour; final e5d94fd passed 300.073s / 1,331 cycles, RSS endpoint +200KiB, flat fds/threads; Phase 4 1h attempt failed at network timeout; 6h/24h not started; SOAK_TESTING.md |
+| P3 frozen mixed soak harness | PARTIALLY_IMPLEMENTED | earlier baseline 20,855 cycles and HTTP-streaming checkpoint 19,761 cycles each ran one hour; final e5d94fd passed 300.073s / 1,331 cycles, RSS endpoint +200KiB, flat fds/threads; Phase 4 1h attempt failed at an unattributed timeout; 6h/24h not started; SOAK_TESTING.md |
 | P4 expanded FPM lifecycle | PARTIALLY_IMPLEMENTED | sequential/within-request/multi-worker/streaming concurrency, recycling/reload/kill/timeout/fatal/pending isolation; historical RSS failures repaired with dedicated mappings, three unchanged five-minute runs passed; final e5d94fd: 3,756 requests / 300.106s, maximum 2,888KiB beyond warmup; endurance incomplete; FPM_LIFECYCLE.md |
 | P5 database TLS/auth and protocol repairs | PARTIALLY_IMPLEMENTED | Private-CA matrix, Oracle 8.4.13, certificate identity fix, nonblocking transaction control and buffered TLS wakeups; WAN/mTLS/cancel acknowledgement remain unverified |
 | P6 ZTS investigation | PARTIALLY_IMPLEMENTED | PHP 8.5.11 ZTS DEBUG CLI full tests and database suite pass; concurrent interpreter threads unverified, ThreadPool BLOCKED |
@@ -76,6 +76,13 @@ Consult the live campaign state and delivery report; starting a run is not a pas
 The3587740 FPM retry also failed after303.482s with535ms timer lag and one ticker
 step; CPU and runnable-wait diagnostics are preserved. Mixed retry remains active.
 Six-/24-hour promotion is prevented. Diagnosis continues without lowering limits.
+
+Hosted source `624cbe9` passes all four fast regression/database jobs. Its mixed
+and FPM one-hour jobs run on separate hosts; results are pending. A separate
+600.256-second poll profile passed 5,312 requests and recorded native wait delays
+overlapping those in a PHP-free epoll control. This is timing evidence, not a
+replacement for the failed endurance tests. Current test matrix and limitations:
+[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md).
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

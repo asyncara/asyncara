@@ -60,8 +60,9 @@ binary. Provenance and trends are in [phase3/soak-1h.json](phase3/soak-1h.json).
 Six- and 24-hour tests are **not yet executed**. Consult
 `docs/phase3/` and WORKLOG for completed run evidence before inferring coverage.
 
-The separate scheduled workflow runs the one-hour test; its remote status is
-unverified until hosted CI executes it. Longer commands require a machine/session
+The separate endurance workflow runs mixed and FPM one-hour tests on independent
+hosted runners. Current run status and scope are recorded in PHASE4_DELIVERY.md;
+a successfully started job does not establish completion. Longer commands require a machine/session
 that can remain available for the full duration. Do not label a smoke test as a
 one-hour soak or extrapolate successful short runs to 24 hours.
 
@@ -136,8 +137,10 @@ task step was 287.8 ms and timer lag 410.1 ms on the loaded host. These remain
 measured outliers, not a latency guarantee. Full provenance and trends are in
 [final-native-validation.json](phase3/final-native-validation.json).
 
-Final-source one-hour, six-hour and 24-hour runs are **not executed**. Neither
-earlier one-hour checkpoint nor this short final run establishes that endurance.
+At that Phase 3 checkpoint, final-source one-hour, six-hour and 24-hour runs had
+not executed. Phase 4 attempts and failures are recorded below and in
+PHASE4_DELIVERY.md; neither an earlier one-hour checkpoint nor this short final
+run establishes current endurance.
 
 ## Phase 4 harness memory
 

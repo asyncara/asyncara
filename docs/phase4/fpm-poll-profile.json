@@ -1,0 +1,602 @@
+{
+  "scope": "Diagnostic four-worker HTTP/stream/SQLite/files requests; not full FPM lifecycle or endurance certification",
+  "profileReport": {
+    "status": "PASS",
+    "command": [
+      "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+      "-n",
+      "-F",
+      "-d",
+      "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile.php",
+      "-d",
+      "extension=/home/coder/Asyncara/build/asyncara.so",
+      "-d",
+      "display_errors=0",
+      "-y",
+      "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile-600/fpm.conf"
+    ],
+    "requestedSeconds": 600.0,
+    "source": "d781935100db4421b3c8bc86bd068b1a96ede533",
+    "extensionSha256": "8cf895be81021b9be69cb2b12ef406cb58dbcefd29175c70a2d24677d2434996",
+    "requestSha256": "ecce171d630670fa4d8934c464123589336808fce1391370a2563c0c6cfa8186",
+    "note": "Test-only PHP namespace wrapper measures global native poll calls; no strace or runtime patch. Instrumentation still changes timing.",
+    "seconds": 600.2555937319994,
+    "requests": 5312
+  },
+  "over50msNativeCalls": 2718,
+  "over50msWithTimeoutAtMost5ms": 2530,
+  "longestNativeCalls": [
+    {
+      "pid": 2958803,
+      "request": "2993",
+      "unixSeconds": 1793718963.832756,
+      "elapsedNs": 934381515,
+      "cpuUs": 124,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958804,
+      "request": "23",
+      "unixSeconds": 1793718634.576098,
+      "elapsedNs": 717021682,
+      "cpuUs": 294,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958802,
+      "request": "5065",
+      "unixSeconds": 1793719202.637846,
+      "elapsedNs": 700826985,
+      "cpuUs": 1804,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958801,
+      "request": "22",
+      "unixSeconds": 1793718634.53872,
+      "elapsedNs": 676570206,
+      "cpuUs": 352,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958802,
+      "request": "21",
+      "unixSeconds": 1793718634.540234,
+      "elapsedNs": 674229772,
+      "cpuUs": 113,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958802,
+      "request": "2992",
+      "unixSeconds": 1793718962.068181,
+      "elapsedNs": 585687003,
+      "cpuUs": 687,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958801,
+      "request": "3322",
+      "unixSeconds": 1793719006.853515,
+      "elapsedNs": 559355467,
+      "cpuUs": 292,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958804,
+      "request": "3323",
+      "unixSeconds": 1793719006.85055,
+      "elapsedNs": 556100705,
+      "cpuUs": 363,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958801,
+      "request": "4500",
+      "unixSeconds": 1793719139.658424,
+      "elapsedNs": 554409512,
+      "cpuUs": 12388,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    },
+    {
+      "pid": 2958803,
+      "request": "4502",
+      "unixSeconds": 1793719139.326275,
+      "elapsedNs": 548440195,
+      "cpuUs": 23625,
+      "timeoutMs": 5,
+      "readers": 0,
+      "writers": 0
+    }
+  ],
+  "standaloneControl": {
+    "type": "complete",
+    "seconds": 120.001134727,
+    "waits": 13271,
+    "over50ms": 194,
+    "maxWaitSeconds": 0.62311445
+  },
+  "overlapSamples": [
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718852.8806655,
+        "elapsedSeconds": 0.62311445,
+        "cpuSeconds": 4.277e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958802,
+          "request": "2108",
+          "unixSeconds": 1793718852.711476,
+          "elapsedNs": 457057945,
+          "cpuUs": 425,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958804,
+          "request": "2109",
+          "unixSeconds": 1793718852.346591,
+          "elapsedNs": 214459153,
+          "cpuUs": 141,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958804,
+          "request": "2109",
+          "unixSeconds": 1793718852.480292,
+          "elapsedNs": 127206430,
+          "cpuUs": 381,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958804,
+          "request": "2109",
+          "unixSeconds": 1793718852.870307,
+          "elapsedNs": 115175005,
+          "cpuUs": 149,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718870.791912,
+        "elapsedSeconds": 0.329275213,
+        "cpuSeconds": 3.156e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958803,
+          "request": "2260",
+          "unixSeconds": 1793718870.789092,
+          "elapsedNs": 347507199,
+          "cpuUs": 167,
+          "timeoutMs": 1,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958802,
+          "request": "2261",
+          "unixSeconds": 1793718870.788367,
+          "elapsedNs": 346321220,
+          "cpuUs": 99,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "2263",
+          "unixSeconds": 1793718870.604573,
+          "elapsedNs": 140605748,
+          "cpuUs": 69,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718778.8339317,
+        "elapsedSeconds": 0.315770949,
+        "cpuSeconds": 2.303e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958802,
+          "request": "1401",
+          "unixSeconds": 1793718778.818045,
+          "elapsedNs": 366720279,
+          "cpuUs": 129,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958804,
+          "request": "1403",
+          "unixSeconds": 1793718778.642205,
+          "elapsedNs": 94136673,
+          "cpuUs": 310,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "1400",
+          "unixSeconds": 1793718778.545539,
+          "elapsedNs": 90888915,
+          "cpuUs": 331,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "1402",
+          "unixSeconds": 1793718778.603022,
+          "elapsedNs": 84901283,
+          "cpuUs": 275,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718866.1831234,
+        "elapsedSeconds": 0.306876892,
+        "cpuSeconds": 0.01119834,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958804,
+          "request": "2225",
+          "unixSeconds": 1793718866.414248,
+          "elapsedNs": 461240685,
+          "cpuUs": 8641,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "2227",
+          "unixSeconds": 1793718866.113087,
+          "elapsedNs": 159733707,
+          "cpuUs": 267,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718857.7825098,
+        "elapsedSeconds": 0.298933711,
+        "cpuSeconds": 2.706e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958803,
+          "request": "2151",
+          "unixSeconds": 1793718857.745356,
+          "elapsedNs": 229974060,
+          "cpuUs": 405,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718848.8134277,
+        "elapsedSeconds": 0.298173246,
+        "cpuSeconds": 2.159e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958804,
+          "request": "2085",
+          "unixSeconds": 1793718848.816842,
+          "elapsedNs": 448520554,
+          "cpuUs": 2323,
+          "timeoutMs": 3,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958802,
+          "request": "2087",
+          "unixSeconds": 1793718848.818482,
+          "elapsedNs": 309874410,
+          "cpuUs": 2568,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "2086",
+          "unixSeconds": 1793718848.814913,
+          "elapsedNs": 306606901,
+          "cpuUs": 292744,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "2084",
+          "unixSeconds": 1793718848.808327,
+          "elapsedNs": 306363286,
+          "cpuUs": 252,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718788.7023492,
+        "elapsedSeconds": 0.290127254,
+        "cpuSeconds": 2.989e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958802,
+          "request": "1495",
+          "unixSeconds": 1793718788.65295,
+          "elapsedNs": 374664831,
+          "cpuUs": 16811,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "1492",
+          "unixSeconds": 1793718788.578105,
+          "elapsedNs": 163652097,
+          "cpuUs": 173,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "1493",
+          "unixSeconds": 1793718788.566398,
+          "elapsedNs": 154249491,
+          "cpuUs": 253,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718857.338555,
+        "elapsedSeconds": 0.2800666,
+        "cpuSeconds": 3.006e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958801,
+          "request": "2149",
+          "unixSeconds": 1793718857.463494,
+          "elapsedNs": 325220220,
+          "cpuUs": 79,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "2151",
+          "unixSeconds": 1793718857.338373,
+          "elapsedNs": 279373973,
+          "cpuUs": 90,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958804,
+          "request": "2150",
+          "unixSeconds": 1793718857.337096,
+          "elapsedNs": 278240975,
+          "cpuUs": 183,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "2149",
+          "unixSeconds": 1793718857.137635,
+          "elapsedNs": 77936921,
+          "cpuUs": 189,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718780.0350983,
+        "elapsedSeconds": 0.278389994,
+        "cpuSeconds": 3.346e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958804,
+          "request": "1415",
+          "unixSeconds": 1793718780.048808,
+          "elapsedNs": 282058243,
+          "cpuUs": 213,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958802,
+          "request": "1413",
+          "unixSeconds": 1793718779.946575,
+          "elapsedNs": 103835666,
+          "cpuUs": 3426,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958802,
+          "request": "1413",
+          "unixSeconds": 1793718779.831143,
+          "elapsedNs": 74082383,
+          "cpuUs": 205,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "1414",
+          "unixSeconds": 1793718779.818199,
+          "elapsedNs": 61946173,
+          "cpuUs": 303,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    {
+      "control": {
+        "type": "oversleep",
+        "unixSeconds": 1793718850.3943932,
+        "elapsedSeconds": 0.248589693,
+        "cpuSeconds": 2.685e-05,
+        "requestedMilliseconds": 5
+      },
+      "overlappingNativeCalls": [
+        {
+          "pid": 2958802,
+          "request": "2099",
+          "unixSeconds": 1793718850.372491,
+          "elapsedNs": 222319573,
+          "cpuUs": 156,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958803,
+          "request": "2096",
+          "unixSeconds": 1793718850.246503,
+          "elapsedNs": 75561540,
+          "cpuUs": 123,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 2958801,
+          "request": "2098",
+          "unixSeconds": 1793718850.417852,
+          "elapsedNs": 69525963,
+          "cpuUs": 95,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    }
+  ],
+  "interpretation": "Overlapping delays occur in native poll and a bare epoll control without PHP/Asyncara. Host timing effects are demonstrated; exact attribution of earlier untraced failures and the mixed timeout is unresolved. Timestamps are sampled after timing/CPU queries and not a precise causal trace.",
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile-600/report.json",
+      "bytes": 855,
+      "sha256": "d0c90a6f729b3ab2bfb800f595107da9d089012ab3cac52ca98a6e6efa13fac7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile-600/responses.jsonl",
+      "bytes": 13546644,
+      "sha256": "6ae08e75ff24cded7123def492095675144b296e41c71b8e680085edb8c4f5a1"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile.jsonl",
+      "bytes": 370674,
+      "sha256": "7e8d7fd2a7ce036d8888abcbfb0ceb70b0d92a9af20d70612bd7fd9eeef4082e"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/epoll-profile-overlap-120.jsonl",
+      "bytes": 26486,
+      "sha256": "d29cc61c54ea86ca9e1982180638fd5b9ee992db7e4fdeb66ba2b4b5e743d9c8"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm_poll_profile.py",
+      "bytes": 4395,
+      "sha256": "64141e672492176c8ed36032c577091b2db38d22e244ed6160ba2e9879771703"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-profile.php",
+      "bytes": 1670,
+      "sha256": "75132427925da0b228de7fad53751194f338e7b899967d7f46c7362aed5b51b6"
+    }
+  ]
+}

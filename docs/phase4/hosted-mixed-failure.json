@@ -1,0 +1,283 @@
+{
+  "sourceCommit": "624cbe95d29f6cb779e73e320af3946008a99491",
+  "run": "https://github.com/asyncara/asyncara/actions/runs/41662855764",
+  "artifactMetadata": {
+    "id": 13244506530,
+    "node_id": "MDg6QXJ0aWZhY3QxMzI0NDUwNjUzMA==",
+    "name": "one-hour-soak-mixed",
+    "size_in_bytes": 839734,
+    "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13244506530",
+    "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13244506530/zip",
+    "expired": false,
+    "digest": "sha256:2b2661d2104f92029fba0a5c2c3f41f614da1a5972485866674636c38a220f47",
+    "created_at": "2026-11-03T15:29:11Z",
+    "updated_at": "2026-11-03T15:29:11Z",
+    "expires_at": "2027-02-01T15:20:28Z",
+    "workflow_run": {
+      "id": 41662855764,
+      "repository_id": 1443274738,
+      "head_repository_id": 1443274738,
+      "head_branch": "phase4-endurance",
+      "head_sha": "624cbe95d29f6cb779e73e320af3946008a99491"
+    }
+  },
+  "report": {
+    "status": "FAIL",
+    "wallSeconds": 445.84359512000003,
+    "workloadExit": 255,
+    "workloadError": null,
+    "samples": 87,
+    "complete": [],
+    "completeRecords": 0,
+    "parseErrors": [
+      "\n",
+      "Fatal error: Uncaught Asyncara\\Exception\\TimeoutException: Operation deadline exceeded in /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Async.php:50\n",
+      "Stack trace:\n",
+      "#0 /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Scheduler.php(79): Asyncara\\Async::{closure:Asyncara\\Async::timeout():49}()\n",
+      "#1 /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Scheduler.php(180): Asyncara\\Scheduler->timers()\n",
+      "#2 /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Scheduler.php(203): Asyncara\\Scheduler->turn(Object(Asyncara\\Task))\n",
+      "#3 /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Async.php(7): Asyncara\\Scheduler->run(Object(Closure))\n",
+      "#4 /home/runner/work/asyncara/asyncara/build/soak-1h/source/tests/soak/workload.php(25): Asyncara\\Async::run(Object(Closure))\n",
+      "#5 {main}\n",
+      "  thrown in /home/runner/work/asyncara/asyncara/build/soak-1h/source/src/Asyncara/Async.php on line 50\n"
+    ],
+    "parseErrorCount": 10,
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 45464,
+        "max": 45708,
+        "mean": 45577.428571428565,
+        "endMinusStartMedian": 236,
+        "slopePerHour": 1829.4995914992405
+      },
+      "phpBytes": {
+        "min": 2274968,
+        "max": 2300544,
+        "mean": 2292433.371428571,
+        "endMinusStartMedian": 864,
+        "slopePerHour": -16055.462186765397
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "mean": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 22,
+        "max": 22,
+        "mean": 22.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "threads": {
+        "min": 5,
+        "max": 5,
+        "mean": 5.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 9,
+        "max": 9,
+        "mean": 9.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      }
+    },
+    "failures": [
+      "Workload did not finish cleanly",
+      "Unexpected stderr; inspect log"
+    ],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+      "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+    ]
+  },
+  "networkFailure": {
+    "type": "network-failure",
+    "cycle": 3174,
+    "elapsedNs": 5000572384,
+    "error": "Asyncara\\Exception\\TimeoutException",
+    "operations": {
+      "dns": {
+        "stage": "done",
+        "atNs": 534880582611
+      },
+      "udp:127.0.0.1": {
+        "stage": "receive",
+        "atNs": 534880574340
+      },
+      "udp:::1": {
+        "stage": "done",
+        "atNs": 534882138649
+      },
+      "tls12": {
+        "stage": "done",
+        "atNs": 534886589914
+      },
+      "tls13": {
+        "stage": "done",
+        "atNs": 534885753438
+      },
+      "https": {
+        "stage": "done",
+        "atNs": 534984392940
+      },
+      "ws": {
+        "stage": "done",
+        "atNs": 534883797047
+      },
+      "wss": {
+        "stage": "done",
+        "atNs": 534883740191
+      }
+    },
+    "connections": {
+      "ws": {
+        "closed": false,
+        "closeAcknowledged": false,
+        "queuedMessages": 0,
+        "queuedBytes": 0,
+        "pendingPings": 0
+      },
+      "wss": {
+        "closed": false,
+        "closeAcknowledged": false,
+        "queuedMessages": 0,
+        "queuedBytes": 0,
+        "pendingPings": 0
+      }
+    },
+    "scheduler": {
+      "turns": 507293,
+      "taskSteps": 7352053,
+      "maxStepSeconds": 0.008519032999970477,
+      "maxTimerLagSeconds": 0.009486199999969358,
+      "activeTasks": 7,
+      "pendingFutures": 10,
+      "retainedFailures": 0,
+      "readyTasks": 0,
+      "activeTimers": 3,
+      "ioWatchers": 2,
+      "pendingNative": 0,
+      "memoryBytes": 27262976
+    }
+  },
+  "lastCompletedSample": {
+    "type": "sample",
+    "seconds": 435.68548922300005,
+    "cycles": 3164,
+    "tasksExecuted": 3164000,
+    "phpBytes": 2292552,
+    "phpAllocatedBytes": 27262976,
+    "os": {
+      "rssKiB": 45708,
+      "virtualKiB": 445988,
+      "threads": 5,
+      "fds": 22,
+      "sockets": 9
+    },
+    "native": {
+      "version": "0.1.0-dev",
+      "eventLoopBackend": "epoll",
+      "filesystemBackend": "pthread-workers",
+      "networkBackend": "nonblocking-streams+curl-multi",
+      "dnsBackend": "worker-getaddrinfo",
+      "sqliteVersion": "3.45.1",
+      "curlVersion": "8.5.0",
+      "userlandThreads": false,
+      "ioUring": false,
+      "postgresql": true,
+      "mysql": true,
+      "nativeWorkers": 4,
+      "pendingOperations": 0,
+      "nativeBufferLimit": 16777216,
+      "nativeQueueLimit": 1024,
+      "nativeMemoryBytes": 0,
+      "nativeMemoryPeak": 126076,
+      "nativeMemoryRejections": 0,
+      "nativeMemoryLimit": 268435456,
+      "openFileHandles": 0,
+      "sqliteConnections": 0,
+      "httpReadinessSockets": 0,
+      "nativeQueueDepth": 0,
+      "httpStreamingTransfers": 0,
+      "httpStreamingBufferedBytes": 0,
+      "httpStreamingPaused": 0,
+      "httpStreamBufferLimit": 65536,
+      "httpStreamingUploads": 0,
+      "httpUploadBufferedBytes": 0,
+      "httpUploadPaused": 0
+    },
+    "scheduler": {
+      "turns": 504624,
+      "taskSteps": 7325661,
+      "maxStepSeconds": 0.008519032999970477,
+      "maxTimerLagSeconds": 0.009486199999969358,
+      "activeTasks": 6,
+      "pendingFutures": 9,
+      "retainedFailures": 0,
+      "readyTasks": 0,
+      "activeTimers": 3,
+      "ioWatchers": 2,
+      "pendingNative": 0,
+      "memoryBytes": 27262976
+    },
+    "processPool": {
+      "workers": 2,
+      "restarts": 31,
+      "pendingJobs": 0,
+      "pendingBytes": 0,
+      "queueLimit": 256,
+      "queueBytes": 67108864,
+      "workerMemoryBytes": 268435456,
+      "closed": false
+    },
+    "queue": {
+      "capacity": 8,
+      "buffered": 0,
+      "waitingReaders": 0,
+      "waitingWriters": 0,
+      "unfinished": 0,
+      "closed": false
+    },
+    "databaseConnections": 3,
+    "network": {
+      "cycles": 3164,
+      "websocketConnections": 2,
+      "reconnections": 31,
+      "cancellations": 31,
+      "dnsLookups": 3164,
+      "udpDatagrams": 6328,
+      "verifiedTlsConnections": 6328,
+      "httpsResponses": 6328
+    },
+    "ticks": 68635,
+    "timeouts": 3164,
+    "cancellations": 3164,
+    "unexpectedErrors": 0,
+    "schedulingLatencyMs": {
+      "median": 3.1987890000664265,
+      "p95": 3.6475619999691844,
+      "p99": 3.7801879999506127
+    }
+  },
+  "environment": {
+    "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+    "endurance-commit.txt": "624cbe95d29f6cb779e73e320af3946008a99491\n",
+    "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 57 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               GenuineIntel\nModel name:                              Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz\nCPU family:                              6\nModel:                                   106\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                6\nCPU(s) scaling MHz:                      113%\nCPU max MHz:                             2800.0000\nCPU min MHz:                             800.0000\nBogoMIPS:                                5586.87\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves vnmi avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq la57 rdpid fsrm arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2.5 MiB (2 instances)\nL3 cache:                                48 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Mitigation; Aligned branch/return thunks\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Vulnerable\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+    "endurance-kernel.txt": "Linux runnervm48cm3 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+    "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+  },
+  "artifactSha256": "2b2661d2104f92029fba0a5c2c3f41f614da1a5972485866674636c38a220f47",
+  "rawDirectory": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41662855764",
+  "interpretation": "Failed at IPv4 UDP receive; scheduler max timer lag under 10ms. A separate local UDP churn test then reproduced duplicate live endpoints. Exact failed endpoint addresses were not recorded in this campaign."
+}
