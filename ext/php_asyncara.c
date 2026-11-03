@@ -73,12 +73,10 @@ static ar_value *copy_value(ar_engine *e, zval *z, unsigned depth, size_t *bytes
         return NULL;
     }
 }
-static bool export_value(ar_value *v, zval *z) {
-    ZVAL_NULL(z);
-    if (ar_php_oom())
-        return false;
+static void export_value(ar_value *v, zval *z) {
     if (!v) {
-        return true;
+        ZVAL_NULL(z);
+        return;
     }
     switch (v->type) {
     case V_NULL:
@@ -93,34 +91,20 @@ static bool export_value(ar_value *v, zval *z) {
     case V_DOUBLE:
         ZVAL_DOUBLE(z, v->number);
         break;
-    case V_STRING: {
-        zend_string *string = ar_php_string_init(v->string, v->length);
-        if (!string)
-            return false;
-        ZVAL_STR(z, string);
+    case V_STRING:
+        ZVAL_STRINGL(z, v->string, v->length);
         break;
-    }
     case V_ARRAY:
         array_init_size(z, v->count);
         for (size_t i = 0; i < v->count; i++) {
             zval item;
-            if (!export_value(v->items[i], &item)) {
-                zval_ptr_dtor(z);
-                ZVAL_NULL(z);
-                return false;
-            }
+            export_value(v->items[i], &item);
             if (v->keys[i])
                 zend_hash_str_update(Z_ARRVAL_P(z), v->keys[i], strlen(v->keys[i]), &item);
             else
                 add_next_index_zval(z, &item);
         }
     }
-    if (ar_php_oom()) {
-        zval_ptr_dtor(z);
-        ZVAL_NULL(z);
-        return false;
-    }
-    return true;
 }
 static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool binary, size_t *length) {
     zval *z = zend_hash_index_find(args, index);
@@ -185,21 +169,9 @@ static bool valid_http_options(ar_value *v) {
         ar_value *x = v->items[i];
         if (!key)
             return false;
-        if (!strcmp(key, "followRedirects") || !strcmp(key, "streamResponse")) {
+        if (!strcmp(key, "followRedirects")) {
             if (x->type != V_BOOL)
                 return false;
-        } else if (!strcmp(key, "uploadSize")) {
-            if (x->type != V_INT || x->integer < -1) return false;
-        } else if (!strcmp(key, "multipart")) {
-            if (x->type != V_ARRAY || x->count > 64) return false;
-            size_t total = 0;
-            for (size_t h = 0; h < x->count; h++) {
-                ar_value *field = x->items[h];
-                if (!x->keys[h] || strlen(x->keys[h]) > 256 || strpbrk(x->keys[h], "\r\n") ||
-                    field->type != V_STRING || field->length > 65536) return false;
-                total += field->length;
-            }
-            if (total > 1048576) return false;
         } else if (!strcmp(key, "headers")) {
             if (x->type != V_ARRAY)
                 return false;
@@ -208,28 +180,15 @@ static bool valid_http_options(ar_value *v) {
                 if (s->type != V_STRING || memchr(s->string, 0, s->length) || strpbrk(s->string, "\r\n"))
                     return false;
             }
-        } else if (!strcmp(key, "method") || !strcmp(key, "proxy") || !strcmp(key, "caFile") ||
-                   !strcmp(key, "fileField") || !strcmp(key, "fileName") || !strcmp(key, "fileType")) {
+        } else if (!strcmp(key, "method") || !strcmp(key, "proxy") || !strcmp(key, "caFile")) {
             if (x->type != V_STRING || memchr(x->string, 0, x->length) || strpbrk(x->string, "\r\n"))
                 return false;
-            if (!strncmp(key, "file", 4) && (!x->length || x->length > 256)) return false;
         } else
             return false;
     }
     return true;
 }
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_info, 0, 0, IS_ARRAY, 0)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_read, 0, 1, IS_STRING, 0)
-ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_head, 0, 1, IS_ARRAY, 1)
-ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
-ZEND_END_ARG_INFO()
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_write, 0, 3, _IS_BOOL, 0)
-ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
-ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
-ZEND_ARG_TYPE_INFO(0, eof, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_submit, 0, 2, IS_LONG, 0)
 ZEND_ARG_TYPE_INFO(0, operation, IS_STRING, 0)
@@ -307,32 +266,6 @@ PHP_FUNCTION(asyncara_info) {
     for (ar_file *file = e->files; file; file = file->next)
         file_count++;
     add_assoc_long(return_value, "openFileHandles", file_count);
-    size_t sqlite_count = 0, http_sockets = 0, queued = 0;
-    for (ar_db *db = e->dbs; db; db = db->next) sqlite_count++;
-    for (ar_socket *socket = e->sockets; socket; socket = socket->next) http_sockets++;
-    pthread_mutex_lock(&e->mutex);
-    for (ar_job *job = e->queue_head; job; job = job->queue_next) queued++;
-    pthread_mutex_unlock(&e->mutex);
-    add_assoc_long(return_value, "sqliteConnections", sqlite_count);
-    add_assoc_long(return_value, "httpReadinessSockets", http_sockets);
-    add_assoc_long(return_value, "nativeQueueDepth", queued);
-    size_t streaming = 0, buffered = 0, paused = 0, uploads = 0, upload_buffered = 0, upload_paused = 0;
-    for (ar_job *job = e->jobs; job; job = job->next) {
-        if (job->op == OP_HTTP && job->stream_response) {
-            streaming++; buffered += job->body_len; paused += job->receive_paused != 0;
-        }
-        if (job->op == OP_HTTP && job->stream_upload) {
-            uploads++; upload_buffered += job->upload_len - job->upload_offset;
-            upload_paused += job->send_paused != 0;
-        }
-    }
-    add_assoc_long(return_value, "httpStreamingTransfers", streaming);
-    add_assoc_long(return_value, "httpStreamingBufferedBytes", buffered);
-    add_assoc_long(return_value, "httpStreamingPaused", paused);
-    add_assoc_long(return_value, "httpStreamBufferLimit", AR_HTTP_STREAM_LIMIT);
-    add_assoc_long(return_value, "httpStreamingUploads", uploads);
-    add_assoc_long(return_value, "httpUploadBufferedBytes", upload_buffered);
-    add_assoc_long(return_value, "httpUploadPaused", upload_paused);
 }
 PHP_FUNCTION(asyncara_submit) {
     char *name;
@@ -344,7 +277,7 @@ PHP_FUNCTION(asyncara_submit) {
                                   "mkdir",      "rmdir",       "stat",         "list",         "copy",
                                   "dns",        "sqlite_open", "sqlite_query", "sqlite_close", "http",
                                   "read_range", "write_range", "file_open",    "file_read",    "file_write",
-                                  "file_seek",  "file_stat",   "file_sync",    "file_close", "atomic_write"};
+                                  "file_seek",  "file_stat",   "file_sync",    "file_close"};
     size_t op;
     for (op = 0; op < sizeof(names) / sizeof(*names); op++)
         if (strlen(names[op]) == len && !memcmp(names[op], name, len))
@@ -365,7 +298,7 @@ PHP_FUNCTION(asyncara_submit) {
         zend_throw_exception(zend_ce_exception, "Native memory limit or allocation failure", 0);
         RETURN_THROWS();
     }
-    if (op >= OP_FILE_OPEN && op <= OP_FILE_CLOSE) {
+    if (op >= OP_FILE_OPEN) {
         if (op == OP_FILE_OPEN) {
             j->a = string_arg(e, args, 0, false, NULL);
             if (!j->a)
@@ -460,29 +393,19 @@ PHP_FUNCTION(asyncara_submit) {
         j->a = string_arg(e, args, 0, false, NULL);
         if (!j->a)
             goto error;
-        if (op <= OP_COPY || op == OP_READ_RANGE || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE ||
+        if (op <= OP_COPY || op == OP_READ_RANGE || op == OP_WRITE_RANGE ||
             (op == OP_DB_OPEN && strcmp(j->a, ":memory:")))
             if (!capture_path(e, &j->a)) {
                 goto error;
             }
-        if (op == OP_WRITE || op == OP_APPEND || op == OP_RENAME || op == OP_COPY || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE) {
+        if (op == OP_WRITE || op == OP_APPEND || op == OP_RENAME || op == OP_COPY || op == OP_WRITE_RANGE) {
             j->b =
-                string_arg(e, args, 1, op == OP_WRITE || op == OP_APPEND || op == OP_WRITE_RANGE || op == OP_ATOMIC_WRITE, &j->b_len);
+                string_arg(e, args, 1, op == OP_WRITE || op == OP_APPEND || op == OP_WRITE_RANGE, &j->b_len);
             if (!j->b)
                 goto error;
             if ((op == OP_RENAME || op == OP_COPY) && !capture_path(e, &j->b)) {
                 goto error;
             }
-        }
-        if (op == OP_ATOMIC_WRITE) {
-            zval *durable = zend_hash_index_find(args, 2), *mode = zend_hash_index_find(args, 3);
-            if (!durable || (Z_TYPE_P(durable) != IS_TRUE && Z_TYPE_P(durable) != IS_FALSE) ||
-                !mode || Z_TYPE_P(mode) != IS_LONG || Z_LVAL_P(mode) < 0 || Z_LVAL_P(mode) > 0777) {
-                zend_value_error("Atomic write requires a boolean durability flag and permissions 0000..0777");
-                goto error;
-            }
-            j->offset = Z_TYPE_P(durable) == IS_TRUE;
-            j->length = (size_t)Z_LVAL_P(mode);
         }
         if (op == OP_READ_RANGE || op == OP_WRITE_RANGE) {
             zval *off = zend_hash_index_find(args, 2), *length = zend_hash_index_find(args, 3);
@@ -537,17 +460,6 @@ PHP_FUNCTION(asyncara_submit) {
                 goto error;
             }
             j->length = Z_LVAL_P(timeout);
-            for (size_t i = 0; i < j->params->count; i++)
-                if (!strcmp(j->params->keys[i], "streamResponse"))
-                    j->stream_response = (int)j->params->items[i]->integer;
-                else if (!strcmp(j->params->keys[i], "uploadSize")) {
-                    j->stream_upload = 1;
-                    j->upload_size = j->params->items[i]->integer;
-                }
-            if (j->stream_upload && j->b) {
-                zend_value_error("Streaming upload cannot also have a buffered body");
-                goto error;
-            }
         }
     }
     if (ar_submit(e, j)) {
@@ -624,10 +536,7 @@ PHP_FUNCTION(asyncara_poll) {
                 zend_value_error("Stream has no pollable descriptor");
                 RETURN_THROWS();
             }
-            /* Casting a TLS stream may move SSL_pending bytes into PHP's
-             * buffer. Kernel readiness alone then loses the wakeup. */
-            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = key,
-                               .buffered = !mode && (stream->writepos > stream->readpos || stream->eof)};
+            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = key};
         }
         ZEND_HASH_FOREACH_END();
     }
@@ -656,21 +565,11 @@ PHP_FUNCTION(asyncara_poll) {
         zval item, value;
         array_init(&item);
         add_assoc_long(&item, "id", j->id);
-        add_assoc_long(&item, "errno", j->system_errno);
-        add_assoc_bool(&item, "committed", j->committed);
         if (j->error[0])
             add_assoc_string(&item, "error", j->error);
         else
             add_assoc_null(&item, "error");
-        if (!export_value(j->result, &value)) {
-            zval_ptr_dtor(&item);
-            zval_ptr_dtor(&r);
-            zval_ptr_dtor(&wr);
-            zval_ptr_dtor(&results);
-            /* The native allocation list retains this and remaining jobs for
-             * RSHUTDOWN. Return to Zend to deliver the pending fatal error. */
-            return;
-        }
+        export_value(j->result, &value);
         add_assoc_zval(&item, "value", &value);
         add_next_index_zval(&results, &item);
         ar_job_free(j);
@@ -679,113 +578,6 @@ PHP_FUNCTION(asyncara_poll) {
     add_assoc_zval(return_value, "read", &r);
     add_assoc_zval(return_value, "write", &wr);
     add_assoc_zval(return_value, "results", &results);
-    zval http_readable, http_writable;
-    array_init(&http_readable);
-    array_init(&http_writable);
-    for (ar_job *job = e->jobs; job; job = job->next) {
-        if (job->op == OP_HTTP && job->stream_response &&
-            (job->body_len || (job->headers_ready && !job->headers_delivered)))
-            add_next_index_long(&http_readable, job->id);
-        if (job->op == OP_HTTP && job->stream_upload && !job->upload_len && !job->upload_eof)
-            add_next_index_long(&http_writable, job->id);
-    }
-    add_assoc_zval(return_value, "httpReadable", &http_readable);
-    add_assoc_zval(return_value, "httpWritable", &http_writable);
-}
-PHP_FUNCTION(asyncara_http_head) {
-    zend_long id;
-    ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_LONG(id) ZEND_PARSE_PARAMETERS_END();
-    ar_job *j = engine ? engine->jobs : NULL;
-    while (j && j->id != id) j = j->next;
-    if (!j || j->op != OP_HTTP || !j->stream_response) {
-        zend_value_error("HTTP streaming transfer is missing or completed");
-        RETURN_THROWS();
-    }
-    if (!j->headers_ready && !j->body_len) RETURN_NULL();
-    long status = 0;
-    curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &status);
-    array_init(return_value);
-    add_assoc_long(return_value, "status", status);
-    zend_string *headers = ar_php_string_init(j->response_headers ? j->response_headers : "", j->headers_len);
-    if (!headers) return;
-    add_assoc_str(return_value, "headers", headers);
-    j->headers_delivered = 1;
-}
-PHP_FUNCTION(asyncara_http_read) {
-    zend_long id;
-    ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_LONG(id) ZEND_PARSE_PARAMETERS_END();
-    ar_job *j = engine ? engine->jobs : NULL;
-    while (j && j->id != id) j = j->next;
-    if (!j || j->op != OP_HTTP || !j->stream_response) {
-        zend_value_error("HTTP streaming transfer is missing or completed");
-        RETURN_THROWS();
-    }
-    /* Copy before clearing: a Zend allocation bailout leaves native ownership
-     * intact for RSHUTDOWN. Unpausing may synchronously refill this buffer. */
-    zend_string *body = ar_php_string_init(j->body ? j->body : "", j->body_len);
-    if (!body) return;
-    RETVAL_STR(body);
-    j->body_len = 0;
-    if (j->receive_paused && !j->done) {
-        engine->http_wakeup = 1;
-        j->receive_paused = 0;
-        CURLcode result = curl_easy_pause(j->curl, j->send_paused ? CURLPAUSE_SEND : CURLPAUSE_CONT);
-        if (result != CURLE_OK) {
-            curl_multi_remove_handle(engine->multi, j->curl);
-            snprintf(j->error, sizeof(j->error), "HTTP resume failed: %s", curl_easy_strerror(result));
-            ar_done(engine, j);
-        }
-    }
-}
-PHP_FUNCTION(asyncara_http_write) {
-    zend_long id;
-    char *data;
-    size_t length;
-    bool eof;
-    ZEND_PARSE_PARAMETERS_START(3, 3)
-    Z_PARAM_LONG(id) Z_PARAM_STRING(data, length) Z_PARAM_BOOL(eof) ZEND_PARSE_PARAMETERS_END();
-    ar_job *j = engine ? engine->jobs : NULL;
-    while (j && j->id != id) j = j->next;
-    if (!j || j->op != OP_HTTP || !j->stream_upload || j->upload_eof || length > AR_HTTP_STREAM_LIMIT) {
-        zend_value_error("Invalid streaming upload state or chunk exceeds 65536 bytes");
-        RETURN_THROWS();
-    }
-    if (j->upload_len) RETURN_FALSE;
-    if (j->done) RETURN_FALSE;
-    if (length > (uint64_t)(INT64_MAX - j->upload_sent) ||
-        (j->upload_size >= 0 && ((uint64_t)length > (uint64_t)(j->upload_size - j->upload_sent) ||
-                                (eof && j->upload_sent + (int64_t)length != j->upload_size)))) {
-        zend_value_error("Upload length does not match the declared size");
-        RETURN_THROWS();
-    }
-    if (length && !j->upload) {
-        j->upload = ar_alloc(engine, AR_HTTP_STREAM_LIMIT);
-        if (!j->upload) {
-            zend_throw_exception(zend_ce_exception, "Native memory limit or allocation failure", 0);
-            RETURN_THROWS();
-        }
-    }
-    if (length) memcpy(j->upload, data, length);
-    j->upload_len = length;
-    j->upload_eof = eof;
-    engine->http_wakeup = 1;
-    if (j->send_paused) {
-        j->send_paused = 0;
-        int receive = j->receive_paused ? CURLPAUSE_RECV : 0;
-        /* MIME may return already-written boundary bytes before passing its
-         * nested callback's PAUSE up to the transfer. A direct CONT at that
-         * instant is a no-op and leaves the MIME part paused forever. Set SEND
-         * through the public API first, then clear it to unpause the MIME tree.
-         * No curl-internal state is accessed. */
-        CURLcode result = curl_easy_pause(j->curl, receive | CURLPAUSE_SEND);
-        if (result == CURLE_OK) result = curl_easy_pause(j->curl, receive);
-        if (result != CURLE_OK) {
-            curl_multi_remove_handle(engine->multi, j->curl);
-            snprintf(j->error, sizeof(j->error), "HTTP upload resume failed: %s", curl_easy_strerror(result));
-            ar_done(engine, j);
-        }
-    }
-    RETURN_TRUE;
 }
 PHP_FUNCTION(asyncara_cancel) {
     zend_long id;
@@ -855,9 +647,6 @@ static void execute_hook(zend_execute_data *execute_data, zval *return_value) {
 #include "mysql.c"
 #endif
 static const zend_function_entry functions[] = {
-    PHP_FE(asyncara_http_read, arginfo_http_read)
-    PHP_FE(asyncara_http_head, arginfo_http_head)
-    PHP_FE(asyncara_http_write, arginfo_http_write)
     PHP_FE(asyncara_memory_limit, arginfo_memory_limit)
 #ifdef HAVE_ASYNCARA_MYSQL
         PHP_FE(asyncara_mysql_open, arginfo_pg_open) PHP_FE(asyncara_mysql_query, arginfo_pg_query)

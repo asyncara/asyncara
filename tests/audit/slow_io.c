@@ -8,18 +8,6 @@
 #include <time.h>
 #include <unistd.h>
 /* Test-only syscall delay. Loaded explicitly into audit child processes. */
-void *dlopen(const char *filename, int flags) {
-    void *(*real_dlopen)(const char *, int) = dlsym(RTLD_NEXT, "dlopen");
-    const char *target = getenv("ASYNCARA_AUDIT_EXTENSION");
-    /* PHP 8.3/8.4 may load extensions with DEEPBIND, bypassing this fault
-     * injector. Change lookup only for the explicitly selected audit module;
-     * the same compiled artifact is tested, with no engine memory patching. */
-#ifdef RTLD_DEEPBIND
-    if (filename && target && strcmp(filename, target) == 0)
-        flags &= ~RTLD_DEEPBIND;
-#endif
-    return real_dlopen ? real_dlopen(filename, flags) : NULL;
-}
 int open(const char *path, int flags, ...) {
     int (*real_open)(const char *, int, ...) = dlsym(RTLD_NEXT, "open");
     mode_t mode = 0;

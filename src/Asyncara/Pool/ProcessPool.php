@@ -3,8 +3,7 @@ declare(strict_types=1);
 namespace Asyncara\Pool;
 use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Queue;
-use Asyncara\Exception\{WorkerException,CapacityException};
-use Asyncara\Internal\IpcFrame;
+use Asyncara\Exception\WorkerException;
 final class ProcessPool
 {
     private array $workers = [], $jobs = [];
@@ -12,11 +11,9 @@ final class ProcessPool
     private int $next = 0;
     private bool $closed = false;
     private string $bootstrap;
-    private int $pendingBytes = 0;
-    private int $restarts = 0;
-    public function __construct(int $workers, string $bootstrap, private int $queueLimit = 256, private int $queueBytes = 67108864, private int $workerMemoryBytes = 268435456)
+    public function __construct(int $workers, string $bootstrap, private int $queueLimit = 256)
     {
-        if ($workers < 1 || $workers > 64 || $queueLimit < 1 || $queueLimit > 100000 || $queueBytes < 1 || $queueBytes > 1073741824 || $workerMemoryBytes < 8388608) throw new \ValueError('Invalid pool limits');
+        if ($workers < 1 || $workers > 64 || $queueLimit < 1) throw new \ValueError('Invalid pool limits');
         $this->bootstrap = realpath($bootstrap) ?: throw new \ValueError('Worker bootstrap does not exist');
         $this->available = new Queue($workers);
         try { for ($i = 0; $i < $workers; $i++) { $this->workers[$i] = $this->start(); $this->available->put($i); } }
@@ -24,7 +21,7 @@ final class ProcessPool
     }
     private function start(): array
     {
-        $process = proc_open([PHP_BINARY, '-n', '-d', 'memory_limit='.$this->workerMemoryBytes, dirname(__DIR__, 3) . '/bin/worker.php', $this->bootstrap], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['file', 'php://stderr', 'a']], $pipes, null, null, ['bypass_shell' => true]);
+        $process = proc_open([PHP_BINARY, '-n', dirname(__DIR__, 3) . '/bin/worker.php', $this->bootstrap], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['file', 'php://stderr', 'a']], $pipes, null, null, ['bypass_shell' => true]);
         if (!is_resource($process)) throw new WorkerException('Unable to start worker');
         stream_set_blocking($pipes[0], false); stream_set_blocking($pipes[1], false);
         return ['process' => $process, 'in' => $pipes[0], 'out' => $pipes[1], 'ready' => false];
@@ -47,20 +44,25 @@ final class ProcessPool
     }
     private function readFrame(mixed $stream): array
     {
-        $size = IpcFrame::length($this->readExact($stream, 4));
-        return IpcFrame::decode($this->readExact($stream, $size));
+        $size = unpack('N', $this->readExact($stream, 4))[1];
+        if ($size < 1 || $size > 16777216) throw new WorkerException('Invalid IPC frame length');
+        $data = json_decode($this->readExact($stream, $size), true, 64, JSON_THROW_ON_ERROR);
+        if (!is_array($data)) throw new WorkerException('Invalid IPC payload'); return $data;
+    }
+    private static function validate(mixed $value, int $depth = 0): void
+    {
+        if ($depth > 32 || is_object($value) || is_resource($value)) throw new \ValueError('Process arguments require bounded JSON-compatible data');
+        if (is_array($value)) foreach ($value as $item) self::validate($item, $depth + 1);
     }
     public function submit(string|array $job, array $arguments = [], float $timeout = 30): Future
     {
         if ($this->closed) throw new \LogicException('Pool closed');
-        if (count($this->jobs) >= $this->queueLimit) throw new CapacityException('Process queue limit reached');
+        if (count($this->jobs) >= $this->queueLimit) throw new \OverflowException('Process queue limit reached');
         if ($timeout <= 0 || !is_finite($timeout)) throw new \ValueError('Timeout must be positive');
         if (is_array($job)) { if (count($job) !== 2 || !is_string($job[0]) || !is_string($job[1])) throw new \ValueError('Use a registered callable descriptor'); $job = implode('::', $job); }
-        $id = ++$this->next;
-        $request = ['id' => $id, 'job' => $job, 'arguments' => $arguments];
-        $json = IpcFrame::encode($request);
-        $charge = strlen($json) + 4;
-        if ($charge > $this->queueBytes - $this->pendingBytes) throw new CapacityException('Process pending byte limit reached');
+        self::validate($arguments); $id = ++$this->next;
+        $json = json_encode(['id' => $id, 'job' => $job, 'arguments' => $arguments], JSON_THROW_ON_ERROR);
+        if (strlen($json) > 16777216) throw new \ValueError('Process request exceeds frame limit');
         $task = Async::spawn(fn() => Async::timeout($timeout, function () use ($id, $json): mixed {
             $index = $this->available->get(); $healthy = false;
             try {
@@ -78,18 +80,13 @@ final class ProcessPool
                 if (isset($result['error'])) throw new WorkerException($result['error']);
                 return $result['value'] ?? null;
             } finally {
-                if (!$healthy) { $this->stop($this->workers[$index]); if (!$this->closed) { $this->workers[$index] = $this->start(); $this->restarts++; } }
+                if (!$healthy) { $this->stop($this->workers[$index]); if (!$this->closed) $this->workers[$index] = $this->start(); }
                 if (!$this->closed) $this->available->tryPut($index);
                 $this->available->taskDone();
             }
         }));
         $this->jobs[$id] = $task;
-        $this->pendingBytes += $charge;
-        $task->subscribe(function () use ($id, $charge): void { unset($this->jobs[$id]); $this->pendingBytes -= $charge; }); return $task;
-    }
-    public function statistics(): array
-    {
-        return ['workers'=>count($this->workers), 'restarts'=>$this->restarts, 'pendingJobs'=>count($this->jobs), 'pendingBytes'=>$this->pendingBytes, 'queueLimit'=>$this->queueLimit, 'queueBytes'=>$this->queueBytes, 'workerMemoryBytes'=>$this->workerMemoryBytes, 'closed'=>$this->closed];
+        $task->subscribe(function () use ($id): void { unset($this->jobs[$id]); }); return $task;
     }
     private function retire(array $worker): void
     {

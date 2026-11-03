@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Supported source range: PHP 8.3–8.5, 64-bit Unix-like environment. Tested: Linux x86_64 NTS. Required libraries: pthreads, SQLite 3 and libcurl >= 7.85 with asynchronous DNS (threaded resolver or c-ares). Required PHP features: Fibers, streams, JSON, SPL, proc_open; OpenSSL for explicit TLS streams. Optional native drivers use libpq >= 12 and MariaDB Connector/C >= 3.1 plus OpenSSL >= 3.0 development libraries. Strict MariaDB TLS requires Connector/C with the TLS callback/status API (tested 3.4.10) and the OpenSSL 3 backend; older clients fail closed for TLS. See MYSQL_COMPATIBILITY.md. PostgreSQL/MariaDB PHP extensions are not required. ext-curl is not required by the runtime; benchmarks use it as a synchronous baseline.
+Supported source range: PHP 8.3–8.5, 64-bit Unix-like environment. Tested: Linux x86_64 NTS. Required libraries: pthreads, SQLite 3 and libcurl >= 7.85 with asynchronous DNS (threaded resolver or c-ares). Required PHP features: Fibers, streams, JSON, SPL, proc_open; OpenSSL for explicit TLS streams. Optional native drivers use libpq >= 12 and MariaDB Connector/C >= 3.1. PostgreSQL/MariaDB PHP extensions are not required. ext-curl is not required by the runtime; benchmarks use it as a synchronous baseline.
 
 You need development headers matching your PHP interpreter. Do not load a binary built for a different PHP module API, ZTS mode or architecture. A downloaded PHP 8.5.12 pgsql extension failed to load in the host's 8.5.11 CLI; matching module API alone is not proof of compatibility. Asyncara itself was compiled and executed on the versions in COMPATIBILITY.md.
 
@@ -67,42 +67,8 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 2 \
 
 ## Source archive
 
-A source archive can be produced from a Git checkout with `python3 scripts/package.py --output build/asyncara-NEW-NAME.tar.gz`. It packages tracked working-tree files (including staged new files), verifies their contents and writes a deterministic explicitly named archive plus SHA-256 sidecar. Tar modes normalize to 0644/0755 independently of checkout umask. Existing artifacts are never overwritten. It includes no local development packages, database data, TLS keys, vendor directory or compiled binaries. Recipients still need the documented PHP/library toolchain and Composer installation.
+A source archive can be produced from a Git checkout with `python3 scripts/package.py`. It packages tracked working-tree files (including staged new files), verifies their contents and writes a deterministic `build/asyncara-0.1.0-dev.tar.gz` plus SHA-256 sidecar. It includes no local development packages, database data, TLS keys, vendor directory or compiled binaries. Recipients still need the documented PHP/library toolchain and Composer installation.
 
 ## Removal
 
 For a local build, stop any fixture processes you started and remove the selected `build/`, `.local/`, `vendor/` and generated `ext/` artifacts as desired. They are ignored by Git. For an administrator-installed extension, remove its configuration entry from each SAPI, restart managed workers, then remove the corresponding installed `asyncara.so`. Do not delete unrelated PHP configuration or data directories.
-
-Local bootstrap/tool relocation now selects the running PHP8.3/8.4/8.5 version,
-or explicit `PHP_BIN` / `PHP_TOOL_VERSION`; it no longer hardcodes PHP8.5.
-`build-local.sh` derives the default header API from that PHP executable.
-`PHP_INCLUDE_DIR` remains an explicit override for separately installed SDKs.
-A clean archive test uses each version's own phpize/configure and installs only
-under its extraction's build/install directory:
-
-```sh
-python3 tests/audit/archive_install.py --archive build/NEW_ARCHIVE.tar.gz \
-  --output /tmp/new-install-audit --dependencies /path/to/development-debs \
-  --variants /path/to/variants.json
-```
-
-The variants JSON is an array of objects with `name`, absolute `php` executable
-and `devPackage` Debian SDK archive path. Common dependency packages are freshly
-extracted; generated extension/toolchain files from the working tree are not
-copied. Composer and the pinned Python peer are installed inside each extraction.
-The report records every step, dependency hash and installed-module hash. This
-Linux/Debian-package harness complements the normal source installation steps.
-
-Use current security patch releases and matching SDKs: the final Phase3 target
-patches are8.3.36,8.4.27 and8.5.12. The October2026 PHP allocator changes expose
-new functions without changing the major module API number. Both local build
-runners therefore reject a different SDK patch version before compiling. On this
-host, PHP8.5.12 CLI/FPM were extracted under the evidence directory; host8.5.11
-was not replaced. Select PHP_BIN and FPM_BIN explicitly for those tests. Older
-8.5.11 instrumentation results describe historical source configurations only.
-
-Valgrind requires properly registered coroutine stacks. `build-test-php.sh`
-builds pinned PHP8.5.12 DEBUG with --with-valgrind; set
-ASYNCARA_CONNECTOR_VALGRIND=1 for build-test-connector.sh to enable its upstream
-stack annotations too. Use the resulting PHP_BIN, PHP_INCLUDE_DIR and
-MARIADB_PREFIX when compiling the tested module. No error suppression is used.

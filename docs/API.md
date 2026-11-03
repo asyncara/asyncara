@@ -46,10 +46,3 @@ Context get/set/all operate on the current task's explicit map. A child receives
 See DRIVERS.md for IO/database methods. `ProcessPool(workers, bootstrap, queueLimit:256)` requires a trusted bootstrap returning a registry mapping names to callables. Submit a registry name or `[ClassName::class,'method']` matching a registry key, arguments and timeout. Closures are not transferred. JSON-compatible inputs are copied; PHP objects/resources and invalid encodings are rejected. Jobs run in independent interpreters, not native worker threads. A crashed/cancelled/timed-out worker is discarded and replaced; the failed job is never silently replayed. `close()` cancels pending jobs, joins them, sends EOF to idle workers, and terminates workers that fail to exit within the shutdown grace period.
 
 `ConnectionPool(factory, closer, size:8)` lends exclusive connections through withConnection. Factory results may be Futures. A borrower exception discards its connection, allowing the next borrower to create a replacement. Close the pool after borrowers finish. No transaction or command is automatically retried.
-
-WebSocket: `WebSocket\Client::connect()` and `WebSocket\Server::accept()` return
-eager Tasks. Connection send/receive suspend the current Fiber; ping returns a
-Future, close performs bounded acknowledgement and joins the owned reader.
-Message exposes readonly data/binary. Explicit ownership and cancellation,
-queue limits, Origin policy and unsupported features are in WEBSOCKET.md.
-FrameCodec/Handshake and Connection construction are internal boundaries.

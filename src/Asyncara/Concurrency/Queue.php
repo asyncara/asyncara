@@ -53,10 +53,6 @@ final class Queue
     }
     public function join(): void { $this->joined->wait(); }
     public function count(): int { return $this->buffer->count(); }
-    public function statistics(): array
-    {
-        return ['capacity'=>$this->capacity, 'buffered'=>$this->count(), 'waitingReaders'=>count($this->readers), 'waitingWriters'=>count($this->writers), 'unfinished'=>$this->unfinished, 'closed'=>$this->closed];
-    }
     public function close(): void
     {
         if ($this->closed) return; $this->closed = true;

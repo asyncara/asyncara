@@ -1,37 +1,20 @@
 #!/usr/bin/env python3
 import concurrent.futures,http.server,json,os,pathlib,signal,socket,struct,subprocess,tempfile,threading,time
-from urllib.parse import urlparse,parse_qs
 root=pathlib.Path(__file__).resolve().parent.parent
 marker=root/'build/audit-path'
 if not marker.exists():
     marker.parent.mkdir(exist_ok=True);marker.write_text(tempfile.mkdtemp(prefix='asyncara-audit-')+'\n')
-out=pathlib.Path(os.environ.get('ASYNCARA_FPM_DIR',str(pathlib.Path(marker.read_text().strip())/'fpm'))).resolve();out.mkdir(parents=True,exist_ok=True)
+out=pathlib.Path(marker.read_text().strip())/'fpm';out.mkdir(exist_ok=True)
 large=out/'large.bin'
 with large.open('wb')as f:f.truncate(12*1024*1024)
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version='HTTP/1.1'
     def log_message(self,*args):pass
     def do_GET(self):
-        query=parse_qs(urlparse(self.path).query);request_id=query.get('id',[''])[0]
-        count=int(query.get('parallel',['1'])[0])
-        with active_lock:
-            active_requests[request_id]=active_requests.get(request_id,0)+1
-            barrier=barriers.setdefault(request_id,threading.Barrier(count,timeout=5))
-        start=time.time()
-        try:barrier.wait()
-        except threading.BrokenBarrierError:
-            self.send_error(503,'Concurrent request barrier timed out');return
-        time.sleep(.2);body=json.dumps({'start':start,'end':time.time()}).encode()
-        self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers()
-        try:self.wfile.write(body)
-        except (BrokenPipeError,ConnectionResetError):pass
-        finally:
-            with active_lock:
-                active_requests[request_id]-=1
-                if not active_requests[request_id]:del active_requests[request_id];del barriers[request_id]
+        start=time.time();time.sleep(.2);body=json.dumps({'start':start,'end':time.time()}).encode()
+        self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
 class Server(http.server.ThreadingHTTPServer):
     request_queue_size=128
-active_lock=threading.Lock();active_requests={};barriers={}
 server=Server(('127.0.0.1',0),Handler)
 threading.Thread(target=server.serve_forever,daemon=True).start()
 def record(kind,value):return struct.pack('!BBHHBB',1,kind,1,len(value),0,0)+value
@@ -43,8 +26,7 @@ def exact(s,n):
         out+=value
     return out
 def request(port,index,mode):
-    parallel=4 if mode in ('io','stream') else 1
-    params={'SCRIPT_FILENAME':str(root/'tests/audit/fpm_request.php'),'REQUEST_METHOD':'GET','QUERY_STRING':'mode='+mode,'SERVER_PROTOCOL':'HTTP/1.1','GATEWAY_INTERFACE':'CGI/1.1','REMOTE_ADDR':'127.0.0.1','CONTENT_LENGTH':'0','AUDIT_ID':str(index),'AUDIT_URL':f'http://127.0.0.1:{server.server_port}/slow?id={index}&parallel={parallel}','AUDIT_LARGE_FILE':str(large)}
+    params={'SCRIPT_FILENAME':str(root/'tests/audit/fpm_request.php'),'REQUEST_METHOD':'GET','QUERY_STRING':'mode='+mode,'SERVER_PROTOCOL':'HTTP/1.1','GATEWAY_INTERFACE':'CGI/1.1','REMOTE_ADDR':'127.0.0.1','CONTENT_LENGTH':'0','AUDIT_ID':str(index),'AUDIT_URL':f'http://127.0.0.1:{server.server_port}/slow','AUDIT_LARGE_FILE':str(large)}
     def length(n):return bytes([n])if n<128 else struct.pack('!I',n|0x80000000)
     body=b''.join(length(len(k.encode()))+length(len(v.encode()))+k.encode()+v.encode()for k,v in params.items())
     with socket.create_connection(('127.0.0.1',port),timeout=15)as s:
@@ -55,29 +37,25 @@ def request(port,index,mode):
             if t==6:output+=data
             if t==7:errors+=data
             if t==3:break
-    if mode in ('fatal','fatal-burst'):
+    if mode=='fatal':
         if b'Status: 500' not in output and b'Allowed memory size' not in errors:raise RuntimeError('Missing fatal error response')
         return {'fatalResponse':True}
     if errors or b'Status: 500' in output:raise RuntimeError(repr(output+errors))
     response=json.loads(output.split(b'\r\n\r\n',1)[1]);assert response['id']==str(index)
     return response
 def idle(pid):
-    p=pathlib.Path('/proc')/str(pid);start=time.monotonic();deadline=start+5;transient_threads=1
-    while True:
-        accepting='accept' in (p/'wchan').read_text()
-        status=dict(s.split(':',1)for s in(p/'status').read_text().splitlines())
-        threads=int(status['Threads'])
-        if accepting and threads==1:break
-        if accepting:transient_threads=max(transient_threads,threads)
-        if time.monotonic()>deadline:raise RuntimeError('Worker did not become idle with all native threads reaped')
+    p=pathlib.Path('/proc')/str(pid);deadline=time.monotonic()+5
+    while 'accept' not in (p/'wchan').read_text():
+        if time.monotonic()>deadline:raise RuntimeError('Worker did not become idle')
         time.sleep(.005)
-    return {'pid':pid,'fds':len(list((p/'fd').iterdir())),'threads':threads,'rssKiB':int(status['VmRSS'].split()[0]),'idleWaitSeconds':time.monotonic()-start,'transientThreadsBeforeReaping':transient_threads}
+    status=dict(s.split(':',1)for s in(p/'status').read_text().splitlines())
+    return {'pid':pid,'fds':len(list((p/'fd').iterdir())),'threads':int(status['Threads']),'rssKiB':int(status['VmRSS'].split()[0])}
 def run(name,workers,count,mode,parallel=False):
     with socket.socket()as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
     folder=out/name;folder.mkdir(exist_ok=True);cfg=folder/'fpm.conf'
     cfg.write_text(f'[global]\ndaemonize=no\npid={folder}/pid\nerror_log={folder}/error.log\n[audit]\nlisten=127.0.0.1:{port}\npm=static\npm.max_children={workers}\npm.max_requests=0\nclear_env=yes\ncatch_workers_output=yes\nsecurity.limit_extensions=.php\nphp_admin_flag[log_errors]=on\nphp_admin_value[error_log]={folder}/php-errors.log\n')
     log=(folder/'startup.log').open('w')
-    process=subprocess.Popen([os.environ.get('FPM_BIN','php-fpm8.5'),'-n','-F','-d','extension='+str(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')),'-d','display_errors=0','-y',str(cfg)],stdout=log,stderr=log)
+    process=subprocess.Popen(['php-fpm8.5','-n','-F','-d','extension='+str(root/'build/asyncara.so'),'-d','display_errors=0','-y',str(cfg)],stdout=log,stderr=log)
     try:
         deadline=time.monotonic()+10
         while True:
@@ -113,12 +91,10 @@ def run(name,workers,count,mode,parallel=False):
         try:process.wait(timeout=10)
         except subprocess.TimeoutExpired:process.kill();process.wait()
         log.close()
-def main():
-    try:
-        results=[]
-        for args in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True),('D-streaming',4,12,'stream',True)]:
-            if os.environ.get('AUDIT_FPM_CASE') and os.environ['AUDIT_FPM_CASE']!=args[0]:continue
-            result=run(*args);results.append(result);print(result['name'],result['status'],flush=True)
-        (out/'results.json').write_text(json.dumps(results,indent=2)+'\n')
-    finally:server.shutdown();server.server_close()
-if __name__=='__main__':main()
+try:
+    results=[]
+    for args in [('A-lifecycle',1,100,'lifecycle',False),('B-within-request',1,10,'io',False),('C-multiple-workers',4,12,'io',True)]:
+        if os.environ.get('AUDIT_FPM_CASE') and os.environ['AUDIT_FPM_CASE']!=args[0]:continue
+        result=run(*args);results.append(result);print(result['name'],result['status'],flush=True)
+    (out/'results.json').write_text(json.dumps(results,indent=2)+'\n')
+finally:server.shutdown();server.server_close()

@@ -2,10 +2,8 @@
 declare(strict_types=1);
 namespace Asyncara;
 use Asyncara\Exception\CancelledException;
-use Asyncara\Exception\CapacityException;
 class Future implements Awaitable
 {
-    private static ?\WeakMap $pending = null;
     private bool $complete = false;
     private mixed $value = null;
     private ?\Throwable $error = null;
@@ -13,13 +11,6 @@ class Future implements Awaitable
     private int $next = 0;
     /** @internal */ public bool $observed = false;
     /** @internal */ public ?\Closure $canceller = null;
-    public function __construct()
-    {
-        self::$pending ??= new \WeakMap();
-        if (count(self::$pending) >= Runtime::configuration()['futureLimit']) throw new CapacityException('Pending Future limit reached');
-        self::$pending[$this] = true;
-    }
-    public static function pendingCount(): int { return self::$pending ? count(self::$pending) : 0; }
     public function isCompleted(): bool { return $this->complete; }
     public function isCancelled(): bool { return $this->error instanceof CancelledException; }
     public function exception(): ?\Throwable { $this->observed = true; return $this->error; }
@@ -47,7 +38,6 @@ class Future implements Awaitable
     public function subscribe(\Closure $listener): \Closure
     {
         if ($this->complete) { $listener($this); return static function (): void {}; }
-        if (count($this->listeners) >= 65536) throw new CapacityException('Future listener limit reached');
         $id = ++$this->next; $this->listeners[$id] = $listener;
         return function () use ($id): void { unset($this->listeners[$id]); };
     }
@@ -59,7 +49,6 @@ class Future implements Awaitable
     {
         if ($this->complete) throw new \LogicException('Future already completed');
         $this->complete = true; $this->value = $value; $this->error = $error; $this->canceller = null;
-        unset(self::$pending[$this]);
         $listeners = $this->listeners; $this->listeners = [];
         foreach ($listeners as $listener) $listener($this);
     }

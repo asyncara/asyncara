@@ -30,9 +30,8 @@ final class Connection
         foreach ($command as $arg) {
             if (!is_string($arg) && !is_int($arg) && !is_float($arg)) throw new \TypeError('Redis arguments must be strings or numbers');
             $arg = (string)$arg;
-            $prefix = '$' . strlen($arg) . "\r\n";
-            if (strlen($arg) + strlen($data) + strlen($prefix) + 2 > 16777216) throw new \OverflowException('Redis request limit exceeded');
-            $data .= $prefix . $arg . "\r\n";
+            if (strlen($arg) + strlen($data) > 16777216) throw new \OverflowException('Redis request limit exceeded');
+            $data .= '$' . strlen($arg) . "\r\n" . $arg . "\r\n";
         }
         return $data;
     }
@@ -46,12 +45,11 @@ final class Connection
         if ($this->subscribed) throw new \LogicException('Subscribed connections are dedicated to Pub/Sub');
         if (count($commands) > 10000) throw new \OverflowException('Redis pipeline limit exceeded');
         $request = '';
-        foreach ($commands as $command) { $encoded = self::encode($command); if (strlen($request) + strlen($encoded) > 16777216) throw new \OverflowException('Redis pipeline byte limit exceeded'); $request .= $encoded; }
+        foreach ($commands as $command) { $request .= self::encode($command); if (strlen($request) > 16777216) throw new \OverflowException('Redis pipeline byte limit exceeded'); }
         return Async::spawn(fn() => Async::timeout($this->timeout, fn() => $this->gate->withPermit(function () use ($request,$commands): array {
             try {
                 $this->stream->write($request); $results = [];
-                $this->bytes = $this->elements = 0;
-                foreach ($commands as $_) $results[] = $this->parse(0);
+                foreach ($commands as $_) $results[] = $this->readReply();
                 return $results;
             } catch (\Throwable $e) { $this->close(); throw $e; }
         })));
@@ -96,21 +94,9 @@ final class Connection
             if (strlen($this->buffer) > 65536) throw new OperationException('Redis line limit exceeded');
             $data = $this->stream->read(4096); if ($data === '') throw new OperationException('Redis connection closed'); $this->buffer .= $data;
         }
-        if ($end > 65536) throw new OperationException('Redis line limit exceeded');
-        $line = substr($this->take($end+2),0,-2);
-        if (strpbrk($line,"\r\n") !== false) throw new OperationException('Malformed Redis line');
-        return $line;
+        return substr($this->take($end+2),0,-2);
     }
     private function readReply(): mixed { $this->bytes = $this->elements = 0; return $this->parse(0); }
-    private static function integer(string $line): int
-    {
-        if (!preg_match('/^[+-]?[0-9]+$/D',$line)) throw new OperationException('Malformed Redis length/integer');
-        $negative = $line[0] === '-';
-        $digits = ltrim(ltrim($line,'+-'),'0');
-        $limit = $negative ? substr((string)PHP_INT_MIN,1) : (string)PHP_INT_MAX;
-        if (strlen($digits) > strlen($limit) || (strlen($digits) === strlen($limit) && strcmp($digits,$limit) > 0)) throw new OperationException('Redis integer outside platform range');
-        return (int)$line;
-    }
     private function parse(int $depth): mixed
     {
         if ($depth > 32 || ++$this->elements > 100000) throw new OperationException('Redis response nesting/element limit exceeded');
@@ -119,19 +105,15 @@ final class Connection
         if ($type === '-') return new ServerException($line);
         if ($type === '_') { if ($line !== '') throw new OperationException('Malformed Redis null'); return null; }
         if ($type === '#') { if (!in_array($line,['t','f'],true)) throw new OperationException('Malformed Redis bool'); return $line === 't'; }
-        if ($type === ',') {
-            if (in_array($line,['inf','-inf','nan'],true)) return match($line) {'inf'=>INF,'-inf'=>-INF,'nan'=>NAN};
-            if (!preg_match('/^[+-]?[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$/D',$line) || !is_finite($value=(float)$line)) throw new OperationException('Malformed Redis double');
-            return $value;
-        }
-        if ($type === '(') { if (!preg_match('/^[+-]?[0-9]+$/D',$line)) throw new OperationException('Malformed Redis bigint'); return $line; }
-        $n = self::integer($line);
+        if ($type === ',') return match($line) { 'inf' => INF, '-inf' => -INF, 'nan' => NAN, default => is_numeric($line) ? (float)$line : throw new OperationException('Malformed Redis double') };
+        if ($type === '(') { if (!preg_match('/^-?[0-9]+$/D',$line)) throw new OperationException('Malformed Redis bigint'); return $line; }
+        if (!preg_match('/^-?[0-9]+$/D',$line) || strlen($line)>19) throw new OperationException('Malformed Redis length/integer');
+        $n = (int)$line;
         if ($type === ':') return $n;
         if (in_array($type,['$','!','='],true)) {
             if ($n === -1 && $type === '$') return null;
             if ($n < 0 || $n > 16777216) throw new OperationException('Invalid Redis bulk length');
             $value = $this->take($n); if ($this->take(2) !== "\r\n") throw new OperationException('Malformed Redis terminator');
-            if ($type === '=' && (strlen($value)<4 || $value[3]!==':')) throw new OperationException('Malformed Redis verbatim string');
             return $type === '!' ? new ServerException($value) : ($type === '=' ? substr($value,4) : $value);
         }
         if (in_array($type,['*','~','>','%'],true)) {

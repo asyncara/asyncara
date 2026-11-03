@@ -223,9 +223,7 @@ PHP_FUNCTION(asyncara_pg_read) {
             array_init(&item);
             for (int col = 0; col < PQnfields(r); col++) {
                 size_t size = (size_t)PQgetlength(r, row, col);
-                /* Payload plus a conservative accounting charge for each cell.
-                 * This is a conversion budget, not libpq allocation tracking. */
-                bytes += size + strlen(PQfname(r, col)) + 64;
+                bytes += size;
                 if (bytes > PG_BUFFER_LIMIT) {
                     zval_ptr_dtor(&item);
                     PQclear(r);
@@ -239,40 +237,17 @@ PHP_FUNCTION(asyncara_pg_read) {
                 }
                 if (PQgetisnull(r, row, col))
                     add_assoc_null(&item, PQfname(r, col));
-                else {
-                    zend_string *value = ar_php_string_init(PQgetvalue(r, row, col), size);
-                    if (!value) {
-                        zval_ptr_dtor(&item);
-                        goto oom;
-                    }
-                    add_assoc_str(&item, PQfname(r, col), value);
-                }
-                if (ar_php_oom()) {
-                    zval_ptr_dtor(&item);
-                    goto oom;
-                }
+                else
+                    add_assoc_stringl(&item, PQfname(r, col), PQgetvalue(r, row, col), size);
             }
             add_next_index_zval(&rows, &item);
             records++;
-            if (ar_php_oom()) goto oom;
         }
         PQclear(r);
         p->result = NULL;
     }
     PGnotify *note;
-    size_t notification_bytes = 0, notification_count = 0;
     while ((note = p->notification = PQnotifies(p->conn))) {
-        notification_bytes += strlen(note->relname) + strlen(note->extra);
-        if (++notification_count > 1024 || notification_bytes > 1048576) {
-            /* Keep ownership in p until close: also safe on a Zend bailout. */
-            pg_close_handle(p);
-            zval_ptr_dtor(&rows);
-            zval_ptr_dtor(&notifications);
-            zval_ptr_dtor(return_value);
-            ZVAL_UNDEF(return_value);
-            zend_throw_exception(zend_ce_exception, "PostgreSQL notification batch limit exceeded; connection closed", 0);
-            RETURN_THROWS();
-        }
         zval item;
         array_init(&item);
         add_assoc_string(&item, "channel", note->relname);
@@ -281,7 +256,6 @@ PHP_FUNCTION(asyncara_pg_read) {
         add_next_index_zval(&notifications, &item);
         PQfreemem(note);
         p->notification = NULL;
-        if (ar_php_oom()) goto oom;
     }
     add_assoc_zval(return_value, "rows", &rows);
     add_assoc_zval(return_value, "notifications", &notifications);
@@ -289,12 +263,6 @@ PHP_FUNCTION(asyncara_pg_read) {
     add_assoc_bool(return_value, "read", p->pending && PQisBusy(p->conn));
     add_assoc_bool(return_value, "write", flush > 0);
     add_assoc_long(return_value, "fd", PQsocket(p->conn));
-    return;
-oom:
-    /* p retains native result/notification ownership until resource teardown. */
-    zval_ptr_dtor(&rows);
-    zval_ptr_dtor(&notifications);
-    return;
 }
 PHP_FUNCTION(asyncara_pg_close) {
     zval *z;

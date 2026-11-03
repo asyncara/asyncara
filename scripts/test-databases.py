@@ -4,7 +4,6 @@ import argparse, os, pathlib, socket, subprocess, sys, time
 parser=argparse.ArgumentParser()
 parser.add_argument('--valgrind',action='store_true')
 parser.add_argument('--test-file',default='tests/databases.php')
-parser.add_argument('--timeout',type=float,default=180,help='Child deadline in seconds, including long soak workloads')
 options=parser.parse_args()
 root=pathlib.Path(__file__).resolve().parent.parent
 os.chdir(root)
@@ -19,7 +18,7 @@ if not (my/'data/mysql').exists():
 processes=[];pg_started=False
 try:
  subprocess.run([str(pgbin/'pg_ctl'),'-D',str(pg/'data'),'-o',f"-k {pg} -h '' -p 55499",'-l',str(pg/'server.log'),'-w','start'],check=True,stdout=subprocess.DEVNULL);pg_started=True
- mp=subprocess.Popen(['mariadbd','--no-defaults','--datadir='+str(my/'data'),'--socket='+str(my/'mysql.sock'),'--pid-file='+str(my/'server.pid'),'--skip-networking','--skip-ssl','--log-error='+str(my/'server.log')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);processes.append(mp)
+ mp=subprocess.Popen(['mariadbd','--no-defaults','--datadir='+str(my/'data'),'--socket='+str(my/'mysql.sock'),'--pid-file='+str(my/'server.pid'),'--skip-networking','--log-error='+str(my/'server.log')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL);processes.append(mp)
  with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
  redis_log=(rd/'server.log').open('w')
  rp=subprocess.Popen(['redis-server','--bind','127.0.0.1','--port',str(port),'--save','','--appendonly','no','--dir',str(rd)],stdout=redis_log,stderr=redis_log);processes.append(rp)
@@ -38,9 +37,7 @@ try:
  if options.valgrind:
   env|={'USE_ZEND_ALLOC':'0','VALGRIND_LIB':str(root/'.local/sysroot/usr/libexec/valgrind')}
   command=[str(root/'.local/sysroot/usr/bin/valgrind'),'--extra-debuginfo-path='+str(root/'.local/debug'),'--keep-debuginfo=yes','--leak-check=full','--show-leak-kinds=definite','--errors-for-leak-kinds=definite','--error-exitcode=99','--log-file=build/valgrind-databases.log']+command
- result=subprocess.run(command,env=env,timeout=options.timeout)
- if options.valgrind and result.returncode:
-  print((root/'build/valgrind-databases.log').read_text(),flush=True)
+ result=subprocess.run(command,env=env,timeout=180)
 finally:
  for p in processes:
   if p.poll() is None:p.terminate()

@@ -2,23 +2,20 @@
 
 **Independent audit:** [findings, repaired defects and evidence](docs/INDEPENDENT_AUDIT.md). Release assessment: **EXPERIMENTAL**. The preserved original source archive contains known defects; the corrected audit snapshot is separately named.
 
-**Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
-
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
 
-Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP with bounded streaming and file uploads, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
+Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
 
 ## Build and run
 
-For the local Debian/Ubuntu build, dependencies are extracted without global installation. Select a PHP interpreter and development SDK with the same patch version; the final validation used PHP 8.3.36, 8.4.27 and 8.5.12. When using an isolated interpreter, set `PHP_BIN` to its absolute path first:
+On the initialization host, dependencies are extracted locally:
 
 ```sh
-export PHP_BIN="${PHP_BIN:-php}"
 ./scripts/bootstrap-local.sh
 make build
-"$PHP_BIN" -d extension="$PWD/build/asyncara.so" /usr/local/bin/composer install
-"$PHP_BIN" -n -d extension="$PWD/build/asyncara.so" --ri asyncara
-"$PHP_BIN" -n -d extension="$PWD/build/asyncara.so" examples/python_concurrency_tour.php
+php -d extension="$PWD/build/asyncara.so" /usr/local/bin/composer install
+php -n -d extension="$PWD/build/asyncara.so" --ri asyncara
+php -n -d extension="$PWD/build/asyncara.so" examples/python_concurrency_tour.php
 make test
 ```
 
@@ -50,24 +47,6 @@ The [complete local concurrency tour](examples/python_concurrency_tour.php) exer
 - TLS verification is enabled. HTTP redirects are opt-in. Native buffers, rows, queues, tasks and connections have explicit limits, including a configurable aggregate budget for retained Asyncara native allocations.
 - Cancellation is cooperative. It cannot undo committed writes, kill arbitrary native calls, or preempt CPU-bound PHP. Process-job cancellation can terminate that worker.
 - Context isolates explicit key/value maps, not superglobals or arbitrary PHP extension state.
-- io_uring has passed a separate kernel NOP probe but is **not an Asyncara backend**. WebSocket certification, ZTS interpreter threads and platform backends beyond Linux remain incomplete or unimplemented.
+- io_uring has passed a separate kernel NOP probe but is **not an Asyncara backend**. WebSocket, HTTP streaming/multipart, ZTS interpreter threads and platform backends beyond Linux remain incomplete or unimplemented.
 
 See [API and semantics](docs/API.md), [architecture](docs/ARCHITECTURE.md), [driver details](docs/DRIVERS.md), [security](docs/SECURITY.md), [limitations](docs/LIMITATIONS.md), [measured performance](docs/PERFORMANCE.md), and the precise [roadmap](docs/ROADMAP.md). [WORKLOG](WORKLOG.md) records commands, failures, fixes and evidence. All benchmark samples are retained in [the raw results](benchmarks/results/latest.json).
-
-Phase 3 resource admission and buffering policies: [RESOURCE_LIMITS.md](docs/RESOURCE_LIMITS.md).
-
-Phase 3 hardening adds bounded pending work/results, RESP/IPC fuzz regressions,
-worker signal isolation, strict database TLS identity, separate Oracle MySQL
-8.4.13 tests, buffered TLS wakeup handling and atomic filesystem replacement.
-A frozen one-hour mixed baseline completed; six-/24-hour certification remains
-outstanding. See [release readiness](docs/RELEASE_READINESS.md),
-[database matrix](docs/DATABASE_COMPATIBILITY.md), [filesystem contracts](docs/FILESYSTEM.md),
-[FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
-[ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies and one-file MIME. [WebSocket](docs/WEBSOCKET.md) now has tested bounded framing and independent client/server interop. Expanded hooks
-and framework certification remain unavailable. Release status stays EXPERIMENTAL.
-
-Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs.
-The latest hardening fixes deferred out-of-memory conversion and large native
-buffer retention across FPM requests. Release status remains **EXPERIMENTAL**;
-see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
-failures and remaining certification work.

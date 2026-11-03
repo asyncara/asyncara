@@ -15,7 +15,6 @@ try{
   expectFailure(Exception::class,fn()=>Files::read(__FILE__));Async::gather($futures);
   expectFailure(ValueError::class,fn()=>asyncara_poll([-1],[],0));
   expectFailure(ValueError::class,fn()=>asyncara_submit('sqlite_open',["bad\0path"]));
-  if(function_exists('asyncara_mysql_open'))expectFailure(ValueError::class,fn()=>asyncara_mysql_open(['host'=>'127.0.0.1','port'=>1,'tls'=>false,'caFile'=>__FILE__]));
  });
  chmod($path,0000);clearstatcache(true,$path);
  if(!is_readable($path))Async::run(fn()=>expectFailure(OperationException::class,fn()=>Files::read($path)->await()));

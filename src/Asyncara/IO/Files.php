@@ -3,19 +3,12 @@ declare(strict_types=1);
 namespace Asyncara\IO;
 use Asyncara\{Async,Future,Scheduler};
 use Asyncara\Exception\OperationException;
-use Asyncara\Exception\FilesystemException;
 use Asyncara\Stream\AsyncStream;
-use Asyncara\Stream\ReadableStream;
 final class Files
 {
     public static function open(string $path, string $mode = 'r'): Future { return File::open($path, $mode); }
     public static function read(string $path): Future { return Scheduler::current()->native('read', [$path]); }
     public static function write(string $path, string $data): Future { return Scheduler::current()->native('write', [$path, $data]); }
-    /** Same-directory atomic visibility; durable additionally fsyncs file and directory. */
-    public static function replaceAtomic(string $path, string $data, bool $durable = false, int $permissions = 0600): Future
-    {
-        return Scheduler::current()->native('atomic_write', [$path, $data, $durable, $permissions]);
-    }
     public static function append(string $path, string $data): Future { return Scheduler::current()->native('append', [$path, $data]); }
     public static function delete(string $path): Future { return Scheduler::current()->native('delete', [$path]); }
     public static function rename(string $from, string $to): Future { return Scheduler::current()->native('rename', [$from, $to]); }
@@ -28,7 +21,7 @@ final class Files
     {
         return Async::spawn(static function () use ($path): bool {
             try { self::stat($path)->await(); return true; }
-            catch (FilesystemException $e) { if ($e->isMissing()) return false; throw $e; }
+            catch (OperationException $e) { if ($e->getMessage() === 'No such file or directory' || $e->getMessage() === 'Not a directory') return false; throw $e; }
         });
     }
     /** One stable descriptor, bounded producer backpressure and joined cleanup. */
@@ -61,7 +54,7 @@ final class Files
                     },
                     static fn(File $file) => $file->close(),
                 );
-            } finally { if ($chunks instanceof ReadableStream) $chunks->close(); }
+            } finally { if ($chunks instanceof AsyncStream) $chunks->close(); }
         });
     }
 }

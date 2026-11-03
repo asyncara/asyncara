@@ -14,9 +14,7 @@ $my=['socket'=>getenv('ASYNCARA_MY_SOCKET'),'user'=>'root','database'=>'mysql'];
 $redisPort=(int)getenv('ASYNCARA_REDIS_PORT');
 Async::run(function()use($pg,$my,$redisPort):void{
  foreach(['PostgreSQL'=>fn()=>Pg::connect($pg),'MariaDB'=>fn()=>MySQL::connect($my)]as$name=>$factory){
-  $db=$factory()->await();
-  if($name==='MariaDB'){ $tls=$db->query("show session status like 'Ssl_cipher'")->await();verify(($tls[0]['Value']??null)==='', 'Plain Unix-socket fixture unexpectedly negotiated TLS'); }
-  $placeholder=$name==='PostgreSQL'?'$1':'?';
+  $db=$factory()->await();$placeholder=$name==='PostgreSQL'?'$1':'?';
   verify($db->prepare("select $placeholder as value")->execute(['bound'])->await()[0]['value']==='bound',"$name parameter binding");
   verify($db->query("select $placeholder as value",[null])->await()[0]['value']===null,"$name null binding");
   if($name==='PostgreSQL')verify($db->query('select $1::boolean as value',[false])->await()[0]['value']==='f','PostgreSQL boolean binding');

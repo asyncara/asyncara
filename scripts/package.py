@@ -14,9 +14,7 @@ if not paths:
     raise SystemExit('No tracked source: stage the intended source files before packaging.')
 target = root / options.output
 target.parent.mkdir(exist_ok=True)
-if target.exists() or target.with_suffix(target.suffix + '.sha256').exists():
-    raise SystemExit('Preserve historical artifacts: choose a new --output path.')
-with target.open('xb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed:
+with target.open('wb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed:
     with tarfile.open(fileobj=compressed, mode='w|', format=tarfile.PAX_FORMAT) as archive:
         for name in paths:
             path = root / name
@@ -25,9 +23,7 @@ with target.open('xb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw
             data = path.read_bytes()
             info = tarfile.TarInfo('asyncara-0.1.0-dev/' + name)
             info.size = len(data)
-            # Preserve executable intent, not the checkout user's umask/group
-            # permissions. Clean checkouts must produce identical archives.
-            info.mode = 0o755 if path.stat().st_mode & 0o100 else 0o644
+            info.mode = path.stat().st_mode & 0o777
             archive.addfile(info, io.BytesIO(data))
 digest = hashlib.sha256(target.read_bytes()).hexdigest()
 target.with_suffix(target.suffix + '.sha256').write_text(digest+'  '+target.name+'\n')
