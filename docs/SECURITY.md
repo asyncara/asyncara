@@ -66,3 +66,9 @@ Supported deployment targets require patchedPHP8.3.36/8.4.27/8.5.12 and matching
 SDKs. Deferred soft OOM is handled at Asyncara conversion boundaries. A genuine
 PHP hard-limit exit, OS kill or process crash cannot run request cleanup. Use a
 process supervisor and do not rely on shutdown callbacks to undo external writes.
+
+Dedicated native mappings are not ordinary malloc allocations in LeakSanitizer.
+Their unused tails are explicitly poisoned for ASan bounds checks; mapping
+release is independently checked with mincore, the aggregate ledger, native
+worker lifecycle tests and FPM RSS trends. Do not interpret a clean LSan report
+alone as proof that all anonymous mappings were released.

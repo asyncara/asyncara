@@ -27,21 +27,27 @@ cannot contain its own hash.
 - Fixed lost readiness after PHP/TLS buffers data before the kernel wait. A
   deterministic negative control fails against the old binary; repeated real
   Redis TLS connections pass after repair.
+- Corrected result conversion for PHP’s deferred soft-OOM API, preserving
+  ordinary request teardown instead of continuing to the hard process limit.
+- Released large native buffers through dedicated mappings without changing
+  global allocator settings; retained page-rounded accounting and ASan bounds.
 - Added numeric filesystem errors and same-directory atomic replacement with
   optional file/directory synchronization, secure temporary creation, explicit
   post-publication failure reporting and cancellation cleanup.
 
 ## Executed verification
 
-PHP 8.3.36 / 8.4.27 / 8.5.11 NTS: native builds, 44 core cases and dedicated
+PHP 8.3.36 / 8.4.27 / 8.5.12 NTS (with matching SDKs): native builds, 44 core cases and dedicated
 resource, file, parser, IPC and audit regressions pass. Both epoll and poll pass.
-Fresh phpize/configure builds load and pass the runner. PHP 8.5.11 fully
-ASan/UBSan-instrumented debug tests, native ASan/UBSan/TSan, allocation injection,
+Fresh phpize/configure builds load and pass the runner. PHP 8.5.12 fully
+GCC ASan/UBSan-instrumented debug core/database/WebSocket/network tests, native ASan/UBSan/TSan, allocation injection,
 GCC static analysis and Valgrind workloads pass in their documented scopes.
 No compiler warning was ignored; phpize's upstream obsolete libtool macro notice
-remains visible. Hosted CI has executed and failed provisioning before runtime tests; fixes and
-subsequent run status are recorded in the delivery attestation. Do not infer
-hosted success from local validation.
+remains visible. Hosted CI has executed actual runtime tests. Earlier full PHP matrix jobs passed,
+then later runs exposed PHP deferred-OOM handling, missing stack annotations,
+fuzzer instrumentation capacity and a missing test utility. Those findings were
+reproduced and corrected; the delivery attestation records the final hosted
+status. Do not infer hosted success from local validation.
 
 Final core/network/file/pending-shutdown/database Valgrind workloads have zero
 errors and zero definite/indirect/possible losses. This excludes the separately
@@ -75,10 +81,13 @@ each; C=12 concurrent requests / four workers. Expanded 300.157s workload handle
 fatal memory requests, timeout and pending-I/O teardown. Idle workers returned
 to six descriptors / one thread. FPM process_control_timeout must allow active
 requests to drain; the fixture uses five seconds. Final A/B/C rerun passes.
-Two later expanded streaming soaks FAILED the unchanged RSS-growth criterion.
-A separate allocator probe supports cached/free arena pages as the cause, but
-the failed criterion remains open; see FPM_LIFECYCLE.md. No universal FPM
-stability or process memory bound is established.
+Expanded streaming soaks repeatedly FAILED the unchanged RSS-growth criterion.
+Dedicated mappings for large Asyncara buffers repaired the reproduced retention:
+two subsequent five-minute runs passed at approximately 17–19 MiB idle RSS and
+under 3 MiB growth beyond warmup. Historical failures remain preserved. A later
+file-result ownership improvement avoids a redundant native copy. Exact frozen
+source scopes and final reruns are in the delivery attestation and
+FPM_LIFECYCLE.md; no universal process-memory bound is established.
 
 ## Database, networking and filesystem matrix
 
@@ -108,7 +117,11 @@ buffers. A **109-byte libpq process-global TLS BIO_METHOD leak at library unload
 is independently reproduced without PHP/Asyncara and remains unresolved. No
 suppression or private pointer manipulation was added. Keeping modules loaded
 for a diagnostic sanitizer run preserves that global root, not a repair.
-No critical invalid-memory access is known in the executed configurations;
+Unmodified PHP8.5.12 under Clang’s function-type UBSan reports upstream callback
+type mismatches even without Asyncara; that full-PHP configuration is not marked
+passed. Stack-aware GCC/debug Valgrind is a separate configuration with clean
+executed workloads. No Asyncara critical invalid-memory access is known in the
+executed configurations;
 this is not a universal memory-safety guarantee. SQL cancellation discards the
 connection and does not acknowledge server-side termination or undo side effects.
 
@@ -130,9 +143,9 @@ package.py requires a new output name. A clean extraction must build from its
 own ext sources/config.m4, using independently available PHP/dependency headers.
 The final attestation records archive-source comparisons and test commands.
 
-1. Resolve the expanded FPM RSS-over-warmup failures with allocator/process
-   capacity evidence; retain the unchanged failing assertions. Complete hosted
-   CI provisioning/validation and frozen final-binary 6h/24h workloads.
+1. Extend the repaired FPM memory/lifecycle coverage to frozen final-binary
+   one-/six-/24-hour workloads, retaining the same assertions. Complete any
+   remaining hosted validation shown in the delivery attestation.
 2. Follow up the upstream libpq unload allocation; expand server disconnect,
    remote TLS/auth, prepared cache and cancellation acknowledgement coverage.
 3. Extend the tested curl multi streaming paths with multi-file MIME and broader
