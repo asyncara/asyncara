@@ -1,15 +1,17 @@
 # Verified compatibility
 
-The following evidence is from this Linux x86_64 development host on 2026-11-02. The [independent audit](INDEPENDENT_AUDIT.md) supersedes earlier readiness claims and provides the complete function-by-function hook matrix and reproduced defects. Passing these cases does not establish production support on every build or extension combination.
+Evidence comes from this Linux x86_64 development host on 2026-11-02/03. Use current security patch releases and matching SDKs; older rows below are historical evidence. The [independent audit](INDEPENDENT_AUDIT.md) supersedes earlier readiness claims and provides the complete function-by-function hook matrix and reproduced defects. Passing these cases does not establish production support on every build or extension combination.
 
 | PHP build | Native compile | Core/IO/hook/process suite | PostgreSQL/MariaDB/Redis suite |
 |---|---|---|---|
 | 8.3.36 NTS, locally extracted CLI/dev | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
 | 8.4.27 NTS, locally extracted CLI/dev | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
-| 8.5.11 NTS host CLI, 8.5.12 API-compatible dev headers | warnings-as-errors pass | 44 pass + four dedicated limit/lifecycle suites | pass |
-| 8.5.11 with host's normal extension configuration (including Swoole 6.2.3) | same binary | 44 pass + four dedicated limit/lifecycle suites | not a separate SQL coexistence certification |
-| 8.5.11 debug / ASan+UBSan debug | independently built from source | 44 pass plus dedicated suites and audit regressions | instrumented database suites pass |
-| ZTS | not executed | not certified | not certified |
+| 8.5.12 NTS isolated CLI/FPM, matching SDK | warnings-as-errors pass | core, streaming, limits, deferred OOM and repeated FPM lifecycle tests pass | separate MariaDB/Oracle TLS and plain drivers tested |
+| Historical 8.5.11 normal extension configuration (including Swoole 6.2.3) | earlier binary | 44 pass + four dedicated limit/lifecycle suites | not a separate SQL coexistence certification |
+| Historical 8.5.11 debug / ASan+UBSan debug | independently built from source | 44 pass plus dedicated suites and audit regressions | instrumented database suites pass |
+| 8.5.12 GCC ASan/UBSan DEBUG | independent full PHP + extension builds | full core/file/HTTP streaming/WS/network tests pass | plain integration passes |
+| 8.5.12 DEBUG with Valgrind stack annotations | independent pinned source build | native/core lifecycle Valgrind clean | annotated Connector/C and database Valgrind clean |
+| 8.5.11 ZTS DEBUG (historical investigation) | built and tested | single-interpreter CLI only | single-interpreter CLI tested; no threaded certification |
 
 All three CLI versions also pass native queue/size/permission limits, aggregate-budget rejection/recovery, PHP memory-limit bailout and stable-file-handle suites. Independent 8.5 FPM tests separately pass 100 sequential requests, four overlapping operations per request, and 12 requests across four workers. Idle descriptors/threads remain stable; context/configuration/hooks reset. A fatal request is torn down before the same worker serves a fresh request.
 
@@ -67,3 +69,11 @@ Expanded Linux loopback networking tests now cover IPv4/IPv6 TCP/UDP, dual-addre
 DNS, TLS1.2/1.3 SNI/ALPN, partial I/O and cancellation on PHP8.3/8.4/8.5.
 See [BACKENDS.md](BACKENDS.md#expanded-local-networking-matrix) for executed
 commands, injected DNS cleanup behavior and unverified TLS/remote boundaries.
+
+October2026 PHP allocation changes require fallible native-to-PHP bulk string
+conversion and stopping at pending OOM. The regression distinguishes ordinary
+fatal request teardown from hard-limit exit137. Matching only the module API
+number is insufficient; build scripts check SDK patch versions. Legacy8.5.11
+results are not a recommendation to deploy an unpatched interpreter. The final
+package attestation contains the exact archive/install and current instrumentation
+matrix, including unclean upstream Clang function-type checks.

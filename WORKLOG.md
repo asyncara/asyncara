@@ -461,3 +461,10 @@ No wall threshold was enlarged and no responsiveness check was removed.
 Hosted mapping test initially failed because ripgrep was absent despite the
 expected ASan diagnostic. Switched its string assertion to standard grep; the
 intentional overrun and required failure status remain unchanged.
+
+Final native source e5d94fd passes fully instrumented GCCASan/UBSan PHP8.5.12
+core/HTTP streaming/file-ownership/database/WebSocket/network-edge suites.
+Private-CA MariaDB and separate Oracle8.4.13 suites each pass with100Redis TLS
+repeat cycles. The Clang full-PHP callback-type diagnostics remain explicitly
+unclean upstream evidence. Final snapshot soaks and clean source distribution
+verification are in progress; no longer-soak or release-candidate claim is made.

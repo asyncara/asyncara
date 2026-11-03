@@ -62,3 +62,9 @@ outstanding. See [release readiness](docs/RELEASE_READINESS.md),
 [FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
 [ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies and one-file MIME. [WebSocket](docs/WEBSOCKET.md) now has tested bounded framing and independent client/server interop. Expanded hooks
 and framework certification remain unavailable. Release status stays EXPERIMENTAL.
+
+Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs.
+The latest hardening fixes deferred out-of-memory conversion and large native
+buffer retention across FPM requests. Release status remains **EXPERIMENTAL**;
+see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
+failures and remaining certification work.
