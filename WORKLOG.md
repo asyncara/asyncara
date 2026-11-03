@@ -855,3 +855,35 @@ reject sslcert/sslkey and Connector/C exposes CA verification without explicit
 client key/certificate fields. Implicit libpq defaults/environment are not a
 certified mTLS API. Updated DATABASE_COMPATIBILITY.md; no driver change or new
 mTLS capability claimed. EXPERIMENTAL remains the release assessment.
+
+## UDP destination repair and verified historical FPM hour — 2026-11-03
+
+Independent negative controls reproduced r3 port wrap (118356 delivered to owned
+52820) and malformed [deadbeef] entering PHP's synchronous getaddrinfo. A child-only
+LD_PRELOAD resolver control delayed 200ms, old call 204.374ms/ticker zero; fixed
+call 0.248ms without resolver entry. These are deterministic injected controls,
+not external DNS latency or a side effect on an unrelated destination.
+
+Changed src/Asyncara/IO/UdpSocket.php to validate literal IP and port 1..65535
+before suspension or PHP parsing. Native source remains 76e6557. Added
+ tests/udp_destinations.php to scripts/test.sh: guarded invalid targets, integer
+wrap/overflow, malformed addresses, NUL/newline, oversized payload, and real
+empty/65,507-byte IPv4/IPv6 sends. It fails safely against old source.
+Targeted epoll/poll tests pass PHP 8.3.36/8.4.27/8.5.12, DEBUG and GCC ASan/UBSan.
+Valgrind zero errors/lost bytes, 3,888 reachable, zero suppressions.
+make verify audit audit-fpm passes. Expanded mixed smoke passes 60.119s/166cycles,
+all SQL fixtures including separate Oracle, Redis and network work; no final
+pending work. Build overlapped smoke setup, so no performance inference.
+Evidence: docs/phase4/udp-destinations-fix.json and /tmp/asyncara-phase4-nrtjh3t1.
+
+Before source changes, intentionally interrupted local 76e6557 campaigns:
+last mixed sample972.031s/2,635cycles, FPM997.320s. Preserve full failed/interrupted
+reports; neither is a pass. A new immutable source and archive are required.
+The independently hosted 624cbe9 FPM job completed3,600.036s/67,520mainrequests,
+all lifecycle cases, idle6fd/1thread, maximum3,116KiB growth beyond warmup.
+Downloaded ZIP digest matches official GitHub SHA256; provenance/report in
+phase4/hosted-fpm-1h.json. This predates both repairs; its parallel mixed job
+failed. No combined or corrected-source certification is inferred. Hosted76e6557
+jobs remain running independently at16:34Z. No remote job was cancelled.
+Next: commit this repair, independently build/test a new r4 archive, then launch
+fresh immutable mixed/FPM chains after builds finish. Release EXPERIMENTAL.

@@ -3,26 +3,27 @@
 **EXPERIMENTAL — work in progress.** This report separates completed checks
 from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
 
-## Current evidence at 2026-11-03 16:04 UTC
+## Current evidence at 2026-11-03 16:35 UTC
 
 | Check | Tested source | Result |
 |---|---|---|
 | Clean corrected r3 builds and installed tests, PHP 8.3/8.4/8.5 NTS | `76e6557` | PASS; source/checksum below |
 | Hosted regression 8.3/8.4/8.5 and database lifecycle | `76e6557` | All four jobs PASS; [run 41668853898](https://github.com/asyncara/asyncara/actions/runs/41668853898) |
-| Local one-hour mixed and FPM, including separate Oracle fixture in mixed | frozen `76e6557` | RUNNING from 16:03:58Z |
-| Hosted corrected-source one-hour workload | `76e6557` | Mixed RUNNING, FPM pending behind earlier job; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
+| Local one-hour mixed and FPM, including separate Oracle fixture in mixed | frozen `76e6557` | INTERRUPTED for independently reproduced UDP destination defects; last samples 972.031s mixed / 997.320s FPM |
+| Hosted ownership-repair one-hour workload | `76e6557` | Mixed and FPM RUNNING; predates destination repair; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
 | Historical local one-hour FPM / mixed | `3587740` | FPM FAIL; mixed deliberately interrupted after UDP defect reproduction |
-| Historical hosted mixed / FPM | `624cbe9` | Mixed FAIL at UDP receive; FPM RUNNING; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
+| Historical hosted mixed / FPM | `624cbe9` | Mixed FAIL at UDP receive; FPM PASS, 3,600.036s / 67,520 main requests; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
 | Six-/24-hour campaigns | — | NOT EXECUTED; preceding durations must pass |
 
 The hosted mixed workload includes extended networking and local PostgreSQL,
 MariaDB and Redis fixtures, but not the separate Oracle fixture. Hosted and local
 scopes must remain distinct. Running jobs are not passes. All earlier failures
-remain evidence; the corrected source has no completed one-hour result yet.
+remain evidence; the latest corrected source has no completed one-hour result yet.
+The historical FPM pass does not certify the destination or native ownership repairs.
 
-## Corrected r3 distribution and frozen source
+## Historical r3 distribution and frozen source
 
-Implemented, packaged and pushed runtime source:
+The ownership repair was implemented, packaged and pushed at:
 `76e6557bf3925e58e6db3dee07b30aac33a9f9c1` on `phase4-endurance`.
 Archive: `build/asyncara-0.1.0-dev-phase4-r3.tar.gz`, 349 source files.
 SHA-256: `b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a`.
@@ -32,11 +33,13 @@ WebSocket and network tests pass PHP 8.3.36, 8.4.27 and 8.5.12 NTS. The UDP
 ownership and isolated descriptor-exhaustion regressions run in that suite.
 [Build attestation](phase4/package-r3.json) records individual results and hashes.
 Historical archives remain intact; r2 and earlier contain the UDP ownership bug.
+The r3 archive still contains the later-reproduced destination validation defects.
+It is not the corrected destination-source distribution.
 No GitHub release has been published. Later evidence-only commits do not become
 part of this archive retroactively.
 
-The frozen campaign uses `/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557` and
-reports to `/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/state.json`.
+The interrupted campaign used `/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557` and
+retains reports at `/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/state.json`.
 [Launch provenance](phase4/campaign-76e6557-launch.json) includes the exact
 supervisor source and hashes. Mixed and FPM now have independent 1h → 6h → 24h
 chains, retaining all original workload assertions/duration/resource limits.
@@ -315,3 +318,40 @@ not final-source endurance. Corrected packaging passed and new campaigns are
 running as recorded above. Final `76e6557` FPM smoke separately passed 60.063
 seconds / 432 main requests, maximum 2,820 KiB beyond warmup, with all lifecycle
 cases passing; it includes the PHP dependency-preload adjustment.
+
+## UDP destination validation and historical hosted FPM evidence
+
+Independent controls against r3 reproduced a destination port wrapping through
+PHP's 16-bit parser: a send to port 118356 reached an owned listener on 52820.
+An invalid numeric-looking `[deadbeef]` address entered synchronous getaddrinfo.
+A child-only resolver probe introduced a controlled 200ms delay; the old call
+blocked for 204.374ms with no ticker progress. This is an injected control,
+not a measurement of an external DNS server. No unrelated endpoint was targeted.
+
+The public UDP send path now requires a valid literal IPv4/IPv6 address and
+port 1..65535 before suspension or PHP parsing. Malformed addresses, overflow,
+embedded NUL/newline, hostname input and oversized payloads raise ValueError.
+The fixed resolver control returns in 0.248ms without entering getaddrinfo.
+The existing native ownership helper is unchanged. The regression rejects bad
+inputs at a test-only transport boundary before any network side effect and
+also sends real empty/maximum-size IPv4/IPv6 datagrams.
+
+Targeted tests pass PHP 8.3.36/8.4.27/8.5.12, epoll/poll, DEBUG and GCC ASan/UBSan.
+Valgrind: zero errors and lost bytes, 3,888 bytes reachable, no suppressions.
+Full verify/audit/FPM passes; expanded mixed smoke passes 60.119s / 166 cycles,
+including separate Oracle and MariaDB fixtures and extended networking, with no
+final pending work. The smoke overlapped a build and is not a performance result.
+[Destination repair evidence](phase4/udp-destinations-fix.json) includes controls,
+source hashes and logs. The local 76e6557 campaigns were intentionally interrupted
+before changing public source; neither is a pass. [Interruption record](phase4/campaign-76e6557-interrupted.json)
+retains every partial sample and artifact identity. A new frozen archive/campaign
+is required; r3 must not be relabeled as containing this repair.
+
+The independent hosted FPM job at historical 624cbe9 completed 3,600.036 seconds
+and 67,520 main requests, plus lifecycle/concurrency/streaming/recycling/reload/
+kill/fatal/timeout checks. Maximum growth beyond warmup was 3,116KiB; steady
+worker RSS slopes were 44.954–79.177KiB/hour, with idle six-fd/one-thread checks.
+Its artifact ZIP SHA-256 matches the official GitHub digest. See
+[hosted FPM attestation](phase4/hosted-fpm-1h.json). This certifies that workload
+on the pre-repair source only. Its parallel mixed job failed, so the workflow
+as a whole did not pass. No six-/24-hour evidence or release promotion follows.

@@ -84,3 +84,11 @@ TcpStream handshake currently awaits readability after incomplete crypto; broad
 TLS transport-state certification remains incomplete. Trust-file/crypto setup
 is synchronous library work. Successful local transfer tests do not establish
 universal TLS compatibility or server-side TLS listener support.
+
+UDP destinations now require a literal IPv4/IPv6 address and port 1..65535,
+validated before PHP's sendto parser. This prevents implicit synchronous hostname
+resolution for malformed numeric-looking input and port wrap. Constructor port
+zero still requests an ephemeral local bind; destination port zero is rejected.
+Invalid destinations raise ValueError without waiting for readiness or sending.
+The existing 65,507-byte datagram bound and native epoll/poll readiness remain.
+Tests: udp_destinations.php, including actual empty/maximum-size IPv4/IPv6 sends.

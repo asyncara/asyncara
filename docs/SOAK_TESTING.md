@@ -223,3 +223,18 @@ threshold is diagnostic, not a replacement for any soak assertion. Commands:
 cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2 tests/soak/epoll_latency.c -o build/epoll-latency
 build/epoll-latency 300 > build/new-epoll-latency.jsonl
 ```
+
+## UDP repairs and final-source boundary
+
+The local 76e6557 mixed/FPM campaigns were deliberately interrupted before
+repairing independently reproduced UDP destination validation defects. Last
+completed samples were 972.031s / 2,635 cycles and 997.320s respectively; neither
+completed one hour. Preserve phase4/campaign-76e6557-interrupted.json and its raw
+files. The strict destination fix has a separate 60.119s / 166-cycle expanded
+mixed pass. Compilation overlapped that smoke; it is not a performance result.
+No six-/24-hour stage has run. A new immutable commit/archive must start a new
+campaign. Existing thresholds remain unchanged.
+
+Historical hosted FPM at 624cbe9 passed its full hour; its simultaneous mixed job
+failed at UDP receive. The hosted run predates both UDP repairs and cannot certify
+the corrected source. Current campaign identities are in PHASE4_DELIVERY.md.

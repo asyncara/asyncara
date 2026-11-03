@@ -20,7 +20,15 @@ final class UdpSocket
     public function address(): string { return stream_socket_get_name($this->stream, false); }
     public function send(string $data, string $address): int
     {
-        if (strlen($data) > 65507 || !preg_match('/^(?:\[[0-9a-fA-F:]+\]|[0-9.]+):[0-9]+$/D', $address)) throw new \ValueError('UDP requires a numeric destination and bounded datagram');
+        // PHP's sendto parser resolves invalid numeric-looking hosts and narrows
+        // ports to 16 bits. Validate before either that parser or a suspension.
+        $ipv6 = str_starts_with($address, '[');
+        $pattern = $ipv6 ? '/^\[([0-9a-fA-F:.]+)\]:([0-9]{1,5})$/D' : '/^([0-9.]+):([0-9]{1,5})$/D';
+        if (strlen($data) > 65507 || strlen($address) > 53 || !preg_match($pattern, $address, $parts) ||
+            !filter_var($parts[1], FILTER_VALIDATE_IP, $ipv6 ? FILTER_FLAG_IPV6 : FILTER_FLAG_IPV4) ||
+            (int)$parts[2] < 1 || (int)$parts[2] > 65535) {
+            throw new \ValueError('UDP requires a numeric IP, destination port 1..65535 and bounded datagram');
+        }
         while (true) {
             Scheduler::current()->writable($this->stream);
             $n = @stream_socket_sendto($this->stream, $data, 0, $address);

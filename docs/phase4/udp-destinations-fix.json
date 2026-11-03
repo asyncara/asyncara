@@ -1,0 +1,429 @@
+{
+  "status": "IMPLEMENTED_AND_TESTED",
+  "sourceBase": "83d16bb277485519f099fcd3952f4dcaff9e08f2",
+  "nativeSourceUnchangedFrom": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+  "negativePortControl": "{\"invalidDestination\":\"127.0.0.1:118356\",\"actualDestination\":\"127.0.0.1:52820\",\"received\":{\"data\":\"must-not-send\",\"peer\":\"127.0.0.1:39119\"}}\n",
+  "negativeResolverControl": "UDP_SYNCHRONOUS_RESOLVER_ENTERED\n{\"error\":\"Asyncara\\\\Exception\\\\OperationException\",\"elapsedNs\":204373673,\"ticksAtError\":0}\n",
+  "fixedResolverControl": "{\"error\":\"ValueError\",\"elapsedNs\":247671,\"ticksAtError\":0}\n",
+  "controls": {
+    "udp-port-wrap.php": "<?php\nrequire '/home/coder/Asyncara/autoload.php';\nAsyncara\\Async::run(function () {\n    $a = new Asyncara\\IO\\UdpSocket(); $b = new Asyncara\\IO\\UdpSocket();\n    try {\n        $port = (int)substr(strrchr($b->address(), ':'), 1);\n        $invalid = '127.0.0.1:' . ($port + 65536);\n        $a->send('must-not-send', $invalid);\n        $received = Asyncara\\Async::timeout(1, $b->receive(...));\n        echo json_encode(['invalidDestination'=>$invalid,'actualDestination'=>$b->address(),'received'=>$received]),\"\\n\";\n    } finally { $a->close(); $b->close(); }\n});\n",
+    "udp-resolver-probe.c": "#define _GNU_SOURCE\n#include <dlfcn.h>\n#include <errno.h>\n#include <netdb.h>\n#include <string.h>\n#include <time.h>\n#include <unistd.h>\nint getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **result) {\n    if (node && !strcmp(node, \"deadbeef\")) {\n        const char marker[] = \"UDP_SYNCHRONOUS_RESOLVER_ENTERED\\n\";\n        if (write(STDERR_FILENO, marker, sizeof(marker)-1) < 0) return EAI_SYSTEM;\n        struct timespec delay = {.tv_sec=0,.tv_nsec=200000000};\n        while (nanosleep(&delay,&delay)<0 && errno==EINTR) {}\n        *result=NULL;return EAI_NONAME;\n    }\n    int (*next)(const char *,const char *,const struct addrinfo *,struct addrinfo **)=dlsym(RTLD_NEXT,\"getaddrinfo\");\n    if (!next) { errno=ENOSYS;return EAI_SYSTEM; }\n    return next(node,service,hints,result);\n}\n",
+    "udp-resolver-control.php": "<?php\nrequire '/home/coder/Asyncara/autoload.php';\nAsyncara\\Async::run(function () {\n    $socket = new Asyncara\\IO\\UdpSocket(); $ticks=0;\n    $timer=Asyncara\\Async::spawn(function () use (&$ticks) { for($i=0;$i<5;$i++){Asyncara\\Async::sleep(.01);$ticks++;} });\n    $start=hrtime(true);\n    try { $socket->send('probe','[deadbeef]:12345'); }\n    catch (Throwable $e) { echo json_encode(['error'=>get_class($e),'elapsedNs'=>hrtime(true)-$start,'ticksAtError'=>$ticks]),\"\\n\"; }\n    finally { $socket->close(); }\n    $timer->await();\n});\n"
+  },
+  "tests": [
+    {
+      "variant": "8.3",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 0.3905950409825891,
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.3/root/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.3.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.3-epoll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "8.3",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 0.15471590217202902,
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.3/root/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.3.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.3-poll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "8.4",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 0.49170478293672204,
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.4/root/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.4.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.4-epoll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "8.4",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 0.11803847597911954,
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.4/root/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.4.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.4-poll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "asan",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 3.3035614900290966,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-asan.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-asan-epoll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "asan",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 0.6701138829812407,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-asan.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-asan-poll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "debug",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 0.15826188516803086,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-debug.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-debug-epoll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "debug",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 0.17801333591341972,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-debug.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-debug-poll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "8.5",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 0.10029162396676838,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.5-epoll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "variant": "8.5",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 0.31542908400297165,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "tests/udp_destinations.php"
+      ],
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.5-poll.log",
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    }
+  ],
+  "valgrind": {
+    "errors": 0,
+    "lostBytes": 0,
+    "reachableBytes": 3888,
+    "suppressed": 0
+  },
+  "sourceFiles": {
+    "src/Asyncara/IO/UdpSocket.php": "8bf8765a3051746b39271c3a920ec465cc35a2bd69e813b7d672db767738e555",
+    "tests/udp_destinations.php": "09598856e0c18a6e98f9da3a23fe2972d2789c9577e18e695a2854d48291e51c",
+    "scripts/test.sh": "491e2c245fcd7289758adf939c83e6764b8b831b1fa7592abf9ce6700a94034b"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.5-epoll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.4-epoll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-valgrind-test.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.5-poll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-verify.log",
+      "bytes": 6891,
+      "sha256": "b221c0d2ba3149f04586b59dedcded8941b59be65c4ea779478e364dc8a4579c"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-smoke.log",
+      "bytes": 148,
+      "sha256": "f5ee257fc5ea7b5e4e510a16a24740f5a8d1c611d57b5b10a2a38adeae12bd0d"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-asan-epoll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-debug-poll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-valgrind.log",
+      "bytes": 13527,
+      "sha256": "d889be63f5bef144e4d0079fbcfe0d3f50b3cf286ba47b29c8cef167548df59f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.4-poll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-negative.log",
+      "bytes": 1130,
+      "sha256": "eb623e08fd4158ab661167c1cfa1ee3222d69cb70e527880e8ee84d8c4eca1d6"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.3-poll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-debug-epoll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-8.3-epoll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-asan-poll.log",
+      "bytes": 90,
+      "sha256": "a5057022937cbbef1ee29ed403ef4d61cdcf0e48129e70597c81503ca4f46d00"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-port-wrap.log",
+      "bytes": 141,
+      "sha256": "92a92b82ec97157e513c6d238a870937cca6719433b994e43321f9ad350852c2"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-port-wrap.php",
+      "bytes": 560,
+      "sha256": "902162a1318318adeb13e373db1501eef013b90a9f0a80294bcbdd83f59ffd1d"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-resolver-probe.c",
+      "bytes": 831,
+      "sha256": "03b637a91e8e588770ab8f6b492c5323c2fbb75cd4ca9b082ef5443a152a77ad"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-resolver-control.php",
+      "bytes": 534,
+      "sha256": "2907564d699649920dd38172c950e4a732ba45f437442c68edf1a21f187e60de"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-resolver-control.log",
+      "bytes": 124,
+      "sha256": "a35242682f248b4d9293b1244ea3beccc7e425218b303e5ea140efb56a57b676"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-resolver-probe.so",
+      "bytes": 15840,
+      "sha256": "3a09339f628f4d0769b7f37786bd72b67003102ef938c2ce2a5fa1dbea1e6a92"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-resolver-fixed.log",
+      "bytes": 59,
+      "sha256": "e4b92ef9adc3ce0c3f90c2989709c29b80e4733e1760a3d2c3e127e855a9e04c"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-smoke/report.json",
+      "bytes": 3479,
+      "sha256": "5ce298483a9031365487ff470ace63c52e294c8b5143d0dddbee9eab2ab560b6"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-destinations-smoke/metadata.json",
+      "bytes": 924,
+      "sha256": "66b8c67c0adbe5472fd17e33698531b5a9eacc2bf56c5489dba4121a74a9151e"
+    }
+  ],
+  "limitations": [
+    "The resolver delay was injected into a child process and made no external DNS query; 204ms is controlled blocking evidence, not an Internet latency measurement.",
+    "The PHP test observer refuses unknown destinations before the real transport even on regression, so CI never performs malformed-host DNS queries.",
+    "New final-source endurance is required. No native source change in this destination fix."
+  ],
+  "validation": {
+    "verifyAuditFpm": "PASS; make verify audit audit-fpm, PHP 8.5.12 NTS",
+    "mixedSmoke": {
+      "status": "PASS",
+      "wallSeconds": 115.97191423806362,
+      "workloadExit": 0,
+      "workloadError": null,
+      "samples": 12,
+      "complete": [
+        {
+          "type": "complete",
+          "seconds": 60.119471265003085,
+          "cycles": 166,
+          "native": {
+            "version": "0.1.0-dev",
+            "eventLoopBackend": "epoll",
+            "filesystemBackend": "pthread-workers",
+            "networkBackend": "nonblocking-streams+curl-multi",
+            "dnsBackend": "worker-getaddrinfo",
+            "sqliteVersion": "3.45.1",
+            "curlVersion": "8.5.0",
+            "userlandThreads": false,
+            "ioUring": false,
+            "postgresql": true,
+            "mysql": true,
+            "nativeWorkers": 4,
+            "pendingOperations": 0,
+            "nativeBufferLimit": 16777216,
+            "nativeQueueLimit": 1024,
+            "nativeMemoryBytes": 0,
+            "nativeMemoryPeak": 161198,
+            "nativeMemoryRejections": 0,
+            "nativeMemoryLimit": 268435456,
+            "openFileHandles": 0,
+            "sqliteConnections": 0,
+            "httpReadinessSockets": 0,
+            "nativeQueueDepth": 0,
+            "httpStreamingTransfers": 0,
+            "httpStreamingBufferedBytes": 0,
+            "httpStreamingPaused": 0,
+            "httpStreamBufferLimit": 65536,
+            "httpStreamingUploads": 0,
+            "httpUploadBufferedBytes": 0,
+            "httpUploadPaused": 0
+          },
+          "scheduler": {
+            "turns": 23921,
+            "taskSteps": 386497,
+            "maxStepSeconds": 0.4343496528454125,
+            "maxTimerLagSeconds": 0.585089148953557,
+            "activeTasks": 0,
+            "pendingFutures": 0,
+            "retainedFailures": 0,
+            "readyTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 27262976
+          },
+          "os": {
+            "rssKiB": 44476,
+            "virtualKiB": 400416,
+            "threads": 5,
+            "fds": 13,
+            "sockets": 4
+          }
+        }
+      ],
+      "completeRecords": 1,
+      "parseErrors": [],
+      "parseErrorCount": 0,
+      "steadyTrends": {
+        "rssKiB": {
+          "min": 43812,
+          "max": 44540,
+          "mean": 44279.600000000006,
+          "endMinusStartMedian": 472,
+          "slopePerHour": 49073.64076604127
+        },
+        "phpBytes": {
+          "min": 2169592,
+          "max": 2193904,
+          "mean": 2178975.9999999995,
+          "endMinusStartMedian": 15904,
+          "slopePerHour": 1271340.4116400098
+        },
+        "nativeBytes": {
+          "min": 0,
+          "max": 0,
+          "mean": 0.0,
+          "endMinusStartMedian": 0,
+          "slopePerHour": 0.0
+        },
+        "fds": {
+          "min": 23,
+          "max": 24,
+          "mean": 23.1,
+          "endMinusStartMedian": 0,
+          "slopePerHour": -12.575230233728638
+        },
+        "threads": {
+          "min": 5,
+          "max": 5,
+          "mean": 5.0,
+          "endMinusStartMedian": 0,
+          "slopePerHour": 0.0
+        },
+        "sockets": {
+          "min": 10,
+          "max": 11,
+          "mean": 10.1,
+          "endMinusStartMedian": 0,
+          "slopePerHour": -12.57523023372861
+        }
+      },
+      "failures": [],
+      "notes": [
+        "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+        "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+        "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+        "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+        "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+      ]
+    },
+    "mixedSmokeScope": "60-second smoke, all database fixtures including separate Oracle and extended networking; compilation overlapped fixture setup, so this is not an unloaded performance measurement. Long campaigns start only after builds finish."
+  }
+}

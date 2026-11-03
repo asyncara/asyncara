@@ -82,7 +82,8 @@ led to a reproducible UDP ownership defect.
 Six-/24-hour promotion is prevented. Diagnosis continues without lowering limits.
 
 Hosted source `624cbe9` passes all four fast regression/database jobs. Its mixed
-one-hour job failed at IPv4 UDP receive; FPM remains running on a separate host. A separate
+one-hour job failed at IPv4 UDP receive; the independent FPM job passed
+3,600.036 seconds / 67,520 main requests. This is historical pre-repair evidence. A separate
 600.256-second poll profile passed 5,312 requests and recorded native wait delays
 overlapping those in a PHP-free epoll control. This is timing evidence, not a
 replacement for the failed endurance tests. Current test matrix and limitations:
@@ -94,10 +95,14 @@ tests verify error/cleanup dependency loading and admission recovery. Core/audit
 network-edge and FPM lifecycle checks pass. This is a new native source boundary:
 earlier endurance and archives cannot certify it. Corrected `76e6557` r3 archive
 independently builds/installs/tests on all three PHP branches and reproduces its
-checksum; all four hosted CI jobs pass. Fresh local one-hour mixed/FPM runs began
-16:03:58Z. Each workload advances independently to six/24 hours only after its
-own preceding pass; overall success needs both complete chains. Existing FPM
-timing failures and all workload thresholds are preserved.
+checksum; all four hosted CI jobs pass. The subsequent local one-hour attempts
+were interrupted at last samples 972.031s mixed / 997.320s FPM after independently
+reproducing destination port wrap and a synchronous resolver fallback. Strict
+literal-IP/port validation and its regressions now pass all three PHP branches,
+epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind; full verify/audit/FPM and a 60.119s
+expanded mixed smoke pass. Native C is unchanged from 76e6557. A new archive and
+frozen campaign are required. Existing timing failures and thresholds remain.
+See phase4/udp-destinations-fix.json and phase4/hosted-fpm-1h.json.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

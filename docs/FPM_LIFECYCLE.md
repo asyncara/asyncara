@@ -224,3 +224,16 @@ recycling/reload/kill/fatal/timeout cleanup and strict idle6fd/1thread assertion
 This smoke preceded the separate first-autoload EMFILE adjustment; the latter has
 isolated descriptor-limit tests and the next frozen/package validation. It does
 not replace failed historical endurance or certify a full hour of the new source.
+
+## Independent hosted one-hour result
+
+Historical source 624cbe9 (runtime e5d94fd, before UDP repairs) passed the complete
+hosted lifecycle harness: 3,600.036s / 67,520 main requests plus all A/B/C/D,
+recycling, reload, forced replacement, fatal and timeout cases. Maximum RSS
+growth beyond warmup was 3,116KiB; steady slopes 44.954–79.177KiB/hour, per-worker
+ranges 364–536KiB. Strict idle six-fd/one-thread assertions passed. Raw results
+and the official artifact digest are in phase4/hosted-fpm-1h.json. This is an
+actual one-hour FPM pass, not a corrected-source or combined-workflow pass: the
+parallel mixed workload failed. The later local 76e6557 FPM attempt was deliberately
+interrupted after the 997.320s sample to repair destination validation. No final
+corrected-source one-/six-/24-hour completion is claimed.

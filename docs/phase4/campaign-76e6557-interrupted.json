@@ -1,0 +1,286 @@
+{
+  "classification": "INTERRUPTED_FOR_REPRODUCED_DESTINATION_DEFECT",
+  "request": {
+    "reason": "Interrupt final-source attempts before repairing independently reproduced UDP port wrap and synchronous resolver fallback; no completion claim",
+    "unixSeconds": 1793722848.7445562,
+    "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+    "signals": [
+      {
+        "kind": "mixed-php",
+        "pid": 3033312,
+        "signal": "SIGINT"
+      },
+      {
+        "kind": "fpm-runner",
+        "pid": 3030418,
+        "signal": "SIGINT"
+      }
+    ]
+  },
+  "supervisor": {
+    "status": "FAIL",
+    "startedUtc": "2026-11-03T16:03:58.947237+00:00",
+    "supervisorPid": 3030406,
+    "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r3.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r3.tar.gz": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+      "asyncara.so": "43c29f0ce840cb48cf0f52541502ebba13c6dd9365143a8d0565f20132a13c39"
+    },
+    "supervisorSha256": "fff788094ec80ef7c7640fda45f3fd73fd89e653b4123ed08f18789f74f164e3",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "jobs": [
+      {
+        "kind": "mixed",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:03:59.062227+00:00",
+        "status": "FAIL",
+        "pid": 3030415,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557/tests/soak/run.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600",
+          "--databases",
+          "--extended-network",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600",
+        "exit": 1,
+        "finishedUtc": "2026-11-03T16:20:57.809064+00:00",
+        "reportPresent": true,
+        "reportSha256": "e3c79da65fa475171aa730ba93ab8730d378a0fbd90c3b917efffd1c67251365"
+      },
+      {
+        "kind": "fpm",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:03:59.112333+00:00",
+        "status": "FAIL",
+        "pid": 3030418,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557/tests/soak/fpm.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600",
+        "exit": -2,
+        "finishedUtc": "2026-11-03T16:20:51.951548+00:00",
+        "reportPresent": false
+      }
+    ],
+    "gate": "Independent mixed/FPM chains; each must pass its preceding duration. No cross-workload certification. Any failed chain fails the overall campaign.",
+    "finishedUtc": "2026-11-03T16:20:57.829555+00:00"
+  },
+  "lastSamples": {
+    "mixed": {
+      "type": "sample",
+      "seconds": 972.0305969489273,
+      "cycles": 2635,
+      "tasksExecuted": 2635000,
+      "phpBytes": 2178792,
+      "phpAllocatedBytes": 27262976,
+      "os": {
+        "rssKiB": 45264,
+        "virtualKiB": 413392,
+        "threads": 5,
+        "fds": 23,
+        "sockets": 10
+      },
+      "native": {
+        "version": "0.1.0-dev",
+        "eventLoopBackend": "epoll",
+        "filesystemBackend": "pthread-workers",
+        "networkBackend": "nonblocking-streams+curl-multi",
+        "dnsBackend": "worker-getaddrinfo",
+        "sqliteVersion": "3.45.1",
+        "curlVersion": "8.5.0",
+        "userlandThreads": false,
+        "ioUring": false,
+        "postgresql": true,
+        "mysql": true,
+        "nativeWorkers": 4,
+        "pendingOperations": 0,
+        "nativeBufferLimit": 16777216,
+        "nativeQueueLimit": 1024,
+        "nativeMemoryBytes": 0,
+        "nativeMemoryPeak": 163750,
+        "nativeMemoryRejections": 0,
+        "nativeMemoryLimit": 268435456,
+        "openFileHandles": 0,
+        "sqliteConnections": 0,
+        "httpReadinessSockets": 0,
+        "nativeQueueDepth": 0,
+        "httpStreamingTransfers": 0,
+        "httpStreamingBufferedBytes": 0,
+        "httpStreamingPaused": 0,
+        "httpStreamBufferLimit": 65536,
+        "httpStreamingUploads": 0,
+        "httpUploadBufferedBytes": 0,
+        "httpUploadPaused": 0
+      },
+      "scheduler": {
+        "turns": 376198,
+        "taskSteps": 6133648,
+        "maxStepSeconds": 0.7772971200756729,
+        "maxTimerLagSeconds": 0.8335770349949598,
+        "activeTasks": 6,
+        "pendingFutures": 9,
+        "retainedFailures": 0,
+        "readyTasks": 0,
+        "activeTimers": 3,
+        "ioWatchers": 2,
+        "pendingNative": 0,
+        "memoryBytes": 27262976
+      },
+      "processPool": {
+        "workers": 2,
+        "restarts": 26,
+        "pendingJobs": 0,
+        "pendingBytes": 0,
+        "queueLimit": 256,
+        "queueBytes": 67108864,
+        "workerMemoryBytes": 268435456,
+        "closed": false
+      },
+      "queue": {
+        "capacity": 8,
+        "buffered": 0,
+        "waitingReaders": 0,
+        "waitingWriters": 0,
+        "unfinished": 0,
+        "closed": false
+      },
+      "databaseConnections": 4,
+      "network": {
+        "cycles": 2635,
+        "websocketConnections": 2,
+        "reconnections": 26,
+        "cancellations": 26,
+        "dnsLookups": 2635,
+        "udpDatagrams": 5270,
+        "verifiedTlsConnections": 5270,
+        "httpsResponses": 5270
+      },
+      "ticks": 58019,
+      "timeouts": 2635,
+      "cancellations": 2635,
+      "unexpectedErrors": 0,
+      "schedulingLatencyMs": {
+        "median": 10.137889999896288,
+        "p95": 177.87146684713662,
+        "p99": 179.05052402056754
+      }
+    },
+    "fpm": {
+      "pid": 3031491,
+      "fds": 6,
+      "sockets": 1,
+      "threads": 1,
+      "rssKiB": 17456,
+      "virtualKiB": 508600,
+      "idleWaitSeconds": 0.00037158792838454247,
+      "transientThreadsBeforeReaping": 1,
+      "seconds": 997.3203610430937
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/websocket-peer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/source-manifest.json",
+      "bytes": 35840,
+      "sha256": "09c8753e2e2e6415a371c634699336c52e89dee104fa6e4e4a8f3011d95c17c7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/report.json",
+      "bytes": 1827,
+      "sha256": "e3c79da65fa475171aa730ba93ab8730d378a0fbd90c3b917efffd1c67251365"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/network-peers.json",
+      "bytes": 365,
+      "sha256": "cf275e53ef796554ae9035ebc68dbc9b3f740ca042860bf638b7002e4dcd7cfe"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/os-processes.jsonl",
+      "bytes": 680251,
+      "sha256": "423718a21b413d4c23143fcf12e5270d077eeed33541a4221b51b1c9885119a5"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/samples.jsonl",
+      "bytes": 351125,
+      "sha256": "2b644653dfbdddcc751c8b1d88405528bfddb93ee7da0c34c77872ac4d9eb791"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/network-peer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/metadata.json",
+      "bytes": 841,
+      "sha256": "f117f497d4d4e1853141e44ebc5b0399ccfc5281fa36ed44ed0c30b888df984a"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/mixed-responses.jsonl",
+      "bytes": 24071533,
+      "sha256": "b0705f2a1b5ca75719cde15a58d38b041cbf447bb3fa105330c218297d636a2a"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/large.bin",
+      "bytes": 12582912,
+      "sha256": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/asyncara.so",
+      "bytes": 452568,
+      "sha256": "43c29f0ce840cb48cf0f52541502ebba13c6dd9365143a8d0565f20132a13c39"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/os-processes.jsonl",
+      "bytes": 256801,
+      "sha256": "1c0264371e210c11e8f4f1485f6295fb83b44aa87c2a3fa0b799a35ef68621fb"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/provenance.json",
+      "bytes": 1006,
+      "sha256": "807d5a6bec2e07f3dce084c84160c4546621b24f29f517717b645e04f4f20dfd"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/fatal-warmup.json",
+      "bytes": 21868,
+      "sha256": "233991d6576e95cf14e99d57afb2fe22311ae41cfab9c34e9c3cf36d6a6b37b9"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/mixed-samples.jsonl",
+      "bytes": 2070309,
+      "sha256": "6ea3aac4d29a5705d664382685fd9bab8f379425946bb0a7e9135049b69ee559"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600/failure.json",
+      "bytes": 476279,
+      "sha256": "48b469017016a541006393e95efbcf3c5d85253a10b8e37d317884a8555fa05c"
+    }
+  ]
+}

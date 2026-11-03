@@ -3,10 +3,14 @@
 **Current assessment: EXPERIMENTAL.** Phase 4 expanded independent tests,
 resource-limit coverage, dependency controls and diagnostics, then repaired a
 reproducible UDP endpoint ownership defect and descriptor-exhaustion cleanup.
-Corrected source `76e6557` is packaged as phase4-r3, independently installed/tested
-on PHP 8.3/8.4/8.5 and passing all four hosted CI jobs. Earlier archives retain
-the UDP defect. Earlier one-hour attempts failed or were interrupted; new frozen
-one-hour campaigns are running. Six-/24-hour stages have not started.
+Source `76e6557` is packaged as phase4-r3 and independently installed/tested on
+PHP 8.3/8.4/8.5 with four passing hosted CI jobs. Later controls exposed UDP
+destination-port wrap and synchronous resolver entry in r3. The public API fix
+passes all three branches, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind. Local
+76e6557 campaigns were interrupted to preserve source integrity; a new archive
+and frozen campaign are required. Historical 624cbe9 hosted FPM passed one hour
+and 67,520 main requests; its mixed job failed. No corrected-source one-hour or
+six-/24-hour completion is claimed.
 Shorter diagnostic passes do not supersede those failures. Current evidence and
 the packaged/tested source distinction are in [PHASE4_DELIVERY](PHASE4_DELIVERY.md).
 

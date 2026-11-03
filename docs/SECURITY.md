@@ -97,3 +97,13 @@ sampled memory counts do not establish safe long-running deployment. Diagnostic
 tracing is confined to owned test processes and excludes application payload
 syscalls. The original thresholds and failures remain preserved. Source and
 short-run sanitizer checks cannot replace the outstanding endurance gate.
+
+The r3 and earlier archives also accept malformed numeric-looking UDP targets.
+Two independently reproduced consequences are 16-bit destination-port wrap
+(delivery to a different port) and synchronous resolver entry blocking the PHP
+thread. Strict literal-IP and destination-port validation now rejects these
+inputs before suspension/transport parsing. The regression prevents invalid
+addresses from reaching the network even when run against affected source.
+See phase4/udp-destinations-fix.json. Historical archives are preserved unchanged;
+a new corrected archive is required. This repair does not add hostname or
+scope-ID support to the UDP API.
