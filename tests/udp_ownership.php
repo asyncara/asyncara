@@ -55,6 +55,9 @@ Async::run(function (): void {
     check(count(glob('/proc/self/fd/*')) === $before, 'UDP success/failure descriptor leak');
 });
 if (function_exists('asyncara_udp_bind')) {
+    $stream = asyncara_udp_bind('127.0.0.1', 0);
+    check(stream_get_meta_data($stream)['blocked'] === false, 'Native UDP must be nonblocking');
+    fclose($stream);
     foreach (['localhost', "127.0.0.1\0ignored", 'not-an-ip'] as $bad) {
         rejected(ValueError::class, fn() => asyncara_udp_bind($bad, 0));
     }

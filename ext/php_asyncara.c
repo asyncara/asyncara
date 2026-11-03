@@ -7,11 +7,15 @@
 #include "ext/standard/info.h"
 #include "main/fopen_wrappers.h"
 #include "main/php_streams.h"
+#include "main/php_network.h"
 #include "native.h"
+#include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #if PHP_VERSION_ID < 80300 || PHP_VERSION_ID >= 80600
 #error Asyncara targets released PHP 8.3 through 8.5
 #endif
@@ -220,6 +224,67 @@ static bool valid_http_options(ar_value *v) {
 }
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_info, 0, 0, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
+/* Resources have no legal PHP return-type declaration (including DEBUG builds). */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_udp_bind, 0, 0, 2)
+ZEND_ARG_TYPE_INFO(0, address, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, port, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_udp_bind) {
+    char *address;
+    size_t length;
+    zend_long port;
+    ZEND_PARSE_PARAMETERS_START(2, 2)
+    Z_PARAM_STRING(address, length)
+    Z_PARAM_LONG(port)
+    ZEND_PARSE_PARAMETERS_END();
+    struct sockaddr_storage storage = {0};
+    struct sockaddr_in *v4 = (struct sockaddr_in *)&storage;
+    struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)&storage;
+    socklen_t size;
+    if (port < 0 || port > 65535 || memchr(address, 0, length)) {
+        zend_value_error("UDP bind requires a numeric IP and valid port");
+        RETURN_THROWS();
+    }
+    if (inet_pton(AF_INET, address, &v4->sin_addr) == 1) {
+        v4->sin_family = AF_INET;
+        v4->sin_port = htons((uint16_t)port);
+        size = sizeof(*v4);
+    } else if (inet_pton(AF_INET6, address, &v6->sin6_addr) == 1) {
+        v6->sin6_family = AF_INET6;
+        v6->sin6_port = htons((uint16_t)port);
+        size = sizeof(*v6);
+    } else {
+        zend_value_error("UDP bind requires a numeric IP and valid port");
+        RETURN_THROWS();
+    }
+    /* Allocate/register PHP ownership before acquiring an OS descriptor. This
+     * exported PHP API supplies generic socket sendto/recvfrom/cast/close ops;
+     * it does not bind or enable PHP's implicit SO_REUSEADDR server default. */
+    php_stream *stream = php_stream_sock_open_from_socket(-1, NULL);
+    if (!stream) {
+        zend_throw_exception(zend_ce_exception, "Cannot allocate UDP stream", 0);
+        RETURN_THROWS();
+    }
+    php_netstream_data_t *data = stream->abstract;
+    int flags = SOCK_DGRAM;
+#ifdef SOCK_CLOEXEC
+    flags |= SOCK_CLOEXEC;
+#endif
+#ifdef SOCK_NONBLOCK
+    flags |= SOCK_NONBLOCK;
+#endif
+    data->socket = socket(storage.ss_family, flags, 0);
+    data->is_blocked = false;
+    if (data->socket < 0 || fcntl(data->socket, F_SETFD, FD_CLOEXEC) < 0 ||
+        php_set_sock_blocking(data->socket, false) != SUCCESS ||
+        bind(data->socket, (struct sockaddr *)&storage, size) < 0) {
+        int saved = errno;
+        php_stream_close(stream);
+        zend_throw_exception_ex(zend_ce_exception, saved, "UDP bind: %s", strerror(saved));
+        RETURN_THROWS();
+    }
+    php_stream_to_zval(stream, return_value);
+}
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_read, 0, 1, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
 ZEND_END_ARG_INFO()
@@ -855,6 +920,7 @@ static void execute_hook(zend_execute_data *execute_data, zval *return_value) {
 #include "mysql.c"
 #endif
 static const zend_function_entry functions[] = {
+    PHP_FE(asyncara_udp_bind, arginfo_udp_bind)
     PHP_FE(asyncara_http_read, arginfo_http_read)
     PHP_FE(asyncara_http_head, arginfo_http_head)
     PHP_FE(asyncara_http_write, arginfo_http_write)

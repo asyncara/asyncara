@@ -3,7 +3,7 @@ declare(strict_types=1);
 require dirname(__DIR__,2).'/autoload.php';
 use Asyncara\{Async,Context,Runtime,Hook,Future};
 use Asyncara\HTTP\HttpClient;
-use Asyncara\IO\Files;
+use Asyncara\IO\{Files,UdpSocket};
 use Asyncara\SQLite\Connection;
 function requestCpuSample():array {
  $usage=getrusage();$scheduling=explode(' ',trim(file_get_contents('/proc/self/schedstat')));
@@ -17,6 +17,9 @@ if($before->pendingOperations||$before->nativeMemoryBytes||$before->openFileHand
 final class RequestStateProbe { public static ?string $id=null; }
 if(isset($GLOBALS['asyncara_request_probe'])||RequestStateProbe::$id!==null)throw new RuntimeException('Cross-request PHP state');
 $GLOBALS['asyncara_request_probe']=RequestStateProbe::$id=$_SERVER['AUDIT_ID'];
+// Keep an exclusive UDP descriptor live through ordinary, fatal, timeout and
+// pending-work request teardown. Existing idle fd/thread checks must still pass.
+$requestUdp = new UdpSocket('127.0.0.1');
 $mode=$_GET['mode']??'lifecycle';$start=microtime(true);
 if($mode==='fatal'||$mode==='fatal-burst'){
  usleep(25000); // Give concurrent fatal requests time to occupy distinct workers.

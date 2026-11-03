@@ -11,6 +11,8 @@ python3 scripts/test-fatal-memory.py
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/resource_bounds.php
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/connection_limits.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/stream_readiness.php
+"${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/udp_ownership.php
+python3 scripts/test-udp-limits.py
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/filesystem_atomic.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/filesystem_buffer_ownership.php
 "${PHP_BIN:-php}" -n -d memory_limit=64M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http_streaming.php
