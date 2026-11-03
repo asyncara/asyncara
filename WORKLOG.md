@@ -519,3 +519,26 @@ one-/six-/24-hour mixed and FPM workloads, upstream memory/tool follow-up, remot
 database TLS/auth and cancellation acknowledgement, prepared caches/transactions,
 broader HTTP/WebSocket certification, then individual hooks/framework adapters.
 Keep io_uring filesystem NOT_IMPLEMENTED and userland ThreadPool BLOCKED.
+
+## Phase 4 baseline verification — 2026-11-03
+
+Verified clean local/remote phase3-hardening at179aa54. Git ancestry proves native
+e5d94fd is included in archive source f3d63ac, and later ranges contain only docs/
+evidence. Compared every one of304archive files with Git and reproduced r5 SHA
+b0f544b3da61789a9cc649a8bc24869308787c9c63ca37358afd69e39ef1ec38.
+No duplicate ROUDMAP was found. Created phase4-endurance branch without rewriting
+history or changing the preserved archive.
+
+Before code changes, make verify/audit/audit-fpm, audit-allocations.sh, poll runner
+and native mapping checks PASS on isolated8.5.12. Clean archive extraction/build/
+install/core/poll/WebSocket/network checks PASS on8.3.36/8.4.27/8.5.12. Raw evidence
+is /tmp/asyncara-phase4-nrtjh3t1; durable baseline in docs/phase4/baseline.json.
+
+Started unchanged frozen-baseline3600s mixed and FPM campaigns. FPM's initial
+copied module was rejected by the mtime guard before workload execution; retained
+preflight-failure.json, rebuilt the frozen checkout, used a new output path.
+Do not infer completion from launch. Native/public runtime source stays frozen.
+Inspection found unbounded Python response/sample retention in the FPM harness;
+bound the harness before six-/24-hour campaigns while retaining all raw samples
+and original RSS/resource assertions. Existing mixed coverage lacks UDP/TLS/DNS/
+WebSocket/Oracle; expansion must be explicit. Dependency investigations follow.

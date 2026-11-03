@@ -52,6 +52,15 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 
 ## Next engineering work, in order
 
+Phase 4 starts from verified pushed commit `179aa54`. The preserved r5 archive
+matches `f3d63ac` and includes final native source `e5d94fd`. Fresh three-version
+archive installs and baseline regression commands pass. Final-runtime one-hour
+mixed and FPM campaigns are running; no completion or six-/24-hour result is
+claimed yet. See [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and
+[phase4/baseline.json](phase4/baseline.json). Native/public runtime source is
+frozen while these campaigns execute. The long-duration FPM harness needs
+bounded evidence collection before larger runs.
+
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Follow up the bounded upstream libpq TLS unload leak. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
 3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket endurance/interoperability coverage, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
