@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Freeze the tested source, run a mixed workload, retain samples and trends."""
 import argparse, hashlib, http.server, json, os, pathlib, platform, shutil, subprocess, threading, time
+from contextlib import ExitStack
 from metrics import mixed_samples
+from monitor import ProcessMonitor
+from peers import ExtendedPeers
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser()
 parser.add_argument('--seconds',type=float,default=60)
@@ -9,14 +12,18 @@ parser.add_argument('--tasks',type=int,default=1000)
 parser.add_argument('--databases',action='store_true')
 parser.add_argument('--workload',choices=['mixed','websocket'],default='mixed')
 parser.add_argument('--connections',type=int,default=16)
+parser.add_argument('--extended-network',action='store_true',help='Mixed IPv4/IPv6 UDP, DNS, TLS1.2/1.3, HTTPS and persistent ws/wss peers')
+parser.add_argument('--oracle-prefix',type=pathlib.Path,help='Also run isolated Oracle MySQL alongside MariaDB; requires --databases')
 parser.add_argument('--output',required=True)
 args=parser.parse_args()
 if args.seconds<=0 or not 1<=args.tasks<=10000:parser.error('Invalid duration/task count')
 if not 1<=args.connections<=256 or (args.workload=='websocket' and args.databases):parser.error('Invalid WebSocket connection count or database combination')
+if args.extended_network and args.workload!='mixed':parser.error('--extended-network applies to the mixed workload')
+if args.oracle_prefix and not args.databases:parser.error('--oracle-prefix requires --databases')
 out=pathlib.Path(args.output).resolve()
 if out.exists():parser.error('Output already exists; use a new evidence directory')
 subprocess.run(['python3',str(root/'scripts/check-build.py'),str(root/'build/asyncara.so')],check=True)
-out.mkdir(parents=True);snapshot=out/'source';snapshot.mkdir()
+out.mkdir(parents=True,mode=0o700);snapshot=out/'source';snapshot.mkdir()
 paths=subprocess.check_output(['git','-C',str(root),'ls-files','--cached','--others','--exclude-standard','-z']).decode().split('\0')
 manifest={}
 for name in sorted(set(paths)-{''}):
@@ -29,6 +36,7 @@ for name in sorted(set(paths)-{''}):
 (out/'source-manifest.json').write_text(json.dumps(manifest,sort_keys=True,indent=2)+'\n')
 metadata={'commit':subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip(),'gitStatus':subprocess.check_output(['git','-C',str(root),'status','--short'],text=True),'sourceManifestSha256':hashlib.sha256((out/'source-manifest.json').read_bytes()).hexdigest(),'extensionSha256':hashlib.sha256((snapshot/'build/asyncara.so').read_bytes()).hexdigest(),'platform':platform.platform(),'cpuCount':os.cpu_count(),'php':subprocess.check_output([os.environ.get('PHP_BIN','php'),'-n','-v'],text=True),'requestedSeconds':args.seconds,'tasksPerCycle':args.tasks,'databases':args.databases,'startedUtc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())}
 metadata.update(workload=args.workload,websocketConnections=args.connections if args.workload=='websocket'else None)
+metadata.update(extendedNetwork=args.extended_network,oraclePrefix=str(args.oracle_prefix.resolve())if args.oracle_prefix else None)
 (out/'metadata.json').write_text(json.dumps(metadata,indent=2)+'\n')
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version='HTTP/1.1'
@@ -47,12 +55,18 @@ env=os.environ|{'ASYNCARA_SOAK_SECONDS':str(args.seconds),'ASYNCARA_SOAK_TASKS':
 workload='tests/soak/websocket.php' if args.workload=='websocket'else'tests/soak/workload.php'
 if args.workload=='websocket':subprocess.run(['bash',str(snapshot/'scripts/prepare-test-certs.sh')],cwd=snapshot,check=True)
 command=([str(snapshot/'scripts/test-databases.py'),'--test-file',workload,'--timeout',str(args.seconds+120)] if args.databases else [env.get('PHP_BIN','php'),'-n','-d','extension='+str(snapshot/'build/asyncara.so'),workload])
+if args.oracle_prefix:command+=['--oracle-prefix',str(args.oracle_prefix.resolve())]
 start=time.monotonic()
 result=None;workload_error=None
 try:
-    with (out/'samples.jsonl').open('w')as stdout,(out/'stderr.log').open('w')as stderr:
+    with (out/'samples.jsonl').open('w')as stdout,(out/'stderr.log').open('w')as stderr,ExitStack()as scope:
+        if args.extended_network:
+            peers=scope.enter_context(ExtendedPeers(snapshot,out,Handler))
+            env['ASYNCARA_SOAK_NETWORK']=json.dumps(peers)
+        owned=[(snapshot/'build/postgresql/data/postmaster.pid',snapshot/'build/postgresql/data')] if args.databases else []
+        scope.enter_context(ProcessMonitor(out/'os-processes.jsonl',owned_pid_files=owned))
         result=subprocess.run(command,cwd=snapshot,env=env,stdout=stdout,stderr=stderr,timeout=args.seconds+180)
-except (OSError,subprocess.TimeoutExpired)as error:workload_error=repr(error)
+except (OSError,subprocess.TimeoutExpired,RuntimeError)as error:workload_error=repr(error)
 finally:server.shutdown();server.server_close()
 try:observations=mixed_samples(out/'samples.jsonl')
 except (KeyError,TypeError,ValueError)as error:

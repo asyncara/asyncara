@@ -59,6 +59,7 @@ $result=Async::run(function()use($mode):array{
  }finally{$db->close()->await();}
 });
 $after=Runtime::information();
+$afterState=['phpBytes'=>memory_get_usage(),'phpAllocatedBytes'=>memory_get_usage(true),'phpPeakBytes'=>memory_get_peak_usage(true),'scheduler'=>Runtime::diagnostics(),'pendingFutures'=>Future::pendingCount()];
 for($i=0;$i<8;$i++)asyncara_submit('file_open',[__FILE__,'r']);
 header('Content-Type: application/json');
-echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'start'=>$start,'end'=>microtime(true),'before'=>$before,'after'=>$after,'result'=>$result],JSON_THROW_ON_ERROR);
+echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'start'=>$start,'end'=>microtime(true),'before'=>$before,'after'=>$after,'afterState'=>$afterState,'result'=>$result],JSON_THROW_ON_ERROR);

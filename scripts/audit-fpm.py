@@ -5,7 +5,7 @@ root=pathlib.Path(__file__).resolve().parent.parent
 marker=root/'build/audit-path'
 if not marker.exists():
     marker.parent.mkdir(exist_ok=True);marker.write_text(tempfile.mkdtemp(prefix='asyncara-audit-')+'\n')
-out=pathlib.Path(os.environ.get('ASYNCARA_FPM_DIR',str(pathlib.Path(marker.read_text().strip())/'fpm'))).resolve();out.mkdir(parents=True,exist_ok=True)
+out=pathlib.Path(os.environ.get('ASYNCARA_FPM_DIR',str(pathlib.Path(marker.read_text().strip())/'fpm'))).resolve();out.mkdir(parents=True,exist_ok=True,mode=0o700)
 large=out/'large.bin'
 with large.open('wb')as f:f.truncate(12*1024*1024)
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -17,13 +17,14 @@ class Handler(http.server.BaseHTTPRequestHandler):
         with active_lock:
             active_requests[request_id]=active_requests.get(request_id,0)+1
             barrier=barriers.setdefault(request_id,threading.Barrier(count,timeout=5))
-        start=time.time()
-        try:barrier.wait()
-        except threading.BrokenBarrierError:
-            self.send_error(503,'Concurrent request barrier timed out');return
-        time.sleep(.2);body=json.dumps({'start':start,'end':time.time()}).encode()
-        self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers()
-        try:self.wfile.write(body)
+        try:
+            start=time.time()
+            try:barrier.wait()
+            except threading.BrokenBarrierError:
+                self.send_error(503,'Concurrent request barrier timed out');return
+            time.sleep(.2);body=json.dumps({'start':start,'end':time.time()}).encode()
+            self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers()
+            self.wfile.write(body)
         except (BrokenPipeError,ConnectionResetError):pass
         finally:
             with active_lock:
@@ -71,7 +72,11 @@ def idle(pid):
         if accepting:transient_threads=max(transient_threads,threads)
         if time.monotonic()>deadline:raise RuntimeError('Worker did not become idle with all native threads reaped')
         time.sleep(.005)
-    return {'pid':pid,'fds':len(list((p/'fd').iterdir())),'threads':threads,'rssKiB':int(status['VmRSS'].split()[0]),'idleWaitSeconds':time.monotonic()-start,'transientThreadsBeforeReaping':transient_threads}
+    fds=list((p/'fd').iterdir());sockets=0
+    for fd in fds:
+        try:sockets+=os.readlink(fd).startswith('socket:')
+        except FileNotFoundError:pass
+    return {'pid':pid,'fds':len(fds),'sockets':sockets,'threads':threads,'rssKiB':int(status['VmRSS'].split()[0]),'virtualKiB':int(status['VmSize'].split()[0]),'idleWaitSeconds':time.monotonic()-start,'transientThreadsBeforeReaping':transient_threads}
 def run(name,workers,count,mode,parallel=False):
     with socket.socket()as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
     folder=out/name;folder.mkdir(exist_ok=True);cfg=folder/'fpm.conf'
