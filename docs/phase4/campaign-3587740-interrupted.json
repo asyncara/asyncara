@@ -1,0 +1,291 @@
+{
+  "classification": "INTERRUPTED_FOR_REPRODUCED_DEFECT",
+  "request": {
+    "reason": "Interrupt frozen local attempt after independently reproducing UDP endpoint collision; not a completed endurance test",
+    "unixSeconds": 1793720415.321065,
+    "sourceCommit": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+    "signal": "SIGINT",
+    "workloadPid": 2931813,
+    "cwd": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/source"
+  },
+  "supervisor": {
+    "status": "FAIL",
+    "startedUtc": "2026-11-03T14:53:29.624950+00:00",
+    "supervisorPid": 2928653,
+    "sourceCommit": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r2.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r2.tar.gz": "3ef8e94b612daf4707bd85b979d63fd4dfae5186824a81b8e0ca61dfe5e4667b",
+      "asyncara.so": "92c145bdb22994faa9d3de1a0ce31eb0520d888aa1f713690e74653af52c7e10"
+    },
+    "supervisorSha256": "bde254702cabcce41e9c558caf74e356829196485d93259f696aa7fe480aec53",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "stages": [
+      {
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T14:53:29.730280+00:00",
+        "status": "FAIL",
+        "jobs": [
+          {
+            "kind": "mixed",
+            "pid": 2928663,
+            "command": [
+              "/usr/bin/python3",
+              "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740/tests/soak/run.py",
+              "--seconds",
+              "3600",
+              "--output",
+              "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600",
+              "--databases",
+              "--extended-network",
+              "--oracle-prefix",
+              "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+            ],
+            "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600",
+            "exit": 1,
+            "reportPresent": true,
+            "reportSha256": "fb4b2edcb67f94b23cc16809791779ab7706323c31c3cb88fe1599ed2ff0b042",
+            "status": "FAIL"
+          },
+          {
+            "kind": "fpm",
+            "pid": 2928664,
+            "command": [
+              "/usr/bin/python3",
+              "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740/tests/soak/fpm.py",
+              "--seconds",
+              "3600",
+              "--output",
+              "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600"
+            ],
+            "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600",
+            "exit": 1,
+            "reportPresent": false,
+            "status": "FAIL"
+          }
+        ],
+        "finishedUtc": "2026-11-03T15:40:23.363154+00:00"
+      }
+    ],
+    "error": "RuntimeError('Stage failed; larger stages were not started')",
+    "finishedUtc": "2026-11-03T15:40:23.380214+00:00"
+  },
+  "report": {
+    "status": "FAIL",
+    "wallSeconds": 2809.5959848640487,
+    "workloadExit": 254,
+    "workloadError": null,
+    "samples": 524,
+    "complete": [],
+    "completeRecords": 0,
+    "parseErrors": [],
+    "parseErrorCount": 0,
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 45164,
+        "max": 45436,
+        "mean": 45324.36190476189,
+        "endMinusStartMedian": 252,
+        "slopePerHour": 366.272601740573
+      },
+      "phpBytes": {
+        "min": 2145192,
+        "max": 2195424,
+        "mean": 2172348.247619048,
+        "endMinusStartMedian": -8656,
+        "slopePerHour": -1920.312458179423
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "mean": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 23,
+        "max": 24,
+        "mean": 23.052380952380936,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.014530059610671862
+      },
+      "threads": {
+        "min": 5,
+        "max": 5,
+        "mean": 5.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 10,
+        "max": 11,
+        "mean": 10.052380952380949,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.014530059610658976
+      }
+    },
+    "failures": [
+      "Workload did not finish cleanly"
+    ],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+      "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+    ]
+  },
+  "lastCompletedSample": {
+    "type": "sample",
+    "seconds": 2761.8794173190836,
+    "cycles": 6524,
+    "tasksExecuted": 6524000,
+    "phpBytes": 2178320,
+    "phpAllocatedBytes": 27262976,
+    "os": {
+      "rssKiB": 45436,
+      "virtualKiB": 413392,
+      "threads": 5,
+      "fds": 23,
+      "sockets": 10
+    },
+    "native": {
+      "version": "0.1.0-dev",
+      "eventLoopBackend": "epoll",
+      "filesystemBackend": "pthread-workers",
+      "networkBackend": "nonblocking-streams+curl-multi",
+      "dnsBackend": "worker-getaddrinfo",
+      "sqliteVersion": "3.45.1",
+      "curlVersion": "8.5.0",
+      "userlandThreads": false,
+      "ioUring": false,
+      "postgresql": true,
+      "mysql": true,
+      "nativeWorkers": 4,
+      "pendingOperations": 0,
+      "nativeBufferLimit": 16777216,
+      "nativeQueueLimit": 1024,
+      "nativeMemoryBytes": 0,
+      "nativeMemoryPeak": 165309,
+      "nativeMemoryRejections": 0,
+      "nativeMemoryLimit": 268435456,
+      "openFileHandles": 0,
+      "sqliteConnections": 0,
+      "httpReadinessSockets": 0,
+      "nativeQueueDepth": 0,
+      "httpStreamingTransfers": 0,
+      "httpStreamingBufferedBytes": 0,
+      "httpStreamingPaused": 0,
+      "httpStreamBufferLimit": 65536,
+      "httpStreamingUploads": 0,
+      "httpUploadBufferedBytes": 0,
+      "httpUploadPaused": 0
+    },
+    "scheduler": {
+      "turns": 934158,
+      "taskSteps": 15187737,
+      "maxStepSeconds": 0.8424812001176178,
+      "maxTimerLagSeconds": 1.3033709488809109,
+      "activeTasks": 6,
+      "pendingFutures": 9,
+      "retainedFailures": 0,
+      "readyTasks": 0,
+      "activeTimers": 3,
+      "ioWatchers": 2,
+      "pendingNative": 0,
+      "memoryBytes": 27262976
+    },
+    "processPool": {
+      "workers": 2,
+      "restarts": 65,
+      "pendingJobs": 0,
+      "pendingBytes": 0,
+      "queueLimit": 256,
+      "queueBytes": 67108864,
+      "workerMemoryBytes": 268435456,
+      "closed": false
+    },
+    "queue": {
+      "capacity": 8,
+      "buffered": 0,
+      "waitingReaders": 0,
+      "waitingWriters": 0,
+      "unfinished": 0,
+      "closed": false
+    },
+    "databaseConnections": 4,
+    "network": {
+      "cycles": 6524,
+      "websocketConnections": 2,
+      "reconnections": 65,
+      "cancellations": 65,
+      "dnsLookups": 6524,
+      "udpDatagrams": 13048,
+      "verifiedTlsConnections": 13048,
+      "httpsResponses": 13048
+    },
+    "ticks": 147804,
+    "timeouts": 6524,
+    "cancellations": 6524,
+    "unexpectedErrors": 0,
+    "schedulingLatencyMs": {
+      "median": 15.614006202667952,
+      "p95": 35.88404995389283,
+      "p99": 40.3248209040612
+    }
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/websocket-peer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/source-manifest.json",
+      "bytes": 34441,
+      "sha256": "2e8fa9a8ab1964e5b5b9555e1c5284bd0cb1f148d6843889563b507188ddabf6"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/report.json",
+      "bytes": 1825,
+      "sha256": "fb4b2edcb67f94b23cc16809791779ab7706323c31c3cb88fe1599ed2ff0b042"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/network-peers.json",
+      "bytes": 365,
+      "sha256": "005f4e559033cad9edf7aa8db3f07518329f760a8cee605f80ef624c730557fa"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/os-processes.jsonl",
+      "bytes": 1902042,
+      "sha256": "4242329a86d721caa40b06bb51741c7f4415c3fe3408aff0de07f405b463ba73"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/samples.jsonl",
+      "bytes": 989745,
+      "sha256": "df7b75dd563bebf38fbedd579163555f371c641f77952f8867b17815020bc293"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/network-peer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/metadata.json",
+      "bytes": 841,
+      "sha256": "2b7a05c3202e81fb0ed342a1db2d335038f2d72465366f4ac3f0e3753b63f528"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

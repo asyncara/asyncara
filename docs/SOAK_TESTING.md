@@ -1,5 +1,14 @@
 # Long-running reliability tests
 
+Current Phase 4 state: an independent hosted attempt failed at IPv4 UDP receive.
+A deterministic regression then reproduced duplicate live UDP endpoints and
+misdirected datagrams. The implementation now binds exclusively; earlier archives
+and endurance runs do not certify this repair. The local `3587740` retry was
+deliberately interrupted after 2,761.879 sampled seconds / 6,524 cycles. A corrected
+expanded smoke passed 60.106 seconds / 111 cycles with all local SQL fixtures,
+including Oracle separately, and extended networking. No long-duration pass is
+inferred. Corrected checkpoint/package and new campaigns: PHASE4_DELIVERY.md.
+
 The existing `tests/stress.php` and FPM audit remain intact. The new
 `tests/soak/run.py` creates an isolated source snapshot, copies the current native
 binary, records a per-file manifest and extension SHA-256, and runs the workload

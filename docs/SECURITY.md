@@ -1,5 +1,14 @@
 # Security and memory-safety assumptions
 
+Phase 4 found a UDP endpoint ownership defect: PHP stream-server bind implicitly
+enabled `SO_REUSEADDR`, allowing another live UDP socket to share the endpoint
+and receive its datagrams. The fix uses an exclusive native bind with the
+existing PHP stream lifecycle. This is a local socket isolation/reliability
+repair; it does not authenticate datagrams or make UDP reliable. Historical r2
+and earlier packages contain the defect. Consult PHASE4_DELIVERY.md for the
+corrected source/package identity and validation status. Foreign/kernel buffers
+remain outside Asyncara's native memory ledger.
+
 Asyncara is experimental infrastructure. See [the independent audit](INDEPENDENT_AUDIT.md) for the repaired high-severity defects, exact tested configurations and limits. Do not expose its low-level native functions, worker registry, filesystem paths or connector configuration directly to untrusted callers.
 
 ## Boundaries

@@ -216,3 +216,11 @@ The later repository diagnostic has separate smoke validation; it is not
 retroactively identified as the source of that earlier run. Host delays are
 demonstrated, while exact attribution of the earlier failures remains unresolved.
 Original responsiveness assertions and growth thresholds are unchanged.
+
+The UDP ownership repair adds a socket retained through each audit request,
+including memory exhaustion, timeout and pending-work cases. With the corrected
+native helper, A/B/C/D and a60.491s expanded lifecycle run passed300mainrequests,
+recycling/reload/kill/fatal/timeout cleanup and strict idle6fd/1thread assertions.
+This smoke preceded the separate first-autoload EMFILE adjustment; the latter has
+isolated descriptor-limit tests and the next frozen/package validation. It does
+not replace failed historical endurance or certify a full hour of the new source.

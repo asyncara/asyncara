@@ -51,7 +51,8 @@ retains the exact partial durations. All original files remain intact.
 
 Raw evidence: `/tmp/asyncara-phase4-nrtjh3t1`, also recorded by `build/phase4-path`.
 Neither final-source one-hour attempt passed. Six-hour and 24-hour stages were
-not started. Native and public runtime source remain unchanged. Every retry uses
+not started. Through checkpoint `624cbe9`, native and public runtime source were
+unchanged. The later UDP repair below is the first Phase 4 runtime change. Every retry uses
 a new output directory and a detached process.
 
 ## Harness hardening and coverage
@@ -188,7 +189,7 @@ and framework adapters have not been implemented in this phase. Only sleep/uslee
 hooks are PARTIALLY_SUPPORTED; other transparent groups are UNSUPPORTED. ZTS
 concurrent interpreter execution is unverified and userland ThreadPool is BLOCKED.
 
-**Release assessment: EXPERIMENTAL.** Implemented runtime source is unchanged
+**Assessment at the r1 checkpoint: EXPERIMENTAL.** Its runtime source was unchanged
 from `e5d94fd`; the r1 package and failed long campaign identify full tree `2e2f84f`.
 Later test/diagnostic changes have separate manifests and are not retroactively
 included in that package or campaign. A source archive is not a published GitHub
@@ -226,8 +227,11 @@ The FPM retry failed at14:58:45Z, after its last303.482-second steady sample and
 2,676 recorded main responses. The failing request had one ticker step,547.966ms
 wall duration,2.729ms CPU usage,57.048ms runnable wait and535.189ms timer lag.
 No local build/fuzz/benchmark was running. [Retry failure](phase4/fpm-retry-failure.json)
-preserves the new diagnostics and raw hashes. The mixed one-hour job continues;
-this FPM failure prevents the campaign from advancing to six-/24-hour stages.
+preserves the new diagnostics and raw hashes. The mixed retry was subsequently
+interrupted deliberately after reproducing the UDP defect: last completed sample
+2,761.879 seconds / 6,524 cycles. Its full report is
+[preserved](phase4/campaign-3587740-interrupted.json); it is not a one-hour pass.
+The FPM failure already prevented progression to six-/24-hour stages.
 Separate traced diagnostics investigate the wait; they do not replace this result.
 
 ## Poll timing investigation
@@ -259,4 +263,26 @@ because a second bind to an owned address/port succeeds. PHP stream-server bind
 enables `SO_REUSEADDR`; a new endpoint can receive the first endpoint's datagram.
 Exact endpoint addresses were not captured in the hosted failure, so direct
 attribution of that individual timeout remains unproven. The frozen local retry
-is interrupted to repair this demonstrated defect and start a fresh campaign.
+was interrupted to repair this demonstrated defect and start a fresh campaign.
+
+The repair adds exclusive native bind and preserves the existing UDP readiness,
+stream and cancellation paths. A negative control on frozen `3587740` demonstrates
+datagram delivery to the newer socket while the original times out, separately
+for IPv4 and IPv6. Corrected ownership tests pass PHP 8.3.36/8.4.27/8.5.12 with
+epoll and poll, DEBUG PHP and fully instrumented GCC ASan/UBSan. The 50,000-cycle
+churn control passes. Valgrind reports zero errors, zero lost bytes and 3,888
+reachable bytes without suppressions.
+
+A child-only descriptor-limit test also found and repaired first-autoload failure
+in exception/cleanup paths under `EMFILE`. It verifies errno, release/reopen and
+descriptor cleanup on all three PHP branches and GCC instrumentation. A DEBUG
+assertion rejected the first patch's resource return-type declaration; it was
+corrected to PHP's untyped resource convention and all affected builds rerun.
+Initial setup/stale-build failures remain in the evidence rather than being
+discarded. [Repair evidence](phase4/udp-ownership-fix.json) distinguishes stages.
+
+`make verify`, `make audit` and `make audit-fpm` pass the rebuilt module. A separate
+FPM lifecycle run with UDP held through request teardown passed 60.491 seconds /
+300 main requests plus all lifecycle/fault cases, maximum RSS beyond warmup
+2,788 KiB and idle six descriptors/one thread. This is a regression smoke test,
+not final-source endurance. Corrected packaging and long campaigns are pending.

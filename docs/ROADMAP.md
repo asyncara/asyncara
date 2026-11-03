@@ -74,15 +74,24 @@ with the same runtime, unchanged thresholds and no concurrent local builds/fuzzi
 Consult the live campaign state and delivery report; starting a run is not a pass.
 
 The3587740 FPM retry also failed after303.482s with535ms timer lag and one ticker
-step; CPU and runnable-wait diagnostics are preserved. Mixed retry remains active.
+step; CPU and runnable-wait diagnostics are preserved. Mixed retry was deliberately
+interrupted after 2,761.879s / 6,524 cycles when the independent hosted failure
+led to a reproducible UDP ownership defect.
 Six-/24-hour promotion is prevented. Diagnosis continues without lowering limits.
 
 Hosted source `624cbe9` passes all four fast regression/database jobs. Its mixed
-and FPM one-hour jobs run on separate hosts; results are pending. A separate
+one-hour job failed at IPv4 UDP receive; FPM remains running on a separate host. A separate
 600.256-second poll profile passed 5,312 requests and recorded native wait delays
 overlapping those in a PHP-free epoll control. This is timing evidence, not a
 replacement for the failed endurance tests. Current test matrix and limitations:
 [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md).
+
+UDP exclusive endpoint ownership is now repaired and regression-tested on
+8.3/8.4/8.5, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind. Child-only `EMFILE`
+tests verify error/cleanup dependency loading and admission recovery. Core/audit,
+network-edge and FPM lifecycle checks pass. This is a new native source boundary:
+earlier endurance and archives cannot certify it. Freeze/package/repeat the
+affected campaigns; do not relax the existing FPM timing failures or thresholds.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

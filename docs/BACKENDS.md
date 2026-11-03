@@ -51,6 +51,17 @@ client and raw plain-server scope; server-side TLS is not certified.
 
 ## Expanded local networking matrix
 
+UDP endpoint ownership uses an exclusive native bind, followed by the existing
+PHP socket stream and epoll/poll readiness paths. PHP's ordinary stream-server
+bind enables `SO_REUSEADDR`; inheriting it let two live Asyncara UDP endpoints
+share an address/port and receive each other's datagrams. The corrected helper
+allocates the PHP-owned stream before acquiring the descriptor, sets nonblocking
+and close-on-exec flags, and closes the stream on every bind/setup error. An
+occupied endpoint now raises `OperationException` retaining errno. Reuseport,
+multicast sharing and transparent PHP UDP hooks are not added. `UdpSocket`'s
+numeric-address API and send/receive cancellation remain unchanged. Regression:
+`tests/udp_ownership.php`; package-specific results are in PHASE4_DELIVERY.md.
+
 `./scripts/test-network-edges.sh` now exercises IPv4 and IPv6 TCP listeners/
 connections, IPv6 UDP including empty datagrams, localhost dual-address DNS and
 fallback after an IPv6 refusal, TLS1.2 on IPv4 and TLS1.3 on IPv6, SNI localhost,

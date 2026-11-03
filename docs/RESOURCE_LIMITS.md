@@ -103,3 +103,13 @@ and validated private PostgreSQL daemons; inaccessible /proc metrics are explici
 nulls, not zero. It does not impose cgroup limits or change application defaults.
 Repeated libpq unloads accumulate foreign BIO allocations outside the ledger;
 resident connection churn has separate controls in DEPENDENCY_FINDINGS.md.
+
+UDP descriptors are governed by the process's OS descriptor limit; there is no
+new Asyncara-wide UDP connection cap. The exclusive bind path retains errno and
+releases failed allocations. Error and cleanup classes load before acquisition
+so descriptor exhaustion cannot prevent their first autoload. The regression
+`python3 scripts/test-udp-limits.py` lowers `RLIMIT_NOFILE` to 128 in a child only,
+exercises Linux `EMFILE`, releases a socket, reopens successfully and checks the
+descriptor count. It does not modify the parent, host or service limits. Both
+ordinary and GCC ASan/UBSan PHP pass; external libraries and kernel buffers remain
+outside the native ledger.

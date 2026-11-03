@@ -1,0 +1,709 @@
+{
+  "status": "IMPLEMENTED_AND_TESTED",
+  "negativeControl": "Second constructor to same address/port succeeds before fix; regression test exits255",
+  "sourceBase": "ed6b758",
+  "runtimeChange": "Exclusive native nonblocking UDP bind; PHP stream resource allocated before descriptor; no SO_REUSEADDR",
+  "targetedTests": [
+    {
+      "variant": "8.3",
+      "backend": "epoll",
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.3/root/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.3.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.3574494009371847,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.3-epoll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "8.3",
+      "backend": "poll",
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.3/root/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.3.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.3503054620232433,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.3-poll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "8.4",
+      "backend": "epoll",
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.4/root/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.4.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.3582938590552658,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.4-epoll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "8.4",
+      "backend": "poll",
+      "command": [
+        "/tmp/asyncara-audit-vdvyqsv4/php8.4/root/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-8.4.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.2333990060724318,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.4-poll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "asan",
+      "backend": "epoll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-asan.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 4.678939753910527,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-asan-epoll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "asan",
+      "backend": "poll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-asan.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 6.386037836084142,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-asan-poll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "debug",
+      "backend": "epoll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-debug.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.6502749801147729,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-debug-epoll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "debug",
+      "backend": "poll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/udp-debug.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.9417101182043552,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-debug-poll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "8.5",
+      "backend": "epoll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.3869816060177982,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.5-epoll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "variant": "8.5",
+      "backend": "poll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara.so",
+        "tests/udp_ownership.php"
+      ],
+      "exit": 0,
+      "seconds": 0.5138553800061345,
+      "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.5-poll.log",
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    }
+  ],
+  "churnCycles": 50000,
+  "developmentFailures": {
+    "debugArginfo": "First version used MAY_BE_RESOURCE in a zend_type; DEBUG assertion abort. Corrected to untyped resource return, matching PHP internal resource functions. Logs preserved.",
+    "valgrindSetup": "Initial command omitted isolated loader symbols and could not start. Retried with existing .local/debug; no global package install.",
+    "preliminaryFullRun": "make verify completed, but audit correctly rejected the stale module after the arginfo correction. Final rebuild/retest is running."
+  },
+  "valgrind": {
+    "errors": 0,
+    "definitelyLost": 0,
+    "indirectlyLost": 0,
+    "possiblyLost": 0,
+    "reachableBytes": 3888,
+    "suppressed": 0,
+    "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-valgrind-symbols.log"
+  },
+  "preservedControls": {
+    "udp-build-asan.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-asan.log",
+      "sha256": "e5a969451748e98cfb611da41212867bbeb1f4f8eeeaf10ece4fa2fd6e024164",
+      "tail": "php: /tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-source/php-8.5.12/Zend/zend_API.c:2964: zend_normalize_internal_type: Assertion `!(((*type).type_mask & (1u << (9))) != 0) && \"resource is not allowed in a zend_type\"' failed.\n./scripts/build-local.sh: line 27: 3009532 Aborted                 (core dumped) \"${PHP_BIN:-php}\" -n -d extension=\"$PWD/${ASYNCARA_OUTPUT:-build/asyncara.so}\" --ri asyncara\n"
+    },
+    "udp-build-debug.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-debug.log",
+      "sha256": "a455a1dc281cfd4fb02c22f4beaa2c51ede01006a247bbe519fe85370088344b",
+      "tail": "php: /tmp/asyncara-phase3-cQBA3H/php-8.5.12-source/php-8.5.12/Zend/zend_API.c:2964: zend_normalize_internal_type: Assertion `!(((*type).type_mask & (1u << (9))) != 0) && \"resource is not allowed in a zend_type\"' failed.\n./scripts/build-local.sh: line 27: 3009489 Aborted                 (core dumped) \"${PHP_BIN:-php}\" -n -d extension=\"$PWD/${ASYNCARA_OUTPUT:-build/asyncara.so}\" --ri asyncara\n"
+    },
+    "udp-final-valgrind.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-valgrind.log",
+      "sha256": "d043d52b567506b838ddfb6506491028d888dab504baf6ded91c417523e8e143",
+      "tail": "=3010245== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.\n==3010245== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info\n==3010245== Command: /tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php -n -d extension=/home/coder/Asyncara/build/udp-debug.so tests/udp_ownership.php\n==3010245== Parent PID: 3010244\n==3010245== \n\nvalgrind:  Fatal error at startup: a function redirection\nvalgrind:  which is mandatory for this platform-tool combination\nvalgrind:  cannot be set up.  Details of the redirection are:\nvalgrind:  \nvalgrind:  A must-be-redirected function\nvalgrind:  whose name matches the pattern:      strlen\nvalgrind:  in an object with soname matching:   ld-linux-x86-64.so.2\nvalgrind:  was not found whilst processing\nvalgrind:  symbols from the object with soname: ld-linux-x86-64.so.2\nvalgrind:  \nvalgrind:  Possible fixes: (1, short term): install glibc's debuginfo\nvalgrind:  package on this machine.  (2, longer term): ask the packagers\nvalgrind:  for your Linux distribution to please in future ship a non-\nvalgrind:  stripped ld.so (or whatever the dynamic linker .so is called)\nvalgrind:  that exports the above-named function using the standard\nvalgrind:  calling conventions for this platform.  The package you need\nvalgrind:  to install for fix (1) is called\nvalgrind:  \nvalgrind:    On Debian, Ubuntu:                 libc6-dbg\nvalgrind:    On SuSE, openSuSE, Fedora, RHEL:   glibc-debuginfo\nvalgrind:  \nvalgrind:  Note that if you are debugging a 32 bit process on a\nvalgrind:  64 bit system, you will need a corresponding 32 bit debuginfo\nvalgrind:  package (e.g. libc6-dbg:i386).\nvalgrind:  \nvalgrind:  Cannot continue -- exiting now.  Sorry.\n\n"
+    },
+    "udp-ownership-negative.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-ownership-negative.log",
+      "sha256": "abf29b253984c7c7531fd05e0c5f5e8b6d063228d2bc40b544e730a2ce85b231",
+      "tail": "\nFatal error: Uncaught RuntimeException: Expected Asyncara\\Exception\\OperationException in /home/coder/Asyncara/tests/udp_ownership.php:17\nStack trace:\n#0 /home/coder/Asyncara/tests/udp_ownership.php(30): rejected('Asyncara\\\\Except...', Object(Closure))\n#1 /home/coder/Asyncara/src/Asyncara/Task.php(21): {closure:/home/coder/Asyncara/tests/udp_ownership.php:20}()\n#2 [internal function]: Asyncara\\Task->{closure:Asyncara\\Task::__construct():18}()\n#3 /home/coder/Asyncara/src/Asyncara/Task.php(34): Fiber->resume()\n#4 /home/coder/Asyncara/src/Asyncara/Scheduler.php(184): Asyncara\\Task->step()\n#5 /home/coder/Asyncara/src/Asyncara/Scheduler.php(203): Asyncara\\Scheduler->turn(Object(Asyncara\\Task))\n#6 /home/coder/Asyncara/src/Asyncara/Async.php(7): Asyncara\\Scheduler->run(Object(Closure))\n#7 /home/coder/Asyncara/tests/udp_ownership.php(20): Asyncara\\Async::run(Object(Closure))\n#8 {main}\n  thrown in /home/coder/Asyncara/tests/udp_ownership.php on line 17\n"
+    },
+    "udp-churn.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-churn.log",
+      "sha256": "a8c923abb07a092970a8e4fa5e618a21420294d9c75974600f2109ff1b7d5d28",
+      "tail": "\nFatal error: Uncaught RuntimeException: Duplicate addresses 127.0.0.1:34472 in /tmp/asyncara-phase4-nrtjh3t1/udp-churn.php:9\nStack trace:\n#0 /home/coder/Asyncara/src/Asyncara/Task.php(21): {closure:/tmp/asyncara-phase4-nrtjh3t1/udp-churn.php:5}()\n#1 [internal function]: Asyncara\\Task->{closure:Asyncara\\Task::__construct():18}()\n#2 /home/coder/Asyncara/src/Asyncara/Task.php(34): Fiber->resume()\n#3 /home/coder/Asyncara/src/Asyncara/Scheduler.php(184): Asyncara\\Task->step()\n#4 /home/coder/Asyncara/src/Asyncara/Scheduler.php(203): Asyncara\\Scheduler->turn(Object(Asyncara\\Task))\n#5 /home/coder/Asyncara/src/Asyncara/Async.php(7): Asyncara\\Scheduler->run(Object(Closure))\n#6 /tmp/asyncara-phase4-nrtjh3t1/udp-churn.php(5): Asyncara\\Async::run(Object(Closure))\n#7 {main}\n  thrown in /tmp/asyncara-phase4-nrtjh3t1/udp-churn.php on line 9\n"
+    },
+    "udp-churn-fixed.log": {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-churn-fixed.log",
+      "sha256": "2e9da41ad86ec41757c64676964f93ffedb94c2cc7c06d66d340a2e05bf83198",
+      "tail": "UDP churn 50000 PASS\n"
+    }
+  },
+  "mixedSmoke": {
+    "status": "PASS",
+    "wallSeconds": 131.94102378212847,
+    "workloadExit": 0,
+    "workloadError": null,
+    "samples": 11,
+    "complete": [
+      {
+        "type": "complete",
+        "seconds": 60.1060989710968,
+        "cycles": 111,
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 159822,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 16120,
+          "taskSteps": 258734,
+          "maxStepSeconds": 0.4738073500338942,
+          "maxTimerLagSeconds": 0.75138656119816,
+          "activeTasks": 0,
+          "pendingFutures": 0,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 0,
+          "ioWatchers": 0,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "os": {
+          "rssKiB": 44188,
+          "virtualKiB": 400464,
+          "threads": 5,
+          "fds": 13,
+          "sockets": 4
+        }
+      }
+    ],
+    "completeRecords": 1,
+    "parseErrors": [],
+    "parseErrorCount": 0,
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 43468,
+        "max": 44248,
+        "mean": 43924.444444444445,
+        "endMinusStartMedian": 552,
+        "slopePerHour": 62839.20313249205
+      },
+      "phpBytes": {
+        "min": 2148408,
+        "max": 2163352,
+        "mean": 2155836.4444444445,
+        "endMinusStartMedian": 3680,
+        "slopePerHour": 285007.06821153295
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "mean": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 23,
+        "max": 24,
+        "mean": 23.22222222222222,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.30460179963735995
+      },
+      "threads": {
+        "min": 5,
+        "max": 5,
+        "mean": 5.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 10,
+        "max": 11,
+        "mean": 10.222222222222221,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.30460179963735995
+      }
+    },
+    "failures": [],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+      "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+    ]
+  },
+  "fpmSmoke": [
+    {
+      "name": "A-lifecycle",
+      "workers": 1,
+      "requests": 100,
+      "status": "PASS"
+    },
+    {
+      "name": "B-within-request",
+      "workers": 1,
+      "requests": 10,
+      "status": "PASS"
+    },
+    {
+      "name": "C-multiple-workers",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "D-streaming",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "recycling",
+      "status": "PASS",
+      "requests": 25,
+      "pids": [
+        3011289,
+        3011352,
+        3011413
+      ]
+    },
+    {
+      "name": "mixed-reload-kill",
+      "status": "PASS",
+      "seconds": 60.491106105037034,
+      "requests": 300,
+      "reloads": 1,
+      "killedWorkers": 1,
+      "sampleCount": 292,
+      "rssRangeKiBAfterWarmup": {
+        "3011550": 176,
+        "3011517": 248,
+        "3011518": 192,
+        "3011519": 232
+      },
+      "maxRssIncreaseKiB": {
+        "3011550": 176,
+        "3011517": 248,
+        "3011518": 192,
+        "3011519": 232
+      },
+      "warmupPeakKiB": {
+        "3011550": 14552,
+        "3011517": 18764,
+        "3011518": 18720,
+        "3011519": 18724
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "3011550": 2788,
+        "3011517": 384,
+        "3011518": 400,
+        "3011519": 356
+      },
+      "rssSlopeKiBPerHour": {
+        "3011550": 11873.263727473688,
+        "3011517": 13082.125776326953,
+        "3011518": 18930.98662317048,
+        "3011519": 12669.480620015713
+      },
+      "samplesFile": "mixed-samples.jsonl",
+      "responsesFile": "mixed-responses.jsonl"
+    },
+    {
+      "name": "request-timeout",
+      "status": "PASS",
+      "terminatedPid": 3014328,
+      "replacement": {
+        "pid": 3014337,
+        "fds": 6,
+        "sockets": 1,
+        "threads": 1,
+        "rssKiB": 15492,
+        "virtualKiB": 508252,
+        "idleWaitSeconds": 0.0031314208172261715,
+        "transientThreadsBeforeReaping": 1
+      }
+    }
+  ],
+  "negativeMisdeliveryControl": {
+    "source": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+    "script": "<?php\nrequire '/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740/autoload.php';\nuse Asyncara\\{Async};\nuse Asyncara\\IO\\UdpSocket;\nuse Asyncara\\Exception\\TimeoutException;\nAsync::run(function () {\n    foreach (['127.0.0.1','::1'] as $ip) {\n        $original = new UdpSocket($ip);\n        $port = (int)substr(strrchr($original->address(), ':'),1);\n        $newer = new UdpSocket($ip,$port);\n        try {\n            $newer->send('owned-by-original',$original->address());\n            try { Async::timeout(.05,$original->receive(...)); throw new RuntimeException('Unexpected original delivery'); }\n            catch (TimeoutException) {}\n            $packet = Async::timeout(1,$newer->receive(...));\n            if ($packet['data'] !== 'owned-by-original') throw new RuntimeException('Unexpected datagram');\n            echo json_encode(['address'=>$original->address(),'newerAddress'=>$newer->address(),'originalTimedOut'=>true,'receivedByNewer'=>$packet['data']]),\"\\n\";\n        } finally { $original->close(); $newer->close(); }\n    }\n});\n",
+    "observations": [
+      {
+        "address": "127.0.0.1:39327",
+        "newerAddress": "127.0.0.1:39327",
+        "originalTimedOut": true,
+        "receivedByNewer": "owned-by-original"
+      },
+      {
+        "address": "[::1]:58739",
+        "newerAddress": "[::1]:58739",
+        "originalTimedOut": true,
+        "receivedByNewer": "owned-by-original"
+      }
+    ]
+  },
+  "autoloadFailure": {
+    "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-autoload-failure.log",
+    "repair": "Load OperationException and Scheduler before acquiring descriptors; first EMFILE must not trigger autoload to report/clean up",
+    "tests": [
+      "udp-emfile-fixed.log",
+      "udp-emfile-asan.log",
+      "udp-emfile-8.3.log",
+      "udp-emfile-8.4.log",
+      "udp-emfile-debug.log"
+    ]
+  },
+  "sourceFiles": {
+    "ext/php_asyncara.c": "4fc8aed8de674850acaa5eece9517c3fce042160eb1ce47003d17cbf40efc311",
+    "src/Asyncara/IO/UdpSocket.php": "9262ec83a7be939f0f5aa8647ccca162ad3fcad59e51625d6499df93be4a5a3f",
+    "tests/udp_ownership.php": "539355ae76016c9a5db9aa62147e6212c49587fcad53974b9ddf4f724ac1cd27",
+    "scripts/test-udp-limits.py": "84126f0e359e9d0a12e75e1ff604b754cce032715321db95a287ae87cf61888c",
+    "tests/audit/fpm_request.php": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-8.4-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-valgrind-symbols-test.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-network-edges.log",
+      "bytes": 400,
+      "sha256": "e5196a31499cf56dd739a8aa734b49cfe557be065b85751b791e35abffe6ec31"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-85-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-asan-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-8.4-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-final-8.3.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-final-debug.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-network-edges-poll.log",
+      "bytes": 401,
+      "sha256": "c8b3cd7c0617ecc9ef2671d25c2a0f915fc35cbb8ba161db045373a60d26c25b"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-8.3-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-debug.log",
+      "bytes": 61,
+      "sha256": "81c90279220b7974b73fd7d28cc9f3ef272cf913d210fc13dbb72a3a8715f63f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-debug.log",
+      "bytes": 394,
+      "sha256": "a455a1dc281cfd4fb02c22f4beaa2c51ede01006a247bbe519fe85370088344b"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-debug-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-8.3-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-ownership-negative.log",
+      "bytes": 959,
+      "sha256": "abf29b253984c7c7531fd05e0c5f5e8b6d063228d2bc40b544e730a2ce85b231"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-verify-audit.log",
+      "bytes": 6545,
+      "sha256": "47de7e0202dc4ee211cc945c1c90ec570a91abc211a9a2241fae3fe29a43dca9"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.4-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-verify.log",
+      "bytes": 6734,
+      "sha256": "d0a489eb25b35363ba9564647f5690a6fe000c8dccf2bd2497a4c70bcaecc852"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-valgrind-test.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-8.4.log",
+      "bytes": 61,
+      "sha256": "81c90279220b7974b73fd7d28cc9f3ef272cf913d210fc13dbb72a3a8715f63f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.5-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-8.4.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-fpm-lifecycle.log",
+      "bytes": 144,
+      "sha256": "740b6db5b4c5092805bd8890bdc6c58b4292aaf5a4c7befb05da6767b22e3fe6"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-churn-fixed.log",
+      "bytes": 21,
+      "sha256": "2e9da41ad86ec41757c64676964f93ffedb94c2cc7c06d66d340a2e05bf83198"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-misdelivery-control.log",
+      "bytes": 242,
+      "sha256": "ae49e7ca7fe25869aba4d83f866909662d9f876875d008fb04952fc6eb6f1eb2"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-fixed.log",
+      "bytes": 61,
+      "sha256": "81c90279220b7974b73fd7d28cc9f3ef272cf913d210fc13dbb72a3a8715f63f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-asan.log",
+      "bytes": 61,
+      "sha256": "81c90279220b7974b73fd7d28cc9f3ef272cf913d210fc13dbb72a3a8715f63f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-asan.log",
+      "bytes": 398,
+      "sha256": "e5a969451748e98cfb611da41212867bbeb1f4f8eeeaf10ece4fa2fd6e024164"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-8.3.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-debug-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-final-asan.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-debug-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.3-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-autoload-failure.log",
+      "bytes": 1797,
+      "sha256": "6a25e66f937b94515fa15571904757a871b699d22760c8aa0db71745169dbf39"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-85-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-asan-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.3-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.4-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-8.5-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-asan-poll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-valgrind.log",
+      "bytes": 1747,
+      "sha256": "d043d52b567506b838ddfb6506491028d888dab504baf6ded91c417523e8e143"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-build-final-8.4.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-asan-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-expanded-smoke.log",
+      "bytes": 144,
+      "sha256": "a00b90d861cff2fe265a68822f1611e318274637c3abffb1e6a11e188390954d"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-emfile-8.3.log",
+      "bytes": 61,
+      "sha256": "81c90279220b7974b73fd7d28cc9f3ef272cf913d210fc13dbb72a3a8715f63f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-valgrind-symbols.log",
+      "bytes": 13528,
+      "sha256": "6861a660f0dc94eb644dc00fc7fb1ae76fd724a29bd71f065b6d010db755a4cc"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-churn.log",
+      "bytes": 838,
+      "sha256": "a8c923abb07a092970a8e4fa5e618a21420294d9c75974600f2109ff1b7d5d28"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-corrected-debug-epoll.log",
+      "bytes": 88,
+      "sha256": "95b36f907d81dc1049f56ee3aa47b7c6f95135f60f5a4f8ac6abd384b6c99404"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/udp-fix-build.log",
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    }
+  ],
+  "fullValidation": {
+    "commands": "make verify audit audit-fpm",
+    "exit": 0,
+    "log": "/tmp/asyncara-phase4-nrtjh3t1/udp-final-verify.log",
+    "note": "Ran after final native arginfo correction; later PHP error/cleanup preload change has separate EMFILE/ownership/mixed-smoke controls. New archive installation will rerun full suites."
+  },
+  "enduranceStatus": "NOT_EXECUTED_ON_CORRECTED_SOURCE"
+}

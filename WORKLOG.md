@@ -779,3 +779,45 @@ PHP-version forwarding controls verify return values, original exceptions,
 global function preservation and fatal records. These smoke controls are added
 to CI. The earlier external600.256s/5,312request profile and overlapping bare
 C epoll control are preserved independently, with no retrospective source claim.
+
+## Phase 4 UDP ownership repair — 2026-11-03
+
+Changed ext/php_asyncara.c and src/Asyncara/IO/UdpSocket.php: create an exclusive,
+nonblocking close-on-exec UDP descriptor without PHP stream-server SO_REUSEADDR.
+Allocate/register PHP stream ownership first, before socket(), so PHP allocation
+bailout cannot orphan an unregistered fd. Use existing exported PHP socket-stream
+operations; no Zend calls on workers and no event-loop rewrite. Bind errors retain
+errno and close their temporary stream. Load exception/cleanup dependencies before
+acquisition so EMFILE cannot cause failed first autoload during recovery.
+
+Evidence: old frozen3587740 deterministically delivers a datagram to a newer
+same-endpoint socket while the original times out, on IPv4 and IPv6. New ownership
+regression and50,000-cycle churn pass. Ownership tests pass8.3.36/8.4.27/8.5.12,
+epoll/poll, GCC ASan/UBSan and DEBUG. Valgrind zero errors, definite/indirect/possible
+loss0, reachable3,888bytes, suppressions0. New scripts/test-udp-limits.py limits a
+child to128fds: native EMFILE, release/reopen and cleanup pass all versions and
+GCC instrumentation. Parent/host limits are untouched.
+
+Development failures retained: first resource arginfo type triggered DEBUG's
+resource-is-not-a-zend_type assertion; corrected to the same untyped-return
+convention as PHP resource-returning functions, rebuilt all variants. Initial
+Valgrind omitted existing isolated loader symbols and could not start; corrected
+command uses .local/debug, no host install. Preliminary verify passed but audit
+rejected its stale binary after the arginfo correction; final rebuild followed by
+make verify/audit/audit-fpm passes. No warning/assertion/test was suppressed.
+
+Existing network-edge suite passes epoll/poll. FPM now retains a UDP socket through
+ordinary, pending, timeout and fatal request teardown. Expanded60.491s lifecycle
+passed300mainrequests plus A/B/C/D, recycling, reload, forced replacement, fatal
+memory and timeout cases; max growth beyond warmup2,788KiB, idle6fds/1thread.
+See docs/phase4/udp-ownership-fix.json. The prior local frozen mixed attempt was
+interrupted intentionally at2,761.879s/6,524cycles; full reports retained, no pass
+inferred. Historical r2 and prior archives contain the UDP defect. A corrected
+archive and new endurance checkpoint are required; classification EXPERIMENTAL.
+
+Corrected expanded mixed smoke passed60.106s/111cycles with separate Oracle8.4.13,
+MariaDB11.8.9, PostgreSQL16.15, Redis7.0.15, SQLite and extended network work; no
+stderr or final pending work. The final native helper's initial FPM60s pass
+preceded the small PHP dependency-preload adjustment; its separate EMFILE tests
+pass all versions. Archive validation and a new frozen endurance will test the
+complete corrected source together. Do not retroactively rename the earlier run.

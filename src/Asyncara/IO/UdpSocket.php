@@ -9,10 +9,13 @@ final class UdpSocket
     public function __construct(string $address = '127.0.0.1', int $port = 0)
     {
         if (!filter_var($address, FILTER_VALIDATE_IP) || $port < 0 || $port > 65535) throw new \ValueError('UDP bind requires a numeric IP and valid port');
-        $ip = str_contains($address, ':') ? "[$address]" : $address;
-        $this->stream = @stream_socket_server("udp://$ip:$port", $errno, $error, STREAM_SERVER_BIND);
-        if (!$this->stream) throw new OperationException("UDP bind: $error", $errno);
-        stream_set_blocking($this->stream, false);
+        // Load error/cleanup dependencies while descriptors remain available.
+        // A later EMFILE must not turn exception translation or close() into
+        // a failed autoload that prevents releasing an owned socket.
+        class_exists(OperationException::class);
+        class_exists(Scheduler::class);
+        try { $this->stream = \asyncara_udp_bind($address, $port); }
+        catch (\Exception $error) { throw new OperationException($error->getMessage(), $error->getCode(), $error); }
     }
     public function address(): string { return stream_socket_get_name($this->stream, false); }
     public function send(string $data, string $address): int
