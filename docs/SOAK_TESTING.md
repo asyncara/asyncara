@@ -238,3 +238,14 @@ campaign. Existing thresholds remain unchanged.
 Historical hosted FPM at 624cbe9 passed its full hour; its simultaneous mixed job
 failed at UDP receive. The hosted run predates both UDP repairs and cannot certify
 the corrected source. Current campaign identities are in PHASE4_DELIVERY.md.
+
+Corrected f2abb55 (r4) is now separately built and frozen. Independent archive
+installation/test checks on all three PHP versions finished before the new
+16:44:17Z campaign. No native/public runtime edits or competing local builds/fuzz/
+benchmarks occur during this attempt. Each unchanged workload advances through
+3,600/21,600/86,400 seconds only after its own preceding pass; overall success
+requires both complete chains. Live state is
+`/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`; exact supervisor,
+environment and fingerprints are retained in phase4/campaign-f2abb55-launch.json.
+Launch is not completion. A failed report remains failed and must be diagnosed
+before a newly named retry; never relabel partial observations as a full duration.

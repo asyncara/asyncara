@@ -78,3 +78,10 @@ socket transport; this does not expand the existing remote TLS/authentication
 matrix. Standalone libpq16.15/17.11/18.6 lifetime probes test the dependency,
 not Asyncara driver certification against newer PostgreSQL servers. Unresolved
 findings and reproduction are in DEPENDENCY_FINDINGS.md.
+
+The f2abb55 checkpoint has no database implementation changes from the preceding
+native repair; all four hosted regression/database lifecycle jobs pass. Its new
+local frozen mixed campaign includes the separate Oracle and MariaDB fixtures,
+while hosted mixed omits Oracle. These ongoing plain/local workloads do not
+extend the TLS/authentication matrix above. No mTLS, WAN or acknowledged SQL
+cancellation capability is newly advertised.

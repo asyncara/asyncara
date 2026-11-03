@@ -887,3 +887,39 @@ failed. No combined or corrected-source certification is inferred. Hosted76e6557
 jobs remain running independently at16:34Z. No remote job was cancelled.
 Next: commit this repair, independently build/test a new r4 archive, then launch
 fresh immutable mixed/FPM chains after builds finish. Release EXPERIMENTAL.
+
+## Corrected r4 package and new endurance campaign — 2026-11-03
+
+Committed and pushed f2abb555caf8914821f648f8213ce7a433693685. New archive
+build/asyncara-0.1.0-dev-phase4-r4.tar.gz contains355sourcefiles; SHA256
+5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8.
+Every archived path/byte matches Git. A separate private-umask checkout produces
+identical bytes. Historical r5/r1/r2/r3 checksums were recomputed and unchanged.
+No release was published. Native C remains76e6557; r4 includes the PHP destination
+validation repair. Later evidence-only commits do not change packaged source.
+
+Commands: scripts/package.py, tests/audit/package_repro.py, and
+ tests/audit/archive_install.py with the existing final three-version manifest.
+Independent extracted phpize/build/install/load, Composer, core epoll/poll,
+WebSocket and network checks PASS8.3.36/8.4.27/8.5.12, including ownership,
+destination validation and child-only EMFILE. No C compiler diagnostic; each
+PHP-generated configure.ac retains upstream AC_PROG_LIBTOOL obsolete notice.
+Hosted41675874564 passes all four regression/database jobs. Durable attestation:
+docs/phase4/package-r4.json; raw package-phase4-r4 under the existing evidence root.
+
+Separately built clean detached worktree /tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55.
+After package validation finished, detached supervisor3124165 launched at16:44:17Z.
+Live state: /tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json.
+Mixed and FPM independently request3600/21600/86400seconds with their unchanged
+workloads/assertions/thresholds and full-stage source/binary/archive identity
+checks. No native/public source edits, local builds/fuzz/benchmarks during this
+campaign. A chain advances only after its own exact-duration clean pass; total
+success needs all six passes. Launch snapshot, exact supervisor source, OS/CPU/
+compiler/libraries and fingerprints: phase4/campaign-f2abb55-launch.json.
+
+Updated delivery, roadmap, lifecycle/soak, resource, security, HTTP, WebSocket,
+hook/database compatibility and README with precise boundaries. Historical hosted
+FPM success is retained separately; no completed final-source hour,6h or24h is
+claimed. Next: collect these frozen reports, investigate any failed gate without
+weakening it, and only then continue lower-priority API/compatibility expansion.
+Release EXPERIMENTAL.

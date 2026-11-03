@@ -100,8 +100,11 @@ were interrupted at last samples 972.031s mixed / 997.320s FPM after independent
 reproducing destination port wrap and a synchronous resolver fallback. Strict
 literal-IP/port validation and its regressions now pass all three PHP branches,
 epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind; full verify/audit/FPM and a 60.119s
-expanded mixed smoke pass. Native C is unchanged from 76e6557. A new archive and
-frozen campaign are required. Existing timing failures and thresholds remain.
+expanded mixed smoke pass. Native C is unchanged from 76e6557. Corrected f2abb55
+r4 is reproducible and independently builds/installs/tests on all three branches;
+all four hosted CI jobs pass. New frozen mixed/FPM one-hour chains began at
+16:44:17Z. No completed corrected-source hour is claimed. Existing failures and
+thresholds remain; longer stages advance only after their own preceding pass.
 See phase4/udp-destinations-fix.json and phase4/hosted-fpm-1h.json.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.

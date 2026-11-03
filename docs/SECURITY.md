@@ -105,5 +105,5 @@ thread. Strict literal-IP and destination-port validation now rejects these
 inputs before suspension/transport parsing. The regression prevents invalid
 addresses from reaching the network even when run against affected source.
 See phase4/udp-destinations-fix.json. Historical archives are preserved unchanged;
-a new corrected archive is required. This repair does not add hostname or
+verified f2abb55 / phase4-r4 includes the repair. This repair does not add hostname or
 scope-ID support to the UDP API.

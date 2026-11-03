@@ -63,3 +63,9 @@ Phase 3 preserves this limited hook scope. The full core/audit suites continue t
 Phase 4 makes no hook implementation changes. Explicit Asyncara HTTP/TCP/TLS/SQL
 activity in expanded soak workloads is not transparent compatibility evidence.
 The existing function-by-function classifications above remain unchanged.
+
+The f2abb55 / phase4-r4 installed-package epoll/poll suites pass on PHP
+8.3.36/8.4.27/8.5.12, retaining the existing sleep/usleep tests. The new exclusive
+UDP bind and strict explicit destination API do not hook stream_socket_server,
+stream_socket_sendto or any ordinary PHP stream function. Classifications above
+are unchanged; see phase4/package-r4.json for the packaged source identity.

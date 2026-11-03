@@ -3,23 +3,57 @@
 **EXPERIMENTAL — work in progress.** This report separates completed checks
 from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
 
-## Current evidence at 2026-11-03 16:35 UTC
+## Current evidence at 2026-11-03 16:45 UTC
 
 | Check | Tested source | Result |
 |---|---|---|
-| Clean corrected r3 builds and installed tests, PHP 8.3/8.4/8.5 NTS | `76e6557` | PASS; source/checksum below |
-| Hosted regression 8.3/8.4/8.5 and database lifecycle | `76e6557` | All four jobs PASS; [run 41668853898](https://github.com/asyncara/asyncara/actions/runs/41668853898) |
-| Local one-hour mixed and FPM, including separate Oracle fixture in mixed | frozen `76e6557` | INTERRUPTED for independently reproduced UDP destination defects; last samples 972.031s mixed / 997.320s FPM |
-| Hosted ownership-repair one-hour workload | `76e6557` | Mixed and FPM RUNNING; predates destination repair; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
-| Historical local one-hour FPM / mixed | `3587740` | FPM FAIL; mixed deliberately interrupted after UDP defect reproduction |
+| Clean r4 builds and installed tests, PHP 8.3/8.4/8.5 NTS | `f2abb55` | PASS; source/checksum below |
+| Hosted regression 8.3/8.4/8.5 and database lifecycle | `f2abb55` | All four jobs PASS; [run 41675874564](https://github.com/asyncara/asyncara/actions/runs/41675874564) |
+| Local mixed and FPM one-hour campaigns | frozen `f2abb55` | RUNNING from 16:44:17Z; no completed hour yet |
+| Hosted destination-repair one-hour workload | `f2abb55` | Queued behind active predecessors; [run 41675874490](https://github.com/asyncara/asyncara/actions/runs/41675874490) |
+| Historical local mixed/FPM | `76e6557` | INTERRUPTED for reproduced destination defects; last samples 972.031s mixed / 997.320s FPM |
+| Historical hosted ownership-repair workload | `76e6557` | Mixed and FPM RUNNING; predates destination repair; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
+| Historical local one-hour FPM / mixed | `3587740` | FPM FAIL; mixed deliberately interrupted after UDP ownership defect reproduction |
 | Historical hosted mixed / FPM | `624cbe9` | Mixed FAIL at UDP receive; FPM PASS, 3,600.036s / 67,520 main requests; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
 | Six-/24-hour campaigns | — | NOT EXECUTED; preceding durations must pass |
 
-The hosted mixed workload includes extended networking and local PostgreSQL,
-MariaDB and Redis fixtures, but not the separate Oracle fixture. Hosted and local
-scopes must remain distinct. Running jobs are not passes. All earlier failures
-remain evidence; the latest corrected source has no completed one-hour result yet.
-The historical FPM pass does not certify the destination or native ownership repairs.
+Local mixed includes separate Oracle and MariaDB fixtures. Hosted mixed has
+PostgreSQL, MariaDB and Redis plus extended networking, but no separate Oracle
+fixture. Running/queued jobs are not passes. Historical FPM success does not
+certify later native ownership or destination-validation changes. Release
+classification remains **EXPERIMENTAL**.
+
+## Corrected r4 distribution and current freeze
+
+Implemented, independently tested, packaged and pushed source:
+`f2abb555caf8914821f648f8213ce7a433693685` on `phase4-endurance`.
+Native C remains `76e6557`; r4 also contains strict PHP UDP destination validation.
+Archive: `build/asyncara-0.1.0-dev-phase4-r4.tar.gz`, 355 source files.
+SHA-256: `5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8`.
+All Git paths/bytes match; private-umask clean packaging reproduces identical
+bytes. Fresh extracted phpize/build/install/load, Composer, complete epoll/poll,
+WebSocket and network tests pass PHP 8.3.36, 8.4.27 and 8.5.12 NTS, including both
+UDP regressions and child-only EMFILE. Native compiler diagnostics are clean;
+PHP's generated configure.ac retains the upstream obsolete AC_PROG_LIBTOOL
+notice, without suppression. [Build attestation](phase4/package-r4.json) records
+commands, dependency package hashes, binary/log hashes and all four hosted CI passes.
+
+All earlier archives are preserved with their original checksums. r3 and earlier
+contain the destination-validation defects; r2 and earlier also contain the
+ownership defect. No GitHub release is published. Later evidence/documentation
+commits do not retroactively become part of the archive or tested freeze.
+
+The independent build at `/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55` completed
+before launching detached supervisor 3124165 at 16:44:17Z. Native/public runtime
+source stays unchanged during the campaign; no concurrent local builds, fuzzing
+or benchmarks are scheduled. [Launch attestation](phase4/campaign-f2abb55-launch.json)
+records the exact supervisor, environment, source and binary/archive fingerprints.
+Live state: `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`.
+Independent mixed/FPM chains request 3,600 → 21,600 → 86,400 seconds; only a full
+clean pass with unchanged fingerprints advances that workload. All original
+assertions/resource thresholds remain. Overall success needs all six passes;
+one failed chain cannot be certified by success in the other. This snapshot is
+not a completion report.
 
 ## Historical r3 distribution and frozen source
 
@@ -314,8 +348,8 @@ discarded. [Repair evidence](phase4/udp-ownership-fix.json) distinguishes stages
 FPM lifecycle run with UDP held through request teardown passed 60.491 seconds /
 300 main requests plus all lifecycle/fault cases, maximum RSS beyond warmup
 2,788 KiB and idle six descriptors/one thread. This is a regression smoke test,
-not final-source endurance. Corrected packaging passed and new campaigns are
-running as recorded above. Final `76e6557` FPM smoke separately passed 60.063
+not final-source endurance. The r3 local campaigns were later interrupted for
+the destination repair below. Final `76e6557` FPM smoke separately passed 60.063
 seconds / 432 main requests, maximum 2,820 KiB beyond warmup, with all lifecycle
 cases passing; it includes the PHP dependency-preload adjustment.
 

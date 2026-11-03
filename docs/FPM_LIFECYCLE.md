@@ -237,3 +237,9 @@ actual one-hour FPM pass, not a corrected-source or combined-workflow pass: the
 parallel mixed workload failed. The later local 76e6557 FPM attempt was deliberately
 interrupted after the 997.320s sample to repair destination validation. No final
 corrected-source one-/six-/24-hour completion is claimed.
+
+Corrected f2abb55 r4 passes the ordinary A/B/C/D audit. Its new one-hour expanded
+FPM attempt began at 16:44:17Z after independent package tests finished; no result
+is inferred from launch. The staged supervisor may advance FPM independently only
+after a complete FPM pass. See PHASE4_DELIVERY.md for the immutable source and
+live-state path; historical passes and timing failures remain separate.

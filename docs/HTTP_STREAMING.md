@@ -126,3 +126,11 @@ passed with streaming enabled. The preceding requested one-hour campaigns failed
 (mixed timeout; FPM ticker assertion). These shorter passes do not certify
 streaming endurance. Source identities and raw failure evidence remain in
 [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md).
+
+Historical hosted FPM at 624cbe9 subsequently completed one hour / 67,520 main
+requests with a streamed-HTTP request in each mixed four-request batch, plus the
+separate D-streaming concurrency case. This is local small-body streaming within
+that FPM workload, not large-transfer/proxy/TLS certification. It predates the UDP
+repairs; corrected-source endurance remains pending. The r4 extracted package's
+existing streaming tests pass PHP 8.3/8.4/8.5, epoll/poll. Source identities and
+full evidence are in PHASE4_DELIVERY.md and phase4/hosted-fpm-1h.json.

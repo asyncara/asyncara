@@ -113,3 +113,10 @@ exercises Linux `EMFILE`, releases a socket, reopens successfully and checks the
 descriptor count. It does not modify the parent, host or service limits. Both
 ordinary and GCC ASan/UBSan PHP pass; external libraries and kernel buffers remain
 outside the native ledger.
+
+UDP sends additionally reject payloads above 65,507 bytes, nonliteral IP targets
+and destination ports outside 1..65535 before transport parsing. This avoids
+implicit blocking resolver calls and integer narrowing in PHP's underlying
+sendto parser. Invalid input raises ValueError without network submission; it is
+an input bound, not a new global socket cap. Real maximum-size IPv4/IPv6 tests
+pass in the r4 package on PHP 8.3/8.4/8.5 with both event-loop backends.

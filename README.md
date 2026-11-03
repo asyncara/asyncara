@@ -69,7 +69,9 @@ outstanding. See [release readiness](docs/RELEASE_READINESS.md),
 and framework certification remain unavailable. Release status stays EXPERIMENTAL.
 
 Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs.
-The latest hardening fixes deferred out-of-memory conversion and large native
-buffer retention across FPM requests. Release status remains **EXPERIMENTAL**;
+Later Phase 4 hardening repairs UDP endpoint collisions, descriptor-exhaustion
+cleanup, destination-port wrap and implicit blocking resolver fallback. The
+corrected r4 package is independently tested on all three PHP branches; its new
+endurance campaigns are in progress. Release status remains **EXPERIMENTAL**;
 see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
 failures and remaining certification work.

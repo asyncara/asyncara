@@ -110,3 +110,9 @@ with clean final scheduled work. The earlier requested one-hour mixed run failed
 on a timeout whose waiting operation was not identified by the original trace.
 Per-operation diagnostics now preserve that detail on a recurrence. Neither run
 establishes one-hour WebSocket endurance or identifies a WebSocket defect.
+
+The f2abb55 / phase4-r4 extracted source independently passes the existing 41
+framing cases and bidirectional Python interoperability/network suite on PHP
+8.3.36, 8.4.27 and 8.5.12 NTS. The UDP repairs add no WebSocket capability.
+Its new extended mixed endurance attempt is running; no completed hour or new
+browser/Autobahn/server-WSS certification follows from the package tests.
