@@ -50,7 +50,20 @@ test('async DNS success and failure',fn()=>run(function(){check(count(Dns::resol
 test('TCP accept, partial writes, EOF and cancellation',fn()=>run(function(){ $server=new TcpServer();$port=(int)substr(strrchr($server->address(),':'),1);$bytes=str_repeat('0123456789',300000);$reader=Async::spawn(function()use($server,$bytes){$client=$server->accept();same($bytes,$client->readExactly(strlen($bytes)));$client->write('ok');$client->close();});$client=TcpStream::connect('127.0.0.1',$port)->await();$client->write($bytes);same('ok',$client->readExactly(2));same('',$client->read());$reader->await();$client->close();$wait=Async::spawn($server->accept(...));Async::sleep(0);$wait->cancel();raises(CancelledException::class,$wait->await(...));$server->close();}));
 test('TCP refused connection propagates',fn()=>run(function(){ $s=new TcpServer();$port=(int)substr(strrchr($s->address(),':'),1);$s->close();raises(OperationException::class,fn()=>TcpStream::connect('127.0.0.1',$port)->await());}));
 test('UDP datagrams including zero length',fn()=>run(function(){ $a=new UdpSocket();$b=new UdpSocket();$a->send('datagram',$b->address());same('datagram',$b->receive()['data']);$a->send('',$b->address());same('',$b->receive()['data']);$a->close();$b->close();}));
-test('HTTP concurrency while timers progress',fn()=>run(function()use($http){$client=new HttpClient();$ticks=0;$ticker=Async::spawn(function()use(&$ticks){for($i=0;$i<10;$i++){Async::sleep(.005);$ticks++;}});$start=Scheduler::now();$tasks=[];for($i=0;$i<6;$i++)$tasks[]=$client->get($http.'/slow?delay=0.05');foreach(Async::gather($tasks)as$r){same(200,$r->status);same('hello asyncara',$r->body);}check(Scheduler::now()-$start<.30,'HTTP requests did not overlap');$ticker->await();same(10,$ticks);}));
+test('HTTP concurrency while timers progress',fn()=>run(function()use($http){
+ $client=new HttpClient();$ticks=0;$tasks=[];
+ for($i=0;$i<6;$i++)$tasks[]=$client->get($http.'/concurrent');
+ $ticker=Async::spawn(function()use($client,$http,&$ticks){
+  $deadline=Scheduler::now()+5;
+  while($client->get($http.'/concurrent-status')->await()->body!=='6'){
+   check(Scheduler::now()<$deadline,'HTTP requests did not arrive concurrently');Async::sleep(.005);
+  }
+  for($i=0;$i<10;$i++){Async::sleep(.005);$ticks++;}
+  same(200,$client->get($http.'/concurrent-release')->await()->status);
+ });
+ foreach(Async::gather($tasks)as$r){same(200,$r->status);same('hello asyncara',$r->body);}
+ $ticker->await();same(10,$ticks);
+}));
 test('HTTP POST, status, redirects, chunking, gzip',fn()=>run(function()use($http){$c=new HttpClient();same('', $c->request('HEAD',$http.'/ok')->await()->body);same(['name'=>'Asyncara'],$c->post($http.'/echo',json:['name'=>'Asyncara'])->await()->json());same('x=a%20b',$c->post($http.'/echo',form:['x'=>'a b'])->await()->body);same(503,$c->get($http.'/status')->await()->status);same(302,$c->get($http.'/redirect')->await()->status);same(200,$c->get($http.'/redirect',followRedirects:true)->await()->status);same('hello asyncara',$c->get($http.'/chunked')->await()->body);same('hello asyncara',$c->get($http.'/gzip')->await()->body);same(1000000,strlen($c->get($http.'/large')->await()->body));}));
 test('HTTP timeout, broken response, cancellation',fn()=>run(function()use($http){$c=new HttpClient(timeout:.01);raises(OperationException::class,fn()=>$c->get($http.'/slow?delay=.1')->await());$c=new HttpClient();raises(OperationException::class,fn()=>$c->get($http.'/broken')->await());$t=$c->get($http.'/slow?delay=.2');Async::sleep(.002);$t->cancel();raises(CancelledException::class,$t->await(...));}));
 test('TLS verification failure and explicit trusted CA',fn()=>run(function()use($https,$root){raises(OperationException::class,fn()=>(new HttpClient())->get($https.'/ok')->await());same(200,(new HttpClient(caFile:"$root/build/test-certs/cert.pem"))->get($https.'/ok')->await()->status);raises(OperationException::class,fn()=>(new HttpClient(caFile:"$root/build/test-certs/cert.pem"))->get(str_replace('localhost','127.0.0.1',$https).'/ok')->await());}));

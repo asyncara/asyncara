@@ -79,3 +79,17 @@ profiling scheduling/readiness/locking costs before optimization; it does not
 justify weakening frame validation, fairness or resource bounds. Reproduce with
 `python3 benchmarks/run-websocket.py --output /tmp/new-ws-benchmark.json` after
 installing the pinned peer and building the extension.
+
+## Large-buffer memory tradeoff
+
+`benchmarks/run-native-mappings.py` preserves three samples and module hashes.
+For24sequential12MiB cached sparse-file reads, the first comparison's median wall
+time rose from0.879s to1.917s with dedicated mappings, while peakRSS fell from
+about135MiB to49MiB. A second sample set retained the same direction. The mapped
+worker's redundant native result copy was then removed: a separate comparison
+measured1.699s before versus1.396s after; median per-read latency68.54ms versus
+38.14ms, but p95 worsened115.88ms to156.41ms under shared compiler load.
+This is a memory-boundary repair with a measured tradeoff, not a universal speed
+claim. All raw samples: phase3-native-mappings.json, its repeat, and
+phase3-native-owned-buffer.json under benchmarks/results. Use explicit matching
+PHP/artifact paths; the benchmark never replaces the system interpreter.

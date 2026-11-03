@@ -433,3 +433,31 @@ A separate GCCASan/UBSan build is underway, preserving the earlier tooling model
 Both native build runners now verify exact SDK/interpreter patch versions to
 avoid accidentally loading the new fallible-allocation API into olderPHP.
 HostPHP8.5.11 was not replaced; tests explicitly select isolated8.5.12.
+
+## File-result ownership and deterministic HTTP verification
+
+Dedicated mappings fixed the measured FPM retention but12MiB read benchmarks
+showed a copying cost. The worker already owned a correctly sized native buffer;
+its result now adopts that buffer instead of allocating/copying it again. A
+12MiB-content/empty-read/zero-retention regression fits a14MiB native budget; the
+previous binary fails it. make verify passes. Raw three-sample comparisons retain
+all data: mapped-copy median1.699s versus owned-buffer1.396s for24reads, with
+p95latency worse under shared compiler load; no universal speedup claim.
+
+Frozen mapped checkpoint df7d061 separately passed3,716FPM requests/300.492s
+(max2,904KiB beyond warmup), and a300.276s mixedSQL/HTTP/file/process soak with
+1,296cycles/1.296m burstTasks, flat descriptors/threads andRSS endpoint+372KiB.
+No pending Tasks/Futures/timers/native jobs remained. Evidence records the exact
+checkpoint before the later copy removal.
+
+The r4 archive builds from clean sources and is byte-reproducible. Its8.3/.4
+full/poll/network/WS runs pass;8.5epoll passes but the old HTTP300ms total-wall
+assertion failed during concurrent compiler load. Preserve that failed archive
+report. Strengthened the test to require six server-barrier arrivals and ten
+timer ticks while responses remain gated, then explicit release. A serial
+negative control gets503 after the barrier deadline; complete8.5poll now passes.
+No wall threshold was enlarged and no responsiveness check was removed.
+
+Hosted mapping test initially failed because ripgrep was absent despite the
+expected ASan diagnostic. Switched its string assertion to standard grep; the
+intentional overrun and required failure status remain unchanged.

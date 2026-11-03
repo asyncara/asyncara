@@ -1,4 +1,8 @@
 import http.server, threading, time, json, sys, ssl, urllib.parse, gzip
+concurrent_barrier=threading.Barrier(6,timeout=5)
+concurrent_release=threading.Event()
+concurrent_lock=threading.Lock()
+concurrent_arrivals=0
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version='HTTP/1.1'
     def log_message(self,*args): pass
@@ -6,10 +10,21 @@ class Handler(http.server.BaseHTTPRequestHandler):
         self.send_response(200); self.send_header("Content-Length","14"); self.end_headers()
     def do_POST(self): self.do_GET()
     def do_GET(self):
+        global concurrent_arrivals
         path=urllib.parse.urlparse(self.path)
         query=urllib.parse.parse_qs(path.query)
         if path.path=='/slow': time.sleep(float(query.get('delay',['0.05'])[0]))
         body=b'hello asyncara'; status=200; extra={}
+        if path.path=='/concurrent':
+            with concurrent_lock:concurrent_arrivals+=1
+            try:concurrent_barrier.wait()
+            except threading.BrokenBarrierError:
+                self.send_error(503,'Six simultaneous requests did not arrive');return
+            if not concurrent_release.wait(timeout=5):
+                self.send_error(503,'Timer task did not release pending requests');return
+        if path.path=='/concurrent-status':
+            with concurrent_lock:body=str(concurrent_arrivals).encode()
+        if path.path=='/concurrent-release':concurrent_release.set()
         if path.path=='/echo': body=self.rfile.read(int(self.headers.get('Content-Length',0)))
         if path.path=='/status': status=503
         if path.path=='/redirect': status=302;extra['Location']='/ok'
