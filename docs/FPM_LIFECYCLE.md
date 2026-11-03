@@ -140,3 +140,21 @@ also passed at e5d94fd. Full provenance is in
 [package-final.json](phase3/package-final.json). No final-source one-hour,
 six-hour or 24-hour FPM run has completed; these short tests establish the
 reproduced repair and lifecycle behavior, not long-term deployment capacity.
+
+## Phase 4 collector bounds
+
+The FPM soak previously retained every response and sample in Python lists. This
+would make the observer itself consume increasing memory over six-/24-hour runs.
+Responses and samples now go to append-only `mixed-responses.jsonl` and
+`mixed-samples.jsonl`. The report links those files and includes `sampleCount`;
+it no longer duplicates all samples in JSON summaries. All observations remain
+available. Aggregation is constant space per warmed worker and diagnostic log
+tails use a bounded deque. Evidence disk usage still grows with test duration.
+
+The 8,192 KiB strict growth bound, original warmup peaks, first-three-sample
+range exclusion, idle six-fd/one-thread requirement and unexpected-worker check
+remain unchanged. Random-trace regression comparisons match the old formulas.
+A real 60.161-second FPM smoke passed 780 main requests plus A/B/C/D and lifecycle
+faults, with 772 steady samples and maximum 2,788 KiB beyond warmup. This tests
+the collector; the separate baseline one-hour campaign uses frozen old harness
+source and must complete before receiving a passing status.

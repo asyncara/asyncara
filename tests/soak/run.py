@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Freeze the tested source, run a mixed workload, retain samples and trends."""
-import argparse, hashlib, http.server, json, os, pathlib, platform, shutil, statistics, subprocess, threading, time
+import argparse, hashlib, http.server, json, os, pathlib, platform, shutil, subprocess, threading, time
+from metrics import mixed_samples
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser()
 parser.add_argument('--seconds',type=float,default=60)
@@ -47,34 +48,24 @@ workload='tests/soak/websocket.php' if args.workload=='websocket'else'tests/soak
 if args.workload=='websocket':subprocess.run(['bash',str(snapshot/'scripts/prepare-test-certs.sh')],cwd=snapshot,check=True)
 command=([str(snapshot/'scripts/test-databases.py'),'--test-file',workload,'--timeout',str(args.seconds+120)] if args.databases else [env.get('PHP_BIN','php'),'-n','-d','extension='+str(snapshot/'build/asyncara.so'),workload])
 start=time.monotonic()
+result=None;workload_error=None
 try:
     with (out/'samples.jsonl').open('w')as stdout,(out/'stderr.log').open('w')as stderr:
         result=subprocess.run(command,cwd=snapshot,env=env,stdout=stdout,stderr=stderr,timeout=args.seconds+180)
+except (OSError,subprocess.TimeoutExpired)as error:workload_error=repr(error)
 finally:server.shutdown();server.server_close()
-records=[];parse_errors=[]
-for line in (out/'samples.jsonl').read_text().splitlines():
-    try:records.append(json.loads(line))
-    except json.JSONDecodeError:parse_errors.append(line)
-samples=[r for r in records if r.get('type')=='sample'];complete=[r for r in records if r.get('type')=='complete']
-steady=samples[max(1,len(samples)//5):] or samples
-def trend(path):
-    def get(sample):
-        for key in path:sample=sample[key]
-        return sample
-    if not steady:return None
-    ys=[get(s)for s in steady];xs=[s['seconds']for s in steady];mean=statistics.mean(xs)
-    denominator=sum((x-mean)**2 for x in xs)
-    slope=sum((x-mean)*(y-statistics.mean(ys))for x,y in zip(xs,ys))/denominator if denominator else 0
-    width=min(5,max(1,len(ys)//3))
-    return {'min':min(ys),'max':max(ys),'median':statistics.median(ys),'endMinusStartMedian':statistics.median(ys[-width:])-statistics.median(ys[:width]),'slopePerHour':slope*3600}
-trends={name:trend(path)for name,path in {'rssKiB':['os','rssKiB'],'phpBytes':['phpBytes'],'nativeBytes':['native','nativeMemoryBytes'],'fds':['os','fds'],'threads':['os','threads'],'sockets':['os','sockets']}.items()}
+try:observations=mixed_samples(out/'samples.jsonl')
+except (KeyError,TypeError,ValueError)as error:
+    workload_error='Invalid sample structure: '+repr(error)
+    observations={'samples':0,'complete':[],'completeRecords':0,'parseErrors':[],'parseErrorCount':1,'steadyTrends':{}}
+trends=observations['steadyTrends'];complete=observations['complete']
 failures=[]
-if result.returncode or parse_errors or not complete:failures.append('Workload did not finish cleanly')
+if workload_error or result is None or result.returncode or observations['parseErrorCount'] or observations['completeRecords']!=1:failures.append('Workload did not finish cleanly')
 if (out/'stderr.log').stat().st_size:failures.append('Unexpected stderr; inspect log')
 if complete and complete[-1]['seconds']<args.seconds:failures.append('Requested duration not reached')
 for key,limit in [('rssKiB',32768),('phpBytes',8388608),('nativeBytes',2097152),('fds',4),('threads',0)]:
-    if trends[key] and trends[key]['endMinusStartMedian']>limit:failures.append(key+' growth exceeds investigation threshold')
-report={'status':'PASS'if not failures else'FAIL','wallSeconds':time.monotonic()-start,'workloadExit':result.returncode,'samples':len(samples),'complete':complete,'steadyTrends':trends,'failures':failures,'parseErrors':parse_errors,'notes':['Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.','RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.','Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.','Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.']}
+    if trends.get(key) and trends[key]['endMinusStartMedian']>limit:failures.append(key+' growth exceeds investigation threshold')
+report={'status':'PASS'if not failures else'FAIL','wallSeconds':time.monotonic()-start,'workloadExit':result.returncode if result else None,'workloadError':workload_error,**observations,'failures':failures,'notes':['Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.','RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.','Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.','Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.','Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged.']}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'status':report['status'],'report':str(out/'report.json'),'wallSeconds':report['wallSeconds'],'failures':failures}))
 raise SystemExit(bool(failures))

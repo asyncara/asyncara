@@ -542,3 +542,21 @@ Inspection found unbounded Python response/sample retention in the FPM harness;
 bound the harness before six-/24-hour campaigns while retaining all raw samples
 and original RSS/resource assertions. Existing mixed coverage lacks UDP/TLS/DNS/
 WebSocket/Oracle; expansion must be explicit. Dependency investigations follow.
+
+## Phase 4 bounded endurance observation
+
+Replaced only test-harness retention, leaving ext/ and src/ unchanged. FPM writes
+every mixed response and sample incrementally; O(worker-count) aggregation
+preserves all historical RSS/fd/thread/replacement assertions. Mixed-run analysis
+uses two streaming JSONL passes with unchanged warmup and endpoint-median growth
+checks. Whole-series mean replaces the descriptive median; raw data is retained.
+Workload deadline and malformed-output failures now receive explicit reports.
+
+Six Python regression cases PASS, including 200 random trace comparisons,
+threshold equality rejection, fd/thread/worker failures, 200,000 samples within
+64KiB collector memory, mixed warmup windows and malformed/duplicate completion.
+Added them to fast CI. Real60s FPM smoke PASS:780main requests,772samples,maximum
+2,788KiB beyond warmup plus all lifecycle faults.20s mixed/database smoke PASS.
+Commands: python3 tests/soak/test_metrics.py; tests/soak/fpm.py --seconds60;
+tests/soak/run.py --seconds20 --databases (new evidence directories each time).
+The separate3600s baseline campaigns remain running, not marked passed.

@@ -138,3 +138,19 @@ measured outliers, not a latency guarantee. Full provenance and trends are in
 
 Final-source one-hour, six-hour and 24-hour runs are **not executed**. Neither
 earlier one-hour checkpoint nor this short final run establishes that endurance.
+
+## Phase 4 harness memory
+
+The unchanged Phase 3 runtime is undergoing separate one-hour mixed/FPM tests;
+see PHASE4_DELIVERY.md for current completion status. The longer-run harness now
+aggregates mixed JSONL in two sequential passes with bounded statistics. It
+retains the exact warmup exclusion, endpoint median windows and growth limits.
+The whole-series `median` field becomes `mean`; exact whole-series medians can
+still be computed offline from the preserved raw observations. No threshold
+uses that changed descriptive field. Timeout and malformed-output reports retain
+the raw workload evidence and fail explicitly.
+
+`python3 tests/soak/test_metrics.py` checks equivalence with the historical
+formulas, boundary failures, malformed/duplicate completion and 200,000 FPM
+observations with under 64 KiB traced collector memory. A 20-second mixed smoke
+passed after this change; it is harness validation, not endurance evidence.
