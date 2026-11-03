@@ -70,6 +70,7 @@ get(): mixed
 taskDone(): void
 join(): void
 count(): int
+statistics(): array
 close(): void
 ```
 
@@ -101,9 +102,20 @@ static connectAsync(array $config): Asyncara\Future
 
 Exception or interface type; inherited standard behavior.
 
+## `Asyncara\Exception\CapacityException`
+
+Exception or interface type; inherited standard behavior.
+
 ## `Asyncara\Exception\DeadlockException`
 
 Exception or interface type; inherited standard behavior.
+
+## `Asyncara\Exception\FilesystemException`
+
+```php
+__construct(string $message, int $errno, bool $committed = false)
+isMissing(): bool
+```
 
 ## `Asyncara\Exception\OperationException`
 
@@ -124,6 +136,8 @@ Exception or interface type; inherited standard behavior.
 ## `Asyncara\Future`
 
 ```php
+__construct()
+static pendingCount(): int
 isCompleted(): bool
 isCancelled(): bool
 exception(): ?Throwable
@@ -137,6 +151,11 @@ cancel(): void
 ```php
 __construct(int $concurrency = 32, float $timeout = 30.0, ?string $proxy = NULL, ?string $caFile = NULL)
 get(string $url, array $headers = [], bool $followRedirects = false): Asyncara\Future
+getStream(string $url, array $headers = [], bool $followRedirects = false): Asyncara\HTTP\ResponseStream
+download(string $url, string $path, array $headers = [], bool $followRedirects = false): Asyncara\Future
+upload(string $url, string $path, string $method = 'PUT', array $headers = []): Asyncara\Future
+requestStream(string $method, string $url, iterable $body, ?int $contentLength = NULL, array $headers = []): Asyncara\Future
+multipart(string $url, array $fields, string $fileField, string $path, ?string $filename = NULL, string $contentType = 'application/octet-stream', array $headers = []): Asyncara\Future
 post(string $url, mixed $json = NULL, ?array $form = NULL, ?string $body = NULL, array $headers = []): Asyncara\Future
 request(string $method, string $url, ?string $body = NULL, array $headers = [], bool $followRedirects = false): Asyncara\Future
 ```
@@ -167,6 +186,21 @@ getRequest(): Psr\Http\Message\RequestInterface
 ```php
 __construct(int $status, string $body, string $rawHeaders)
 json(bool $associative = true): mixed
+```
+
+## `Asyncara\HTTP\ResponseHead`
+
+```php
+__construct(int $status, string $rawHeaders)
+```
+
+## `Asyncara\HTTP\ResponseStream`
+
+```php
+headers(): Asyncara\Future
+getIterator(): Traversable
+consume(callable $consumer): void
+close(): void
 ```
 
 ## `Asyncara\Hook`
@@ -209,6 +243,7 @@ close(): Asyncara\Future
 static open(string $path, string $mode = 'r'): Asyncara\Future
 static read(string $path): Asyncara\Future
 static write(string $path, string $data): Asyncara\Future
+static replaceAtomic(string $path, string $data, bool $durable = false, int $permissions = 384): Asyncara\Future
 static append(string $path, string $data): Asyncara\Future
 static delete(string $path): Asyncara\Future
 static rename(string $from, string $to): Asyncara\Future
@@ -256,6 +291,20 @@ close(): void
 __destruct()
 ```
 
+## `Asyncara\Internal\IpcFrame`
+
+```php
+static length(string $header): int
+static encode(array $value): string
+static decode(string $json): array
+```
+
+## `Asyncara\Internal\JsonData`
+
+```php
+static validate(mixed $value): void
+```
+
 ## `Asyncara\MySQL\Connection`
 
 ```php
@@ -278,16 +327,18 @@ execute(array $parameters = []): Asyncara\Future
 ## `Asyncara\Pool\ConnectionPool`
 
 ```php
-__construct(Closure $factory, Closure $closer, int $size = 8)
+__construct(Closure $factory, Closure $closer, int $size = 8, int $pendingLimit = 1024)
 withConnection(callable $body): mixed
+statistics(): array
 close(): void
 ```
 
 ## `Asyncara\Pool\ProcessPool`
 
 ```php
-__construct(int $workers, string $bootstrap, int $queueLimit = 256)
+__construct(int $workers, string $bootstrap, int $queueLimit = 256, int $queueBytes = 67108864, int $workerMemoryBytes = 268435456)
 submit(array|string $job, array $arguments = [], float $timeout = 30.0): Asyncara\Future
+statistics(): array
 close(): void
 __destruct()
 ```
@@ -295,12 +346,13 @@ __destruct()
 ## `Asyncara\PostgreSQL\Connection`
 
 ```php
-static connect(array $options, float $timeout = 30.0): Asyncara\Future
+static connect(array $options, float $timeout = 30.0, int $notificationLimit = 1024, int $notificationByteLimit = 1048576): Asyncara\Future
 query(string $sql, array $parameters = []): Asyncara\Future
 execute(string $sql, array $parameters = []): Asyncara\Future
 prepare(string $sql): Asyncara\PostgreSQL\Statement
 transaction(callable $body): Asyncara\Future
 nextNotification(): array
+statistics(): array
 close(): void
 __destruct()
 ```
@@ -372,7 +424,7 @@ currentCancellation(): ?Asyncara\CancellationToken
 static now(): float
 spawn(callable $body, bool $inherit = true): Asyncara\Task
 suspend(Closure $register, ?Asyncara\CancellationToken $token = NULL): mixed
-delay(float $seconds, Closure $callback): Asyncara\Timer
+delay(float $seconds, Closure $callback, bool $waitTimer = false): Asyncara\Timer
 readable(mixed $stream): void
 writable(mixed $stream): void
 waitDescriptor(int $fd, int $events, ?float $timeout = NULL): int
@@ -395,6 +447,13 @@ close(): void
 ```php
 __construct(Asyncara\Concurrency\Queue $queue)
 emit(mixed $item): void
+```
+
+## `Asyncara\Stream\ReadableStream`
+
+```php
+consume(callable $consumer): void
+close(): void
 ```
 
 ## `Asyncara\Task`
@@ -430,4 +489,40 @@ isActive(): bool
 
 ```php
 __construct(array $completed, array $pending)
+```
+
+## `Asyncara\WebSocket\Client`
+
+```php
+static connect(string $url, array $protocols = [], array $headers = [], ?string $caFile = NULL, float $timeout = 10.0, int $messageLimit = 1048576, int $queueLimit = 16, int $queueBytes = 4194304, float $idleTimeout = 30.0): Asyncara\Future
+```
+
+## `Asyncara\WebSocket\Connection`
+
+```php
+receive(): ?Asyncara\WebSocket\Message
+send(string $data, bool $binary = false): void
+ping(?string $payload = NULL, float $timeout = 5.0): Asyncara\Future
+close(int $code = 1000, string $reason = '', float $timeout = 5.0): void
+abort(): void
+exception(): ?Throwable
+statistics(): array
+```
+
+## `Asyncara\WebSocket\Message`
+
+```php
+__construct(string $data, bool $binary = false)
+```
+
+## `Asyncara\WebSocket\ProtocolException`
+
+```php
+__construct(string $message, int $closeCode = 1002)
+```
+
+## `Asyncara\WebSocket\Server`
+
+```php
+static accept(Asyncara\IO\TcpStream $stream, array $origins = [], array $protocols = [], ?callable $authorize = NULL, float $timeout = 5.0, int $messageLimit = 1048576, int $queueLimit = 16, int $queueBytes = 4194304, float $idleTimeout = 30.0): Asyncara\Future
 ```

@@ -19,6 +19,7 @@ Current limits:
 | stable native file handles | 128 |
 | native wait descriptors | 16,384 including curl/notification descriptors |
 | file/HTTP/IPC payload | generally 16 MiB per buffered operation/frame |
+| HTTP streaming response/upload buffers | 64 KiB each; HTTP/1.1 pause/resume, two PHP response chunks queued |
 | HTTP response headers | 64 KiB |
 | native HTTP connections | 64 total, eight per host |
 | HttpClient in-flight admission | configurable 1–256, default 32 |
@@ -34,3 +35,41 @@ Current limits:
 This is **not a whole-process memory limit**. Third-party curl/SQLite/OpenSSL/SQL-connector internals, thread stacks, the small engine bootstrap and transient bounded readiness buffers are excluded. Readiness control buffers are separately bounded to under 1 MiB at the descriptor cap, so budget exhaustion cannot prevent draining/cancellation. Zend allocations remain subject to PHP's memory_limit. Applications still need conservative concurrency, database/server limits and OS process/container quotas for hostile or dense multi-tenant workloads.
 
 io_uring, kqueue and IOCP remain absent. The initialization host's liburing NOP test completed successfully; implementing and validating actual file operations, cancellation and kernel feature fallbacks is still required. No released PHP scheduler RFC is assumed. PHP threading capability remains false even on an untested ZTS build until an interpreter-thread executor is implemented and validated.
+
+Phase 3 additions: readiness includes bytes already buffered by PHP streams
+(including TLS casting); syscall errors preserve errno; replaceAtomic runs on
+native workers with explicit visibility/durability semantics in FILESYSTEM.md.
+No io_uring filesystem, kqueue or IOCP implementation was added. Database TLS
+capabilities and synchronous trust-file/crypto setup boundaries are documented
+in DATABASE_COMPATIBILITY.md. Single-interpreter ZTS CLI evidence does not enable
+PHP userland threads. Native aggregate accounting still excludes external libraries.
+
+WebSocket uses the existing nonblocking TCP/PHP OpenSSL stream readiness path
+(epoll or poll), with bounded PHP framing and message queues. No native worker
+or curl pool executes WebSocket framing. See WEBSOCKET.md for verified WSS
+client and raw plain-server scope; server-side TLS is not certified.
+
+## Expanded local networking matrix
+
+`./scripts/test-network-edges.sh` now exercises IPv4 and IPv6 TCP listeners/
+connections, IPv6 UDP including empty datagrams, localhost dual-address DNS and
+fallback after an IPv6 refusal, TLS1.2 on IPv4 and TLS1.3 on IPv6, SNI localhost,
+ALPN http/1.1, verified CA/hostname rejection, deliberately slow partial uploads/
+downloads, abrupt peer disconnect, refused connections and handshake timeout/
+cancellation. An unrelated timer advances throughout slow transfers. Tests pass
+on PHP8.3/8.4/8.5 NTS, epoll/poll and instrumented8.5; Valgrind reports zero errors
+and zero definite/indirect/possible losses (77,515 reachable bytes).
+
+DNS remains worker-getaddrinfo. A test-only linker wrapper delays one reserved
+hostname200ms; deadlines/cancellation return to the Fiber and timers continue,
+while runtime cleanup still waits for that native call to return. There is no
+claim of interrupting libc or supplying DNS TTL/cache controls. The first
+LD_PRELOAD fixture did not interpose on the8.3 module and failed; explicit linker
+wrapping makes the injected path reproducible without changing production code.
+
+Scope remains Linux loopback/OpenSSL3.0.13. No WAN, IPv6 scope-ID/link-local,
+Happy Eyeballs, renegotiation, TLS key-update or WANT_WRITE saturation coverage.
+TcpStream handshake currently awaits readability after incomplete crypto; broad
+TLS transport-state certification remains incomplete. Trust-file/crypto setup
+is synchronous library work. Successful local transfer tests do not establish
+universal TLS compatibility or server-side TLS listener support.

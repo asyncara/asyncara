@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara;
-use Asyncara\Exception\{CancelledException,DeadlockException,OperationException};
+use Asyncara\Exception\{CancelledException,CapacityException,DeadlockException,OperationException};
 final class Scheduler
 {
     private static ?self $active = null;
     private \SplQueue $ready;
     private \SplPriorityQueue $heap;
-    private array $tasks = [], $failures = [], $timers = [], $readers = [], $writers = [], $native = [];
+    private array $tasks = [], $failures = [], $timers = [], $readers = [], $writers = [], $native = [], $httpReaders = [], $httpWriters = [];
     private int $next = 0, $nextTimer = 0, $nextWatch = 0;
     public ?Task $task = null;
     private array $metrics = ['turns' => 0, 'taskSteps' => 0, 'maxStepSeconds' => 0.0, 'maxTimerLagSeconds' => 0.0];
@@ -22,7 +22,10 @@ final class Scheduler
     public static function now(): float { return hrtime(true) / 1e9; }
     public function spawn(callable $body, bool $inherit = true): Task
     {
-        if (count($this->tasks) >= $this->taskLimit) throw new \OverflowException('Task limit reached');
+        if (count($this->tasks) + count($this->failures) >= $this->taskLimit) {
+            $this->failures = array_filter($this->failures, static fn(Task $t): bool => !$t->observed);
+            if (count($this->tasks) + count($this->failures) >= $this->taskLimit) throw new CapacityException('Task limit reached (includes retained unobserved failures)');
+        }
         $task = new Task(++$this->next, $this, $body, $inherit ? ($this->task?->context ?? []) : []);
         $this->tasks[$task->id] = $task; $this->enqueue($task); return $task;
     }
@@ -114,9 +117,35 @@ final class Scheduler
     }
     public function native(string $op, array $args): Future
     {
-        $id = asyncara_submit($op, $args); $future = new Future();
+        return $this->nativeOperation($op, $args)[1];
+    }
+    /** @internal Native operation identity for bounded HTTP streaming. */
+    public function nativeOperation(string $op, array $args): array
+    {
+        // Reserve the PHP-visible completion before submitting native work.
+        $future = new Future(); $id = asyncara_submit($op, $args);
         $future->canceller = static fn() => asyncara_cancel($id);
-        $this->native[$id] = $future; return $future;
+        $this->native[$id] = $future; return [$id, $future];
+    }
+    /** @internal Register only after draining the native response buffer. */
+    public function httpReadable(int $id, Future $completion): void
+    {
+        if ($completion->isCompleted()) return;
+        if (isset($this->httpReaders[$id])) throw new \LogicException('HTTP stream already has a reader');
+        $this->suspend(function (\Closure $resume) use ($id): \Closure {
+            $this->httpReaders[$id] = $resume;
+            return function () use ($id): void { unset($this->httpReaders[$id]); };
+        }, $this->currentCancellation());
+    }
+    /** @internal Register only after a native upload buffer rejected a write. */
+    public function httpWritable(int $id, Future $completion): void
+    {
+        if ($completion->isCompleted()) return;
+        if (isset($this->httpWriters[$id])) throw new \LogicException('HTTP stream already has a writer');
+        $this->suspend(function (\Closure $resume) use ($id): \Closure {
+            $this->httpWriters[$id] = $resume;
+            return function () use ($id): void { unset($this->httpWriters[$id]); };
+        }, $this->currentCancellation());
     }
     private function poll(): void
     {
@@ -136,9 +165,14 @@ final class Scheduler
         foreach ($result['results'] as $item) {
             $future = $this->native[$item['id']] ?? null; unset($this->native[$item['id']]);
             if (!$future) continue;
-            if ($item['error'] !== null) $future->reject($item['error'] === 'Operation cancelled' ? new CancelledException($item['error']) : new OperationException($item['error']));
+            if ($item['error'] !== null) $future->reject($item['error'] === 'Operation cancelled' ? new CancelledException($item['error']) :
+                (($item['errno'] ?? 0) ? new Exception\FilesystemException($item['error'], $item['errno'], $item['committed']) : new OperationException($item['error'])));
             else $future->resolve($item['value']);
+            if (isset($this->httpReaders[$item['id']])) ($this->httpReaders[$item['id']])();
+            if (isset($this->httpWriters[$item['id']])) ($this->httpWriters[$item['id']])();
         }
+        foreach ($result['httpReadable'] as $id) if (isset($this->httpReaders[$id])) ($this->httpReaders[$id])();
+        foreach ($result['httpWritable'] as $id) if (isset($this->httpWriters[$id])) ($this->httpWriters[$id])();
     }
     private function turn(?Task $root = null): void
     {
@@ -162,7 +196,7 @@ final class Scheduler
     public function run(callable $body): mixed
     {
         if (self::$active) throw new \LogicException('Nested Async::run() is not supported');
-        self::$active = $this; $root = $this->spawn($body); $root->observed = true;
+        $root = $this->spawn($body); $root->observed = true; self::$active = $this;
         $oldHooks = asyncara_hooks(Runtime::timeHooksEnabled());
         try {
             while ($this->tasks || $this->native || $this->timers) {
@@ -185,6 +219,6 @@ final class Scheduler
     }
     public function statistics(): array
     {
-        return $this->metrics + ['activeTasks' => count($this->tasks), 'activeTimers' => count($this->timers), 'ioWatchers' => count($this->readers) + count($this->writers), 'pendingNative' => count($this->native), 'memoryBytes' => memory_get_usage(true)];
+        return $this->metrics + ['activeTasks' => count($this->tasks), 'pendingFutures' => Future::pendingCount(), 'retainedFailures' => count($this->failures), 'readyTasks' => $this->ready->count(), 'activeTimers' => count($this->timers), 'ioWatchers' => count($this->readers) + count($this->writers), 'pendingNative' => count($this->native), 'memoryBytes' => memory_get_usage(true)];
     }
 }

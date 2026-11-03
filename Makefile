@@ -1,4 +1,5 @@
 .PHONY: all build test audit audit-fpm databases stress sanitize thread-sanitize fpm valgrind benchmark phpize-local verify clean
+PHP_BIN ?= php
 all: build
 build:
 	./scripts/build-local.sh
@@ -11,7 +12,7 @@ audit-fpm: build
 databases: build
 	./scripts/test-databases.py
 stress: build
-	php -n -d extension=$(CURDIR)/build/asyncara.so tests/stress.php 100
+	$(PHP_BIN) -n -d extension=$(CURDIR)/build/asyncara.so tests/stress.php 100
 sanitize:
 	./scripts/sanitize.sh
 thread-sanitize:

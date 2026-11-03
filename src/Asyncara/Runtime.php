@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Asyncara;
 final class Runtime
 {
-    private static array $config = ['taskLimit' => 20000, 'slowTaskSeconds' => 0.0, 'nativeMemoryLimit' => 268435456];
+    private static array $config = ['taskLimit' => 20000, 'futureLimit' => 40000, 'slowTaskSeconds' => 0.0, 'nativeMemoryLimit' => 268435456];
     private static bool $timeHooks = false;
     private static array $lastMetrics = [];
     public static function configure(array $options): void
@@ -12,15 +12,15 @@ final class Runtime
         foreach ($options as $key => $value) {
             if ($key === 'nativeMemoryLimit') {
                 if (!is_int($value)) throw new \ValueError('nativeMemoryLimit must be an integer byte count');
-                asyncara_memory_limit($value);
-                self::$config[$key] = $value;
                 continue;
             }
             if (!array_key_exists($key, self::$config)) throw new \ValueError("Unknown runtime option: $key");
             if ($key === 'taskLimit' && (!is_int($value) || $value < 1 || $value > 100000)) throw new \ValueError('taskLimit must be 1..100000');
+            if ($key === 'futureLimit' && (!is_int($value) || $value < 1 || $value > 1000000)) throw new \ValueError('futureLimit must be 1..1000000');
             if ($key === 'slowTaskSeconds' && (!is_numeric($value) || !is_finite((float)$value) || $value < 0)) throw new \ValueError('Invalid slow task threshold');
-            self::$config[$key] = $value;
         }
+        if (isset($options['nativeMemoryLimit'])) asyncara_memory_limit($options['nativeMemoryLimit']);
+        self::$config = array_replace(self::$config, $options);
     }
     public static function configuration(): array { return self::$config; }
     public static function information(): object { return (object)asyncara_info(); }

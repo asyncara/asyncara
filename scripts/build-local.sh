@@ -2,17 +2,21 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p build
-inc="${PHP_INCLUDE_DIR:-$PWD/.local/sysroot/usr/include/php/20250925}"
+php_api="$("${PHP_BIN:-php}" -n -i | awk '/^PHP API => / { print $4 }')"
+inc="${PHP_INCLUDE_DIR:-$PWD/.local/sysroot/usr/include/php/$php_api}"
 if [[ ! -f "$inc/main/php.h" ]]; then
   echo 'PHP headers missing. Set PHP_INCLUDE_DIR or run scripts/bootstrap-local.sh.' >&2
   exit 1
 fi
+python3 scripts/check-php-sdk.py "$inc" "${PHP_BIN:-php}"
 pq_flags=()
 if [[ -f .local/sysroot/usr/include/postgresql/libpq-fe.h ]]; then
   pq_flags=(-DHAVE_ASYNCARA_PQ=1 -I.local/sysroot/usr/include/postgresql -l:libpq.so.5)
 fi
-if [[ -f .local/sysroot/usr/include/mariadb/mysql.h ]]; then
-  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 -I.local/sysroot/usr/include/mariadb -l:libmariadb.so.3)
+if [[ -n "${MARIADB_PREFIX:-}" ]]; then
+  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 "-I$MARIADB_PREFIX/include/mariadb" -Iext/compat/mariadb "-L$MARIADB_PREFIX/lib/mariadb" "-Wl,-rpath,$MARIADB_PREFIX/lib/mariadb" -lmariadb -lssl -lcrypto)
+elif [[ -f .local/sysroot/usr/include/mariadb/mysql.h ]]; then
+  pq_flags+=(-DHAVE_ASYNCARA_MYSQL=1 -I.local/sysroot/usr/include/mariadb -Iext/compat/mariadb -l:libmariadb.so.3 -lssl -lcrypto)
 fi
 "${CC:-cc}" -std=c11 -D_GNU_SOURCE -DCOMPILE_DL_ASYNCARA=1 -fPIC -shared \
   -O2 -g -Wall -Wextra -Werror -Wno-unused-parameter ${EXTRA_CFLAGS:-} \

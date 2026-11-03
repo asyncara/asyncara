@@ -1,0 +1,93 @@
+{
+  "runtimeCheckpoint": "8af260430e218e0a1b929b5622893d695f1c99af",
+  "nativeSha256": "d861852d0e0a55814ac174beefafa0b3e488959880c80a45389ee161317c5eab",
+  "rawEvidence": "/tmp/asyncara-phase3-cQBA3H",
+  "logs": {
+    "baseline-audit.log": {
+      "sha256": "139a4c61e333b7fe080aeeadfc9b8b5fdeac7b8388217603b5e3704973fd4110",
+      "bytes": 963
+    },
+    "fs-audit.log": {
+      "sha256": "a749397946f5ae3581943fd4c9ea16c25747fd64956f022f1bdaad11affeee2e",
+      "bytes": 965
+    },
+    "fs-tests.log": {
+      "sha256": "c0f59c9cc56aea4dd38683113461b5ac9568324ecc3d916baa452ebaa6e92628",
+      "bytes": 3328
+    },
+    "fs-tests-8.3.log": {
+      "sha256": "f162ab2a8c60a3cc82dcad62254d15cbc44801ebb52a5dc2a9a1df119524591e",
+      "bytes": 3328
+    },
+    "fs-tests-8.4.log": {
+      "sha256": "8e15a752ff3cc623841b1bcec1192c2787a1170287b4fef1e9c2a8828708a729",
+      "bytes": 3328
+    },
+    "fs-tests-sanitized.log": {
+      "sha256": "4fd4e5384ce97ce267c27459bbd7f3766341032ae73913cd4f5c4adac84cdf74",
+      "bytes": 3329
+    },
+    "fs-partial-faults.log": {
+      "sha256": "bf42fdc88a3122abb6babdc48ad19392bc15baeef17537f60180d39bf1228364",
+      "bytes": 68
+    },
+    "fs-allocations.log": {
+      "sha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516",
+      "bytes": 55
+    },
+    "fs-sanitize.log": {
+      "sha256": "095d7f3c5af6648560ea2769a9ef7a7410579d5a8292d40704af5129af046c57",
+      "bytes": 33
+    },
+    "fs-tsan.log": {
+      "sha256": "095d7f3c5af6648560ea2769a9ef7a7410579d5a8292d40704af5129af046c57",
+      "bytes": 33
+    },
+    "fs-valgrind.log": {
+      "sha256": "034e3375c25fffd960502c9860ad1dcace90289c4f9d71b86c22e1db3b1ee118",
+      "bytes": 15004
+    },
+    "final-phpize.log": {
+      "sha256": "739e91bf409c2be120f9e6a76932bea2a6a5fe126018c853886ffe9d631cb1c0",
+      "bytes": 17671
+    },
+    "final-phpize-tests.log": {
+      "sha256": "86d6577bbfce3ee36395877c97f43dbc44b94c161698ba6ac671fdd7f2b5416a",
+      "bytes": 3328
+    },
+    "final-fpm.log": {
+      "sha256": "952ace934f5699a608d9965b167acf5f33a06e004f4f5b035cd910fbca2b0322",
+      "bytes": 63
+    },
+    "final-databases.log": {
+      "sha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4",
+      "bytes": 424
+    },
+    "final-database-audit.log": {
+      "sha256": "5c6843529e552669b04f787065c4860cef1e20273bed5ac15f41c5b30f795ad0",
+      "bytes": 303
+    },
+    "final-native-fuzz.log": {
+      "sha256": "92a991db212df88248b4cd3deb6e9005019e0987e393eb80124672f3eb362aed",
+      "bytes": 116246
+    },
+    "final-zts-tests.log": {
+      "sha256": "46b4bf9b18de60bda01445b5db6e6465c6b9d23fbf690f54c3340edc0cc262a3",
+      "bytes": 3328
+    },
+    "final-poll.log": {
+      "sha256": "f586f21c1b8866e6ba2460e106bee5393cea5368bb0972a1719b943878809084",
+      "bytes": 3328
+    },
+    "final-valgrind.log": {
+      "sha256": "f7f2dffb1d018031734b95a57408db406c4ce19b17b689b9d4ea0f5d28544d95",
+      "bytes": 605
+    },
+    "final-static-analysis.log": {
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+      "bytes": 257
+    }
+  },
+  "knownInstrumentationFinding": "109-byte libpq TLS BIO_METHOD global lost after library unload; independent standalone reproducer; no suppression",
+  "hostedCI": "NOT_EXECUTED"
+}

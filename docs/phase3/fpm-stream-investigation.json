@@ -1,0 +1,306 @@
+{
+  "status": "INVESTIGATION_REQUIRED",
+  "failedSoak": {
+    "path": "/tmp/asyncara-phase3-cQBA3H/fpm-stream-soak",
+    "reason": "Existing 8192KiB RSS growth criterion exceeded, threshold preserved",
+    "growth": {
+      "rssRangeKiBAfterWarmup": {
+        "2018387": 24512,
+        "2018419": 73404,
+        "2018388": 73576,
+        "2018389": 156
+      },
+      "maxRssIncreaseKiB": {
+        "2018387": 24460,
+        "2018419": 48844,
+        "2018388": 73576,
+        "2018389": 156
+      },
+      "warmupPeakKiB": {
+        "2018387": 114872,
+        "2018419": 124856,
+        "2018388": 137616,
+        "2018389": 116792
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2018387": 508,
+        "2018419": 27256,
+        "2018388": 0,
+        "2018389": 224
+      }
+    },
+    "samples": 4556
+  },
+  "diagnostic": {
+    "path": "/tmp/asyncara-phase3-cQBA3H/fpm-allocator-stream",
+    "cycles": 100,
+    "observations": 400,
+    "usedBytesRange": [
+      2136832,
+      2225472
+    ],
+    "freeBytesRange": [
+      565296,
+      113636704
+    ],
+    "trim": {
+      "before": [
+        {
+          "pid": 2053588,
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 117056,
+          "idleWaitSeconds": 0.0005607600323855877,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053586,
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 117056,
+          "idleWaitSeconds": 0.0002923649735748768,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053589,
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 129364,
+          "idleWaitSeconds": 0.00018552294932305813,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053587,
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 117060,
+          "idleWaitSeconds": 0.00023003504611551762,
+          "transientThreadsBeforeReaping": 1
+        }
+      ],
+      "after": [
+        {
+          "pid": 2053588,
+          "id": "999000",
+          "allocator": {
+            "arena": 103088128,
+            "used": 2219520,
+            "free": 100868608,
+            "mapped": 466944
+          },
+          "before": {
+            "version": "0.1.0-dev",
+            "eventLoopBackend": "epoll",
+            "filesystemBackend": "pthread-workers",
+            "networkBackend": "nonblocking-streams+curl-multi",
+            "dnsBackend": "worker-getaddrinfo",
+            "sqliteVersion": "3.45.1",
+            "curlVersion": "8.5.0",
+            "userlandThreads": false,
+            "ioUring": false,
+            "postgresql": true,
+            "mysql": true,
+            "nativeWorkers": 0,
+            "pendingOperations": 0,
+            "nativeBufferLimit": 16777216,
+            "nativeQueueLimit": 1024,
+            "nativeMemoryBytes": 0,
+            "nativeMemoryPeak": 0,
+            "nativeMemoryRejections": 0,
+            "nativeMemoryLimit": 268435456,
+            "openFileHandles": 0,
+            "sqliteConnections": 0,
+            "httpReadinessSockets": 0,
+            "nativeQueueDepth": 0,
+            "httpStreamingTransfers": 0,
+            "httpStreamingBufferedBytes": 0,
+            "httpStreamingPaused": 0,
+            "httpStreamBufferLimit": 65536,
+            "httpStreamingUploads": 0,
+            "httpUploadBufferedBytes": 0,
+            "httpUploadPaused": 0
+          },
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 92308,
+          "idleWaitSeconds": 0.001511039910838008,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053589,
+          "id": "999001",
+          "allocator": {
+            "arena": 115716096,
+            "used": 2225472,
+            "free": 113490624,
+            "mapped": 466944
+          },
+          "before": {
+            "version": "0.1.0-dev",
+            "eventLoopBackend": "epoll",
+            "filesystemBackend": "pthread-workers",
+            "networkBackend": "nonblocking-streams+curl-multi",
+            "dnsBackend": "worker-getaddrinfo",
+            "sqliteVersion": "3.45.1",
+            "curlVersion": "8.5.0",
+            "userlandThreads": false,
+            "ioUring": false,
+            "postgresql": true,
+            "mysql": true,
+            "nativeWorkers": 0,
+            "pendingOperations": 0,
+            "nativeBufferLimit": 16777216,
+            "nativeQueueLimit": 1024,
+            "nativeMemoryBytes": 0,
+            "nativeMemoryPeak": 0,
+            "nativeMemoryRejections": 0,
+            "nativeMemoryLimit": 268435456,
+            "openFileHandles": 0,
+            "sqliteConnections": 0,
+            "httpReadinessSockets": 0,
+            "nativeQueueDepth": 0,
+            "httpStreamingTransfers": 0,
+            "httpStreamingBufferedBytes": 0,
+            "httpStreamingPaused": 0,
+            "httpStreamBufferLimit": 65536,
+            "httpStreamingUploads": 0,
+            "httpUploadBufferedBytes": 0,
+            "httpUploadPaused": 0
+          },
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 104556,
+          "idleWaitSeconds": 0.0008470360189676285,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053587,
+          "id": "999002",
+          "allocator": {
+            "arena": 103075840,
+            "used": 2218176,
+            "free": 100857664,
+            "mapped": 466944
+          },
+          "before": {
+            "version": "0.1.0-dev",
+            "eventLoopBackend": "epoll",
+            "filesystemBackend": "pthread-workers",
+            "networkBackend": "nonblocking-streams+curl-multi",
+            "dnsBackend": "worker-getaddrinfo",
+            "sqliteVersion": "3.45.1",
+            "curlVersion": "8.5.0",
+            "userlandThreads": false,
+            "ioUring": false,
+            "postgresql": true,
+            "mysql": true,
+            "nativeWorkers": 0,
+            "pendingOperations": 0,
+            "nativeBufferLimit": 16777216,
+            "nativeQueueLimit": 1024,
+            "nativeMemoryBytes": 0,
+            "nativeMemoryPeak": 0,
+            "nativeMemoryRejections": 0,
+            "nativeMemoryLimit": 268435456,
+            "openFileHandles": 0,
+            "sqliteConnections": 0,
+            "httpReadinessSockets": 0,
+            "nativeQueueDepth": 0,
+            "httpStreamingTransfers": 0,
+            "httpStreamingBufferedBytes": 0,
+            "httpStreamingPaused": 0,
+            "httpStreamBufferLimit": 65536,
+            "httpStreamingUploads": 0,
+            "httpUploadBufferedBytes": 0,
+            "httpUploadPaused": 0
+          },
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 104600,
+          "idleWaitSeconds": 0.000286435941234231,
+          "transientThreadsBeforeReaping": 1
+        },
+        {
+          "pid": 2053586,
+          "id": "999003",
+          "allocator": {
+            "arena": 103088128,
+            "used": 2220064,
+            "free": 100868064,
+            "mapped": 466944
+          },
+          "before": {
+            "version": "0.1.0-dev",
+            "eventLoopBackend": "epoll",
+            "filesystemBackend": "pthread-workers",
+            "networkBackend": "nonblocking-streams+curl-multi",
+            "dnsBackend": "worker-getaddrinfo",
+            "sqliteVersion": "3.45.1",
+            "curlVersion": "8.5.0",
+            "userlandThreads": false,
+            "ioUring": false,
+            "postgresql": true,
+            "mysql": true,
+            "nativeWorkers": 0,
+            "pendingOperations": 0,
+            "nativeBufferLimit": 16777216,
+            "nativeQueueLimit": 1024,
+            "nativeMemoryBytes": 0,
+            "nativeMemoryPeak": 0,
+            "nativeMemoryRejections": 0,
+            "nativeMemoryLimit": 268435456,
+            "openFileHandles": 0,
+            "sqliteConnections": 0,
+            "httpReadinessSockets": 0,
+            "nativeQueueDepth": 0,
+            "httpStreamingTransfers": 0,
+            "httpStreamingBufferedBytes": 0,
+            "httpStreamingPaused": 0,
+            "httpStreamBufferLimit": 65536,
+            "httpStreamingUploads": 0,
+            "httpUploadBufferedBytes": 0,
+            "httpUploadPaused": 0
+          },
+          "fds": 6,
+          "threads": 1,
+          "rssKiB": 104600,
+          "idleWaitSeconds": 0.0007114738691598177,
+          "transientThreadsBeforeReaping": 1
+        }
+      ]
+    }
+  },
+  "limits": "Diagnostic trim is test-only. Strong evidence of allocator caching; does not retroactively pass the failed soak or establish an enduring bound.",
+  "repeat": {
+    "path": "/tmp/asyncara-phase3-cQBA3H/fpm-stream-soak-repeat",
+    "status": "FAIL",
+    "growth": {
+      "rssRangeKiBAfterWarmup": {
+        "2057515": 24512,
+        "2057547": 36748,
+        "2057516": 36724,
+        "2057517": 49132
+      },
+      "maxRssIncreaseKiB": {
+        "2057515": 24456,
+        "2057547": 36748,
+        "2057516": 36724,
+        "2057517": 49132
+      },
+      "warmupPeakKiB": {
+        "2057515": 129232,
+        "2057547": 112596,
+        "2057516": 116692,
+        "2057517": 127368
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2057515": 0,
+        "2057547": 27340,
+        "2057516": 12600,
+        "2057517": 14356
+      }
+    },
+    "sampleCount": 4692,
+    "failureSha256": "8f8a3566dfd3bddf20cc433d73fb5bd13679317daac1873f3f2103e2f925a30f"
+  }
+}

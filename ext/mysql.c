@@ -2,6 +2,56 @@
 #include <arpa/inet.h>
 #include <mysql.h>
 #include <sys/socket.h>
+/* Distribution 3.3.x packages do not necessarily backport the callback/status
+ * API. Test its public feature macro rather than inferring it from a version. */
+#if defined(MARIADB_TLS_VERIFY_ERROR)
+#define AR_MYSQL_STRICT_TLS 1
+#include <openssl/ssl.h>
+#include <openssl/x509v3.h>
+typedef unsigned char uchar;
+#include <ma_tls.h>
+#ifndef HAVE_TLS
+#define HAVE_TLS 1
+#define AR_UNDEFINE_HAVE_TLS 1
+#endif
+#include <ma_pvio.h>
+#ifdef AR_UNDEFINE_HAVE_TLS
+#undef HAVE_TLS
+#undef AR_UNDEFINE_HAVE_TLS
+#endif
+#include <errmsg.h>
+
+/* Connector/C 3.4 skips identity verification for private/local addresses.
+ * This documented per-connection callback runs before authentication data
+ * is sent. Only the OpenSSL 3 backend is admitted below. No Zend calls here.
+ */
+static int my_verify_tls(MARIADB_TLS *tls, unsigned int flags) {
+    (void)flags;
+    if (!tls || !tls->pvio || !tls->pvio->mysql)
+        return 1;
+    MYSQL *mysql = tls->pvio->mysql;
+    SSL *ssl = tls->ssl;
+    const char *error = NULL;
+    X509 *cert = ssl ? SSL_get1_peer_certificate(ssl) : NULL;
+    /* Connector's OpenSSL verification callback records all chain errors
+     * while allowing the handshake to finish. Never discard that status.
+     */
+    if (!cert || mysql->net.tls_verify_status || SSL_get_verify_result(ssl) != X509_V_OK)
+        error = "Asyncara MariaDB TLS certificate chain verification failed";
+    else if (!mysql->host || X509_check_ip_asc(cert, mysql->host, 0) != 1)
+        error = "Asyncara MariaDB TLS certificate IP identity mismatch";
+    X509_free(cert);
+    if (!error)
+        return 0;
+    /* ERROR prevents Connector's password-based TLS fallback, including
+     * when no explicit CA was supplied. Always fail before authentication.
+     */
+    mysql->net.tls_verify_status |= MARIADB_TLS_VERIFY_ERROR;
+    if (tls->pvio->set_error)
+        tls->pvio->set_error(mysql, CR_SSL_CONNECTION_ERROR, "HY000", "%s", error);
+    return 1;
+}
+#endif
 typedef struct {
     MYSQL *conn, *connected;
     MYSQL_STMT *stmt;
@@ -13,9 +63,10 @@ typedef struct {
     unsigned int columns;
     size_t nparams;
     int stage, waiting, result;
+    bool tls_required;
 } ar_mysql;
 static int mysql_resource_type;
-enum { MY_CONNECT, MY_IDLE, MY_PREPARE, MY_EXECUTE, MY_FETCH, MY_CLOSE };
+enum { MY_CONNECT, MY_IDLE, MY_PREPARE, MY_EXECUTE, MY_FETCH, MY_CLOSE, MY_CONTROL };
 static void my_release_query(ar_mysql *p) {
     if (p->metadata)
         mysql_free_result(p->metadata);
@@ -129,7 +180,34 @@ PHP_FUNCTION(asyncara_mysql_open) {
         zend_value_error("MariaDB tls must be boolean");
         goto error;
     }
-    my_bool verify = 1, enforce = tls ? Z_TYPE_P(tls) == IS_TRUE : !p->options[4];
+    my_bool enforce = tls ? Z_TYPE_P(tls) == IS_TRUE : !p->options[4];
+    p->tls_required = enforce;
+    if (enforce) {
+#ifdef AR_MYSQL_STRICT_TLS
+        const char *library = NULL;
+        if (mariadb_get_infov(p->conn, MARIADB_TLS_LIBRARY, &library) || !library ||
+            strncmp(library, "OpenSSL 3.", 10) != 0 || p->options[4]) {
+            zend_value_error("Verified MariaDB TLS requires Connector/C OpenSSL 3 and a numeric host");
+            goto error;
+        }
+        if (mysql_optionsv(p->conn, MARIADB_OPT_TLS_VERIFICATION_CALLBACK, my_verify_tls)) {
+            my_error(p);
+            goto error;
+        }
+#else
+        zend_value_error("Verified MariaDB TLS requires Connector/C TLS callback/status APIs (tested with 3.4.10)");
+        goto error;
+#endif
+    }
+    /* Both connector series treat verification as a request to enable TLS.
+     * Select plaintext only when TLS was explicitly disabled (or a local Unix
+     * socket was selected). Every TLS connection still uses verification=1
+     * and the strict callback above; no unverified TLS mode is available. */
+    my_bool verify = enforce;
+    if (p->options[5] && !enforce) {
+        zend_value_error("MariaDB CA configuration requires TLS with callback/status verification");
+        goto error;
+    }
     if (mysql_options(p->conn, MYSQL_OPT_NONBLOCK, NULL) ||
         mysql_options(p->conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &verify) ||
         mysql_options(p->conn, MYSQL_OPT_SSL_ENFORCE, &enforce)) {
@@ -172,6 +250,16 @@ PHP_FUNCTION(asyncara_mysql_query) {
         RETURN_THROWS();
     }
     p->sql = estrndup(sql, len);
+    /* Oracle MySQL rejects START TRANSACTION in COM_STMT_PREPARE. These
+     * parameterless control commands have no result set; send them through
+     * Connector/C's nonblocking text path. All data queries retain binding.
+     */
+    if (!p->nparams && (!strcasecmp(sql, "START TRANSACTION") || !strcasecmp(sql, "BEGIN") ||
+                       !strcasecmp(sql, "COMMIT") || !strcasecmp(sql, "ROLLBACK"))) {
+        p->stage = MY_CONTROL;
+        p->waiting = mysql_real_query_start(&p->result, p->conn, p->sql, (unsigned long)len);
+        RETURN_NULL();
+    }
     size_t n = p->nparams ? p->nparams : 1;
     p->input = ecalloc(n, sizeof(MYSQL_BIND));
     p->values = ecalloc(n, sizeof(char *));
@@ -250,6 +338,9 @@ PHP_FUNCTION(asyncara_mysql_step) {
             case MY_CONNECT:
                 p->waiting = mysql_real_connect_cont(&p->connected, p->conn, (int)events);
                 break;
+            case MY_CONTROL:
+                p->waiting = mysql_real_query_cont(&p->result, p->conn, (int)events);
+                break;
             case MY_PREPARE:
                 p->waiting = mysql_stmt_prepare_cont(&p->result, p->stmt, (int)events);
                 break;
@@ -269,9 +360,18 @@ PHP_FUNCTION(asyncara_mysql_step) {
             if (p->waiting)
                 break;
         }
-        if (p->stage == MY_CONNECT) {
+        if (p->stage == MY_CONTROL) {
+            if (p->result)
+                goto error;
+            my_release_query(p);
+            p->stage = MY_IDLE;
+        } else if (p->stage == MY_CONNECT) {
             if (!p->connected)
                 goto error;
+            if (p->tls_required && !mysql_get_ssl_cipher(p->conn)) {
+                zend_throw_exception(zend_ce_exception, "MariaDB required TLS was not negotiated", 0);
+                goto failed;
+            }
             p->stage = MY_IDLE;
         } else if (p->stage == MY_PREPARE) {
             if (p->result)
@@ -330,7 +430,11 @@ PHP_FUNCTION(asyncara_mysql_step) {
                     zend_throw_exception(zend_ce_exception, "MariaDB result limit exceeded", 0);
                     goto failed;
                 }
-                zend_string *s = zend_string_alloc(p->out_lengths[i], 0);
+                zend_string *s = ar_php_string_alloc(p->out_lengths[i]);
+                if (!s) {
+                    zval_ptr_dtor(&row);
+                    goto oom;
+                }
                 MYSQL_BIND bind = {0};
                 bind.buffer_type = MYSQL_TYPE_STRING;
                 bind.buffer = ZSTR_VAL(s);
@@ -342,9 +446,14 @@ PHP_FUNCTION(asyncara_mysql_step) {
                 }
                 ZSTR_VAL(s)[p->out_lengths[i]] = 0;
                 add_assoc_str(&row, fields[i].name, s);
+                if (ar_php_oom()) {
+                    zval_ptr_dtor(&row);
+                    goto oom;
+                }
             }
             add_next_index_zval(&rows, &row);
             records++;
+            if (ar_php_oom()) goto oom;
             p->waiting = mysql_stmt_fetch_start(&p->result, p->stmt);
             if (records >= 128)
                 break;
@@ -363,6 +472,9 @@ PHP_FUNCTION(asyncara_mysql_step) {
     add_assoc_long(return_value, "events", p->waiting);
     add_assoc_long(return_value, "fd", (zend_long)mysql_get_socket(p->conn));
     add_assoc_long(return_value, "timeoutMs", mysql_get_timeout_value_ms(p->conn));
+    return;
+oom:
+    zval_ptr_dtor(&rows);
     return;
 error:
     my_error(p);

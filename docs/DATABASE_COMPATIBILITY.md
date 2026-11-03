@@ -1,0 +1,63 @@
+# Database compatibility and TLS evidence
+
+These are tested configurations, not universal server certification. Tests use
+isolated processes, private CA keys, loopback TCP and per-run credentials.
+TLS trust-file loading and cryptographic work run synchronously during connection setup; slow trust-store files can stall that thread. Verified nonblocking behavior covers socket waits and pending queries, not arbitrary library initialization.
+No real WAN, managed service, certificate rotation or mutual TLS deployment has
+been certified. Third-party allocations remain outside Asyncara's native ledger.
+
+| Driver / server | Backend | Verified authentication / TLS | Cancellation |
+|---|---|---|---|
+| SQLite 3.45.1 | Native worker, ordered connection queue | Local temporary databases | Cooperative interrupt; queued work and handles drained |
+| PostgreSQL 16.15 / libpq 16 | Nonblocking libpq, descriptor readiness | SCRAM-SHA-256; verify-full; trusted private CA, wrong name/CA/password rejection | Discards connection; no server cancellation acknowledgement |
+| MariaDB 11.8.9 / Connector/C 3.4.10 | Connector start/cont APIs | mysql_native_password over verified TLS; IP SAN, wrong name/CA/password rejection | Discards connection; no administrative KILL acknowledgement |
+| MariaDB11.8.9 / Ubuntu Connector/C3.3.17 | Native start/cont, plain Unix socket only | TLS/default TCP/CA fail closed: callback/status API absent | Connection discard; local query/cancellation suite tested |
+| Oracle MySQL 8.4.13 / Connector/C 3.4.10 | Same native driver, separately tested server | caching_sha2_password and legacy sha256_password over verified TLS; wrong identity/CA/password rejection | Discards connection, explicit fresh reconnect |
+| Redis 7.0.15 | RESP2/RESP3 over nonblocking PHP TLS streams | ACL username/password; private CA, wrong identity/CA/password rejection | Discards connection, explicit fresh reconnect |
+
+Private-CA tests verify SQL writes/rollback, parameter binding, two-connection
+pools with four borrowers, slow-query timer responsiveness, explicit deadlines,
+cleanup and reconnects. Redis tests cover RESP3 pipeline, MULTI/EXEC, Pub/Sub,
+slow BLPOP and repeated cancellation/reconnection. The existing unencrypted
+RESP2/RESP3 integration suite is preserved. Pool factories use the same drivers;
+there is no separate hidden database pool or automatic replay of failed queries.
+
+```sh
+make build
+python3 scripts/test-database-tls.py --output build/database-tls
+# Separately extracted Oracle packages; never point at an installed data dir:
+python3 scripts/test-database-tls.py --oracle-prefix /path/to/extracted/root \
+  --output build/oracle-tls
+ASYNCARA_TLS_ITERATIONS=200 python3 scripts/test-database-tls.py \
+  --output build/tls-repeat
+```
+
+The expanded tests exposed and repaired three defects: MariaDB skipped local IP
+identity verification; Oracle rejected START TRANSACTION in the prepared
+protocol; and native readiness ignored data buffered by PHP's TLS stream cast,
+causing intermittent Redis HELLO timeouts. The latter has a deterministic
+`tests/stream_readiness.php` negative control plus 200 real TLS reconnect /
+cancellation cycles. See MYSQL_COMPATIBILITY.md for strict TLS requirements.
+
+PHP 8.3 and 8.4 pass the core and private-CA matrix, including 50 Redis repeat
+cycles each. PHP 8.5 passes 200 Oracle/Redis TLS cycles, and instrumented PHP 8.5
+passes 200 MariaDB/Redis cycles with module unloading disabled for diagnosis of
+the upstream finding below. No ASan/UBSan invalid-access finding occurred.
+
+## Unresolved upstream allocation finding
+
+Normal library unloading after PostgreSQL TLS initialization reports **109 bytes
+in two allocations** under LeakSanitizer. `tests/audit/libpq_tls_unload.c`
+reproduces exactly the same result without PHP or Asyncara, after 20 connections.
+libpq retains one process-global BIO_METHOD (`libpq socket`) and provides no
+public cleanup API for it. Its root disappears at dlclose. The inspected
+[libpq source](https://github.com/postgres/postgres/blob/REL_16_STABLE/src/interfaces/libpq/fe-secure-openssl.c)
+only frees that object on initialization failure. This is a bounded upstream
+unload leak, not zero-leak TLS certification. No suppression or private-pointer
+cleanup was added. ZEND_DONT_UNLOAD_MODULES=1 keeps library globals reachable for
+an additional diagnostic run; that run does not repair or erase the finding.
+
+Remaining: real remote deployment certification, PostgreSQL prepared statement
+cache and acknowledged cancellation, broader Oracle/MariaDB versions, certificate
+rotation/mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
+streaming aggregates, cluster/sentinel and complete notification buffering policy.
