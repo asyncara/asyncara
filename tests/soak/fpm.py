@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Reuse audit FastCGI/concurrency assertions; extend process lifecycle faults."""
 import argparse, hashlib, concurrent.futures, importlib.util, json, os, pathlib, shutil, signal, socket, subprocess, time
+from collections import deque
+from metrics import FpmGrowth
 root=pathlib.Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser();parser.add_argument('--seconds',type=float,default=60);parser.add_argument('--output',required=True);args=parser.parse_args()
 if args.seconds<=0:parser.error('Duration must be positive')
@@ -35,7 +37,7 @@ def stop(process,log):
 def children(process):
     path=pathlib.Path(f'/proc/{process.pid}/task/{process.pid}/children')
     return {int(v)for v in path.read_text().split()}
-provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'extension':{'selected':str(selected),'snapshot':str(extension),'sha256':hashlib.sha256(extension.read_bytes()).hexdigest()}, 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['tests/soak/fpm.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
+provenance={'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(), 'gitStatus':subprocess.check_output(['git','status','--short'],cwd=root,text=True), 'extension':{'selected':str(selected),'snapshot':str(extension),'sha256':hashlib.sha256(extension.read_bytes()).hexdigest()}, 'files':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in ['tests/soak/fpm.py','tests/soak/metrics.py','scripts/audit-fpm.py','tests/audit/fpm_request.php']}, 'mixedModes':['buffered HTTP','streamed HTTP','SQLite','filesystem','pending shutdown'], 'requestedSeconds':args.seconds}
 (out/'provenance.json').write_text(json.dumps(provenance,indent=2)+'\n')
 results=[]
 try:
@@ -51,12 +53,14 @@ try:
     finally:stop(process,log)
     process,port,log=launch('mixed-reload-kill',4)
     try:
-        start=time.monotonic();responses=[];samples=[];reloads=0;kills=0
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4)as executor:
+        start=time.monotonic();requests=0;growth=None;reloads=0;kills=0
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4)as executor, (out/'mixed-responses.jsonl').open('x')as response_log, (out/'mixed-samples.jsonl').open('x')as sample_log:
             while time.monotonic()-start<args.seconds:
-                base=len(responses)
+                base=requests
                 futures=[executor.submit(audit.request,port,base+i,('io'if i<2 else 'stream'if i==2 else'pending'))for i in range(4)]
-                batch=[f.result()for f in futures];responses+=batch
+                batch=[f.result()for f in futures];requests+=len(batch)
+                for response in batch:response_log.write(json.dumps(response)+'\n')
+                response_log.flush()
                 if not reloads:
                     old=children(process)
                     pending=[executor.submit(audit.request,port,100000+i,'io')for i in range(4)]
@@ -88,28 +92,20 @@ try:
                         for f in fatal:f.result()
                         for pid in children(process):warmup.append(audit.idle(pid)|{'round':round})
                     (out/'fatal-warmup.json').write_text(json.dumps(warmup,indent=2)+'\n')
+                    growth=FpmGrowth(warmup)
                 else:
                     for pid in children(process):
-                        sample=audit.idle(pid);sample['seconds']=time.monotonic()-start;samples.append(sample)
-                        with (out/'mixed-samples.jsonl').open('a')as evidence:evidence.write(json.dumps(sample)+'\n')
-                if len(responses)%80==0:
-                    audit.request(port,200000+len(responses),'fatal')
-                    audit.request(port,300000+len(responses),'lifecycle')
-            assert samples and all(s['threads']==1 and s['fds']==6 for s in samples),'Idle resource escape'
-            per_pid={pid:[s['rssKiB']for s in samples if s['pid']==pid]for pid in {s['pid']for s in samples}}
-            ranges={pid:max(values[3:])-min(values[3:])for pid,values in per_pid.items()if len(values)>4}
-            rises={}
-            for pid,values in per_pid.items():
-                if len(values)<=4:continue
-                low=values[3];rise=0
-                for value in values[3:]:low=min(low,value);rise=max(rise,value-low)
-                rises[pid]=rise
-            warm_peaks={pid:max(s['rssKiB']for s in warmup if s['pid']==pid)for pid in {s['pid']for s in warmup}}
-            assert set(per_pid)<=set(warm_peaks),'Unexpected worker replacement after warmup'
-            growth={pid:max(0,max(values)-warm_peaks[pid])for pid,values in per_pid.items()}
-            (out/'mixed-growth.json').write_text(json.dumps({'rssRangeKiBAfterWarmup':ranges,'maxRssIncreaseKiB':rises,'warmupPeakKiB':warm_peaks,'growthBeyondWarmupPeakKiB':growth,'samples':samples},indent=2)+'\n')
-            assert all(v<8192 for v in growth.values()),'Persistent worker RSS growth'
-            results.append({'name':'mixed-reload-kill','status':'PASS','seconds':time.monotonic()-start,'requests':len(responses),'reloads':reloads,'killedWorkers':kills,'samples':samples,'rssRangeKiBAfterWarmup':ranges,'maxRssIncreaseKiB':rises,'warmupPeakKiB':warm_peaks,'growthBeyondWarmupPeakKiB':growth})
+                        sample=audit.idle(pid);sample['seconds']=time.monotonic()-start
+                        sample_log.write(json.dumps(sample)+'\n');sample_log.flush()
+                        growth.add(sample)
+                if requests%80==0:
+                    audit.request(port,200000+requests,'fatal')
+                    audit.request(port,300000+requests,'lifecycle')
+            assert growth is not None,'No steady-state samples'
+            summary=growth.summary()|{'samplesFile':'mixed-samples.jsonl','responsesFile':'mixed-responses.jsonl'}
+            (out/'mixed-growth.json').write_text(json.dumps(summary,indent=2)+'\n')
+            growth.check()
+            results.append({'name':'mixed-reload-kill','status':'PASS','seconds':time.monotonic()-start,'requests':requests,'reloads':reloads,'killedWorkers':kills}|summary)
     finally:stop(process,log)
     process,port,log=launch('request-timeout',1,timeout=1)
     try:
@@ -127,8 +123,8 @@ except BaseException as error:
     # fatal request) in CI output as well as artifacts. Never retry/reset it.
     for diagnostic in sorted(out.rglob('*log')):
         if diagnostic.name in ('error.log','php-errors.log','startup.log'):
-            lines=diagnostic.read_text(errors='replace').splitlines()
-            if lines:print(str(diagnostic.relative_to(out))+':\n'+'\n'.join(lines[-12:]),flush=True)
+            with diagnostic.open(errors='replace')as stream:lines=deque(stream,maxlen=12)
+            if lines:print(str(diagnostic.relative_to(out))+':\n'+''.join(lines),flush=True)
     for counter in ('memory.events','memory.max','memory.peak'):
         path=pathlib.Path('/sys/fs/cgroup')/counter
         if path.is_file():print('cgroup '+counter+': '+path.read_text().strip(),flush=True)
