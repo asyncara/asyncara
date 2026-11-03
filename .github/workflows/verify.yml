@@ -38,6 +38,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-soak-metrics.log python3 tests/soak/test_metrics.py
       - run: ./scripts/ci-run.sh build/ci-soak-monitor.log python3 tests/soak/test_monitor.py
       - run: ./scripts/ci-run.sh build/ci-soak-peer.log python3 tests/soak/test_fpm_peer.py
+      - run: ./scripts/ci-run.sh build/ci-poll-profile.log python3 tests/soak/test_poll_profile.py
       - run: ./scripts/ci-run.sh build/ci-step-2.log bash -c 'python3 scripts/install-test-websockets.py'
       - run: ./scripts/ci-run.sh build/ci-step-3.log bash -c 'make test'
       - run: ./scripts/ci-run.sh build/ci-connector-gate.log ./scripts/test-connector-gate.sh
