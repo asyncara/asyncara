@@ -372,8 +372,17 @@ static void do_file(ar_job *j) {
             if (k < 0)
                 system_failure(j);
         }
-        if (!j->error[0])
-            j->result = ar_string(j->engine, buf, n);
+        if (!j->error[0]) {
+            /* This buffer already has native ownership and a spare terminator.
+             * Transfer it to the result instead of allocating/copying it again. */
+            j->result = ar_value_new(j->engine, V_STRING);
+            if (j->result) {
+                buf[n] = 0;
+                j->result->string = buf;
+                j->result->length = n;
+                buf = NULL;
+            }
+        }
         ar_free(buf);
     } else if (j->op == OP_WRITE || j->op == OP_APPEND || j->op == OP_WRITE_RANGE) {
         int flags = O_WRONLY | O_CREAT | O_CLOEXEC | O_NONBLOCK;
