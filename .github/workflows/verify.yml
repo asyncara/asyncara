@@ -45,6 +45,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-5.log bash -c 'ASYNCARA_EXTENSION=ext/modules/asyncara.so ./scripts/test.sh'
       - run: ./scripts/ci-run.sh build/ci-step-6.log bash -c 'ASYNCARA_BACKEND=poll ./scripts/test.sh'
       - run: ./scripts/ci-run.sh build/ci-step-7.log bash -c './scripts/test-network-edges.sh'
+      - run: ./scripts/ci-run.sh build/ci-network-failure.log python3 tests/soak/test_network_failure.py --output build/network-failure
       - run: ./scripts/ci-run.sh build/ci-step-8.log bash -c './scripts/test-websocket.sh'
       - run: ./scripts/ci-run.sh build/ci-step-9.log bash -c 'ASYNCARA_BACKEND=poll ./scripts/test-websocket.sh'
       - run: ./scripts/ci-run.sh build/ci-step-10.log bash -c 'php -n tests/fuzz/websocket_mutation.php 5 100000 build/ws-fuzz-smoke'
@@ -69,6 +70,7 @@ jobs:
             build/fuzz-http-smoke/run.log
             build/fuzz-http-smoke/artifacts/
             build/ws-fuzz-smoke/
+            build/network-failure/
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
   database-lifecycle:

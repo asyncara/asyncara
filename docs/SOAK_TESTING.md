@@ -181,3 +181,33 @@ smokes failed the observer after their workloads completed; preserve their faile
 reports. See phase4/harness-validation.json. Final-source one-hour attempts at
 baseline179aa54 were interrupted after1195.491s mixed/1166.910s FPM. They do not
 establish one-hour endurance. Restart each campaign in a new directory.
+
+## Phase 4 frozen campaign failure
+
+Source `2e2f84f` and the phase4-r1 archive were frozen before the next 3,600-second
+attempt. It failed with an unhandled network timeout, exit 255, after 2,023.583
+wall seconds including fixture setup/teardown. Last completed sample: 1,940.227
+workload seconds, 5,517 cycles and 55 injected ProcessPool restarts. Sampled RSS
+endpoint medians increased 380 KiB; native bytes stayed zero at cycle boundaries,
+threads five and fds 23–24. The required completion record is absent. Neither
+bounded resources nor the preceding successful cycles make this a passing run.
+
+The simultaneous FPM attempt also failed. The staged supervisor stopped without
+starting six- or 24-hour tests. [campaign-failure.json](phase4/campaign-failure.json)
+retains the final reports, provenance and raw-file hashes. New test-only stage
+diagnostics retain the last bounded operation state on timeout; all existing
+connection and cycle deadlines remain unchanged. A deliberately stalled TLS peer
+checks diagnostic attribution, preservation of the original timeout and cleanup:
+
+```sh
+python3 tests/soak/test_network_failure.py --output build/new-network-failure
+```
+
+The C `tests/soak/epoll_latency.c` control measures five-millisecond waits without
+PHP/Asyncara. It prints delays over 50 ms and a completion summary. Its reporting
+threshold is diagnostic, not a replacement for any soak assertion. Commands:
+
+```sh
+cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2 tests/soak/epoll_latency.c -o build/epoll-latency
+build/epoll-latency 300 > build/new-epoll-latency.jsonl
+```

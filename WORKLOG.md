@@ -597,3 +597,93 @@ reproduces timeout, instrumented fixture now30s. Matching Clang18/PHP8.5.12/exte
 probes still report PHP callback-type UB without or with Asyncara. No fix/clean
 Clang pass claimed. docs/DEPENDENCY_FINDINGS.md and phase4/dependency-findings.json
 contain commands, versions, stacks and hashes. No ext/ or src/ changes.
+
+
+## Phase 4 frozen package and staged launch
+
+Committed2e2f84f4c07dde3f1412fd40fcd905916611ea56. Source distribution
+build/asyncara-0.1.0-dev-phase4-r1.tar.gz,323files,SHA256
+bcaa6b88f0438ac797840b70a16ca4b43b2c92e2e270d24a0fd8b9a7a90ed898.
+All bytes match Git. Fresh phpize/build/install/Composer/core/poll/WebSocket/network
+PASS8.3.36/8.4.27/8.5.12; docs/phase4/package-r1.json retains complete steps.
+make verify also PASS after harness changes. Historical r5 remains untouched.
+
+First supervisor preflight rejected an untracked .local build symlink; no test
+ran. Preserved failure; replaced only the owned link with an ignored dependency
+directory. Detached supervisor2787353 launched at2026-11-03T13:50:42Z from clean
+frozen2e2f84f. Live state: /tmp/asyncara-phase4-nrtjh3t1/campaign-2e2f84f-r2/state.json.
+Runs3600s mixed+FPM, then21600s, then86400s only if both preceding reports pass.
+Current stages remain RUNNING; launch is not completion. Runtime sources stay
+frozen. Each stage records source/archive/module hashes and original assertions.
+
+Added independent admission regression tests for existing SQLite128 and native
+curl8-per-host/64-total bounds. All queued HTTP work completes; rejected SQLite
+open recovers capacity after close.8.3/8.4/8.5 epoll+poll and GCC full ASan/UBSan
+PASS. Added the test to the regular runner. Documented fixed versus configurable
+limits and lack of a request-global cap for direct PostgreSQL/MySQL/Redis handles.
+No runtime implementation was altered. Corrected a stale historical benchmark
+sentence that contradicted later streaming/WebSocket sections.
+
+New native fuzz runs PASS427893inputs/121s and678148inputs/61s; instrumented PHP
+mutation runs PASS10107RESP/IPC/header inputs/60.116s and11631WebSocket inputs/
+60.187s. No suppressions or threshold changes. Logs/corpora/hash attestation in
+phase4/validation-r1.json. Existing three-sample benchmark suite reran on frozen
+runtime with isolated8.5.12 CLI/FPM, all14cases recorded in
+benchmarks/results/phase4-r1.json. Concurrent soak/fuzz load precludes attributing
+performance differences to code; CPU pool was slower than sequential in its
+median sample. Preserve that outcome along with favorable results.
+
+
+## Phase 4 endurance failure, investigation open
+
+Frozen2e2f84f FPM campaign FAILED after the last651.064s steady sample, around
+14:01:54UTC. Four upstream operations overlapped, but the unrelated ticker advanced
+once (existing requirement>=2). All raw logs/failure.json preserved; no threshold
+changed. The preceding low-tick successful request had345.9ms timer lag and
+0.412ms maximum Task step. Concurrent instrumented mutation is a correlation,
+not proven cause. No native defect is asserted or speculative runtime fix made.
+The mixed campaign continues; the stage gate cannot advance after this failure.
+Added bounded request CPU usage, Linux runnable-wait/scheduled time and last-four
+tick diagnostics to distinguish descheduling from blocking in a subsequent run.
+Native/public runtime source remains frozen. docs/phase4/fpm-endurance-failure.json
+retains the failed request evidence. EXPERIMENTAL classification is unchanged.
+
+## Phase 4 failed stage and diagnostic checkpoint — 2026-11-03
+
+The mixed run subsequently failed too: exit 255, unhandled network timeout,
+2,023.583 wall seconds including fixture lifecycle, last sampled workload
+1,940.227 seconds / 5,517 cycles / 55 process restarts. No completion record.
+RSS endpoint medians +380 KiB, native bytes zero at sampled boundaries, fds23–24,
+threads5. Preserve the failure despite bounded sampled resources. Supervisor
+finished FAIL at14:24:29Z and did not start six-/24-hour stages. Durable report:
+docs/phase4/campaign-failure.json; previous failure reports remain untouched.
+
+Added only test instrumentation: bounded mixed network stages on exception;
+request CPU/runqueue/tick observations; owned FPM syscall tracing; standalone C
+epoll latency control. Original deadline/ticker/resource thresholds unchanged.
+Deliberately stalled TLS handshake confirms original timeout propagation, stage
+attribution and cleanup on8.3.36/8.4.27/8.5.12 with epoll/poll; added to CI.
+
+Diagnostic outcomes: FPM600.145s/7,520main requests PASS with all lifecycle faults;
+traced FPM300.074s/693requests PASS but5ms epoll_wait reached341.487ms. Standalone
+C control300.004s/42,164waits records197waits>50ms and maximum489.310ms without
+PHP/Asyncara. Host-level timing effects are demonstrated, but original failure
+attribution remains unresolved. Mixed600.175s/2,179cycles PASS, final pending
+work/native bytes zero; RSS endpoint+2,472KiB, short-window slope23,740KiB/hour
+not extrapolated as a leak rate. Evidence: phase4/timing-diagnostics.json.
+
+Commands: tests/soak/fpm.py --seconds600; tests/soak/fpm_trace.py --seconds300;
+tests/soak/run.py --seconds600 --databases --extended-network --oracle-prefix;
+tests/soak/test_network_failure.py on six version/backend combinations;
+cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2
+tests/soak/epoll_latency.c; standalone control300s. Every run used a new output
+directory under /tmp/asyncara-phase4-nrtjh3t1; exact commands/manifests retained.
+
+Also completed: installed r1 audit suites8.3/8.4/8.5; final connection-limit
+six-version/backend cases; Valgrind connection regression zero errors/lost bytes
+(3,888reachable); native TSan PASS; separate private-CA MariaDB and Oracle TLS
+fixtures with100Redis reconnect cycles each PASS. Updated validation-r1.json,
+ROADMAP, delivery, security, resource and lifecycle documents. No ext/ or src/
+changes; release remains EXPERIMENTAL. Next: new immutable test checkpoint,
+independent archive installation, then one-hour retry without concurrent builds
+or fuzzing. Short diagnostic passes do not erase the two endurance failures.

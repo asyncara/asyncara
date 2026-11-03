@@ -120,3 +120,18 @@ shortens the stale-pointer detection window; it is not a runtime quota increase
 or an error suppression. Reruns:306,396native inputs/61s/198MiB peak,803,874HTTP
 buffer inputs/61s/147MiB peak, no findings. Both targets preserve crash artifacts
 in CI. Mapped-buffer tail poisoning has an independent intentional-failure test.
+
+
+## Phase 4 unchanged-runtime campaign
+
+Frozen runtime source e5d94fd, repository checkpoint2e2f84f: allocation/worker target
+427,893executions/121s, peak203MiB; HTTP buffer callbacks678,148executions/61s,
+peak141MiB. Both retain the existing512MiB ceiling,64MiB ASan quarantine,
+ASan/UBSan/LSan and seed20261102; no crash artifact or diagnostic was produced.
+Actual corpus hashes and raw log hashes are in phase4/validation-r1.json.
+
+Matching fully instrumented GCC PHP8.5.12 and extension:10,107RESP/IPC/header
+mutations over60.116s;11,631WebSocket mutations over60.187s. No findings.
+The WebSocket runner covers framing/close payloads, not complete interoperability.
+These bounded runs do not fuzz external curl/OpenSSL/libpq/Connector parsers and
+are not substitutes for unresolved Clang full-PHP diagnostics.

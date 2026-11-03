@@ -52,8 +52,9 @@ reproduces exactly the same result without PHP or Asyncara, after 20 connections
 libpq retains one process-global BIO_METHOD (`libpq socket`) and provides no
 public cleanup API for it. Its root disappears at dlclose. The inspected
 [libpq source](https://github.com/postgres/postgres/blob/REL_16_STABLE/src/interfaces/libpq/fe-secure-openssl.c)
-only frees that object on initialization failure. This is a bounded upstream
-unload leak, not zero-leak TLS certification. No suppression or private-pointer
+only frees that object on initialization failure. The allocation is bounded per
+loaded-library lifetime; repeated unloads accumulate it, as independently measured
+in DEPENDENCY_FINDINGS.md. This is not zero-leak TLS certification. No suppression or private-pointer
 cleanup was added. ZEND_DONT_UNLOAD_MODULES=1 keeps library globals reachable for
 an additional diagnostic run; that run does not repair or erase the finding.
 

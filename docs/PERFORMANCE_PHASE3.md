@@ -31,7 +31,9 @@ Atomic file comparison: 100 sequential 64 KiB worker writes per sample; three sa
 
 [Raw atomic samples, including every operation latency](../benchmarks/results/phase3-atomic.json). Reproduce with `./benchmarks/run.py --output benchmarks/results/NEW.json` and `php -n -d extension=$PWD/build/asyncara.so benchmarks/atomic.php`.
 
-No HTTP streaming, WebSocket, io_uring or broad platform benchmark is claimed because those implementations are absent.
+The initial table predates HTTP streaming and WebSocket benchmark coverage;
+later measurements follow below. No io_uring or broad platform benchmark is
+claimed. Consult ROADMAP.md for current implementation status.
 
 ## HTTP streaming continuation
 

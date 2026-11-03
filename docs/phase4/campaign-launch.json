@@ -1,0 +1,60 @@
+{
+  "status": "RUNNING",
+  "startedUtc": "2026-11-03T13:50:41.863453+00:00",
+  "supervisorPid": 2787353,
+  "sourceCommit": "2e2f84f4c07dde3f1412fd40fcd905916611ea56",
+  "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-2e2f84f",
+  "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+  "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r1.tar.gz",
+  "artifactHashes": {
+    "asyncara-0.1.0-dev-phase4-r1.tar.gz": "bcaa6b88f0438ac797840b70a16ca4b43b2c92e2e270d24a0fd8b9a7a90ed898",
+    "asyncara.so": "e2bb4e01ca67ace4e83e393aef422065a6cbc32449bf80d930de96b955976aab"
+  },
+  "supervisorSha256": "391df3b450ada704077dcdedf43041461d3b0dea9aa06209aba71fc68275740f",
+  "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+  "stagesSeconds": [
+    3600,
+    21600,
+    86400
+  ],
+  "stages": [
+    {
+      "requestedSeconds": 3600,
+      "startedUtc": "2026-11-03T13:50:42.011100+00:00",
+      "status": "RUNNING",
+      "jobs": [
+        {
+          "kind": "mixed",
+          "pid": 2787387,
+          "command": [
+            "/usr/bin/python3",
+            "/tmp/asyncara-phase4-nrtjh3t1/frozen-2e2f84f/tests/soak/run.py",
+            "--seconds",
+            "3600",
+            "--output",
+            "/tmp/asyncara-phase4-nrtjh3t1/campaign-2e2f84f-r2/mixed-3600",
+            "--databases",
+            "--extended-network",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-2e2f84f-r2/mixed-3600"
+        },
+        {
+          "kind": "fpm",
+          "pid": 2787391,
+          "command": [
+            "/usr/bin/python3",
+            "/tmp/asyncara-phase4-nrtjh3t1/frozen-2e2f84f/tests/soak/fpm.py",
+            "--seconds",
+            "3600",
+            "--output",
+            "/tmp/asyncara-phase4-nrtjh3t1/campaign-2e2f84f-r2/fpm-3600"
+          ],
+          "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-2e2f84f-r2/fpm-3600"
+        }
+      ]
+    }
+  ],
+  "observation": "Launch attestation only. Consult live state/report files; this is not completion evidence."
+}

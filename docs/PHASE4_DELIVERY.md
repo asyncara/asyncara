@@ -1,7 +1,7 @@
 # Phase 4 engineering evidence
 
 **EXPERIMENTAL — work in progress.** This report separates completed checks
-from running campaigns. No Phase 4 release or endurance certification is claimed.
+from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
 
 ## Verified baseline
 
@@ -34,9 +34,9 @@ private data/configuration paths. [Interruption evidence](phase4/interrupted-cam
 retains the exact partial durations. All original files remain intact.
 
 Raw evidence: `/tmp/asyncara-phase4-nrtjh3t1`, also recorded by `build/phase4-path`.
-No final-source one-hour, six-hour or 24-hour campaign has completed. Native and
-public runtime source remain unchanged. Restarts must use new output directories
-and a detached process so an agent turn interruption does not terminate a run.
+Neither final-source one-hour attempt passed. Six-hour and 24-hour stages were
+not started. Native and public runtime source remain unchanged. Every retry uses
+a new output directory and a detached process.
 
 ## Harness hardening and coverage
 
@@ -65,13 +65,15 @@ observer on a permission race; both failures remain preserved. Permission handli
 has a regression test and missing metrics are now explicit. The corrected poll smoke also passed60.156s/136cycles. FPM passed60.597s/416main
 requests plus A/B/C/D and lifecycle faults. A failed-barrier bookkeeping leak in
 the test HTTP peer was reproduced, fixed with guaranteed cleanup, and its
-regression and original FPM audit passed. Long campaign restart is pending.
+regression and original FPM audit passed. Subsequent endurance failures are
+recorded below.
 [Harness evidence](phase4/harness-validation.json) preserves reports and log hashes.
 
 ## Remaining engineering work
 
-Complete the corrected harness verification, freeze it and restart staged
-one-/six-/24-hour mixed and FPM campaigns. Standalone controls reproduced the libpq unload allocation on16.15/17.11/18.6
+Diagnose both failed one-hour attempts, preserving the original assertions.
+Repeat the affected campaigns from a new frozen checkpoint before advancing to
+six-/24-hour runs. Standalone controls reproduced the libpq unload allocation on16.15/17.11/18.6
 and PHP callback-type findings with and without Asyncara. These remain unresolved
 dependency findings; see [DEPENDENCY_FINDINGS](DEPENDENCY_FINDINGS.md).
 Subsequent native/API work requires new checkpoints and relevant repeated soaks.
@@ -79,3 +81,100 @@ Subsequent native/API work requires new checkpoints and relevant repeated soaks.
 Existing compatibility boundaries remain those in [PHASE3_DELIVERY](PHASE3_DELIVERY.md).
 No new HTTP, WebSocket, database, hook, framework, io_uring or ZTS capability is
 advertised at this checkpoint. Userland ThreadPool remains **BLOCKED**.
+
+
+## Frozen distribution and failed endurance stage
+
+Source2e2f84f4c07dde3f1412fd40fcd905916611ea56 is packaged as
+`build/asyncara-0.1.0-dev-phase4-r1.tar.gz` (323files), SHA256
+`bcaa6b88f0438ac797840b70a16ca4b43b2c92e2e270d24a0fd8b9a7a90ed898`.
+Every file matches Git. Independent builds, isolated installs, loading, Composer,
+core/poll, WebSocket and network tests pass8.3.36/8.4.27/8.5.12. See
+[package-r1.json](phase4/package-r1.json). This is an experimental source
+checkpoint, not a GitHub production release.
+
+The detached campaign ran from 2026-11-03T13:50:42Z to 14:24:29Z. Both requested
+one-hour jobs failed. [Complete stage evidence](phase4/campaign-failure.json)
+retains the source/archive identity, raw artifact hashes, resource trends and
+failure details. The stage gate prevented six-/24-hour execution.
+
+- **FPM:** last steady observation 651.064 seconds, 6,208 recorded main responses.
+  Four upstream HTTP operations overlapped, but one request's independent ticker
+  advanced once instead of the required two times. Original assertions remain.
+- **Mixed:** process exit 255 after 2,023.583 wall seconds including fixture setup
+  and teardown. Last completed sample: 1,940.227 workload seconds, 5,517 cycles,
+  5.517 million burst Tasks and 55 ProcessPool restarts. A timeout exception
+  escaped the added network work. Its original trace identifies the timer
+  callback, not the waiting operation. Stage diagnostics now preserve that detail.
+  Steady RSS endpoint medians increased 380 KiB; tracked native bytes remained
+  zero at sampled cycle boundaries, threads stayed at five, fds at 23–24.
+  These observations do not establish successful shutdown or endurance.
+
+A separate diagnostic FPM run passed 600.145 seconds and 7,520 main requests plus
+all lifecycle cases. A traced single-worker run passed 300.074 seconds / 693
+requests, while recording a 5 ms `epoll_wait` lasting 341.487 ms. Tracing changes
+timing. An independent C control without PHP/Asyncara also reproduces substantial
+oversleep. This establishes host-level timing effects, but neither proves the
+cause of the original failed request nor explains the mixed timeout. No runtime
+fix, threshold relaxation or endurance pass is inferred.
+
+The standalone control completed 300.004 seconds / 42,164 waits: 197 exceeded
+50 ms, worst 489.310 ms. The mixed diagnostic passed 600.175 workload seconds /
+2,179 cycles; final scheduled work and tracked native bytes were zero. RSS
+endpoint medians increased 2,472 KiB in this shorter window; its extrapolated
+23,740 KiB/hour slope is retained and is not a measured long-term growth rate.
+The deliberate TLS-stall diagnostic/cleanup test passes all three PHP branches
+with epoll and poll and is added to CI. Complete diagnostic provenance:
+[timing-diagnostics.json](phase4/timing-diagnostics.json).
+
+Raw directories and commands are retained beneath
+`/tmp/asyncara-phase4-nrtjh3t1`. The initial source-cleanliness preflight failure
+is also preserved. [Launch attestation](phase4/campaign-launch.json) records the
+frozen supervisor and artifact identities.
+
+Later connection-limit tests exercise the same unchanged ext/src: SQLite128
+admission/recovery, HTTP8-per-host/64-total measured by independent peers. They
+pass all three PHP branches with both backends and fully instrumented GCC8.5.12.
+The current fixed native connection caps are not newly configurable; direct
+SQL/Redis connection counts still require application/deployment containment.
+
+Fresh fuzz runs:427,893native inputs/121s;678,148HTTP-buffer inputs/61s;
+10,107instrumented RESP/IPC/header inputs/60.116s;11,631WebSocket inputs/60.187s.
+No findings, no suppressions; scope remains bounded. Evidence:
+[validation-r1.json](phase4/validation-r1.json). Existing benchmark suite retained
+all three samples for14cases in [phase4-r1.json](../benchmarks/results/phase4-r1.json).
+Shared soak/fuzz load makes these observations unsuitable for regression attribution
+or a stable ranking; median CPU pool time exceeded sequential time.
+
+
+## Validation and release boundaries
+
+The r1 installed package independently passed the audit regression suite on all
+three PHP branches. New connection-limit regressions pass epoll and poll on each
+branch, full GCC ASan/UBSan PHP 8.5.12, and Valgrind with zero errors or lost bytes
+(3,888 bytes remain reachable). Native TSan passed its existing worker workload.
+Clang full-PHP function-type findings remain unresolved and are not reported as a
+clean sanitizer configuration.
+
+Fresh private-CA database tests pass PostgreSQL, Redis ACL/TLS and separate
+MariaDB / Oracle fixtures, including rejection cases and 100 Redis TLS repeat
+cycles in each fixture. Existing versions remain PostgreSQL 16.15, MariaDB
+11.8.9, Oracle MySQL 8.4.13 and Redis 7.0.15; SQLite remains 3.45.1. These are local
+isolated tests, not WAN, mTLS, certificate-rotation or cancellation-acknowledgement
+certification. [Database matrix](DATABASE_COMPATIBILITY.md) records the boundaries.
+
+Filesystem remains pthread-worker backed; io_uring file operations remain
+NOT_IMPLEMENTED. Existing bounded HTTP/1.1 streaming, one-file multipart,
+ws/wss clients and raw TCP WebSocket server remain available within their tested
+limits. Multiple-file MIME, WSS server, browser/Autobahn certification, new hooks
+and framework adapters have not been implemented in this phase. Only sleep/usleep
+hooks are PARTIALLY_SUPPORTED; other transparent groups are UNSUPPORTED. ZTS
+concurrent interpreter execution is unverified and userland ThreadPool is BLOCKED.
+
+**Release assessment: EXPERIMENTAL.** Implemented runtime source is unchanged
+from `e5d94fd`; the r1 package and failed long campaign identify full tree `2e2f84f`.
+Later test/diagnostic changes have separate manifests and are not retroactively
+included in that package or campaign. A source archive is not a published GitHub
+release. The next release gate is diagnosis and successful frozen endurance,
+followed by the remaining resource, database, HTTP, WebSocket and integration
+priorities in the canonical [roadmap](ROADMAP.md).

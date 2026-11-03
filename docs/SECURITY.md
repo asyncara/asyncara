@@ -82,3 +82,9 @@ Matching Clang18/PHP8.5.12 runs still produce callback-type UBSan findings witho
 Asyncara. See DEPENDENCY_FINDINGS.md for exact scope and unresolved status.
 New mixed/FPM output directories and newly created database fixture directories
 are private0700. No host configuration or deployed services are changed.
+
+Phase 4 one-hour mixed/FPM attempts failed responsiveness/deadline checks. Their
+sampled memory counts do not establish safe long-running deployment. Diagnostic
+tracing is confined to owned test processes and excludes application payload
+syscalls. The original thresholds and failures remain preserved. Source and
+short-run sanitizer checks cannot replace the outstanding endurance gate.

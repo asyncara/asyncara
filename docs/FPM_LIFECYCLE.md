@@ -167,3 +167,30 @@ six descriptors and one thread, and original cross-request isolation checks rema
 A 60.243-second monitor smoke passed 660 requests; final observer rerun/endurance
 are tracked in PHASE4_DELIVERY.md. External process permission gaps are recorded
 explicitly and never weaken the strict idle-worker checks.
+
+## Phase 4 responsiveness failure
+
+Frozen `2e2f84f` failed its requested one-hour test after the last 651.064-second
+steady sample. Four HTTP responses overlapped, but the independent ticker
+advanced once; the unchanged requirement is at least twice. All 6,208 recorded
+main responses, failure logs and prior successful lifecycle cases remain intact.
+This is a failed responsiveness test, not an RSS or request-isolation pass for
+the full requested duration. The stage gate did not start six-/24-hour work.
+
+Test requests now record CPU time, Linux scheduled/runnable-wait time and bounded
+last-tick timestamps for diagnosis. A separate 600.145-second run passed 7,520
+main requests and every lifecycle case. This shorter pass does not supersede
+the failure. A syscall diagnostic passed 693 requests / 300.074 seconds but
+recorded a five-millisecond `epoll_wait` lasting 341.487 ms. A standalone C control
+also reproduces oversleep without PHP/Asyncara. Host-level effects are present;
+the original failed request's exact cause remains unproven.
+
+```sh
+python3 tests/soak/fpm_trace.py --seconds 300 --output build/new-fpm-trace
+```
+
+The diagnostic starts only its own FPM process under `strace -D`. It records
+readiness, synchronization and memory-management syscalls, not payloads or
+credentials. It changes timing and is not endurance certification. No global
+ptrace, scheduler or PHP settings are modified. Use a new directory every time.
+See [PHASE4_DELIVERY](PHASE4_DELIVERY.md) for current gate status and evidence.

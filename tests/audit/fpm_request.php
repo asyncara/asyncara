@@ -5,6 +5,13 @@ use Asyncara\{Async,Context,Runtime,Hook,Future};
 use Asyncara\HTTP\HttpClient;
 use Asyncara\IO\Files;
 use Asyncara\SQLite\Connection;
+function requestCpuSample():array {
+ $usage=getrusage();$scheduling=explode(' ',trim(file_get_contents('/proc/self/schedstat')));
+ return ['monotonicNs'=>hrtime(true),'userUs'=>$usage['ru_utime.tv_sec']*1000000+$usage['ru_utime.tv_usec'],
+  'systemUs'=>$usage['ru_stime.tv_sec']*1000000+$usage['ru_stime.tv_usec'],
+  'scheduledNs'=>(int)$scheduling[0],'runnableWaitNs'=>(int)$scheduling[1],
+  'slices'=>(int)$scheduling[2]];
+}
 $before=Runtime::information();
 if($before->pendingOperations||$before->nativeMemoryBytes||$before->openFileHandles||Runtime::timeHooksEnabled()||Runtime::diagnostics()!==[]||Runtime::configuration()['taskLimit']!==20000||Runtime::configuration()['futureLimit']!==40000||Future::pendingCount()!==0)throw new RuntimeException('Cross-request runtime state');
 final class RequestStateProbe { public static ?string $id=null; }
@@ -45,17 +52,18 @@ $result=Async::run(function()use($mode):array{
   if($db->query('select 42 as n')->await()[0]['n']!==42)throw new RuntimeException('SQL result');
   if(Files::read(__FILE__)->await()==='')throw new RuntimeException('File result');
   if($mode==='lifecycle'){usleep(1000);return ['ticks'=>0,'http'=>[]];}
-  $client=new HttpClient(4);$jobs=[];
+  $client=new HttpClient(4);$jobs=[];$cpuBefore=requestCpuSample();
   for($i=0;$i<4;$i++)$jobs[]=$mode==='stream'?Async::spawn(function()use($client):\Asyncara\HTTP\Response{
    $stream=$client->getStream($_SERVER['AUDIT_URL']);
    try{$head=$stream->headers()->await();$body='';foreach($stream as$chunk)$body.=$chunk;return new \Asyncara\HTTP\Response($head->status,$body,'');}
    finally{$stream->close();}
   }):$client->get($_SERVER['AUDIT_URL']);
-  $ticks=0;$ticker=Async::spawn(function()use($jobs,&$ticks):void{while(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){Async::sleep(.005);if(count(array_filter($jobs,fn($j)=>!$j->isCompleted())))$ticks++;}});
+  $ticks=0;$lastTicks=[];$ticker=Async::spawn(function()use($jobs,&$ticks,&$lastTicks):void{while(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){Async::sleep(.005);if(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){$ticks++;$lastTicks[]=hrtime(true);if(count($lastTicks)>4)array_shift($lastTicks);}}});
   $responses=Async::gather($jobs);$ticker->await();
+  $cpuAfter=requestCpuSample();$cpuDelta=[];foreach($cpuAfter as$key=>$value)$cpuDelta[$key]=$value-$cpuBefore[$key];
   $intervals=array_map(fn($r)=>$r->json(),$responses);
-  if($ticks<2||max(array_column($intervals,'start'))>=min(array_column($intervals,'end')))throw new RuntimeException('I/O did not overlap or blocked loop: '.json_encode(['ticks'=>$ticks,'intervals'=>$intervals]));
-  return ['ticks'=>$ticks,'http'=>$intervals];
+  if($ticks<2||max(array_column($intervals,'start'))>=min(array_column($intervals,'end')))throw new RuntimeException('I/O did not overlap or blocked loop: '.json_encode(['ticks'=>$ticks,'intervals'=>$intervals,'cpuDelta'=>$cpuDelta,'lastTicksNs'=>$lastTicks,'scheduler'=>Runtime::diagnostics()]));
+  return ['ticks'=>$ticks,'http'=>$intervals,'cpuDelta'=>$cpuDelta];
  }finally{$db->close()->await();}
 });
 $after=Runtime::information();

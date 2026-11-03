@@ -1,0 +1,424 @@
+{
+  "runtimeUnchangedSince": "e5d94fd8dd959b88474332a05aaa1c9eb61f318f",
+  "scope": "Diagnostic test edits after 2e2f84f; exact manifests and request hashes retained, not a new endurance pass",
+  "fpm": [
+    {
+      "name": "A-lifecycle",
+      "workers": 1,
+      "requests": 100,
+      "status": "PASS"
+    },
+    {
+      "name": "B-within-request",
+      "workers": 1,
+      "requests": 10,
+      "status": "PASS"
+    },
+    {
+      "name": "C-multiple-workers",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "D-streaming",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "recycling",
+      "status": "PASS",
+      "requests": 25,
+      "pids": [
+        2852539,
+        2852602,
+        2852662
+      ]
+    },
+    {
+      "name": "mixed-reload-kill",
+      "status": "PASS",
+      "seconds": 600.145289161941,
+      "requests": 7520,
+      "reloads": 1,
+      "killedWorkers": 1,
+      "sampleCount": 7512,
+      "rssRangeKiBAfterWarmup": {
+        "2852798": 324,
+        "2852765": 352,
+        "2852766": 356,
+        "2852767": 264
+      },
+      "maxRssIncreaseKiB": {
+        "2852798": 324,
+        "2852765": 352,
+        "2852766": 356,
+        "2852767": 264
+      },
+      "warmupPeakKiB": {
+        "2852798": 14540,
+        "2852765": 18504,
+        "2852766": 18708,
+        "2852767": 18580
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "2852798": 2872,
+        "2852765": 504,
+        "2852766": 520,
+        "2852767": 516
+      },
+      "rssSlopeKiBPerHour": {
+        "2852798": 792.0470246958372,
+        "2852765": 731.721824080593,
+        "2852766": 894.4319310667668,
+        "2852767": 636.6930867662203
+      },
+      "samplesFile": "mixed-samples.jsonl",
+      "responsesFile": "mixed-responses.jsonl"
+    },
+    {
+      "name": "request-timeout",
+      "status": "PASS",
+      "terminatedPid": 2912858,
+      "replacement": {
+        "pid": 2912899,
+        "fds": 6,
+        "sockets": 1,
+        "threads": 1,
+        "rssKiB": 15572,
+        "virtualKiB": 508256,
+        "idleWaitSeconds": 0.000841205008327961,
+        "transientThreadsBeforeReaping": 1
+      }
+    }
+  ],
+  "mixed": {
+    "status": "PASS",
+    "wallSeconds": 628.9360329010524,
+    "workloadExit": 0,
+    "workloadError": null,
+    "samples": 117,
+    "complete": [
+      {
+        "type": "complete",
+        "seconds": 600.174831782002,
+        "cycles": 2179,
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 161566,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 310327,
+          "taskSteps": 5070339,
+          "maxStepSeconds": 0.42611680389381945,
+          "maxTimerLagSeconds": 0.4348753581289202,
+          "activeTasks": 0,
+          "pendingFutures": 0,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 0,
+          "ioWatchers": 0,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "os": {
+          "rssKiB": 47608,
+          "virtualKiB": 400548,
+          "threads": 5,
+          "fds": 13,
+          "sockets": 4
+        }
+      }
+    ],
+    "completeRecords": 1,
+    "parseErrors": [],
+    "parseErrorCount": 0,
+    "steadyTrends": {
+      "rssKiB": {
+        "min": 45188,
+        "max": 47696,
+        "mean": 46682.93617021276,
+        "endMinusStartMedian": 2472,
+        "slopePerHour": 23739.782270653697
+      },
+      "phpBytes": {
+        "min": 2175576,
+        "max": 2225744,
+        "mean": 2207349.0212765955,
+        "endMinusStartMedian": 18544,
+        "slopePerHour": 214994.94657954932
+      },
+      "nativeBytes": {
+        "min": 0,
+        "max": 0,
+        "mean": 0.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "fds": {
+        "min": 23,
+        "max": 24,
+        "mean": 23.02127659574469,
+        "endMinusStartMedian": 0,
+        "slopePerHour": -0.49400348567594893
+      },
+      "threads": {
+        "min": 5,
+        "max": 5,
+        "mean": 5.0,
+        "endMinusStartMedian": 0,
+        "slopePerHour": 0.0
+      },
+      "sockets": {
+        "min": 10,
+        "max": 11,
+        "mean": 10.021276595744675,
+        "endMinusStartMedian": 0,
+        "slopePerHour": -0.4940034856757583
+      }
+    },
+    "failures": [],
+    "notes": [
+      "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+      "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+      "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+      "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+      "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+    ]
+  },
+  "fpmTrace": {
+    "status": "PASS",
+    "command": [
+      "strace",
+      "-D",
+      "-f",
+      "-ttt",
+      "-T",
+      "-e",
+      "trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise",
+      "-o",
+      "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-300/syscalls.log",
+      "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+      "-n",
+      "-F",
+      "-d",
+      "extension=/home/coder/Asyncara/build/asyncara.so",
+      "-d",
+      "display_errors=0",
+      "-y",
+      "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-300/fpm.conf"
+    ],
+    "requestedSeconds": 300.0,
+    "source": "2e2f84f4c07dde3f1412fd40fcd905916611ea56",
+    "extensionSha256": "8cf895be81021b9be69cb2b12ef406cb58dbcefd29175c70a2d24677d2434996",
+    "requestSha256": "ecce171d630670fa4d8934c464123589336808fce1391370a2563c0c6cfa8186",
+    "note": "Tracing changes timing; use for diagnosis, not uninstrumented endurance certification.",
+    "seconds": 300.0735357219819,
+    "requests": 693
+  },
+  "longestTracedEpollWaits": [
+    [
+      0.341487,
+      "2893713 1793716502.063488 epoll_wait(15, [{events=EPOLLIN, data={u32=1, u64=1}}, {events=EPOLLIN, data={u32=3, u64=3}}, {events=EPOLLIN, data={u32=2, u64=2}}, {events=EPOLLIN, data={u32=4, u64=4}}], 5, 5) = 4 <0.341487>"
+    ],
+    [
+      0.258603,
+      "2893713 1793716518.668387 epoll_wait(15, [], 2, 5) = 0 <0.258603>"
+    ],
+    [
+      0.196896,
+      "2893713 1793716648.931940 epoll_wait(15, [{events=EPOLLIN, data={u32=2, u64=2}}, {events=EPOLLIN, data={u32=4, u64=4}}, {events=EPOLLIN, data={u32=3, u64=3}}, {events=EPOLLIN, data={u32=1, u64=1}}], 5, 5) = 4 <0.196896>"
+    ],
+    [
+      0.182635,
+      "2893713 1793716599.562084 epoll_wait(15, [], 5, 5) = 0 <0.182635>"
+    ],
+    [
+      0.177708,
+      "2893713 1793716607.696560 epoll_wait(15, [{events=EPOLLIN, data={u32=1, u64=1}}, {events=EPOLLIN, data={u32=2, u64=2}}, {events=EPOLLIN, data={u32=4, u64=4}}, {events=EPOLLIN, data={u32=3, u64=3}}], 5, 5) = 4 <0.177708>"
+    ],
+    [
+      0.170967,
+      "2893713 1793716609.470328 epoll_wait(15, [], 2, 5) = 0 <0.170967>"
+    ],
+    [
+      0.163699,
+      "2893713 1793716561.774465 epoll_wait(15, [{events=EPOLLIN, data={u32=3, u64=3}}], 5, 5) = 1 <0.163699>"
+    ],
+    [
+      0.142748,
+      "2893713 1793716459.754119 epoll_wait(15, [], 5, 5) = 0 <0.142748>"
+    ],
+    [
+      0.134716,
+      "2893713 1793716412.301566 epoll_wait(15, [], 5, 5) = 0 <0.134716>"
+    ],
+    [
+      0.123758,
+      "2893713 1793716393.260146 epoll_wait(15, [], 5, 5) = 0 <0.123758>"
+    ]
+  ],
+  "standaloneControl": {
+    "complete": {
+      "type": "complete",
+      "seconds": 300.003561374,
+      "waits": 42164,
+      "over50ms": 197,
+      "maxWaitSeconds": 0.489309918
+    },
+    "worstObservation": {
+      "type": "oversleep",
+      "unixSeconds": 1793716788.185399,
+      "elapsedSeconds": 0.489309918,
+      "cpuSeconds": 0.44739767,
+      "requestedMilliseconds": 5
+    },
+    "command": "cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2 tests/soak/epoll_latency.c -o build/epoll-latency; build/epoll-latency 300",
+    "interpretation": "Host/kernel waits overrun a 5ms timeout without PHP/Asyncara. No root-cause proof for either earlier failure. Thresholds unchanged."
+  },
+  "stalledTlsRegression": [
+    {
+      "php": "8.3",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 5.265101307071745,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.3/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    },
+    {
+      "php": "8.3",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 5.106369288871065,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.3/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    },
+    {
+      "php": "8.4",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 5.0430451079737395,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.4/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    },
+    {
+      "php": "8.4",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 5.002123116981238,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.4/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    },
+    {
+      "php": "8.5",
+      "backend": "epoll",
+      "exit": 0,
+      "seconds": 4.900712170870975,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.5/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    },
+    {
+      "php": "8.5",
+      "backend": "poll",
+      "exit": 0,
+      "seconds": 4.897837252821773,
+      "module": "/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r1/8.5/asyncara-0.1.0-dev/ext/.libs/asyncara.so"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-cpu-diagnostic-600/report.json",
+      "bytes": 449108,
+      "sha256": "31f896407168a74eda103acb0f561a67466f314819a4a8a4e32ea41f6313d019"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-cpu-diagnostic-600/provenance.json",
+      "bytes": 1441,
+      "sha256": "e7be6a6a5fc24d97d5904e5c16d95744d51496f4032403e9e44b4a2080fbc5a2"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-cpu-diagnostic-600/mixed-responses.jsonl",
+      "bytes": 17671496,
+      "sha256": "e96377c2629d9841b3944620611740983c42fcbc57ff20b2a3d7f68c0731ff6e"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-cpu-diagnostic-600/mixed-samples.jsonl",
+      "bytes": 1521260,
+      "sha256": "0572a71affccec8bc53a267fe7c50ceafd7f3f6a090571d936171665647a4e7f"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-300/report.json",
+      "bytes": 974,
+      "sha256": "1dca2a3f623a13b001902c429a9bf8036158b640a23f5830f4146045c21859da"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-300/syscalls.log",
+      "bytes": 10596931,
+      "sha256": "c433dbbfff7a23de3d0d2a71525328b552b5320deecb756e989ce664af2831b4"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/fpm-syscall-300/responses.jsonl",
+      "bytes": 1767447,
+      "sha256": "a7c26dd264f8351e2f7d8306cddde2f366f602bcd97315c75abe53a83fa1dc32"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/epoll-latency-300.jsonl",
+      "bytes": 26894,
+      "sha256": "208e794bc3b8f80b2996270b1773bdbddb4c20f99c461a414f9430635a6df959"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/mixed-stage-diagnostic-600/metadata.json",
+      "bytes": 1361,
+      "sha256": "570c4367c48d402e067559a1ff6d9701d1ae77e5d117c08433ba3f85b2296a34"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/mixed-stage-diagnostic-600/report.json",
+      "bytes": 3512,
+      "sha256": "6fba62ae80d73944fe674bef200958a7d6ffa588e809c210bb348d99dad89d3c"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/mixed-stage-diagnostic-600/source-manifest.json",
+      "bytes": 33913,
+      "sha256": "e3473574d288943345f23680b683eab41581821d6e24d739e5cf8cea5c760466"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/mixed-stage-diagnostic-600/samples.jsonl",
+      "bytes": 222312,
+      "sha256": "4514065c966a936458dd2b4d8791ba4f90c60d15f019cb729017f5379661feac"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/mixed-stage-diagnostic-600/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/network-failure-matrix.json",
+      "bytes": 1255,
+      "sha256": "777d9f6c1b1ff5ad6fbcc52e39c8b84320c4861d1af65275e27954530bb39dbd"
+    }
+  ]
+}

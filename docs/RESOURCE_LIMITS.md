@@ -16,6 +16,8 @@ is an exception; applications should stop submitting work or reduce concurrency.
 | HTTP multipart fields | 64 fields, 64 KiB each / 1 MiB total | Reject invalid input; one streamed file, no unbounded field copies |
 | HTTP buffered body / headers | 16 MiB / 64 KiB per transfer | Fail transfer and release native buffers |
 | SQLite values/rows and SQL text | 16 MiB; 10,000 bind variables | SQLite rejects construction before result conversion; Asyncara also limits copied results |
+| SQLite open or opening connections | 128 per native request engine, fixed | REJECT_NEW_ITEM with ValueError; closing a connection releases admission |
+| Native curl connections | 64 total / 8 per host, fixed; HttpClient separately admits 32 requests by default | Queue transfers in curl; explicit client concurrency is configurable 1..256 and cannot raise the native caps |
 | PostgreSQL buffered query | 16 MiB conversion budget / 100,000 rows | Fail query and close connection; per-cell metadata charge reduces empty-cell amplification |
 | PostgreSQL notifications | 1,024 messages / 1 MiB channel+payload bytes | DISCONNECT_SLOW_CONSUMER with explicit exception; no silent drop |
 | Redis buffered reply or entire pipeline | 16 MiB wire bytes / 100,000 parser elements; depth 32 | Fail operation and close connection to avoid protocol desynchronization |
@@ -66,6 +68,16 @@ Evidence: `tests/resource_bounds.php`, `tests/database/resource_bounds.php`, the
 existing native limits/memory tests and the independent audit regression suite.
 The first Phase 3 SQLite test failed on the baseline because `length(zeroblob(20000000))`
 was accepted; the connection limit now rejects it, and a subsequent query works.
+
+Phase 4 adds `tests/connection_limits.php`:129 simultaneous SQLite opens admit128
+and reject one; closing/reopening recovers capacity. Independent HTTP peers see
+exactly8 concurrent requests at one host and64 across nine endpoints; all88
+requests complete. PHP8.3.36/8.4.27/8.5.12 pass epoll/poll, and fully instrumented
+GCC ASan/UBSan8.5.12 passes. These measure active requests, not all cached library
+allocations. The fixed native bounds are not advertised as configurable options.
+Direct PostgreSQL/MySQL/Redis connections have no additional request-global
+connection admission cap. Use bounded ConnectionPool instances and deployment
+limits; creating unlimited independent pools is not covered by one pool's size.
 
 WebSocket: default 1 MiB message / 16 queued messages / 4 MiB queued payload,
 16 pending pings, bounded handshake and incremental parser. Overflow policy is

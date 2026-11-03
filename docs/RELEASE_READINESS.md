@@ -1,4 +1,12 @@
-# Phase 3 release readiness
+# Release readiness
+
+**Current assessment: EXPERIMENTAL.** Phase 4 preserved the runtime and expanded
+independent tests, resource-limit coverage, dependency controls and diagnostics.
+Both frozen one-hour attempts failed; six-/24-hour stages were not started.
+Shorter diagnostic passes do not supersede those failures. Current evidence and
+the packaged/tested source distinction are in [PHASE4_DELIVERY](PHASE4_DELIVERY.md).
+
+## Historical Phase 3 checkpoint
 
 **EXPERIMENTAL. Phase 3 is partially completed.** This checkpoint substantially
 improves verified reliability; it is not a release candidate or completion of the
