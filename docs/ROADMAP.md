@@ -73,6 +73,10 @@ branches; all four hosted CI jobs pass. A detached retry started2026-11-03T14:53
 with the same runtime, unchanged thresholds and no concurrent local builds/fuzzing.
 Consult the live campaign state and delivery report; starting a run is not a pass.
 
+The3587740 FPM retry also failed after303.482s with535ms timer lag and one ticker
+step; CPU and runnable-wait diagnostics are preserved. Mixed retry remains active.
+Six-/24-hour promotion is prevented. Diagnosis continues without lowering limits.
+
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
 3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket endurance/interoperability coverage, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.

@@ -205,3 +205,11 @@ or benchmarks are scheduled. Its current state is recorded in
 One-hour mixed/FPM jobs must both pass before six-hour jobs start, and both
 six-hour jobs must pass before 24-hour jobs start. Launch is not completion.
 The prior failed campaign remains evidence; a retry does not erase it.
+
+The FPM retry failed at14:58:45Z, after its last303.482-second steady sample and
+2,676 recorded main responses. The failing request had one ticker step,547.966ms
+wall duration,2.729ms CPU usage,57.048ms runnable wait and535.189ms timer lag.
+No local build/fuzz/benchmark was running. [Retry failure](phase4/fpm-retry-failure.json)
+preserves the new diagnostics and raw hashes. The mixed one-hour job continues;
+this FPM failure prevents the campaign from advancing to six-/24-hour stages.
+Separate traced diagnostics investigate the wait; they do not replace this result.

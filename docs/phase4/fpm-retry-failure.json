@@ -1,0 +1,120 @@
+{
+  "status": "FAIL",
+  "source": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+  "observedUtc": "2026-11-03T15:02:22.043797+00:00",
+  "lastSteadySeconds": 303.48173914896324,
+  "recordedMainResponses": 2676,
+  "samples": 2668,
+  "failure": {
+    "ticks": 1,
+    "intervals": [
+      {
+        "start": 1793717924.876778,
+        "end": 1793717925.085116
+      },
+      {
+        "start": 1793717924.8807774,
+        "end": 1793717925.085574
+      },
+      {
+        "start": 1793717924.8830252,
+        "end": 1793717925.0854652
+      },
+      {
+        "start": 1793717924.8846579,
+        "end": 1793717925.1897657
+      }
+    ],
+    "cpuDelta": {
+      "monotonicNs": 547965559,
+      "userUs": 0,
+      "systemUs": 2729,
+      "scheduledNs": 2714970,
+      "runnableWaitNs": 57047640,
+      "slices": 2
+    },
+    "lastTicksNs": [
+      1378547245138860
+    ],
+    "scheduler": {
+      "turns": 13,
+      "taskSteps": 19,
+      "maxStepSeconds": 0.0038694802206009626,
+      "maxTimerLagSeconds": 0.535189368063584,
+      "activeTasks": 1,
+      "pendingFutures": 1,
+      "retainedFailures": 0,
+      "readyTasks": 0,
+      "activeTimers": 0,
+      "ioWatchers": 0,
+      "pendingNative": 0,
+      "memoryBytes": 2097152
+    }
+  },
+  "completedCases": [
+    {
+      "name": "A-lifecycle",
+      "workers": 1,
+      "requests": 100,
+      "status": "PASS"
+    },
+    {
+      "name": "B-within-request",
+      "workers": 1,
+      "requests": 10,
+      "status": "PASS"
+    },
+    {
+      "name": "C-multiple-workers",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "D-streaming",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "recycling",
+      "status": "PASS",
+      "requests": 25,
+      "pids": [
+        2929438,
+        2929501,
+        2929562
+      ]
+    }
+  ],
+  "attribution": "Unresolved. Minimal CPU execution and host-only epoll oversleep support investigating blocked waits/host scheduling; no exact failed-request syscall trace yet. No threshold changed.",
+  "mixedStatusAtObservation": "RUNNING",
+  "largerStages": "NOT_STARTED; FPM failure prevents promotion",
+  "artifacts": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600/failure.json",
+      "sha256": "3b30dd5dbed8517f111bb0c5f188dd674db705306585681959abc707df265b2f",
+      "bytes": 476475
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600/provenance.json",
+      "sha256": "73bc22a12f281c5dc0e88fd90b26a77bd214cd9f0e25031f974fb019ac04b609",
+      "bytes": 1006
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600/mixed-samples.jsonl",
+      "sha256": "642b441e06879f6d5eb6a6c1bc3d15ccebb6facb86340d20c0b2f53d81fda3a6",
+      "bytes": 540369
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600/mixed-responses.jsonl",
+      "sha256": "149cde5aa35b5a8255387d10d156b599b72e427ef75f70e572395aff9f50bae4",
+      "bytes": 6287268
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600/mixed-reload-kill/php-errors.log",
+      "sha256": "ad93cc129a27dad7dd1fda4b1a6276f51589c5ab437d0098ceb9712883e2dff0",
+      "bytes": 47174
+    }
+  ]
+}

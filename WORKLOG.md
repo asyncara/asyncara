@@ -712,3 +712,43 @@ callback, not the waiting operation or deadline. Network work is a hypothesis;
 do not treat it as established attribution. New per-operation diagnostics should
 narrow a recurrence. Resource/HTTP/WebSocket/hook documentation keeps the current
 limits and unsupported features explicit. Release assessment stays EXPERIMENTAL.
+
+## Phase 4 FPM retry reproduced — 2026-11-03
+
+At14:58:45Z the frozen3587740 FPM retry failed the unchanged ticker assertion
+again. Last steady sample303.482s;2,676 recorded main responses. Failing HTTP work
+overlapped, but ticker advanced once. New measurements:547.966ms wall,2.729ms CPU,
+57.048ms runnable wait,535.189ms timer lag, maximum Task step3.869ms. There were
+no concurrent local builds/fuzz/benchmarks. Preserve phase4/fpm-retry-failure.json;
+no root-cause proof or speculative runtime fix. The original mixed exception's
+network attribution also remains only a hypothesis. Mixed retry is still active;
+the stage cannot advance to six-/24-hour work after this FPM failure.
+
+Diagnostic full FPM run under strace failed its existing four-request reload
+barrier before reaching steady-state work; retain fpm-four-worker-trace-600/
+and fpm-four-worker-traces/. No barrier timeout was increased. A separate
+targeted four-worker buffered/streamed HTTP trace now isolates the timing symptom,
+using a test-only shutdown record with PID/request/time and original assertions.
+Its script/prepend file and raw traces are private under the Phase4 evidence root;
+no runtime source, host scheduler configuration or frozen campaign file changed.
+
+The targeted trace reproduced the assertion at request10. A seccomp-filtered
+trace reproduced it at request440 and recorded a requested5ms epoll_wait lasting
+202.361ms in that failed worker. Timer slack was50,000ns. Both failed diagnostic
+runs, exact script sources, request/PID evidence and syscall excerpts are retained
+in phase4/fpm-syscall-investigation.json. Tracing affects timing; no runtime repair
+or absence-of-defects claim follows. A separate PHP namespace wrapper measures
+global native poll calls without strace; it already records5ms calls taking
+535–717ms with113–352microseconds CPU. It is test-only instrumentation outside
+the repository runtime. A concurrent standalone C control investigates shared
+host delay. No pointer patching or host scheduling changes are used.
+
+Extend the existing separate soak workflow to independent mixed/FPM one-hour
+jobs on separate disposable hosted runners. Preserve weekly/manual triggers;
+Phase4 runtime/harness pushes also trigger it, with no cancellation of active
+campaigns. Keep every original harness assertion and retain reports/artifacts,
+source archive/hash, PHP/FPM/compiler/OS/CPU/dependency versions. Mixed hosted
+scope adds existing extended network cases, but does not include the local Oracle
+fixture. Longer hosted campaigns are not claimed. YAML parse/diff checks pass;
+hosted execution must provide the remaining validation. No system dependency was
+installed on this shared development host.
