@@ -104,8 +104,9 @@ failure details. The stage gate prevented six-/24-hour execution.
 - **Mixed:** process exit 255 after 2,023.583 wall seconds including fixture setup
   and teardown. Last completed sample: 1,940.227 workload seconds, 5,517 cycles,
   5.517 million burst Tasks and 55 ProcessPool restarts. A timeout exception
-  escaped the added network work. Its original trace identifies the timer
-  callback, not the waiting operation. Stage diagnostics now preserve that detail.
+  escaped the workload. The added network work is a suspect, but the original
+  trace identifies the timer callback, not the waiting operation or deadline.
+  Stage diagnostics now preserve more detail on a recurrence.
   Steady RSS endpoint medians increased 380 KiB; tracked native bytes remained
   zero at sampled cycle boundaries, threads stayed at five, fds at 23–24.
   These observations do not establish successful shutdown or endurance.
@@ -178,3 +179,29 @@ included in that package or campaign. A source archive is not a published GitHub
 release. The next release gate is diagnosis and successful frozen endurance,
 followed by the remaining resource, database, HTTP, WebSocket and integration
 priorities in the canonical [roadmap](ROADMAP.md).
+
+## Latest frozen source and distribution
+
+Checkpoint `35877408ced8de47a2c270d8f73e3bf076d5dca4` is pushed on
+`phase4-endurance`. It adds the tested limit regressions and timing diagnostics;
+`ext/` and `src/` remain identical to the preserved final Phase 3 runtime.
+
+Source archive: `build/asyncara-0.1.0-dev-phase4-r2.tar.gz` (336 files).
+SHA-256: `3ef8e94b612daf4707bd85b979d63fd4dfae5186824a81b8e0ca61dfe5e4667b`.
+Every path and byte matches that commit. A private-umask clean checkout produces
+the identical archive. Independent phpize/build/install/load, Composer, core,
+poll, WebSocket and network checks pass PHP 8.3.36, 8.4.27 and 8.5.12. Local
+`make verify` passes, including database, stress and native sanitizer workloads.
+All four [hosted CI jobs](https://github.com/asyncara/asyncara/actions/runs/41657094869)
+passed at this source. [Build attestation](phase4/package-r2.json) retains commands,
+dependency package hashes and individual outcomes. Historical r1/r5 archives are
+unchanged. No GitHub release has been published.
+
+A new detached campaign started at 2026-11-03T14:53:29Z using this clean frozen
+source and a separately built native module. No concurrent local builds, fuzzing
+or benchmarks are scheduled. Its current state is recorded in
+`/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/state.json`; the committed
+[launch record](phase4/campaign-3587740-launch.json) is a snapshot, not live status.
+One-hour mixed/FPM jobs must both pass before six-hour jobs start, and both
+six-hour jobs must pass before 24-hour jobs start. Launch is not completion.
+The prior failed campaign remains evidence; a retry does not erase it.

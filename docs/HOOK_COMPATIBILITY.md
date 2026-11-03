@@ -4,7 +4,7 @@ Only **sleep** and **usleep** are intercepted. Asyncara suspension requires a re
 
 | Original function | Implementation / PHP versions tested | Actual backend / status | Fallback, errors, resources, cancellation |
 |---|---|---|---|
-| sleep | execute_hook → hooked_sleep → Async::sleep; 8.3.36 / 8.4.27 / 8.5.11 | monotonic timer + epoll/poll wait; **PARTIALLY_SUPPORTED** | Ordinary nonnegative bounded integers, named argument, return 0, zero/negative/strict type cases tested. Outside enabled runtime original PHP handler runs. No PHP resource produced. Cancellation throws CancelledException. POSIX signal/remaining-time behavior and durations beyond scheduler’s one-year cap differ |
+| sleep | execute_hook → hooked_sleep → Async::sleep; 8.3.36 / 8.4.27 / 8.5.12 | monotonic timer + epoll/poll wait; **PARTIALLY_SUPPORTED** | Ordinary nonnegative bounded integers, named argument, return 0, zero/negative/strict type cases tested. Outside enabled runtime original PHP handler runs. No PHP resource produced. Cancellation throws CancelledException. POSIX signal/remaining-time behavior and durations beyond scheduler’s one-year cap differ |
 | usleep | same dispatch and microsecond conversion; same versions | same timer; **PARTIALLY_SUPPORTED** | Null return, named argument, negative/strict type errors, progress during 200 ms wait and cancellation tested. Outside runtime original handler. No resource. Signal semantics and full weak-coercion/deprecation matrix not certified |
 
 The following function-by-function matrix prevents “HOOK_ALL” from being mistaken for universal coverage. **UNSUPPORTED** means no Asyncara interception; the fallback is the ordinary PHP implementation and can be blocking. A **BLOCKING_FALLBACK** is a behavior, not an asynchronous guarantee. Error/resource behavior therefore remains PHP’s own; there is no Asyncara cancellation or responsiveness certification for these original calls.
@@ -53,7 +53,7 @@ The following function-by-function matrix prevents “HOOK_ALL” from being mis
 | proc_close | UNSUPPORTED | Original child reap behavior |
 | exec | UNSUPPORTED | Original synchronous process behavior |
 
-Explicit Files/SQLite/DNS APIs are **WORKER_BACKED_ASYNC** in their execution phase. Explicit readiness TCP/UDP/HTTP/SQL drivers have genuinely asynchronous waiting paths; their setup and buffered/unsupported limitations are in section 5. No untested transparent hook receives FULLY_ASYNC or WORKER_BACKED_ASYNC status.
+Explicit Files/SQLite/DNS APIs are **WORKER_BACKED_ASYNC** in their execution phase. Explicit readiness TCP/UDP/HTTP/SQL drivers have genuinely asynchronous waiting paths; their setup and buffered/unsupported limitations are in [DRIVERS.md](DRIVERS.md). No untested transparent hook receives FULLY_ASYNC or WORKER_BACKED_ASYNC status.
 
 The dispatch chains the previous Zend execute-internal handler and restores it only while still owned. Request flags reset at RINIT/RSHUTDOWN. Hook::ALL is TIME only. STRICT rejects unavailable requested groups; it cannot discover/intercept every blocking call. Long-step diagnostics measure elapsed time after return, not the identity of an unknown native function. Coexistence with the host extension set is tested separately; arbitrary profiler/debugger/hook combinations remain unverified.
 

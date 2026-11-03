@@ -120,3 +120,9 @@ Phase 4 extended mixed smoke adds verified HTTPS buffered and streamed bodies
 with slow iteration, alongside existing plaintext streaming. Both epoll and poll
 60-second runs passed. These8KiB local transfers add no multiple-file multipart,
 proxy, redirect or larger-upload capability claim; see PHASE4_DELIVERY.md.
+
+The expanded ten-minute mixed diagnostic and ten-minute FPM lifecycle diagnostic
+passed with streaming enabled. The preceding requested one-hour campaigns failed
+(mixed timeout; FPM ticker assertion). These shorter passes do not certify
+streaming endurance. Source identities and raw failure evidence remain in
+[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md).

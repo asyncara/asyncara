@@ -1,0 +1,68 @@
+{
+  "supervisorPid": 2928653,
+  "startedUtc": "2026-11-03T14:53:29.379612+00:00",
+  "script": "/tmp/asyncara-phase4-nrtjh3t1/campaign-supervisor-3587740.py",
+  "scriptSha256": "bde254702cabcce41e9c558caf74e356829196485d93259f696aa7fe480aec53",
+  "state": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/state.json",
+  "source": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+  "note": "No concurrent local builds, benchmarks or fuzz campaigns scheduled.",
+  "initialState": {
+    "status": "RUNNING",
+    "startedUtc": "2026-11-03T14:53:29.624950+00:00",
+    "supervisorPid": 2928653,
+    "sourceCommit": "35877408ced8de47a2c270d8f73e3bf076d5dca4",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r2.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r2.tar.gz": "3ef8e94b612daf4707bd85b979d63fd4dfae5186824a81b8e0ca61dfe5e4667b",
+      "asyncara.so": "92c145bdb22994faa9d3de1a0ce31eb0520d888aa1f713690e74653af52c7e10"
+    },
+    "supervisorSha256": "bde254702cabcce41e9c558caf74e356829196485d93259f696aa7fe480aec53",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "stages": [
+      {
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T14:53:29.730280+00:00",
+        "status": "RUNNING",
+        "jobs": [
+          {
+            "kind": "mixed",
+            "pid": 2928663,
+            "command": [
+              "/usr/bin/python3",
+              "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740/tests/soak/run.py",
+              "--seconds",
+              "3600",
+              "--output",
+              "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600",
+              "--databases",
+              "--extended-network",
+              "--oracle-prefix",
+              "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+            ],
+            "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/mixed-3600"
+          },
+          {
+            "kind": "fpm",
+            "pid": 2928664,
+            "command": [
+              "/usr/bin/python3",
+              "/tmp/asyncara-phase4-nrtjh3t1/frozen-3587740/tests/soak/fpm.py",
+              "--seconds",
+              "3600",
+              "--output",
+              "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600"
+            ],
+            "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/fpm-3600"
+          }
+        ]
+      }
+    ]
+  }
+}

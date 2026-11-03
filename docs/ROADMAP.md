@@ -60,12 +60,18 @@ now use bounded memory and explicit process-resource observations. The expanded
 60-second epoll/poll mixed smokes passed, including existing DNS/UDP/TLS/HTTPS/ws/wss
 and a separate Oracle fixture. FPM observer smoke and failed-barrier regression
 passed. Frozen 2e2f84f one-hour attempts then failed: FPM ticker responsiveness
-after 651s, mixed network deadline after 5,517 sampled cycles. No six-/24-hour
+after 651s, an unattributed mixed timeout after 5,517 sampled cycles. No six-/24-hour
 stage started. A 600s FPM diagnostic passed; syscall and standalone C controls
 show host epoll oversleep, without resolving the original failure attribution.
 Standalone dependency probes
 reproduce libpq unload and PHP callback-type findings (DEPENDENCY_FINDINGS.md). No native/public runtime source has changed. See
 [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and its durable evidence.
+
+Checkpoint `3587740` adds tested connection-limit cases and failure diagnostics.
+Its r2 archive is reproducible and independently installs/tests on all three PHP
+branches; all four hosted CI jobs pass. A detached retry started2026-11-03T14:53Z
+with the same runtime, unchanged thresholds and no concurrent local builds/fuzzing.
+Consult the live campaign state and delivery report; starting a run is not a pass.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

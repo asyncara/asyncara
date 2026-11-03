@@ -104,3 +104,9 @@ alongside HTTP/files/SQL/process work. Echo, ping, periodic reconnect and cancel
 receive reuse passed in60-second epoll/poll runs using the independent Python peer.
 This is smoke evidence, not browser/Autobahn/WSS-server or endurance certification.
 See PHASE4_DELIVERY.md for campaign status.
+
+The expanded ten-minute mixed diagnostic subsequently completed 2,179 cycles
+with clean final scheduled work. The earlier requested one-hour mixed run failed
+on a timeout whose waiting operation was not identified by the original trace.
+Per-operation diagnostics now preserve that detail on a recurrence. Neither run
+establishes one-hour WebSocket endurance or identifies a WebSocket defect.

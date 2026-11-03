@@ -687,3 +687,28 @@ ROADMAP, delivery, security, resource and lifecycle documents. No ext/ or src/
 changes; release remains EXPERIMENTAL. Next: new immutable test checkpoint,
 independent archive installation, then one-hour retry without concurrent builds
 or fuzzing. Short diagnostic passes do not erase the two endurance failures.
+
+## Phase 4 r2 attestation and retry — 2026-11-03
+
+Committed and pushed35877408ced8de47a2c270d8f73e3bf076d5dca4 onphase4-endurance.
+New archive build/asyncara-0.1.0-dev-phase4-r2.tar.gz contains336files, SHA256
+3ef8e94b612daf4707bd85b979d63fd4dfae5186824a81b8e0ca61dfe5e4667b.
+Every path/byte matches3587740; private-umask clean checkout reproduces the hash.
+Fresh independent phpize/build/install/load/Composer/core/poll/WebSocket/network
+checks PASS8.3.36/8.4.27/8.5.12. Local make verify PASS. All four hosted jobs at
+https://github.com/asyncara/asyncara/actions/runs/41657094869 PASS. Public API
+verified the results; gh lacks API authentication, while Git SSH push succeeds.
+No force push or global configuration changes. Attestation:phase4/package-r2.json.
+
+Detached supervisor2928653 started2026-11-03T14:53:29Z from clean frozen3587740.
+State:/tmp/asyncara-phase4-nrtjh3t1/campaign-3587740-r1/state.json. Same native/public
+runtime, additional test-only diagnostics, original thresholds. No concurrent
+local builds/benchmarks/fuzzing scheduled. Both3600s jobs must pass before21600s,
+and both21600s before86400s. Launch is not completion. Initial state and exact
+supervisor hash are in phase4/campaign-3587740-launch.json. Earlier failures remain.
+
+Precision correction: the original mixed exception trace identifies the timer
+callback, not the waiting operation or deadline. Network work is a hypothesis;
+do not treat it as established attribution. New per-operation diagnostics should
+narrow a recurrence. Resource/HTTP/WebSocket/hook documentation keeps the current
+limits and unsupported features explicit. Release assessment stays EXPERIMENTAL.

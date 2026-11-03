@@ -185,7 +185,7 @@ establish one-hour endurance. Restart each campaign in a new directory.
 ## Phase 4 frozen campaign failure
 
 Source `2e2f84f` and the phase4-r1 archive were frozen before the next 3,600-second
-attempt. It failed with an unhandled network timeout, exit 255, after 2,023.583
+attempt. It failed with an unhandled timeout, exit 255, after 2,023.583
 wall seconds including fixture setup/teardown. Last completed sample: 1,940.227
 workload seconds, 5,517 cycles and 55 injected ProcessPool restarts. Sampled RSS
 endpoint medians increased 380 KiB; native bytes stayed zero at cycle boundaries,
