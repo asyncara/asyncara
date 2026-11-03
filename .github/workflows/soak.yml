@@ -1,5 +1,12 @@
-name: Scheduled mixed soak
+name: Endurance verification
 on:
+  push:
+    branches: [phase4-endurance]
+    paths:
+      - 'ext/**'
+      - 'src/**'
+      - 'tests/soak/**'
+      - '.github/workflows/soak.yml'
   schedule:
     - cron: '23 2 * * 0'
   workflow_dispatch:
@@ -9,6 +16,13 @@ jobs:
   one-hour:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [mixed, fpm]
+    concurrency:
+      group: endurance-${{ github.ref }}-${{ matrix.kind }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Enable matching PHP SDK and FPM packages on disposable runner
@@ -20,15 +34,59 @@ jobs:
       - name: Provision isolated runner dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-16 mariadb-server redis-server
+          sudo apt-get install -y postgresql-16 mariadb-server redis-server php8.5-fpm
           ./scripts/bootstrap-local.sh
       - run: make build
-      - run: python3 tests/soak/run.py --seconds 3600 --databases --output build/soak-1h
+      - name: Install independent WebSocket peer for expanded mixed scope
+        if: matrix.kind == 'mixed'
+        run: python3 scripts/install-test-websockets.py
+      - name: Freeze source distribution and record environment
+        run: |
+          python3 scripts/package.py --output build/endurance-source.tar.gz
+          git rev-parse HEAD > build/endurance-commit.txt
+          php -n -v > build/endurance-php.txt
+          php-fpm8.5 -n -v > build/endurance-fpm.txt
+          uname -a > build/endurance-kernel.txt
+          cat /etc/os-release > build/endurance-os.txt
+          lscpu > build/endurance-cpu.txt
+          cc --version > build/endurance-compiler.txt
+          dpkg-query -W -f '${Package} ${Version}\n' libcurl4t64 libpq5 libmariadb3 libsqlite3-0 libssl3t64 > build/endurance-libraries.txt
+      - name: One-hour mixed workload
+        if: matrix.kind == 'mixed'
+        run: python3 tests/soak/run.py --seconds 3600 --databases --extended-network --output build/soak-1h
+      - name: One-hour FPM workload
+        if: matrix.kind == 'fpm'
+        run: python3 tests/soak/fpm.py --seconds 3600 --output build/soak-1h
+      - name: Preserve readable report summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('Source: `' + os.environ['GITHUB_SHA'] + '`\n\n')
+              for name in ['report.json', 'failure.json']:
+                  path = Path('build/soak-1h') / name
+                  if not path.exists():
+                      continue
+                  report = json.loads(path.read_text())
+                  if isinstance(report, list):
+                      report = [{k: v for k, v in case.items() if k not in ['responses', 'samples']} for case in report]
+                  elif 'completedCases' in report:
+                      report['completedCases'] = [{k: v for k, v in case.items() if k not in ['responses', 'samples']} for case in report['completedCases']]
+                  summary.write(name + '\n\n```json\n' + json.dumps(report, indent=2) + '\n```\n')
+              if not any((Path('build/soak-1h') / name).exists() for name in ['report.json', 'failure.json']):
+                  summary.write('No completion report: inspect job/setup logs; no endurance pass is inferred.\n')
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: one-hour-soak
+          name: one-hour-soak-${{ matrix.kind }}
           path: |
+            build/endurance-*
             build/soak-1h/*.json
             build/soak-1h/*.jsonl
             build/soak-1h/*.log
+            build/soak-1h/*/error.log
+            build/soak-1h/*/php-errors.log
+            build/soak-1h/*/startup.log
