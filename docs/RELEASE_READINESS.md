@@ -1,8 +1,12 @@
 # Release readiness
 
-**Current assessment: EXPERIMENTAL.** Phase 4 preserved the runtime and expanded
-independent tests, resource-limit coverage, dependency controls and diagnostics.
-Both frozen one-hour attempts failed; six-/24-hour stages were not started.
+**Current assessment: EXPERIMENTAL.** Phase 4 expanded independent tests,
+resource-limit coverage, dependency controls and diagnostics, then repaired a
+reproducible UDP endpoint ownership defect and descriptor-exhaustion cleanup.
+Corrected source `76e6557` is packaged as phase4-r3, independently installed/tested
+on PHP 8.3/8.4/8.5 and passing all four hosted CI jobs. Earlier archives retain
+the UDP defect. Earlier one-hour attempts failed or were interrupted; new frozen
+one-hour campaigns are running. Six-/24-hour stages have not started.
 Shorter diagnostic passes do not supersede those failures. Current evidence and
 the packaged/tested source distinction are in [PHASE4_DELIVERY](PHASE4_DELIVERY.md).
 

@@ -821,3 +821,37 @@ stderr or final pending work. The final native helper's initial FPM60s pass
 preceded the small PHP dependency-preload adjustment; its separate EMFILE tests
 pass all versions. Archive validation and a new frozen endurance will test the
 complete corrected source together. Do not retroactively rename the earlier run.
+
+## Corrected r3 distribution and new endurance freeze — 2026-11-03
+
+Committed/pushed76e6557bf3925e58e6db3dee07b30aac33a9f9c1. Source archive
+build/asyncara-0.1.0-dev-phase4-r3.tar.gz has349files and SHA256
+b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a.
+All Git paths/bytes match. A private-umask clean checkout produces identical
+bytes. Independent extracted phpize/build/install/load, Composer, full epoll/poll,
+WebSocket and network tests pass8.3.36/8.4.27/8.5.12, including UDP ownership and
+EMFILE. Hosted41668853898 passes all four regression/database jobs at this source.
+Final complete-source FPM smoke passed60.063s/432mainrequests, max2,820KiB beyond
+warmup, all lifecycle/fault cases and idle6fd/1thread assertions. Attestation:
+docs/phase4/package-r3.json. Earlier archives remain unchanged and contain the
+UDP ownership defect; no GitHub release is published.
+
+New isolated clean worktree /tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557 was built
+separately. At16:03:58Z detached supervisor3030406 began local mixed/FPM one-hour
+attempts, raw state /tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/state.json.
+No native/public runtime changes or local builds/fuzz/benchmarks during this
+campaign. Each workload now has its own3600/21600/86400second chain; it advances
+only after its own exact-duration clean pass and unchanged frozen fingerprint.
+A failing FPM chain cannot certify FPM or advance, while independent mixed work
+may continue gathering evidence. Overall success requires all six passes. This
+changes orchestration coupling, not workload assertions or resource thresholds.
+Live state records child failures immediately as RUNNING_WITH_FAILURE. Full
+supervisor source/hash and launch snapshot: phase4/campaign-76e6557-launch.json.
+Do not infer completion from launch. Hosted41668853738 also runs corrected mixed
+work; its FPM job waits behind the still-running historical624cbe9 FPM job.
+
+Read-only database review clarified another boundary: current PostgreSQL options
+reject sslcert/sslkey and Connector/C exposes CA verification without explicit
+client key/certificate fields. Implicit libpq defaults/environment are not a
+certified mTLS API. Updated DATABASE_COMPATIBILITY.md; no driver change or new
+mTLS capability claimed. EXPERIMENTAL remains the release assessment.

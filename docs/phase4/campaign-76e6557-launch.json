@@ -1,0 +1,63 @@
+{
+  "snapshot": {
+    "status": "RUNNING",
+    "startedUtc": "2026-11-03T16:03:58.947237+00:00",
+    "supervisorPid": 3030406,
+    "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r3.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r3.tar.gz": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+      "asyncara.so": "43c29f0ce840cb48cf0f52541502ebba13c6dd9365143a8d0565f20132a13c39"
+    },
+    "supervisorSha256": "fff788094ec80ef7c7640fda45f3fd73fd89e653b4123ed08f18789f74f164e3",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "jobs": [
+      {
+        "kind": "mixed",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:03:59.062227+00:00",
+        "status": "RUNNING",
+        "pid": 3030415,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557/tests/soak/run.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600",
+          "--databases",
+          "--extended-network",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/mixed-3600"
+      },
+      {
+        "kind": "fpm",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:03:59.112333+00:00",
+        "status": "RUNNING",
+        "pid": 3030418,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557/tests/soak/fpm.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/fpm-3600"
+      }
+    ],
+    "gate": "Independent mixed/FPM chains; each must pass its preceding duration. No cross-workload certification. Any failed chain fails the overall campaign."
+  },
+  "script": "\"\"\"Frozen endurance chains. Each workload advances only after its own full-duration pass.\"\"\"\nfrom datetime import datetime, timezone\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport platform\nimport subprocess\nimport sys\nimport time\n\nbase = Path(__file__).resolve().parent\nsource = base / 'frozen-76e6557'\nout = base / 'campaign-76e6557-r1'\narchive = Path('/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r3.tar.gz')\nexpected = '76e6557bf3925e58e6db3dee07b30aac33a9f9c1'\nenv = os.environ | {\n    'PHP_BIN': '/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5',\n    'FPM_BIN': '/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5'}\nenv.pop('ASYNCARA_BACKEND', None)\nenv.pop('ASYNCARA_EXTENSION', None)\n\ndef utc():\n    return datetime.now(timezone.utc).isoformat()\n\ndef fingerprint():\n    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()\n    status = subprocess.check_output(['git', 'status', '--porcelain'], cwd=source, text=True)\n    if commit != expected or status:\n        raise RuntimeError('Frozen source identity/cleanliness changed')\n    return {p.name: hashlib.sha256(p.read_bytes()).hexdigest()\n            for p in [archive, source / 'build/asyncara.so']}\n\ndef valid_report(kind, data, seconds):\n    if kind == 'mixed':\n        return (isinstance(data, dict) and data.get('status') == 'PASS'\n            and data.get('completeRecords') == 1 and len(data.get('complete', [])) == 1\n            and data['complete'][0]['seconds'] >= seconds)\n    return (isinstance(data, list) and bool(data)\n        and all(r.get('status') == 'PASS' for r in data)\n        and any(r.get('name') == 'mixed-reload-kill' and r.get('seconds', 0) >= seconds for r in data))\n\nout.mkdir(mode=0o700)\nidentity = fingerprint()\nstate = {'status': 'RUNNING', 'startedUtc': utc(), 'supervisorPid': os.getpid(),\n    'sourceCommit': expected, 'sourceDirectory': str(source), 'platform': platform.platform(),\n    'archive': str(archive), 'artifactHashes': identity,\n    'supervisorSha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),\n    'php': subprocess.check_output([env['PHP_BIN'], '-n', '-v'], text=True),\n    'stagesSeconds': [3600, 21600, 86400], 'jobs': [],\n    'gate': 'Independent mixed/FPM chains; each must pass its preceding duration. No cross-workload certification. Any failed chain fails the overall campaign.'}\n\ndef save():\n    temporary = out / 'state.tmp'\n    temporary.write_text(json.dumps(state, indent=2) + '\\n')\n    temporary.replace(out / 'state.json')\n\ndef launch(kind, seconds):\n    if fingerprint() != identity:\n        raise RuntimeError('Frozen artifacts changed')\n    folder = out / f'{kind}-{seconds}'\n    command = [sys.executable, str(source / 'tests/soak' / ('run.py' if kind == 'mixed' else 'fpm.py')),\n               '--seconds', str(seconds), '--output', str(folder)]\n    if kind == 'mixed':\n        command += ['--databases', '--extended-network', '--oracle-prefix',\n                    '/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root']\n    log = (out / f'{kind}-{seconds}.log').open('x')\n    try:\n        child = subprocess.Popen(command, cwd=source, env=env, stdin=subprocess.DEVNULL,\n                                 stdout=log, stderr=subprocess.STDOUT)\n    except BaseException:\n        log.close()\n        raise\n    record = {'kind': kind, 'requestedSeconds': seconds, 'startedUtc': utc(), 'status': 'RUNNING',\n              'pid': child.pid, 'command': command, 'output': str(folder)}\n    state['jobs'].append(record)\n    save()\n    return child, log, record, folder\n\nsave()\nactive = {}\ntry:\n    for kind in ['mixed', 'fpm']:\n        active[kind] = launch(kind, state['stagesSeconds'][0])\n    while active:\n        for kind, (child, log, record, folder) in list(active.items()):\n            if child.poll() is None:\n                continue\n            record['exit'] = child.wait()\n            log.close()\n            record['finishedUtc'] = utc()\n            report = folder / 'report.json'\n            record['reportPresent'] = report.exists()\n            valid = False\n            if report.exists():\n                record['reportSha256'] = hashlib.sha256(report.read_bytes()).hexdigest()\n                try:\n                    valid = valid_report(kind, json.loads(report.read_text()), record['requestedSeconds'])\n                except (ValueError, TypeError, KeyError) as error:\n                    record['reportError'] = repr(error)\n            record['status'] = 'PASS' if child.returncode == 0 and valid else 'FAIL'\n            del active[kind]\n            if fingerprint() != identity:\n                record['status'] = 'FAIL'\n                record['error'] = 'Frozen artifacts changed during stage'\n            save()\n            if record['status'] == 'PASS':\n                index = state['stagesSeconds'].index(record['requestedSeconds']) + 1\n                if index < len(state['stagesSeconds']):\n                    active[kind] = launch(kind, state['stagesSeconds'][index])\n        if any(r['status'] == 'FAIL' for r in state['jobs']):\n            state['status'] = 'RUNNING_WITH_FAILURE' if active else 'FAIL'\n            save()\n        if active:\n            time.sleep(5)\n    state['status'] = 'PASS' if len(state['jobs']) == 6 and all(r['status'] == 'PASS' for r in state['jobs']) else 'FAIL'\nexcept BaseException as error:\n    state['status'] = 'SUPERVISOR_ERROR'\n    state['error'] = repr(error)\n    state['activeChildPids'] = [child.pid for child, _, _, _ in active.values() if child.poll() is None]\n    raise\nfinally:\n    state['finishedUtc'] = utc()\n    save()\n",
+  "note": "Launch snapshot only; consult live state.json. Each workload has independent 1h/6h/24h gates. Failures remain failures and prevent that workload from advancing; no other workload certifies it."
+}

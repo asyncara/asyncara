@@ -3,29 +3,55 @@
 **EXPERIMENTAL — work in progress.** This report separates completed checks
 from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
 
-## Current evidence at 2026-11-03 15:40 UTC
+## Current evidence at 2026-11-03 16:04 UTC
 
 | Check | Tested source | Result |
 |---|---|---|
-| Clean r2 package builds and installed tests, PHP 8.3/8.4/8.5 NTS | `3587740` | PASS; source/checksum below |
-| Hosted regression 8.3/8.4/8.5 and database lifecycle | `624cbe9` | All four jobs PASS; [run 41662855774](https://github.com/asyncara/asyncara/actions/runs/41662855774) |
-| Local one-hour mixed retry, including separate Oracle fixture | frozen `3587740` | Interruption requested after reproducing UDP ownership defect |
-| Local one-hour FPM retry | frozen `3587740` | FAIL; ticker assertion, evidence below |
-| Hosted one-hour mixed and FPM on separate runners | `624cbe9` | Mixed FAIL at UDP receive; FPM RUNNING; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
-| Six-/24-hour campaigns | — | NOT EXECUTED; failed local stage cannot advance |
+| Clean corrected r3 builds and installed tests, PHP 8.3/8.4/8.5 NTS | `76e6557` | PASS; source/checksum below |
+| Hosted regression 8.3/8.4/8.5 and database lifecycle | `76e6557` | All four jobs PASS; [run 41668853898](https://github.com/asyncara/asyncara/actions/runs/41668853898) |
+| Local one-hour mixed and FPM, including separate Oracle fixture in mixed | frozen `76e6557` | RUNNING from 16:03:58Z |
+| Hosted corrected-source one-hour workload | `76e6557` | Mixed RUNNING, FPM pending behind earlier job; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
+| Historical local one-hour FPM / mixed | `3587740` | FPM FAIL; mixed deliberately interrupted after UDP defect reproduction |
+| Historical hosted mixed / FPM | `624cbe9` | Mixed FAIL at UDP receive; FPM RUNNING; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
+| Six-/24-hour campaigns | — | NOT EXECUTED; preceding durations must pass |
 
 The hosted mixed workload includes extended networking and local PostgreSQL,
 MariaDB and Redis fixtures, but not the separate Oracle fixture. Hosted and local
-scopes must remain distinct. Later CI/documentation changes do not alter the
-runtime or packaged r2 test implementations. Running jobs are not passes.
+scopes must remain distinct. Running jobs are not passes. All earlier failures
+remain evidence; the corrected source has no completed one-hour result yet.
+
+## Corrected r3 distribution and frozen source
+
+Implemented, packaged and pushed runtime source:
+`76e6557bf3925e58e6db3dee07b30aac33a9f9c1` on `phase4-endurance`.
+Archive: `build/asyncara-0.1.0-dev-phase4-r3.tar.gz`, 349 source files.
+SHA-256: `b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a`.
+Every path/byte matches Git; private-umask clean packaging produces identical
+bytes. Independent phpize/build/install/load, Composer, epoll/poll functional,
+WebSocket and network tests pass PHP 8.3.36, 8.4.27 and 8.5.12 NTS. The UDP
+ownership and isolated descriptor-exhaustion regressions run in that suite.
+[Build attestation](phase4/package-r3.json) records individual results and hashes.
+Historical archives remain intact; r2 and earlier contain the UDP ownership bug.
+No GitHub release has been published. Later evidence-only commits do not become
+part of this archive retroactively.
+
+The frozen campaign uses `/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557` and
+reports to `/tmp/asyncara-phase4-nrtjh3t1/campaign-76e6557-r1/state.json`.
+[Launch provenance](phase4/campaign-76e6557-launch.json) includes the exact
+supervisor source and hashes. Mixed and FPM now have independent 1h → 6h → 24h
+chains, retaining all original workload assertions/duration/resource limits.
+A failed workload cannot advance; an independently passing workload may continue
+collecting longer evidence. This replaces the previous cross-workload stage gate,
+not any test threshold. Overall campaign success still requires all six passes.
+An active campaign with a failed child reports `RUNNING_WITH_FAILURE` explicitly.
 
 ## Verified baseline
 
 The initial branch and remote were `phase3-hardening` at
 `179aa54e473f644f009114ca47e3dd19fd46b8fd`, with a clean working tree. The native/test
 commit `e5d94fd8dd959b88474332a05aaa1c9eb61f318f` is an ancestor of archive source
-`f3d63ac9abf528af0cd5b24086976912c28e4a75`, which is an ancestor of HEAD. Both
-intervening ranges change only documentation/evidence. There is one canonical
+`f3d63ac9abf528af0cd5b24086976912c28e4a75`, which is an ancestor of initial HEAD
+`179aa54`. Those two intervening ranges change only documentation/evidence. There is one canonical
 `docs/ROADMAP.md`; no `ROUDMAP.md` duplicate was found.
 
 Preserved archive: `build/asyncara-0.1.0-dev-phase3-r5.tar.gz`.
@@ -197,7 +223,7 @@ release. The next release gate is diagnosis and successful frozen endurance,
 followed by the remaining resource, database, HTTP, WebSocket and integration
 priorities in the canonical [roadmap](ROADMAP.md).
 
-## Latest frozen source and distribution
+## Historical r2 source and distribution
 
 Checkpoint `35877408ced8de47a2c270d8f73e3bf076d5dca4` is pushed on
 `phase4-endurance`. It adds the tested limit regressions and timing diagnostics;
@@ -285,4 +311,7 @@ discarded. [Repair evidence](phase4/udp-ownership-fix.json) distinguishes stages
 FPM lifecycle run with UDP held through request teardown passed 60.491 seconds /
 300 main requests plus all lifecycle/fault cases, maximum RSS beyond warmup
 2,788 KiB and idle six descriptors/one thread. This is a regression smoke test,
-not final-source endurance. Corrected packaging and long campaigns are pending.
+not final-source endurance. Corrected packaging passed and new campaigns are
+running as recorded above. Final `76e6557` FPM smoke separately passed 60.063
+seconds / 432 main requests, maximum 2,820 KiB beyond warmup, with all lifecycle
+cases passing; it includes the PHP dependency-preload adjustment.

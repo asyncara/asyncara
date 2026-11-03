@@ -64,7 +64,9 @@ after 651s, an unattributed mixed timeout after 5,517 sampled cycles. No six-/24
 stage started. A 600s FPM diagnostic passed; syscall and standalone C controls
 show host epoll oversleep, without resolving the original failure attribution.
 Standalone dependency probes
-reproduce libpq unload and PHP callback-type findings (DEPENDENCY_FINDINGS.md). No native/public runtime source has changed. See
+reproduce libpq unload and PHP callback-type findings (DEPENDENCY_FINDINGS.md).
+Runtime source was unchanged through `624cbe9`; the UDP repair below establishes
+a new native checkpoint. See
 [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and its durable evidence.
 
 Checkpoint `3587740` adds tested connection-limit cases and failure diagnostics.
@@ -90,8 +92,12 @@ UDP exclusive endpoint ownership is now repaired and regression-tested on
 8.3/8.4/8.5, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind. Child-only `EMFILE`
 tests verify error/cleanup dependency loading and admission recovery. Core/audit,
 network-edge and FPM lifecycle checks pass. This is a new native source boundary:
-earlier endurance and archives cannot certify it. Freeze/package/repeat the
-affected campaigns; do not relax the existing FPM timing failures or thresholds.
+earlier endurance and archives cannot certify it. Corrected `76e6557` r3 archive
+independently builds/installs/tests on all three PHP branches and reproduces its
+checksum; all four hosted CI jobs pass. Fresh local one-hour mixed/FPM runs began
+16:03:58Z. Each workload advances independently to six/24 hours only after its
+own preceding pass; overall success needs both complete chains. Existing FPM
+timing failures and all workload thresholds are preserved.
 
 1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

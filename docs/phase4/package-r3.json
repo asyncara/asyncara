@@ -1,0 +1,390 @@
+{
+  "source": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+  "runtimeSource": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+  "archive": "build/asyncara-0.1.0-dev-phase4-r3.tar.gz",
+  "files": 349,
+  "sha256": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+  "status": "PASS",
+  "releaseClassification": "EXPERIMENTAL",
+  "sourceMatch": {
+    "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+    "archive": "build/asyncara-0.1.0-dev-phase4-r3.tar.gz",
+    "sha256": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+    "files": 349,
+    "treeMatch": true
+  },
+  "independentInstall": {
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r3.tar.gz",
+    "sha256": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+    "variants": [
+      {
+        "name": "8.3",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 46.65333010512404,
+            "log": "8.3-phpize.log",
+            "sha256": "6296ccc8cd1162c6774298f35b7bf908167c288c3c36b06e7e066678c71eea38"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 1.106904303887859,
+            "log": "8.3-install.log",
+            "sha256": "216db0229c632b48e9382582dd5ed31d6fe478f62d236e8312f760054a19ce32"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.23459437303245068,
+            "log": "8.3-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 7.097372708143666,
+            "log": "8.3-composer.log",
+            "sha256": "57a2e239b3ca22564a8921e64d500479cbab1c74cc0cd753e579945392a8ace5"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.6338458389509469,
+            "log": "8.3-peer.log",
+            "sha256": "6853d127ee36bc8b99debc9e99396a447c0573061af80b45f7be342e66e1f5be"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 34.96468737418763,
+            "log": "8.3-tests.log",
+            "sha256": "664ebbcaaea9162bd1c271dbba8a2ae0835dd23c6a3c7d9f41ceb3eefdde385c"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 30.19621118507348,
+            "log": "8.3-poll.log",
+            "sha256": "c1c7675cef590a02e9dbd7a0d10dae538f323b1a5295a690068f87166db55009"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 4.056628903839737,
+            "log": "8.3-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 15.766804929124191,
+            "log": "8.3-network.log",
+            "sha256": "cb867da6e3d0d68c6940a58ea92ae0ebc73878e848cef9c084f0152bb146d9c0"
+          }
+        ],
+        "sourceFiles": 349,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.3-dev_8.3.36-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "c56578281d97977ab0a7df8f9e6ff733f917c600fb234c40fa7c30dc639e26ab"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r3/8.3/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20230831/asyncara.so",
+        "extensionSha256": "98f87ee81c515c2f55cec7eb4c6d0a7244ccd848a05eee5405d8a5e3a24671d3",
+        "status": "PASS"
+      },
+      {
+        "name": "8.4",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 26.794861343922094,
+            "log": "8.4-phpize.log",
+            "sha256": "3866e77187408aa93bd38c69a1e0f139ad0f0c918a6117f724a35f553634e357"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 0.9089335028547794,
+            "log": "8.4-install.log",
+            "sha256": "63120fba9d6b42ebdf8dcb558c03b4420983ae7b1b5e5a2a06a36b43e58758cc"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.14635528391227126,
+            "log": "8.4-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 1.4289324290584773,
+            "log": "8.4-composer.log",
+            "sha256": "ede6a8daf5eecadce2d1fd8d4279f82379f1016e2ea7ae9402718b89e0aeb205"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.4853941348847002,
+            "log": "8.4-peer.log",
+            "sha256": "1cbdbcd608c7f699768b1e2260da3b623aa38b35fb9c33fdbbc271033d2bbde9"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 28.987971569877118,
+            "log": "8.4-tests.log",
+            "sha256": "73b471e995b3a4826721ec9e1205b50a2a804217c83a0604a56cb4988b009b5a"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 34.61122473399155,
+            "log": "8.4-poll.log",
+            "sha256": "b1c9f1fe5c0fca74803bc7996e773e35ad07619cf64510e8f85e5aba8e332ec0"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 4.831543487031013,
+            "log": "8.4-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 21.436341647990048,
+            "log": "8.4-network.log",
+            "sha256": "55e801b2b23b60772eb070ddff144108f1f81a7510d8b429caaecdacb09ccaff"
+          }
+        ],
+        "sourceFiles": 349,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.4-dev_8.4.27-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "794302300b2a412073623628395d73685488b9dc8bca606fcf4efd1117694b95"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r3/8.4/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20240924/asyncara.so",
+        "extensionSha256": "afd062e1d94e30d896c90887916858f600e25b0e0ef2426777ce934115cee3fc",
+        "status": "PASS"
+      },
+      {
+        "name": "8.5",
+        "steps": [
+          {
+            "name": "phpize",
+            "exit": 0,
+            "seconds": 28.737906424095854,
+            "log": "8.5-phpize.log",
+            "sha256": "3fa63945b18d7cefc9fe0c43edd70a069d9fa893b927625975a1bc7a593c3a51"
+          },
+          {
+            "name": "install",
+            "exit": 0,
+            "seconds": 0.6153383899945766,
+            "log": "8.5-install.log",
+            "sha256": "c26b0918eaddc51b4a7638766d813b48af4e7b35128642eab9a68c0ce9a1ca57"
+          },
+          {
+            "name": "load",
+            "exit": 0,
+            "seconds": 0.04461805196478963,
+            "log": "8.5-load.log",
+            "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+          },
+          {
+            "name": "composer",
+            "exit": 0,
+            "seconds": 1.4827159729320556,
+            "log": "8.5-composer.log",
+            "sha256": "b0693d259af66f3d23758d0e59d7a1d9a3face99b77717e8fc644e7b944ef259"
+          },
+          {
+            "name": "peer",
+            "exit": 0,
+            "seconds": 0.9672792360652238,
+            "log": "8.5-peer.log",
+            "sha256": "88d97d6fcb76dddc32be502f5a62364cf3a1a0fc8fd8f92f2d61099ebd8f5643"
+          },
+          {
+            "name": "tests",
+            "exit": 0,
+            "seconds": 27.684994376963004,
+            "log": "8.5-tests.log",
+            "sha256": "c0a2323bc7a26f45aee82f005e005a09515f83b81639bcdbc7a75d0eda14489f"
+          },
+          {
+            "name": "poll",
+            "exit": 0,
+            "seconds": 27.53393579996191,
+            "log": "8.5-poll.log",
+            "sha256": "f880ebd124153c654b638dd6683513bd4202bd56749589d43e1e5d4d616eeea3"
+          },
+          {
+            "name": "websocket",
+            "exit": 0,
+            "seconds": 3.5651259359437972,
+            "log": "8.5-websocket.log",
+            "sha256": "41ef3a170e6331ceb8394ec4f6a2ad10f4f7c6fa04424ab6c64b98dbdeb18a98"
+          },
+          {
+            "name": "network",
+            "exit": 0,
+            "seconds": 14.773816262139007,
+            "log": "8.5-network.log",
+            "sha256": "12d00247c1f2340e493e30e14333d48c43860bd85b5fff23a396a0aafe98f855"
+          }
+        ],
+        "sourceFiles": 349,
+        "developmentPackages": {
+          "autoconf_2.71-3_all.deb": "cc3f9f7a1e576173fb59c36652c0a67c6426feae752b352404ba92dfcb1b26c9",
+          "automake_1%3a1.16.5-1.3ubuntu1_all.deb": "5ae9a98e73545002cd891f028859941af2a3c760cb6190e635c7ef36953912de",
+          "autotools-dev_20220109.1_all.deb": "d909f0327b09d9a9136239caca975df89782fa28efd721c4eb4caea422d3fc5a",
+          "libcurl4-openssl-dev_8.5.0-2ubuntu10.16_amd64.deb": "371ce08af1c08bf5757467b306a040ea1d40de4e9c4acf20cabc3dde3c18a9b6",
+          "libmariadb-dev_1%3a11.8.9+maria~ubu2404_amd64.deb": "c4197ce069f8ebf7a73a523a2201e6944e251cf507e52b2eec340997aad9579a",
+          "libpq-dev_16.15-0ubuntu0.24.04.1_amd64.deb": "ecb81056c9fa11dff469c4767a0b1315abde91baf2eadfddd2c3c2bb03ed6ab2",
+          "libsqlite3-dev_3.45.1-1ubuntu2.8_amd64.deb": "61e688e7ced1c6f7c0b66721e46fd996f891489654dbf382daa98e17ee3ae192",
+          "libtool_2.4.7-7build1_all.deb": "9d1d707179675d38e024bb13613b1d99e0d33fa6c45e5f3bcba19340781781d3",
+          "liburing-dev_2.5-1build1_amd64.deb": "e9d61e8b44b1e7fe5237f3203e2cf55d3c9adae6c5013b9f5c95fa09abf6b712",
+          "m4_1.4.19-4build1_amd64.deb": "30ea715845a1863abd55d11e47ab91513130bf347852d4cdeae69e9d98fa795c",
+          "shtool_2.0.8-10_all.deb": "29a2903d3149d59c6eeb6075ad27409c987508bf854f4a1caf7b969457a1b97d",
+          "php8.5-dev_8.5.12-1+ubuntu24.04.1+deb.sury.org+1_amd64.deb": "079ea91fa76a77627bd5cdb4727b0e4c2b56ae18bbea364b9c6a570dab911c9d"
+        },
+        "installedExtension": "build/install/tmp/asyncara-phase4-nrtjh3t1/package-phase4-r3/8.5/asyncara-0.1.0-dev/.local/sysroot/usr/lib/php/20250925/asyncara.so",
+        "extensionSha256": "2fdb37173263e52f6bd0bfa73007174468c0c4f23796f9dd027be0528e7b5d3c",
+        "status": "PASS"
+      }
+    ],
+    "status": "PASS"
+  },
+  "reproducibility": {
+    "path": "/tmp/asyncara-phase4-nrtjh3t1/package-repro-r3.log",
+    "bytes": 557,
+    "sha256": "efc2431bdd0a4d0ab231f2f6a8bfe5cefdd81a19474ba2226796bea7bb160ad9"
+  },
+  "frozenBuild": {
+    "path": "/tmp/asyncara-phase4-nrtjh3t1/frozen-76e6557-build.log",
+    "bytes": 257,
+    "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+  },
+  "targetedNativeValidation": "udp-ownership-fix.json",
+  "fpmFinalSmoke": [
+    {
+      "name": "A-lifecycle",
+      "workers": 1,
+      "requests": 100,
+      "status": "PASS"
+    },
+    {
+      "name": "B-within-request",
+      "workers": 1,
+      "requests": 10,
+      "status": "PASS"
+    },
+    {
+      "name": "C-multiple-workers",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "D-streaming",
+      "workers": 4,
+      "requests": 12,
+      "status": "PASS"
+    },
+    {
+      "name": "recycling",
+      "status": "PASS",
+      "requests": 25,
+      "pids": [
+        3017138,
+        3017279,
+        3017463
+      ]
+    },
+    {
+      "name": "mixed-reload-kill",
+      "status": "PASS",
+      "seconds": 60.06347652291879,
+      "requests": 432,
+      "reloads": 1,
+      "killedWorkers": 1,
+      "sampleCount": 424,
+      "rssRangeKiBAfterWarmup": {
+        "3017681": 248,
+        "3017716": 380,
+        "3017677": 232,
+        "3017678": 196
+      },
+      "maxRssIncreaseKiB": {
+        "3017681": 248,
+        "3017716": 380,
+        "3017677": 232,
+        "3017678": 196
+      },
+      "warmupPeakKiB": {
+        "3017681": 14884,
+        "3017716": 14516,
+        "3017677": 18532,
+        "3017678": 18688
+      },
+      "growthBeyondWarmupPeakKiB": {
+        "3017681": 2464,
+        "3017716": 2820,
+        "3017677": 404,
+        "3017678": 368
+      },
+      "rssSlopeKiBPerHour": {
+        "3017681": 9821.734144466001,
+        "3017716": 15041.385146145687,
+        "3017677": 15929.755304834245,
+        "3017678": 11348.855658380056
+      },
+      "samplesFile": "mixed-samples.jsonl",
+      "responsesFile": "mixed-responses.jsonl"
+    },
+    {
+      "name": "request-timeout",
+      "status": "PASS",
+      "terminatedPid": 3022959,
+      "replacement": {
+        "pid": 3022982,
+        "fds": 6,
+        "sockets": 1,
+        "threads": 1,
+        "rssKiB": 15636,
+        "virtualKiB": 508252,
+        "idleWaitSeconds": 0.02050794498063624,
+        "transientThreadsBeforeReaping": 1
+      }
+    }
+  ],
+  "hostedCI": {
+    "source": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+    "url": "https://github.com/asyncara/asyncara/actions/runs/41668853898",
+    "result": "All four jobs PASS: PHP8.3/8.4/8.5 and database-lifecycle"
+  },
+  "endurance": "Not yet complete; separate new frozen campaign required. Old r2/earlier artifacts retain the UDP defect."
+}

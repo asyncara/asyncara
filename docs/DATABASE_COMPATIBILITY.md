@@ -6,6 +6,13 @@ TLS trust-file loading and cryptographic work run synchronously during connectio
 No real WAN, managed service, certificate rotation or mutual TLS deployment has
 been certified. Third-party allocations remain outside Asyncara's native ledger.
 
+Explicit client-certificate configuration is not currently exposed: PostgreSQL's
+option whitelist rejects `sslcert`/`sslkey`, and the Connector/C options expose
+CA verification but no client certificate/key pair. Implicit libpq environment
+or default-certificate behavior has not been certified as an Asyncara mTLS API.
+These are implementation gaps, not merely missing remote test results. No
+verification option was disabled to work around them.
+
 | Driver / server | Backend | Verified authentication / TLS | Cancellation |
 |---|---|---|---|
 | SQLite 3.45.1 | Native worker, ordered connection queue | Local temporary databases | Cooperative interrupt; queued work and handles drained |
