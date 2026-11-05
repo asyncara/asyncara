@@ -7,6 +7,41 @@ import threading
 import time
 
 
+def process_identity(pid: int) -> tuple[str, int] | None:
+    try:
+        fields = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+        return fields[0], int(fields[19])
+    except OSError as error:
+        if error.errno in (errno.ENOENT, errno.ESRCH):
+            return None
+        raise
+
+
+def owned_process(pid: int, marker: Path, expected_start: int | None = None) -> int | None:
+    """Validate an owned argv element and identity without mistaking exit for reuse.
+
+    Linux clears cmdline when a process becomes a zombie. Recheck identity after
+    reading argv; only a live mismatch is an ownership error. Never reap or signal.
+    """
+    before = process_identity(pid)
+    if before is None or before[0] in ('Z', 'X'):
+        return None
+    try:
+        argv = (Path('/proc') / str(pid) / 'cmdline').read_bytes().split(b'\0')
+    except OSError as error:
+        if error.errno in (errno.ENOENT, errno.ESRCH):
+            return None
+        raise
+    after = process_identity(pid)
+    if after is None or after[0] in ('Z', 'X'):
+        return None
+    if before[1] != after[1] or (expected_start is not None and after[1] != expected_start):
+        raise RuntimeError('Owned process PID/start identity changed')
+    if os.fsencode(marker) not in argv:
+        raise RuntimeError('Owned process has unexpected executable arguments')
+    return after[1]
+
+
 def process_tree(pid: int) -> list[dict]:
     pending, seen, records = [(pid, None)], set(), []
     while pending:
@@ -77,9 +112,8 @@ class ProcessMonitor:
                     for pid_file, marker in self.owned_pid_files:
                         try:
                             pid = int(pid_file.read_text().splitlines()[0])
-                            argv = (Path('/proc') / str(pid) / 'cmdline').read_bytes().split(b'\0')
-                            if os.fsencode(marker) not in argv:
-                                raise RuntimeError('Owned fixture PID has unexpected executable arguments')
+                            if owned_process(pid, marker) is None:
+                                continue
                             for record in process_tree(pid):
                                 if record['pid'] not in seen:
                                     records.append(record)
