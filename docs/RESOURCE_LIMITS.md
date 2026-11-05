@@ -129,3 +129,11 @@ steady trends. Within-cycle peaks and third-party memory remain outside these
 observations. Hosted r4 FPM1h passed its strict idle6fd/1thread and8MiB growth
 thresholds; the local responsiveness failure remains a failure. Endurance evidence
 does not turn the admission ledger into a complete process memory limit.
+
+The scheduling observer now follows the owned process's cgroup v2 membership
+through all mounted ancestors and records `cpu.max`, `cpu.stat`, CPU pressure
+and weight. The historical observer inspected only the root: its `cpu.stat` was
+readable, while `cpu.max` was absent. Neither a missing root limit nor zero
+throttle counters proves absence of host scheduling delay. This is observation,
+not resource enforcement; no cgroup/OS limit or application default changes.
+Zombie-exit handling has independent real-process regression coverage.

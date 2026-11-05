@@ -1,0 +1,751 @@
+{
+  "reviewedUtc": "2026-11-05T22:44:24.447555+00:00",
+  "reviewParentCommit": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+  "status": "FAIL",
+  "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+  "state": {
+    "status": "FAIL",
+    "startedUtc": "2026-11-05T21:37:31.854407+00:00",
+    "supervisorPid": 4159158,
+    "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r4.tar.gz": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+      "asyncara.so": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f"
+    },
+    "supervisorSha256": "b8660e48b5855f247f4ac394d8c7d014eced4888b81cb6dcc1b9e02ad8152ef5",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "jobs": [
+      {
+        "kind": "fpm",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-05T21:37:32.400855+00:00",
+        "status": "FAIL",
+        "pid": 4159169,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/fpm.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600",
+        "exit": 1,
+        "finishedUtc": "2026-11-05T21:54:24.021530+00:00",
+        "reportPresent": false
+      }
+    ],
+    "gate": "FPM-only chain on the same frozen source, with no concurrent local mixed workload. Each duration must pass before the next. Prior local failure remains preserved; hosted passes do not bypass a local stage.",
+    "finishedUtc": "2026-11-05T21:54:24.088571+00:00"
+  },
+  "failure": {
+    "status": "FAIL",
+    "error": "b'Status: 500 Internal Server Error\\r\\nX-Powered-By: PHP/8.5.12\\r\\nContent-type: text/html; charset=UTF-8\\r\\n\\r\\n'",
+    "completedCases": [
+      {
+        "name": "A-lifecycle",
+        "workers": 1,
+        "requests": 100,
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "workers": 1,
+        "requests": 10,
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS",
+        "requests": 25,
+        "pids": [
+          4159895,
+          4159958,
+          4160018
+        ]
+      }
+    ],
+    "provenance": {
+      "commit": "f2abb555caf8914821f648f8213ce7a433693685",
+      "gitStatus": "",
+      "extension": {
+        "selected": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/build/asyncara.so",
+        "snapshot": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600/asyncara.so",
+        "sha256": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f"
+      },
+      "files": {
+        "tests/soak/fpm.py": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170",
+        "tests/soak/metrics.py": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7",
+        "tests/soak/monitor.py": "f678ac3910c4def4c43dd7b8c81299bed9f005448a4960f802a09b798629b749",
+        "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910",
+        "tests/audit/fpm_request.php": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075"
+      },
+      "mixedModes": [
+        "buffered HTTP",
+        "streamed HTTP",
+        "SQLite",
+        "filesystem",
+        "pending shutdown"
+      ],
+      "requestedSeconds": 3600.0
+    }
+  },
+  "mainResponses": 12568,
+  "samples": {
+    "records": 12560,
+    "last": {
+      "pid": 4160153,
+      "fds": 6,
+      "sockets": 1,
+      "threads": 1,
+      "rssKiB": 17524,
+      "virtualKiB": 508724,
+      "idleWaitSeconds": 0.006298660067841411,
+      "transientThreadsBeforeReaping": 1,
+      "seconds": 998.6796015729196
+    }
+  },
+  "failedRequestMetrics": {
+    "ticks": 0,
+    "intervals": [
+      {
+        "start": 1793915661.4398236,
+        "end": 1793915661.6674285
+      },
+      {
+        "start": 1793915661.4483151,
+        "end": 1793915661.6599467
+      },
+      {
+        "start": 1793915661.4504125,
+        "end": 1793915661.6560173
+      },
+      {
+        "start": 1793915661.4534473,
+        "end": 1793915661.65856
+      }
+    ],
+    "cpuDelta": {
+      "monotonicNs": 273371673,
+      "userUs": 2104,
+      "systemUs": 0,
+      "scheduledNs": 2023020,
+      "runnableWaitNs": 195260,
+      "slices": 1
+    },
+    "lastTicksNs": [],
+    "scheduler": {
+      "turns": 12,
+      "taskSteps": 18,
+      "maxStepSeconds": 0.000313368858769536,
+      "maxTimerLagSeconds": 0.2672194931656122,
+      "activeTasks": 1,
+      "pendingFutures": 1,
+      "retainedFailures": 0,
+      "readyTasks": 0,
+      "activeTimers": 0,
+      "ioWatchers": 0,
+      "pendingNative": 0,
+      "memoryBytes": 2097152
+    }
+  },
+  "externalObserver": {
+    "metadata": {
+      "startedUtc": "2026-11-05T21:45:40.043961+00:00",
+      "state": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json",
+      "source": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55",
+      "intervalSeconds": 0.1,
+      "maximumSeconds": 3600,
+      "pid": 12028,
+      "observerSha256": "43a3d532d7e0f1195536af757b0a9176973a97fc2c411a0abfea03c3ddfee16d",
+      "treeObserverSha256": "f678ac3910c4def4c43dd7b8c81299bed9f005448a4960f802a09b798629b749",
+      "boundary": "External /proc sampling changes host load slightly. cgroup/global counters are not exclusive to Asyncara. No application instrumentation, signals, process limits, settings or test assertions are changed. No command lines, payloads or credentials are recorded."
+    },
+    "report": {
+      "status": "FAIL",
+      "error": "RuntimeError('Owned runner executable arguments do not match')",
+      "seconds": 522.9241570720915,
+      "samples": 4246,
+      "finishedUtc": "2026-11-05T21:54:22.968151+00:00"
+    },
+    "failureWindow": [
+      {
+        "unixSeconds": 1793915661.2298386,
+        "monotonicNs": 1576283629980545,
+        "elapsedSeconds": 521.1859002339188,
+        "processes": [
+          {
+            "pid": 4159169,
+            "ppid": 4159158,
+            "startTicks": 157527479,
+            "name": "python3",
+            "rssKiB": 27220,
+            "virtualKiB": 1625704,
+            "threads": 19,
+            "fds": 23,
+            "sockets": 16,
+            "children": [
+              4160050
+            ],
+            "unavailable": [],
+            "schedstat": "22950947936 7856718868 18134",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160050,
+            "ppid": 4159169,
+            "startTicks": 157528508,
+            "name": "php-fpm8.5",
+            "rssKiB": 25928,
+            "virtualKiB": 213336,
+            "threads": 1,
+            "fds": 18,
+            "sockets": 3,
+            "children": [
+              4160121,
+              4160122,
+              4160123,
+              4160153
+            ],
+            "unavailable": [],
+            "schedstat": "2460091499 6039722736 14094",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160153,
+            "ppid": 4160050,
+            "startTicks": 157528614,
+            "name": "php-fpm8.5",
+            "rssKiB": 17644,
+            "virtualKiB": 521036,
+            "threads": 5,
+            "fds": 17,
+            "sockets": 7,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "92149497467 53207738595 127536",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160123,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19196,
+            "virtualKiB": 529140,
+            "threads": 5,
+            "fds": 16,
+            "sockets": 7,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "88452320748 52766446747 124466",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160122,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19036,
+            "virtualKiB": 508600,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "91312257125 52226242346 125750",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160121,
+            "ppid": 4160050,
+            "startTicks": 157528586,
+            "name": "php-fpm8.5",
+            "rssKiB": 18964,
+            "virtualKiB": 521036,
+            "threads": 5,
+            "fds": 17,
+            "sockets": 7,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "90759891329 53479426165 125668",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          }
+        ],
+        "cgroupCpu": "usage_usec 1366402669000\nuser_usec 862449630000\nsystem_usec 503953039000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cgroupCpuMax": {
+          "unavailable": 2
+        },
+        "cpuPressure": "some avg10=29.13 avg60=23.20 avg300=18.75 total=71252604522\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "globalCpuTicks": "cpu  85455154 789808 37580277 721920574 6427481 0 12815026 0 0 0"
+      },
+      {
+        "unixSeconds": 1793915661.360406,
+        "monotonicNs": 1576283760547892,
+        "elapsedSeconds": 521.3164676709566,
+        "processes": [
+          {
+            "pid": 4159169,
+            "ppid": 4159158,
+            "startTicks": 157527479,
+            "name": "python3",
+            "rssKiB": 27140,
+            "virtualKiB": 1592792,
+            "threads": 11,
+            "fds": 13,
+            "sockets": 6,
+            "children": [
+              4160050
+            ],
+            "unavailable": [],
+            "schedstat": "22951054506 7861467928 18136",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160050,
+            "ppid": 4159169,
+            "startTicks": 157528508,
+            "name": "php-fpm8.5",
+            "rssKiB": 25928,
+            "virtualKiB": 213336,
+            "threads": 1,
+            "fds": 18,
+            "sockets": 3,
+            "children": [
+              4160121,
+              4160122,
+              4160123,
+              4160153
+            ],
+            "unavailable": [],
+            "schedstat": "2460186019 6039771716 14096",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160153,
+            "ppid": 4160050,
+            "startTicks": 157528614,
+            "name": "php-fpm8.5",
+            "rssKiB": 17524,
+            "virtualKiB": 508724,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "92167479067 53208950385 127551",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160123,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19116,
+            "virtualKiB": 512724,
+            "threads": 5,
+            "fds": 16,
+            "sockets": 7,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "88461234588 52774698967 124484",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160122,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19036,
+            "virtualKiB": 508600,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "91312257125 52226242346 125750",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160121,
+            "ppid": 4160050,
+            "startTicks": 157528586,
+            "name": "php-fpm8.5",
+            "rssKiB": 18840,
+            "virtualKiB": 508724,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "90784764259 53479681075 125679",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          }
+        ],
+        "cgroupCpu": "usage_usec 1366402854000\nuser_usec 862449702000\nsystem_usec 503953152000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cgroupCpuMax": {
+          "unavailable": 2
+        },
+        "cpuPressure": "some avg10=29.13 avg60=23.20 avg300=18.75 total=71252653248\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "globalCpuTicks": "cpu  85455163 789808 37580291 721920604 6427481 0 12815028 0 0 0"
+      },
+      {
+        "unixSeconds": 1793915661.72217,
+        "monotonicNs": 1576284122312352,
+        "elapsedSeconds": 521.6782320609782,
+        "processes": [
+          {
+            "pid": 4159169,
+            "ppid": 4159158,
+            "startTicks": 157527479,
+            "name": "python3",
+            "rssKiB": 27140,
+            "virtualKiB": 1592792,
+            "threads": 11,
+            "fds": 14,
+            "sockets": 7,
+            "children": [
+              4160050
+            ],
+            "unavailable": [],
+            "schedstat": "22958809936 7861897278 18147",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160050,
+            "ppid": 4159169,
+            "startTicks": 157528508,
+            "name": "php-fpm8.5",
+            "rssKiB": 25928,
+            "virtualKiB": 213336,
+            "threads": 1,
+            "fds": 18,
+            "sockets": 3,
+            "children": [
+              4160121,
+              4160122,
+              4160123,
+              4160153
+            ],
+            "unavailable": [],
+            "schedstat": "2460345919 6039827206 14100",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160153,
+            "ppid": 4160050,
+            "startTicks": 157528614,
+            "name": "php-fpm8.5",
+            "rssKiB": 17580,
+            "virtualKiB": 510776,
+            "threads": 5,
+            "fds": 10,
+            "sockets": 3,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "92443732477 53211542025 127561",
+            "waitChannel": "0",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160123,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19048,
+            "virtualKiB": 508620,
+            "threads": 5,
+            "fds": 15,
+            "sockets": 6,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "88472403548 52781061547 124498",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160122,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19036,
+            "virtualKiB": 508600,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "91342573095 52242311576 125799",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160121,
+            "ppid": 4160050,
+            "startTicks": 157528586,
+            "name": "php-fpm8.5",
+            "rssKiB": 18840,
+            "virtualKiB": 508724,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "90785960519 53480663305 125683",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          }
+        ],
+        "cgroupCpu": "usage_usec 1366403487000\nuser_usec 862450056000\nsystem_usec 503953431000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cgroupCpuMax": {
+          "unavailable": 2
+        },
+        "cpuPressure": "some avg10=29.13 avg60=23.20 avg300=18.75 total=71252703987\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "globalCpuTicks": "cpu  85455197 789808 37580309 721920688 6427481 0 12815033 0 0 0"
+      },
+      {
+        "unixSeconds": 1793915661.8294895,
+        "monotonicNs": 1576284229630771,
+        "elapsedSeconds": 521.7855507601053,
+        "processes": [
+          {
+            "pid": 4159169,
+            "ppid": 4159158,
+            "startTicks": 157527479,
+            "name": "python3",
+            "rssKiB": 27072,
+            "virtualKiB": 1551764,
+            "threads": 8,
+            "fds": 11,
+            "sockets": 6,
+            "children": [
+              4160050
+            ],
+            "unavailable": [],
+            "schedstat": "22959091336 7867013418 18150",
+            "waitChannel": "futex_wait_queue",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160050,
+            "ppid": 4159169,
+            "startTicks": 157528508,
+            "name": "php-fpm8.5",
+            "rssKiB": 25928,
+            "virtualKiB": 213336,
+            "threads": 1,
+            "fds": 18,
+            "sockets": 3,
+            "children": [
+              4160121,
+              4160122,
+              4160123,
+              4160153
+            ],
+            "unavailable": [],
+            "schedstat": "2460384149 6039915806 14101",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160153,
+            "ppid": 4160050,
+            "startTicks": 157528614,
+            "name": "php-fpm8.5",
+            "rssKiB": 17668,
+            "virtualKiB": 529244,
+            "threads": 5,
+            "fds": 16,
+            "sockets": 7,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "92455144687 53211691835 127579",
+            "waitChannel": "ep_poll",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160123,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19048,
+            "virtualKiB": 508620,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "88473133608 52781323047 124501",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160122,
+            "ppid": 4160050,
+            "startTicks": 157528587,
+            "name": "php-fpm8.5",
+            "rssKiB": 19036,
+            "virtualKiB": 508600,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "91342573095 52242311576 125799",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          },
+          {
+            "pid": 4160121,
+            "ppid": 4160050,
+            "startTicks": 157528586,
+            "name": "php-fpm8.5",
+            "rssKiB": 18840,
+            "virtualKiB": 508724,
+            "threads": 1,
+            "fds": 6,
+            "sockets": 1,
+            "children": [],
+            "unavailable": [],
+            "schedstat": "90785960519 53480663305 125683",
+            "waitChannel": "inet_csk_accept",
+            "timerSlackNs": {
+              "unavailable": 1
+            }
+          }
+        ],
+        "cgroupCpu": "usage_usec 1366403568000\nuser_usec 862450091000\nsystem_usec 503953477000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cgroupCpuMax": {
+          "unavailable": 2
+        },
+        "cpuPressure": "some avg10=29.13 avg60=23.20 avg300=18.75 total=71252708566\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "globalCpuTicks": "cpu  85455200 789808 37580313 721920741 6427481 0 12815034 0 0 0"
+      }
+    ],
+    "interpretation": "Observer sampling gap 361.764ms overlaps the failed request. Its later argv mismatch is reproduced when Linux clears cmdline on zombie exit. Failure PID was not in this ordinary PHP log; no sampled worker is assumed to be that request."
+  },
+  "correctionToLaunchNote": "Root cpu.stat was readable; only root cpu.max was absent. Ancestor cgroup limits were not sampled by the historical observer. Do not infer absence of limits from the old root-only probe.",
+  "boundary": "Failed one-hour attempt, not a completed duration. Six-/24-hour FPM stages did not start. Native/public runtime and historical archives remain unchanged. No exact native wait site or sole cause is established for this uninstrumented failed request.",
+  "files": {
+    "campaign-f2abb55-fpm-solo-r1/state.json": {
+      "bytes": 1893,
+      "sha256": "d12d477958f6f4e26125d2f0417f2c1fb179a4be946cc299fe1638ac92dd6c6e"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/failure.json": {
+      "bytes": 476496,
+      "sha256": "db8f5af2baba7321925f11a97ad0b8507c13db3452311ba58b3ee0675c0c8283"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/provenance.json": {
+      "bytes": 1015,
+      "sha256": "d1e3b99e9c70e3d6b5cd457983600f778a63764ccfd0ef6e2f323806771407e4"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/mixed-responses.jsonl": {
+      "bytes": 29538295,
+      "sha256": "5874f4f4b43e4aa41ff4d2f14ffe4d4675de653a1c0fcc141e36db834ad98ab9"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/mixed-samples.jsonl": {
+      "bytes": 2541110,
+      "sha256": "c289bcde27b142306f0366b129ae6e33dc75793f21d2dffad9bced89a0ed561d"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/os-processes.jsonl": {
+      "bytes": 258356,
+      "sha256": "10a528d6f39f08e122ac804db741262db7da589dab31a08f664ef9a63e1e9d26"
+    },
+    "campaign-f2abb55-fpm-solo-r1/fpm-3600/mixed-reload-kill/php-errors.log": {
+      "bytes": 90805,
+      "sha256": "4d5a5e012d85fee10bebb6de35b23d7efb821b399ac344e5338ab027baae418a"
+    },
+    "fpm-scheduling-observer-r1/metadata.json": {
+      "bytes": 724,
+      "sha256": "1d4989cf0a9a3f2db99a95dd3b244affd857854fe16417db408a168fb6c08733"
+    },
+    "fpm-scheduling-observer-r1/report.json": {
+      "bytes": 204,
+      "sha256": "17cab6455b805fbd82d180256515ed07917c92e0f0cbd389a072021b8139b18a"
+    },
+    "fpm-scheduling-observer-r1/samples.jsonl": {
+      "bytes": 10338545,
+      "sha256": "3bfc097c97642318a5ff1ab6b7fe6d285bb4069d4b3ffe7ba2d4f62b34ec309d"
+    }
+  }
+}

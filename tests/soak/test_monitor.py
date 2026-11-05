@@ -8,10 +8,43 @@ import time
 import unittest
 from unittest.mock import patch
 
-from monitor import ProcessMonitor, process_tree
+from monitor import ProcessMonitor, process_tree, owned_process, process_identity
 
 
 class MonitorTests(unittest.TestCase):
+    def test_owned_zombie_is_exited_not_an_argument_mismatch(self):
+        marker = Path('/asyncara-owned-exit-control')
+        child = subprocess.Popen([sys.executable, '-c', 'pass', str(marker)])
+        try:
+            deadline = time.monotonic() + 5
+            while process_identity(child.pid)[0] != 'Z':
+                if time.monotonic() > deadline:
+                    self.fail('Child did not exit')
+                time.sleep(.01)
+            # This is the independently reproduced old observer failure.
+            self.assertNotIn(os.fsencode(marker), (Path('/proc') / str(child.pid) / 'cmdline').read_bytes().split(b'\0'))
+            self.assertIsNone(owned_process(child.pid, marker))
+        finally:
+            child.wait(timeout=5)
+        self.assertIsNone(owned_process(child.pid, marker))
+
+    def test_owned_identity_rejects_live_mismatch_and_reuse(self):
+        marker = Path('/asyncara-owned-live-control')
+        child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)', str(marker)])
+        try:
+            stamp = owned_process(child.pid, marker)
+            self.assertIsInstance(stamp, int)
+            self.assertEqual(owned_process(child.pid, marker, stamp), stamp)
+            with self.assertRaisesRegex(RuntimeError, 'unexpected executable arguments'):
+                owned_process(child.pid, Path('/wrong-owner'))
+            with self.assertRaisesRegex(RuntimeError, 'identity changed'):
+                owned_process(child.pid, marker, stamp + 1)
+            with patch('monitor.process_identity', side_effect=[('R', stamp), ('Z', stamp)]):
+                self.assertIsNone(owned_process(child.pid, Path('/wrong-owner')))
+        finally:
+            child.terminate()
+            child.wait(timeout=5)
+
     def test_child_descriptors_and_virtual_memory_are_observed(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'observations.jsonl'

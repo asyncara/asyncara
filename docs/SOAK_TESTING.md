@@ -10,9 +10,10 @@ PHP8.5.12 NTS/epoll, with isolated Oracle/MariaDB/PostgreSQL/Redis/SQLite and
 extended networking. It does not certify every driver/protocol/remote deployment.
 
 Hosted r4 mixed and FPM each passed one hour. Local FPM failed responsiveness
-at its364.506s sample, so the original combined campaign remains FAIL. A new
-FPM-only chain is running with unchanged assertions; six-/24-hour FPM is pending.
-Current identities, host differences and live paths: PHASE4_DELIVERY.md.
+at its364.506s sample, so the original combined campaign remains FAIL. The isolated
+FPM-only retry also failed at998.680s/12,568 recorded main responses. Six-/24-hour
+FPM has not started. Current identities, host differences and diagnostic results:
+PHASE4_DELIVERY.md and phase4/fpm-solo-r4-result.json.
 
 The existing `tests/stress.php` and FPM audit remain intact. The new
 `tests/soak/run.py` creates an isolated source snapshot, copies the current native
@@ -238,11 +239,51 @@ Its separate60.119s smoke remains historical evidence. The subsequent corrected
 f2abb55/r4 campaign completed all three mixed stages; current results are at the
 top of this document. Local FPM still failed, with a separate hosted one-hour pass.
 
-The same frozen source is retained for the FPM-only retry. Its exact supervisor,
-environment and fingerprints are in phase4/fpm-solo-r4-launch.json; live state:
+The same frozen source was retained for the failed FPM-only retry. Its supervisor,
+environment and fingerprints are in phase4/fpm-solo-r4-launch.json; terminal state:
 `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json`.
 Each FPM stage must finish cleanly at the requested duration before advancing.
-No native/public runtime changes, competing local mixed work, builds, fuzzing or
-benchmarks are scheduled during the attempt. The external scheduling observer is
-read-only and records its own scope/overhead in phase4/fpm-scheduling-observer.json.
+There were no native/public runtime changes, competing local mixed work, builds,
+fuzzing or benchmarks during the attempt. The external observer also failed when
+the runner became a zombie; its failure and sampling gap are preserved in
+phase4/fpm-solo-r4-result.json. The original launch snapshot is unchanged.
 Original assertions/resource thresholds and every earlier report remain intact.
+
+## Scheduling diagnostics after the isolated FPM failure
+
+`tests/soak/scheduling_observer.py` is a read-only Linux observer for a campaign
+state file. It validates the explicitly owned FPM runner's argv and PID/start
+identity, handles zombie/reaped runners as exited, and follows cgroup v2
+membership through every mounted ancestor. Missing counters are explicit. It
+streams samples, never sends signals or changes process/cgroup settings, and
+never records command lines or application payloads. Sampling adds load and
+cannot resolve every scheduling interval or attribute shared counters uniquely.
+Its `COMPLETE` result describes the observer, never a passing workload.
+
+```sh
+python3 tests/soak/scheduling_observer.py --state /path/to/campaign/state.json --output build/new-scheduling-observer --seconds 3600 --interval .1
+python3 tests/soak/test_monitor.py
+python3 tests/soak/test_scheduling_observer.py
+python3 tests/soak/test_wait_controls.py
+```
+
+The original root-only probe did read `cpu.stat`; root `cpu.max` was absent. The
+historical launch note incorrectly described both as unavailable. That note is
+preserved, with this correction and a result attestation. Root counters alone do
+not establish the limits applying to nested cgroups.
+
+The existing standalone C control now also accepts `poll` and `nanosleep`:
+
+```sh
+build/epoll-latency 180 epoll > build/new-epoll-control.jsonl
+build/epoll-latency 180 poll > build/new-poll-control.jsonl
+build/epoll-latency 180 nanosleep > build/new-nanosleep-control.jsonl
+```
+
+Each requests a 5ms wait and reports oversleeps above50ms; none imposes a latency
+pass threshold or changes a runtime assertion. The three November5 controls ran
+concurrently for180s each: maxima610.321/498.451/508.557ms, with106/104/113 waits
+over50ms respectively. The controls contain no PHP/curl/Asyncara code. They show
+host timing variability, not the precise cause of the earlier failed request.
+See [FPM diagnostics](FPM_LIFECYCLE.md) and
+[raw-result attestation](phase4/scheduling-diagnostics-r2.json).

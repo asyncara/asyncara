@@ -973,3 +973,83 @@ changed; no replacement archive is needed for these evidence-only updates.
 Current packaged source remains r4/f2abb55 and no GitHub release is published.
 Next: complete/diagnose unchanged FPM stages, then resume lower-priority resource,
 remote-database and protocol work from a new source checkpoint. EXPERIMENTAL.
+
+## Isolated FPM failure investigated; observer repair — 2026-11-05
+
+Resumed from pushed78a6722376a7788e9d9fffb60c5c1a89002648d3 on phase4-endurance.
+The FPM-only frozen f2abb55 attempt finished FAIL at21:54:24Z. Last sample
+998.679602s;12,568main responses recorded. A/B/C/D and recycling passed before
+the mixed responsiveness failure. Its request recorded ticks0,273.371673ms
+elapsed,2.023020ms scheduled CPU,0.195260ms runnable wait and267.219493ms maximum
+timer lag; all four HTTP intervals overlapped. No6h/24h FPM started. The raw
+failure, state, provenance, sample/response counts and observer window are
+preserved in docs/phase4/fpm-solo-r4-result.json. No failing threshold changed.
+
+The historical external observer also failed, after522.924s/4,246samples, when
+Linux cleared the exiting runner's zombie cmdline. A real child reproduced the
+old argv mismatch. Its361.764ms sampling gap overlaps the failed request, whose
+PID was not recorded in the ordinary error; no sampled worker is assumed to be
+that request. The old root cpu.stat WAS readable; root cpu.max was absent. The
+launch note stating both were unavailable is incorrect and retained with an
+explicit correction. Root-only counters did not cover actual cgroup ancestry.
+
+Implemented shared process-state/PID-start/argv validation in tests/soak/monitor.py
+with zombie/reap handling and preserved live-mismatch rejection. Added the reusable
+read-only scheduling_observer.py: owned tree only, all mounted cgroup-v2 ancestors,
+explicit missing metrics, streamed JSONL, private fresh evidence directories, no
+signals/settings/payload/argv logging. Added real-child live/zombie, exit-race,
+hierarchy and existing-evidence regressions. ProcessMonitor still preserves its
+descriptor/permission/ownership checks. No native or public PHP runtime changed.
+
+Extended fpm_trace.py with combined poll-wrapper/strace mode and response counts/
+timestamps on failure; extended the standalone5ms C wait control with poll and
+nanosleep while preserving default epoll. Added compiler/CLI/measurement tests.
+Fast verify.yml now runs scheduling-observer and wait-control tests alongside
+the existing monitor tests. These are test tools, not runtime backend changes.
+
+Commands/evidence under /tmp/asyncara-phase4-nrtjh3t1:
+
+- cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2
+  tests/soak/epoll_latency.c -o build/wait-latency-phase4; no compiler diagnostics.
+  Three concurrent180s controls in wait-controls-r2 completed26,016/26,013/25,969
+  waits for epoll/poll/nanosleep;106/104/113 exceeded50ms; maxima610.321/498.451/
+  508.557ms. CPU at each largest wait was30.710/26.940/22.880microseconds.
+  No PHP, curl or Asyncara executes in this control. It demonstrates host timing
+  variability, not the precise cause of the uninstrumented FPM failure.
+- tests/soak/fpm_trace.py --seconds30 --workers4 --instrumentation both:
+  fpm-both-smoke-r1 FAIL on request82/PID67187. Its4ms/5ms native calls measured
+  95.514/157.237ms while captured matching-timeout epoll waits were0.102/0.313ms.
+  Native-call time includes more than epoll_wait; ptrace/logging is intrusive.
+  No retrospective attribution of the original request or false pass follows.
+- Combined one-worker5s wiring smoke fpm-both-smoke-r2 PASS5.475549s/10requests.
+  Poll-wrapper-only four-worker180s diagnostic fpm-poll-diagnostic-r3
+  PASS180.248183s/2,500requests;134native calls above50ms, max164.260313ms.
+  Intentional FPM_BIN=/bin/false startup control correctly preserves FAIL,
+  zero responses, timestamps and nonzero exit. No lifecycle certification follows.
+- Full tests/soak/fpm.py --seconds60 with repaired external observer:
+  fpm-observer-integration-r2 PASS60.087633s/864mainrequests plus A/B/C/D,
+  recycle/reload/forced replacement/fatal/pending/timeout cases. Observer
+  COMPLETE70.131811s/620samples, no false ownership error. Idle6fds/1thread,
+  maximum2,800KiB RSS growth beyond warmup. All sampled non-root ancestors had
+  cpu.max=max and nr_throttled=0; shared pressure does not establish a sole cause.
+- Six regression suites PASS19tests: test_monitor.py(6),
+  test_scheduling_observer.py(4), test_metrics.py(6), test_fpm_peer.py(1),
+  test_poll_profile.py(1), test_wait_controls.py(1). Logs observer-validation-r2;
+  final observer source rerun after the PID/tree identity guard. py_compile and
+  git diff --check pass. PHP/FPM8.5.12 used; no system configuration changed.
+
+docs/phase4/scheduling-diagnostics-r2.json records55raw-file fingerprints, exact
+tool/build/source hashes, tests, failures, controls and live cgroup observations.
+Updated delivery, canonical roadmap, soak/FPM, resource/security/readiness and
+README. Historical raw artifacts and launch attestations are untouched.
+Native/public source matches f2abb55 exactly; frozen worktree remains clean.
+r4 SHA256 remains5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8.
+No replacement archive or release published; r4 does not include these later
+diagnostic tools. Earlier1h/6h/24h mixed and hosted1h FPM evidence remains valid
+within its scope. Sanitizers/native builds were not rerun for test-tool-only edits.
+
+Next: correlate lower-overhead native/off-CPU measurements on a suitable host
+with the retained responsiveness assertion before another local endurance chain.
+Any justified runtime fix needs a new immutable source/archive and affected-soak
+reruns. Six-/24-hour FPM remain unexecuted; remote SQL/protocol/hook expansion
+does not advance on this diagnostic checkpoint. Release EXPERIMENTAL.

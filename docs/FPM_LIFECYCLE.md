@@ -243,7 +243,7 @@ FPM attempt began November3 at16:44:17Z after package tests finished. It later
 failed responsiveness as recorded below. The supervisor advances FPM only after
 a complete FPM pass. Historical passes and timing failures remain separate.
 
-## Corrected-source hosted hour and local retry, November 5
+## Corrected-source hosted hour and isolated local failure, November 5
 
 Verified r4/f2abb55 hosted FPM completed3,600.055s/67,824mainrequests and every
 A/B/C/D, recycling/reload/kill/fatal/pending/timeout case. Maximum growth beyond
@@ -259,10 +259,58 @@ Full failure/log hashes remain in phase4/endurance-r4.json. No threshold changed
 
 A new FPM-only1h→6h→24h chain began November5 at21:37:31Z using the same frozen
 source and binary, without concurrent local mixed/build/fuzz/benchmark load.
-Each local stage must pass; the hosted pass does not bypass the failed local gate.
-An external100ms observer records owned process identity, schedstat, wait channel
-and host pressure for up to one hour. It adds observer overhead, misses intervals
-between samples and cannot uniquely attribute global CPU events. Missing cgroup
-counters are explicit. No instrumentation is injected into PHP or its callbacks.
-See phase4/fpm-solo-r4-launch.json and phase4/fpm-scheduling-observer.json.
-Six-/24-hour FPM has not completed; broader FPM certification remains partial.
+It failed after998.680 sampled seconds and12,568 recorded main responses. The
+failed request's four HTTP intervals overlapped, but ticks=0, elapsed273.372ms,
+scheduled CPU2.023ms, runnable wait0.195ms and maximum timer lag267.219ms.
+The hosted pass does not bypass this local gate; six-/24-hour FPM did not start.
+[Failure attestation](phase4/fpm-solo-r4-result.json) retains source/binary/archive
+identity, complete raw hashes, failure metrics and observer samples.
+
+The external100ms observer had a361.764ms sampling gap across the failed request
+and then falsely rejected the exiting runner's empty argv. Linux clears zombie
+command lines before reaping. The new shared ownership helper checks process
+state and PID/start identity before and after argv, reports zombie/reaped roots
+as exited, and continues to reject live mismatches. Real-child and exit-race
+regressions cover the repair. The original observer/report remains preserved.
+Its root `cpu.stat` was readable; only root `cpu.max` was absent, correcting the
+original launch note. The reusable observer now follows cgroup membership through
+all mounted ancestors. This is diagnosis, not enforcement or attribution of
+shared CPU pressure. See SOAK_TESTING.md for the exact CLI and boundaries.
+
+## Correlated tracing and shorter diagnostic results
+
+The existing `fpm_trace.py` can now use `--instrumentation both` to pair its
+test-only PHP native-poll wrapper with strace. It traces readiness, waiting and
+allocation-control syscalls only, without request-body payloads. The wrapper
+logs slow native-call durations/request IDs; it does not replace the extension
+or bypass the original responsiveness assertion. Failure reports now retain
+recorded-response counts and elapsed time through cleanup. An intentional
+`FPM_BIN=/bin/false` startup control verifies a failed report with zero responses.
+
+```sh
+FPM_BIN=/path/to/php-fpm8.5 python3 tests/soak/fpm_trace.py --seconds 30 --workers 4 --instrumentation both --output build/new-fpm-both-diagnostic
+FPM_BIN=/path/to/php-fpm8.5 python3 tests/soak/fpm_trace.py --seconds 180 --workers 4 --instrumentation poll --output build/new-fpm-poll-diagnostic
+```
+
+Results on unchanged native/public runtime source:
+
+| Run | Observed result | Scope |
+|---|---|---|
+| Both layers, four workers, requested30s | FAIL, request82/PID67187, ticks1 |4ms/5ms native calls95.514/157.237ms; captured matching-timeout epoll waits0.102/0.313ms |
+| Both layers, one worker, requested5s | PASS5.476s/10requests | Instrumentation forwarding/shutdown smoke |
+| Poll wrapper only, four workers | PASS180.248s/2,500requests |134native calls above50ms; largest164.260ms |
+| Full lifecycle smoke with repaired external observer | PASS60.088s/864mainrequests plus A/B/C/D, recycle, reload, kill, fatal/pending and timeout | Observer COMPLETE70.132s/620samples; idle six fds/one thread, maximum2,800KiB growth beyond warmup |
+
+Ptrace and synchronous diagnostic logging change timing. A native-call duration
+includes allocation/completion work as well as readiness waiting. The wrapper's
+wall timestamp is taken after measuring elapsed time; it is not an exact
+monotonic boundary pair. No exact cause for the earlier uninstrumented failure
+is inferred. Independent180s epoll/poll/nanosleep controls also observed long
+waits without PHP/Asyncara; those support host timing variability, not a claim
+that every runtime delay is external. Short smoke RSS slopes are retained and
+must not be extrapolated to six hours. All original assertions remain intact.
+
+[Diagnostic attestation](phase4/scheduling-diagnostics-r2.json) contains results,
+selected correlated trace lines, tool hashes,19passing regression tests, raw-file
+hashes and build commands. No new native/public runtime fix is claimed. The
+corrected r4 archive remains immutable; these later diagnostic tools are in Git.

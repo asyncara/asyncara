@@ -2,6 +2,7 @@
 """Measure owned FPM workers with strace or a test-only native poll wrapper."""
 import argparse
 import concurrent.futures
+import datetime
 import hashlib
 import importlib.util
 import json
@@ -17,7 +18,7 @@ root = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--seconds', type=float, default=300)
 parser.add_argument('--output', type=Path, required=True)
-parser.add_argument('--instrumentation', choices=['syscall', 'poll'], default='syscall')
+parser.add_argument('--instrumentation', choices=['syscall', 'poll', 'both'], default='syscall')
 parser.add_argument('--workers', type=int, default=1)
 args = parser.parse_args()
 if not 0 < args.seconds <= 3600:
@@ -54,15 +55,16 @@ php_admin_value[error_log]={out}/php-errors.log
 # do not capture request bodies, credentials, or arbitrary application data.
 command = [os.environ.get('FPM_BIN', 'php-fpm8.5'),
     '-n', '-F', '-d', 'extension=' + str(extension), '-d', 'display_errors=0', '-y', str(config)]
-if args.instrumentation == 'syscall':
-    command = ['strace', '-D', '-f', '-ttt', '-T', '-e',
-        'trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise',
-        '-o', str(out / 'syscalls.log')] + command
-else:
+if args.instrumentation in ('poll', 'both'):
     prepend = out / 'fpm_poll_profile.php'
     shutil.copy2(root / 'tests/soak/fpm_poll_profile.php', prepend)
     command += ['-d', 'auto_prepend_file=' + str(prepend)]
+if args.instrumentation in ('syscall', 'both'):
+    command = ['strace', '-D', '-f', '-ttt', '-T', '-e',
+        'trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise',
+        '-o', str(out / 'syscalls.log')] + command
 report = {'status': 'RUNNING', 'command': command, 'requestedSeconds': args.seconds,
+    'startedUtc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
     'instrumentation': args.instrumentation, 'workers': args.workers,
     'source': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
     'gitStatus': subprocess.check_output(['git', 'status', '--short'], cwd=root, text=True),
@@ -71,6 +73,7 @@ report = {'status': 'RUNNING', 'command': command, 'requestedSeconds': args.seco
     'observerFiles': {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in
         ['tests/soak/fpm_trace.py', 'tests/soak/fpm_poll_profile.php', 'scripts/audit-fpm.py']},
     'note': 'Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.'}
+start, requests = None, 0
 try:
     with (out / 'startup.log').open('x') as log:
         process = subprocess.Popen(command, stdout=log, stderr=log, start_new_session=True)
@@ -87,7 +90,6 @@ try:
                         raise
                     time.sleep(.01)
             start = time.monotonic()
-            requests = 0
             with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor, (out / 'responses.jsonl').open('x') as responses:
                 while time.monotonic() - start < args.seconds:
                     pending = [executor.submit(audit.request, port, requests + i,
@@ -113,5 +115,9 @@ except BaseException as error:
 finally:
     audit.server.shutdown()
     audit.server.server_close()
+    report.update(finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        recordedResponses=requests)
+    if start is not None:
+        report['elapsedThroughCleanupSeconds'] = time.monotonic() - start
     (out / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report), flush=True)

@@ -4,7 +4,7 @@
 from failed campaigns and shorter diagnostic runs. Mixed endurance is verified
 for the configuration below; broader FPM and compatibility gates remain incomplete.
 
-## Current evidence at 2026-11-05 21:46 UTC
+## Current evidence at 2026-11-05 22:50 UTC
 
 | Check | Tested source | Result |
 |---|---|---|
@@ -16,7 +16,7 @@ for the configuration below; broader FPM and compatibility gates remain incomple
 | Local FPM one hour, concurrent with mixed | frozen `f2abb55` | FAIL: responsiveness assertion; last sample 364.506s / 3,104 recorded main requests |
 | Hosted mixed one hour | `f2abb55` | PASS: 3,600.016s / 28,358 cycles |
 | Hosted FPM one hour | `f2abb55` | PASS: 3,600.055s / 67,824 main requests |
-| New local FPM-only retry | unchanged frozen `f2abb55` | RUNNING from November 5, 21:37:31Z; own 1h → 6h → 24h gates |
+| Local FPM-only retry | unchanged frozen `f2abb55` | FAIL: responsiveness; last sample998.680s /12,568 recorded main requests |
 | Six-/24-hour FPM | — | NOT EXECUTED; local preceding stage must pass |
 
 The local mixed scope includes separate Oracle and MariaDB fixtures. Hosted mixed
@@ -75,15 +75,63 @@ Earlier independent native-wait controls demonstrate host timing effects, but
 this individual request was not traced. No speculative runtime repair or relaxed
 assertion is justified by these observations.
 
-A new FPM-only attempt removes the concurrent local mixed workload while retaining
-all original four-worker, within-request and lifecycle assertions. It must pass
-its own full one hour before six/24-hour stages. [Launch provenance](phase4/fpm-solo-r4-launch.json)
-records the exact supervisor; live state is
+The FPM-only attempt removed the concurrent local mixed workload while retaining
+all original four-worker, within-request and lifecycle assertions. It failed
+before one hour; six/24-hour stages never started. [Launch provenance](phase4/fpm-solo-r4-launch.json)
+records the exact supervisor; terminal state is
 `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json`.
-A separate [read-only observer](phase4/fpm-scheduling-observer.json) samples owned
-worker scheduling/wait counters and host pressure every 100ms for up to one hour.
-It adds observer load and cannot attribute every delay. Missing cgroup counters
-are explicit; no application instrumentation, signals or settings are changed.
+[Result attestation](phase4/fpm-solo-r4-result.json) preserves the failure,
+12,568 main responses, raw hashes and observer window. The request had zero ticks,
+273.372ms elapsed, 2.023ms scheduled CPU, 0.195ms runnable wait and267.219ms maximum
+timer lag. Its four HTTP intervals overlapped. The external observer missed
+361.764ms across this interval; the exact wait site remains unproven.
+
+## Observer repair and targeted FPM diagnostics
+
+The historical [external observer](phase4/fpm-scheduling-observer.json) also
+failed on runner exit: Linux clears zombie command lines before reaping. A real
+child-process regression reproduces that old ownership mismatch. The repaired
+helper recognizes zombie/reaped processes, checks identity before and after argv
+reads, and still rejects live ownership/PID mismatches. The reusable observer
+follows actual cgroup v2 membership and all mounted ancestors. Root `cpu.stat`
+was readable in the old samples; root `cpu.max` was absent. The old launch note
+incorrectly described both as unavailable and is preserved with this correction.
+No signals, application instrumentation or host settings are changed by this
+read-only observer. Sampling gaps and shared counters limit attribution.
+
+Independent three-minute C controls requested5ms waits without PHP or Asyncara:
+
+| Control | Completed waits | Waits above50ms | Maximum measured wait |
+|---|---:|---:|---:|
+| epoll | 26,016 | 106 | 610.321ms |
+| poll | 26,013 | 104 | 498.451ms |
+| nanosleep | 25,969 | 113 | 508.557ms |
+
+They ran concurrently and show host timing variability. They do not identify the
+sole cause of the earlier FPM failure. No latency threshold was relaxed.
+
+The FPM diagnostic now supports `--instrumentation both`, correlating the existing
+test-only poll wrapper with strace. A four-worker30s attempt failed responsiveness
+on request82/PID67187. Its4ms and5ms native calls measured95.514ms and157.237ms;
+the corresponding captured epoll waits measured0.102ms and0.313ms. The native-call
+duration includes more than the readiness syscall. Ptrace/logging alters timing;
+this instrumented failure cannot retrospectively attribute the untraced one.
+The subsequent single-worker wiring smoke passed5.476s/10requests. Failure reports
+now retain response counts and elapsed time through cleanup. Full results, source
+hashes and later poll-only diagnostics are in
+[scheduling evidence](phase4/scheduling-diagnostics-r2.json) and
+[FPM lifecycle documentation](FPM_LIFECYCLE.md).
+
+Poll-wrapper-only four-worker testing passed180.248s/2,500requests, retaining134
+native calls above50ms (maximum164.260ms). Full FPM lifecycle with the repaired
+external observer passed60.088s/864mainrequests plus all fault cases; the observer
+completed70.132s/620samples. These are diagnostic/smoke results, not substitutes
+for a full one-hour or longer FPM gate.
+
+All19 monitor, scheduling-observer, metric, HTTP-peer, poll-wrapper and wait-control
+regressions pass locally. New observer/control tests are included in fast CI.
+These changes affect test tools only. Native C stays76e6557 and public runtime
+staysf2abb55; the preserved r4 archive does not contain these later tools.
 
 ## Corrected r4 distribution and current freeze
 
@@ -103,12 +151,12 @@ commands, dependency package hashes, binary/log hashes and all four hosted CI pa
 All earlier archives are preserved with their original checksums. r3 and earlier
 contain the destination-validation defects; r2 and earlier also contain the
 ownership defect. No GitHub release is published. Later evidence/documentation
-commits do not retroactively become part of the archive or tested freeze.
+and test-tooling commits do not retroactively become part of the archive or tested freeze.
 
 The independent build at `/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55` completed
 before launching supervisor 3124165 on November 3 at 16:44:17Z. That campaign
 finished on November 4 at 23:46:50Z: all mixed stages passed; its FPM stage failed.
-Native/public runtime source remains frozen for the new FPM-only attempt. [Launch attestation](phase4/campaign-f2abb55-launch.json)
+Native/public runtime source remained frozen through the isolated FPM failure. [Launch attestation](phase4/campaign-f2abb55-launch.json)
 records the exact supervisor, environment, source and binary/archive fingerprints.
 Completed campaign state: `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`.
 Independent mixed/FPM chains request 3,600 → 21,600 → 86,400 seconds; only a full
@@ -190,8 +238,9 @@ cases verify their equivalence. Whole-series mean replaces the descriptive media
 The process observer records RSS, virtual memory, threads, descriptors, sockets
 and child identities, including private PostgreSQL daemons after reparenting.
 Inaccessible descriptor metrics are null with an explicit reason, never zero.
-Four observer regression cases cover descriptors, ownership checks, permissions
-and preservation of existing evidence. Existing strict FPM idle checks remain.
+Six process-monitor cases now cover descriptors, ownership/exit checks, permissions
+and preservation of evidence, with four additional scheduling-observer cases.
+Existing strict FPM idle checks remain.
 
 Optional `--extended-network` adds DNS, IPv4/IPv6 UDP, verified TLS1.2/1.3 with
 SNI/ALPN checks, buffered/streamed HTTPS and persistent ws/wss, ping, reconnect and
@@ -213,9 +262,10 @@ recorded below.
 
 ## Remaining engineering work
 
-Complete the unchanged FPM-only chain and investigate any recurrence of the local
-responsiveness failure. Mixed1h/6h/24h and hosted1h FPM have passed; longer FPM
-stages remain gated. Preserve the frozen source and original assertions.
+Resolve the local FPM responsiveness gate using preserved failures and targeted
+diagnostics before another uninstrumented attempt. Mixed1h/6h/24h and hosted1h
+FPM have passed; longer FPM stages remain gated. Preserve the frozen runtime
+source and original assertions; any justified native fix requires a new freeze.
 Standalone controls reproduced the libpq unload allocation on16.15/17.11/18.6
 and PHP callback-type findings with and without Asyncara. These remain unresolved
 dependency findings; see [DEPENDENCY_FINDINGS](DEPENDENCY_FINDINGS.md).

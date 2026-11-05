@@ -8,8 +8,13 @@ hour; the FPM run completed 67,824 main requests plus lifecycle/fault checks.
 
 The simultaneous local FPM attempt failed responsiveness after 364.506 sampled
 seconds. That failure is retained and its exact waiting site remains unproven.
-A new FPM-only attempt began November 5 at 21:37:31Z, with unchanged assertions
-and no concurrent local mixed workload. Six-/24-hour FPM has not run. Mixed
+A separate FPM-only attempt also failed, after 998.680 sampled seconds and
+12,568 recorded main responses, with unchanged assertions and no concurrent
+local mixed workload. Its failed request had zero ticks and 267.219ms timer lag.
+Standalone epoll/poll/nanosleep controls reproduce large timing delays without
+PHP, but do not establish this request's exact waiting site. A reproduced observer
+zombie-exit error is repaired and tested; that does not repair or dismiss the FPM
+failure. Six-/24-hour FPM has not run. Mixed
 resource stability does not remove observed timer lag above one second or certify
 other PHP/platform/remote configurations. No release promotion follows.
 

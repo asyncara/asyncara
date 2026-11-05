@@ -72,7 +72,8 @@ Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs
 Later Phase 4 hardening repairs UDP endpoint collisions, descriptor-exhaustion
 cleanup, destination-port wrap and implicit blocking resolver fallback. The
 corrected r4 package is independently tested on all three PHP branches. Linux
-PHP8.5.12 passed mixed1h/6h/24h and hosted FPM1h workloads; a failed local FPM
-attempt is retained and a new isolated retry is running. Release stays **EXPERIMENTAL**;
+PHP8.5.12 passed mixed1h/6h/24h and hosted FPM1h workloads. Both local FPM
+attempts failed responsiveness; diagnosis and observer regression tests preserve
+those failures. Six-/24-hour FPM remains untested. Release stays **EXPERIMENTAL**;
 see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
 failures and remaining certification work.

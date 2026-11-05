@@ -1,0 +1,971 @@
+{
+  "reviewedUtc": "2026-11-05T22:49:31.873987+00:00",
+  "parentCommit": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+  "runtimeSource": "f2abb555caf8914821f648f8213ce7a433693685",
+  "nativeSource": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+  "runtimeDiffFromFrozen": "",
+  "archive": {
+    "path": "build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+    "bytes": 846094,
+    "sha256": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8"
+  },
+  "diagnosticExtension": {
+    "bytes": 452448,
+    "sha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c"
+  },
+  "waitControlBinary": {
+    "bytes": 16800,
+    "sha256": "84e061466199098aa30259e26432a724b5bb14043753cee856f56fab9127d191"
+  },
+  "environment": {
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n"
+  },
+  "tools": {
+    ".github/workflows/verify.yml": {
+      "bytes": 8404,
+      "sha256": "87bc921f39f803e1578cdd1e63d6435f79ebc517b101eedd43c6535d8b8df846"
+    },
+    "tests/soak/monitor.py": {
+      "bytes": 6498,
+      "sha256": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6"
+    },
+    "tests/soak/test_monitor.py": {
+      "bytes": 6498,
+      "sha256": "bf69266315e2fc47c9acb3c210d04d1665e6dbe5bbd608a740d836dca0f5e43f"
+    },
+    "tests/soak/scheduling_observer.py": {
+      "bytes": 7493,
+      "sha256": "33a7023d01fa11118d1e34c99f23b779c556c2b1170db3b555c2236e3ea09893"
+    },
+    "tests/soak/test_scheduling_observer.py": {
+      "bytes": 4865,
+      "sha256": "f1f1257e484f893923bc581b0f82ab13c352e40db21f70841a8b223d6805a782"
+    },
+    "tests/soak/epoll_latency.c": {
+      "bytes": 2629,
+      "sha256": "635f9b8f77924b8594270852e681d0c386c431430cd50c23fa8c6bad469e746a"
+    },
+    "tests/soak/test_wait_controls.py": {
+      "bytes": 2137,
+      "sha256": "d2206e5a2fb6d629326c4628059081248e91a53bc261a86e8fa2d6c5f2e2b197"
+    },
+    "tests/soak/fpm_trace.py": {
+      "bytes": 5862,
+      "sha256": "912f98724c629429233c4254c1064df72b59c6a8a0f52e2ad89acef25a9976bd"
+    },
+    "tests/soak/fpm_poll_profile.php": {
+      "bytes": 1935,
+      "sha256": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934"
+    }
+  },
+  "regressions": [
+    {
+      "log": "observer-validation-r2/test_monitor.py.log",
+      "tests": 6,
+      "result": "PASS"
+    },
+    {
+      "log": "observer-validation-r2/test_scheduling_observer.final.log",
+      "tests": 4,
+      "result": "PASS"
+    },
+    {
+      "log": "observer-validation-r2/test_metrics.py.log",
+      "tests": 6,
+      "result": "PASS"
+    },
+    {
+      "log": "observer-validation-r2/test_fpm_peer.py.log",
+      "tests": 1,
+      "result": "PASS"
+    },
+    {
+      "log": "observer-validation-r2/test_poll_profile.py.log",
+      "tests": 1,
+      "result": "PASS"
+    },
+    {
+      "log": "observer-validation-r2/test_wait_controls.py.log",
+      "tests": 1,
+      "result": "PASS"
+    }
+  ],
+  "waitControls": {
+    "concurrent": true,
+    "compile": [
+      "cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-O2",
+      "tests/soak/epoll_latency.c",
+      "-o",
+      "build/wait-latency-phase4"
+    ],
+    "durationArgument": 180,
+    "results": {
+      "epoll": {
+        "summary": {
+          "type": "complete",
+          "backend": "epoll",
+          "seconds": 180.002545677,
+          "waits": 26016,
+          "over50ms": 106,
+          "maxWaitSeconds": 0.610321077
+        },
+        "largestWait": {
+          "type": "oversleep",
+          "backend": "epoll",
+          "unixSeconds": 1793918223.4283764,
+          "elapsedSeconds": 0.610321077,
+          "cpuSeconds": 3.071e-05,
+          "requestedMilliseconds": 5
+        }
+      },
+      "poll": {
+        "summary": {
+          "type": "complete",
+          "backend": "poll",
+          "seconds": 180.001802855,
+          "waits": 26013,
+          "over50ms": 104,
+          "maxWaitSeconds": 0.498451291
+        },
+        "largestWait": {
+          "type": "oversleep",
+          "backend": "poll",
+          "unixSeconds": 1793918223.3219693,
+          "elapsedSeconds": 0.498451291,
+          "cpuSeconds": 2.694e-05,
+          "requestedMilliseconds": 5
+        }
+      },
+      "nanosleep": {
+        "summary": {
+          "type": "complete",
+          "backend": "nanosleep",
+          "seconds": 180.00341201,
+          "waits": 25969,
+          "over50ms": 113,
+          "maxWaitSeconds": 0.508556641
+        },
+        "largestWait": {
+          "type": "oversleep",
+          "backend": "nanosleep",
+          "unixSeconds": 1793918223.3231907,
+          "elapsedSeconds": 0.508556641,
+          "cpuSeconds": 2.288e-05,
+          "requestedMilliseconds": 5
+        }
+      }
+    },
+    "boundary": "No PHP/curl/Asyncara code. No busy-wait or latency pass threshold. Measurements demonstrate host timing variability; they do not establish the cause of the historical FPM failure."
+  },
+  "traces": {
+    "fpm-both-smoke-r1": {
+      "report": {
+        "status": "FAIL",
+        "command": [
+          "strace",
+          "-D",
+          "-f",
+          "-ttt",
+          "-T",
+          "-e",
+          "trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise",
+          "-o",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r1/syscalls.log",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r1/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r1/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 30.0,
+        "instrumentation": "both",
+        "workers": 4,
+        "source": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+        "gitStatus": " M tests/soak/epoll_latency.c\n M tests/soak/fpm_trace.py\n M tests/soak/monitor.py\n M tests/soak/test_monitor.py\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "95787de8d120bcc0f94338e5d5b13660566b079711b83e33e531ef98423859ad",
+          "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "error": "RuntimeError(\"b'Status: 500 Internal Server Error\\\\r\\\\nX-Powered-By: PHP/8.5.12\\\\r\\\\nContent-type: text/html; charset=UTF-8\\\\r\\\\n\\\\r\\\\n'\")"
+      },
+      "recordedResponses": 82,
+      "slowNativeCalls": 204,
+      "largestSlowCalls": [
+        {
+          "pid": 67193,
+          "request": "67",
+          "unixSeconds": 1793918223.481846,
+          "elapsedNs": 634623150,
+          "cpuUs": 713262,
+          "timeoutMs": -1,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67186,
+          "request": "80",
+          "unixSeconds": 1793918229.350388,
+          "elapsedNs": 502468874,
+          "cpuUs": 124884,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67186,
+          "request": "50",
+          "unixSeconds": 1793918218.130056,
+          "elapsedNs": 411970639,
+          "cpuUs": 56068,
+          "timeoutMs": 1,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67186,
+          "request": "33",
+          "unixSeconds": 1793918212.77469,
+          "elapsedNs": 357100516,
+          "cpuUs": 62507,
+          "timeoutMs": 0,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67187,
+          "request": "35",
+          "unixSeconds": 1793918213.161428,
+          "elapsedNs": 322800307,
+          "cpuUs": 11388,
+          "timeoutMs": 0,
+          "readers": 0,
+          "writers": 0
+        }
+      ],
+      "failedRequest": {
+        "pid": 67187,
+        "request": "82",
+        "unixSeconds": 1793918229.20119,
+        "monotonicNs": 1578851601331177,
+        "timerSlackNs": "50000",
+        "error": {
+          "type": 1,
+          "message": "Uncaught RuntimeException: I/O did not overlap or blocked loop: {\"ticks\":1,\"intervals\":[{\"start\":1793918228.8319523,\"end\":1793918229.100341},{\"start\":1793918228.8451366,\"end\":1793918229.101242},{\"start\":1793918228.8767793,\"end\":1793918229.1000285},{\"start\":1793918228.8936105,\"end\":1793918229.1004696}],\"cpuDelta\":{\"monotonicNs\":474477995,\"userUs\":616,\"systemUs\":75748,\"scheduledNs\":76150270,\"runnableWaitNs\":83727700,\"slices\":318},\"lastTicksNs\":[1578851421310101],\"scheduler\":{\"turns\":12,\"taskSteps\":19,\"maxStepSeconds\":0.08523030206561089,\"maxTimerLagSeconds\":0.21657411311753094,\"activeTasks\":1,\"pendingFutures\":1,\"retainedFailures\":0,\"readyTasks\":0,\"activeTimers\":0,\"ioWatchers\":0,\"pendingNative\":0,\"memoryBytes\":2097152}} in /home/coder/Asyncara/tests/audit/fpm_request.php:68\nStack trace:\n#0 /home/coder/Asyncara/src/Asyncara/Task.php(21): {closure:/home/coder/Asyncara/tests/audit/fpm_request.php:50}()\n#1 [internal function]: Asyncara\\Task->{closure:Asyncara\\Task::__construct():18}()\n#2 /home/coder/Asyncara/src/Asyncara/Task.php(34): Fiber->resume()\n#3 /home/coder/Asyncara/src/Asyncara/Scheduler.php(184): Asyncara\\Task->step()\n#4 /home/coder/Asyncara/src/Asyncara/Scheduler.php(203): Asyncara\\Scheduler->turn(Object(Asyncara\\Task))\n#5 /home/coder/Asyncara/src/Asyncara/Async.php(7): Asyncara\\Scheduler->run(Object(Closure))\n#6 /home/coder/Asyncara/tests/audit/fpm_request.php(50): Asyncara\\Async::run(Object(Closure))\n#7 {main}\n  thrown",
+          "file": "/home/coder/Asyncara/tests/audit/fpm_request.php",
+          "line": 68
+        }
+      },
+      "failedRequestSlowCalls": [
+        {
+          "pid": 67187,
+          "request": "82",
+          "unixSeconds": 1793918228.519548,
+          "elapsedNs": 128090855,
+          "cpuUs": 19712,
+          "timeoutMs": 0,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67187,
+          "request": "82",
+          "unixSeconds": 1793918228.67837,
+          "elapsedNs": 52612083,
+          "cpuUs": 3834,
+          "timeoutMs": -1,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67187,
+          "request": "82",
+          "unixSeconds": 1793918228.907711,
+          "elapsedNs": 95513608,
+          "cpuUs": 27427,
+          "timeoutMs": 4,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 67187,
+          "request": "82",
+          "unixSeconds": 1793918229.1914,
+          "elapsedNs": 157237190,
+          "cpuUs": 19130,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ],
+      "selectedEpollLines": [
+        "67187 1793918228.809034 epoll_wait(16, [{events=EPOLLOUT, data={u32=1, u64=1}}, {events=EPOLLOUT, data={u32=2, u64=2}}, {events=EPOLLOUT, data={u32=3, u64=3}}, {events=EPOLLOUT, data={u32=4, u64=4}}], 5, 4) = 4 <0.000102>",
+        "67187 1793918229.160103 epoll_wait(16, [{events=EPOLLIN, data={u32=1, u64=1}}, {events=EPOLLIN, data={u32=2, u64=2}}, {events=EPOLLIN, data={u32=3, u64=3}}, {events=EPOLLIN, data={u32=4, u64=4}}], 5, 5) = 4 <0.000313>",
+        "67187 1793918229.197541 epoll_wait(16, [], 1, 0) = 0 <0.000024>",
+        "67187 1793918229.198485 epoll_wait(16, [], 1, 0) = 0 <0.000017>"
+      ],
+      "boundary": "Both timing layers are intrusive; native-call elapsed includes more than epoll_wait. unixSeconds is captured after the elapsed measurement, so it is not an exact monotonic call-boundary pair. These selected syscalls do not identify the original untraced failure site."
+    },
+    "fpm-both-smoke-r2": {
+      "report": {
+        "status": "PASS",
+        "command": [
+          "strace",
+          "-D",
+          "-f",
+          "-ttt",
+          "-T",
+          "-e",
+          "trace=epoll_wait,epoll_pwait,poll,ppoll,select,pselect6,futex,nanosleep,clock_nanosleep,mmap,munmap,madvise",
+          "-o",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r2/syscalls.log",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r2/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-both-smoke-r2/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 5.0,
+        "startedUtc": "2026-11-05T22:41:40.603614+00:00",
+        "instrumentation": "both",
+        "workers": 1,
+        "source": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+        "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/epoll_latency.c\n M tests/soak/fpm_trace.py\n M tests/soak/monitor.py\n M tests/soak/test_monitor.py\n?? tests/soak/scheduling_observer.py\n?? tests/soak/test_scheduling_observer.py\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "912f98724c629429233c4254c1064df72b59c6a8a0f52e2ad89acef25a9976bd",
+          "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "seconds": 5.475548750953749,
+        "requests": 10,
+        "finishedUtc": "2026-11-05T22:41:47.548588+00:00",
+        "recordedResponses": 10,
+        "elapsedThroughCleanupSeconds": 5.705434756819159
+      },
+      "recordedResponses": 10,
+      "slowNativeCalls": 9,
+      "largestSlowCalls": [
+        {
+          "pid": 68428,
+          "request": "9",
+          "unixSeconds": 1793918507.013992,
+          "elapsedNs": 206760653,
+          "cpuUs": 483,
+          "timeoutMs": -1,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68428,
+          "request": "8",
+          "unixSeconds": 1793918506.420586,
+          "elapsedNs": 95765528,
+          "cpuUs": 1257,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68428,
+          "request": "9",
+          "unixSeconds": 1793918507.194308,
+          "elapsedNs": 90586540,
+          "cpuUs": 83767,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68428,
+          "request": "8",
+          "unixSeconds": 1793918506.314264,
+          "elapsedNs": 77086742,
+          "cpuUs": 179,
+          "timeoutMs": 0,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68428,
+          "request": "8",
+          "unixSeconds": 1793918506.514016,
+          "elapsedNs": 75534647,
+          "cpuUs": 9824,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    "fpm-poll-diagnostic-r3": {
+      "report": {
+        "status": "PASS",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-diagnostic-r3/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-poll-diagnostic-r3/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 180.0,
+        "startedUtc": "2026-11-05T22:42:43.632203+00:00",
+        "instrumentation": "poll",
+        "workers": 4,
+        "source": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+        "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/epoll_latency.c\n M tests/soak/fpm_trace.py\n M tests/soak/monitor.py\n M tests/soak/test_monitor.py\n?? tests/soak/scheduling_observer.py\n?? tests/soak/test_scheduling_observer.py\n?? tests/soak/test_wait_controls.py\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "912f98724c629429233c4254c1064df72b59c6a8a0f52e2ad89acef25a9976bd",
+          "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "seconds": 180.24818279594183,
+        "requests": 2500,
+        "finishedUtc": "2026-11-05T22:45:44.548495+00:00",
+        "recordedResponses": 2500,
+        "elapsedThroughCleanupSeconds": 180.51647015404887
+      },
+      "recordedResponses": 2500,
+      "slowNativeCalls": 134,
+      "largestSlowCalls": [
+        {
+          "pid": 68588,
+          "request": "1367",
+          "unixSeconds": 1793918664.062338,
+          "elapsedNs": 164260313,
+          "cpuUs": 254,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68587,
+          "request": "1117",
+          "unixSeconds": 1793918645.257436,
+          "elapsedNs": 162607621,
+          "cpuUs": 233,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68588,
+          "request": "294",
+          "unixSeconds": 1793918585.996788,
+          "elapsedNs": 159645899,
+          "cpuUs": 147549,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68588,
+          "request": "1116",
+          "unixSeconds": 1793918645.254822,
+          "elapsedNs": 156675993,
+          "cpuUs": 136,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        },
+        {
+          "pid": 68588,
+          "request": "1960",
+          "unixSeconds": 1793918705.227419,
+          "elapsedNs": 156425218,
+          "cpuUs": 81773,
+          "timeoutMs": 5,
+          "readers": 0,
+          "writers": 0
+        }
+      ]
+    },
+    "fpm-trace-startup-negative": {
+      "report": {
+        "status": "FAIL",
+        "command": [
+          "/bin/false",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-trace-startup-negative/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-trace-startup-negative/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 1.0,
+        "startedUtc": "2026-11-05T22:44:38.755177+00:00",
+        "instrumentation": "poll",
+        "workers": 1,
+        "source": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+        "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/epoll_latency.c\n M tests/soak/fpm_trace.py\n M tests/soak/monitor.py\n M tests/soak/test_monitor.py\n?? docs/phase4/fpm-solo-r4-result.json\n?? tests/soak/scheduling_observer.py\n?? tests/soak/test_scheduling_observer.py\n?? tests/soak/test_wait_controls.py\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "912f98724c629429233c4254c1064df72b59c6a8a0f52e2ad89acef25a9976bd",
+          "tests/soak/fpm_poll_profile.php": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "error": "RuntimeError('Traced FPM startup failed; inspect startup.log')",
+        "finishedUtc": "2026-11-05T22:44:39.255271+00:00",
+        "recordedResponses": 0
+      },
+      "recordedResponses": 0,
+      "slowNativeCalls": 0,
+      "expectedFailureControl": "PASS: deliberate /bin/false FPM executable produces FAIL, zero recorded responses, timestamps, nonzero driver exit and preserved original startup error."
+    }
+  },
+  "liveObserverIntegration": {
+    "state": {
+      "status": "PASS",
+      "sourceDirectory": "/home/coder/Asyncara",
+      "sourceCommit": "78a6722376a7788e9d9fffb60c5c1a89002648d3",
+      "jobs": [
+        {
+          "kind": "fpm",
+          "status": "PASS",
+          "pid": 88913,
+          "command": [
+            "python3",
+            "/home/coder/Asyncara/tests/soak/fpm.py",
+            "--seconds",
+            "60",
+            "--output",
+            "/tmp/asyncara-phase4-nrtjh3t1/fpm-observer-integration-r2/workload"
+          ],
+          "startedUtc": "2026-11-05T22:47:07.797456+00:00",
+          "exit": 0,
+          "finishedUtc": "2026-11-05T22:48:17.941804+00:00"
+        }
+      ],
+      "files": {
+        "tests/soak/monitor.py": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6",
+        "tests/soak/scheduling_observer.py": "33a7023d01fa11118d1e34c99f23b779c556c2b1170db3b555c2236e3ea09893",
+        "tests/soak/fpm.py": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170"
+      },
+      "observerExit": 0
+    },
+    "workloadCases": [
+      {
+        "name": "A-lifecycle",
+        "workers": 1,
+        "requests": 100,
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "workers": 1,
+        "requests": 10,
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS",
+        "requests": 25,
+        "pids": [
+          89637,
+          89703,
+          89764
+        ]
+      },
+      {
+        "name": "mixed-reload-kill",
+        "status": "PASS",
+        "seconds": 60.08763323002495,
+        "requests": 864,
+        "reloads": 1,
+        "killedWorkers": 1,
+        "sampleCount": 856,
+        "rssRangeKiBAfterWarmup": {
+          "89900": 296,
+          "89868": 272,
+          "89869": 236,
+          "89870": 188
+        },
+        "maxRssIncreaseKiB": {
+          "89900": 296,
+          "89868": 272,
+          "89869": 236,
+          "89870": 188
+        },
+        "warmupPeakKiB": {
+          "89900": 14544,
+          "89868": 18632,
+          "89869": 16556,
+          "89870": 18548
+        },
+        "growthBeyondWarmupPeakKiB": {
+          "89900": 2800,
+          "89868": 484,
+          "89869": 2416,
+          "89870": 376
+        },
+        "rssSlopeKiBPerHour": {
+          "89900": 11686.978975438908,
+          "89868": 10508.4254021369,
+          "89869": 7771.339641960709,
+          "89870": 6438.302896332419
+        },
+        "samplesFile": "mixed-samples.jsonl",
+        "responsesFile": "mixed-responses.jsonl"
+      },
+      {
+        "name": "request-timeout",
+        "status": "PASS",
+        "terminatedPid": 96673,
+        "replacement": {
+          "pid": 96682,
+          "fds": 6,
+          "sockets": 1,
+          "threads": 1,
+          "rssKiB": 15536,
+          "virtualKiB": 508252,
+          "idleWaitSeconds": 0.0016352059319615364,
+          "transientThreadsBeforeReaping": 1
+        }
+      }
+    ],
+    "observerReport": {
+      "status": "COMPLETE",
+      "reason": "Owned campaign terminal",
+      "seconds": 70.13181076408364,
+      "samples": 620,
+      "finishedUtc": "2026-11-05T22:48:18.037717+00:00"
+    },
+    "firstCgroups": {
+      "/sys/fs/cgroup/user.slice/user-1004.slice/session-2911.scope": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 170970759817\nuser_usec 93960465604\nsystem_usec 77010294213\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=0.18 avg60=1.93 avg300=3.42 total=11472763092\nfull avg10=0.00 avg60=1.06 avg300=2.04 total=8327215081",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup/user.slice/user-1004.slice": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 204139627694\nuser_usec 116264167450\nsystem_usec 87875460244\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=0.75 avg60=2.45 avg300=4.31 total=13519418115\nfull avg10=0.36 avg60=1.15 avg300=2.26 total=9222729183",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup/user.slice": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 500771899862\nuser_usec 306127964863\nsystem_usec 194643934998\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=1.67 avg60=2.97 avg300=4.67 total=24064784409\nfull avg10=0.81 avg60=1.36 avg300=2.36 total=15215008627",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup": {
+        "cpu.max": {
+          "unavailable": 2
+        },
+        "cpu.stat": "usage_usec 1370919435000\nuser_usec 865214019000\nsystem_usec 505705416000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=5.00 avg60=7.07 avg300=10.73 total=71528606017\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "cpu.weight": {
+          "unavailable": 2
+        }
+      }
+    },
+    "lastCgroups": {
+      "/sys/fs/cgroup/user.slice/user-1004.slice/session-2911.scope": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 171028212309\nuser_usec 93981363834\nsystem_usec 77046848474\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=3.70 avg60=4.23 avg300=3.93 total=11477267697\nfull avg10=1.98 avg60=2.04 avg300=2.15 total=8329402607",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup/user.slice/user-1004.slice": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 204210444421\nuser_usec 116295191760\nsystem_usec 87915252660\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=4.22 avg60=4.75 avg300=4.74 total=13524258403\nfull avg10=1.97 avg60=1.95 avg300=2.29 total=9224787345",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup/user.slice": {
+        "cpu.max": "max 100000",
+        "cpu.stat": "usage_usec 500851674001\nuser_usec 306163696791\nsystem_usec 194687977209\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=4.89 avg60=5.25 avg300=5.12 total=24069992982\nfull avg10=2.24 avg60=2.01 avg300=2.36 total=15217035315",
+        "cpu.weight": "100"
+      },
+      "/sys/fs/cgroup": {
+        "cpu.max": {
+          "unavailable": 2
+        },
+        "cpu.stat": "usage_usec 1371056668000\nuser_usec 865293577000\nsystem_usec 505763091000\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "cpu.pressure": "some avg10=7.44 avg60=8.60 avg300=10.55 total=71536092830\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "cpu.weight": {
+          "unavailable": 2
+        }
+      }
+    },
+    "boundary": "60-second full FPM lifecycle smoke with a read-only observer, not endurance. COMPLETE means observer completion only. cpu.max was max at the sampled non-root ancestors with nr_throttled=0; shared pressure/counters do not uniquely attribute a delay."
+  },
+  "files": {
+    "wait-controls-r2/epoll.jsonl": {
+      "bytes": 16444,
+      "sha256": "fbda477fe9f20524c392a4ede423942381cfb294e46e3903ae9ac34d004f99b2"
+    },
+    "wait-controls-r2/poll.jsonl": {
+      "bytes": 16031,
+      "sha256": "94e2408a396652897104037ed47164f0e61f4fe7120a5848f7b73c4d0d8185a9"
+    },
+    "wait-controls-r2/nanosleep.jsonl": {
+      "bytes": 17978,
+      "sha256": "40c09d1cdd34539adaa9e381afe704f8524c75fa6d1ba8a33ec064357def0b10"
+    },
+    "observer-validation-r2/test_monitor.py.log": {
+      "bytes": 104,
+      "sha256": "553d3d0ee4f6baeb41d5bbc01ea249ecd0bae7a0a8650c2160e0a81aec061d3f"
+    },
+    "observer-validation-r2/test_scheduling_observer.final.log": {
+      "bytes": 102,
+      "sha256": "720cd39e14f9ad189022798d8dd9fd924991944b2c7071a6f27a5bfa4a71ec39"
+    },
+    "observer-validation-r2/test_metrics.py.log": {
+      "bytes": 104,
+      "sha256": "ea9fa0766bec3c8652818631f716fb5b6186fbc90b0143f8cc7bbf048475d972"
+    },
+    "observer-validation-r2/test_fpm_peer.py.log": {
+      "bytes": 98,
+      "sha256": "04f257c2fb2775e339f715a115612c651d083546bec8b960de63d8af9f2fae96"
+    },
+    "observer-validation-r2/test_poll_profile.py.log": {
+      "bytes": 98,
+      "sha256": "1e195335a3bd8fcae842da5d1b42f9803afda149d4f9f55b0f14b5034b33474e"
+    },
+    "observer-validation-r2/test_wait_controls.py.log": {
+      "bytes": 98,
+      "sha256": "7c75daa9165b103e6f0b01619d4f8df512355cffe043ffc2d5bb788432eb511c"
+    },
+    "fpm-both-smoke-r1/syscalls.log": {
+      "bytes": 1503848,
+      "sha256": "9215ce0f9a5b3c608e9ef10c8a62b9682cb567e130701db9e0828b6e700f0170"
+    },
+    "fpm-both-smoke-r1/fpm.conf": {
+      "bytes": 393,
+      "sha256": "9800ca8c113d596c40bed53a7329bb25971b1db2aedf53e3985db140a8540513"
+    },
+    "fpm-both-smoke-r1/large.bin": {
+      "bytes": 12582912,
+      "sha256": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723"
+    },
+    "fpm-both-smoke-r1/php-errors.log": {
+      "bytes": 1557,
+      "sha256": "f627a5b1c44b6b1b5f36ea4a8682f7534f14da20ebfac85f97436c590d6ad777"
+    },
+    "fpm-both-smoke-r1/native-polls.jsonl": {
+      "bytes": 27316,
+      "sha256": "050d4ae9e1e9e1c1587991122b305c047135c34c58ff011158bf5c9e03d46aa7"
+    },
+    "fpm-both-smoke-r1/report.json": {
+      "bytes": 1743,
+      "sha256": "f93082a7e8c3edc3345174c37c60d4bd9b50ea6ef9da8f47339c3178e3c08ff3"
+    },
+    "fpm-both-smoke-r1/fpm_poll_profile.php": {
+      "bytes": 1935,
+      "sha256": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934"
+    },
+    "fpm-both-smoke-r1/fatal-requests.jsonl": {
+      "bytes": 1796,
+      "sha256": "3d6dd819558fd798f56a26a503b9feeb7b4e600ed9a45d5f0d55da0a04c5779e"
+    },
+    "fpm-both-smoke-r1/fpm.log": {
+      "bytes": 281,
+      "sha256": "15f4b43f70ea720b632506d16c1fa222494b0d80eaa31271c872ed27f5fe5632"
+    },
+    "fpm-both-smoke-r1/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-both-smoke-r1/responses.jsonl": {
+      "bytes": 208861,
+      "sha256": "05eb1b0af81587d2c2dc1cf435871b7d3b8dc1078d86e2488e71dc0e6975ac77"
+    },
+    "fpm-both-smoke-r2/syscalls.log": {
+      "bytes": 188475,
+      "sha256": "27dacecadf4d32fa8d33cc1a9eedaa3bcfb5b4d5118b99a890f32f40211a653a"
+    },
+    "fpm-both-smoke-r2/fpm.conf": {
+      "bytes": 393,
+      "sha256": "7df1e3d3f288ca892b644fe710c36e7f51e4d13cda3e97458ad51a3f948732f4"
+    },
+    "fpm-both-smoke-r2/large.bin": {
+      "bytes": 12582912,
+      "sha256": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723"
+    },
+    "fpm-both-smoke-r2/native-polls.jsonl": {
+      "bytes": 1192,
+      "sha256": "b473f09c796d7b78b30a2a234bf6c6b618fae2394f37768f5f637562d1e6bd4b"
+    },
+    "fpm-both-smoke-r2/report.json": {
+      "bytes": 1920,
+      "sha256": "406f51dc76cdad4293a2c4016c3388e5e475877c0cda0606d862f9bbf91c80e9"
+    },
+    "fpm-both-smoke-r2/fpm_poll_profile.php": {
+      "bytes": 1935,
+      "sha256": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934"
+    },
+    "fpm-both-smoke-r2/fpm.log": {
+      "bytes": 281,
+      "sha256": "49cedfc7574db84192a3473c71bf08af1a21f2260898358e39826f5a1ca05037"
+    },
+    "fpm-both-smoke-r2/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-both-smoke-r2/responses.jsonl": {
+      "bytes": 25471,
+      "sha256": "562708aadeed767aa7fc717fcee7045c0d92ac1dc0b31c9d8eb4b675c4530366"
+    },
+    "fpm-poll-diagnostic-r3/fpm.conf": {
+      "bytes": 408,
+      "sha256": "0e42420f1cf32da85d095aebad972b26c67dee23906423e0fa1260e85ff09d7a"
+    },
+    "fpm-poll-diagnostic-r3/large.bin": {
+      "bytes": 12582912,
+      "sha256": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723"
+    },
+    "fpm-poll-diagnostic-r3/native-polls.jsonl": {
+      "bytes": 17985,
+      "sha256": "5987af521e67584df0e515c2919542afdd42fdeb23c30c832c456b5c1171510f"
+    },
+    "fpm-poll-diagnostic-r3/report.json": {
+      "bytes": 1716,
+      "sha256": "87e8b286675596f703763f45fcb468fe4c00803511e8c18aa23c262862cca492"
+    },
+    "fpm-poll-diagnostic-r3/fpm_poll_profile.php": {
+      "bytes": 1935,
+      "sha256": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934"
+    },
+    "fpm-poll-diagnostic-r3/fpm.log": {
+      "bytes": 281,
+      "sha256": "983de2cf49dc41465aa096a474d388a5d72fc113dbce1189e63b75272e6c29b2"
+    },
+    "fpm-poll-diagnostic-r3/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-poll-diagnostic-r3/responses.jsonl": {
+      "bytes": 6370658,
+      "sha256": "310cd20148cc93496592f295e47a42da083a08c04698aab7c0073223f8b8f7bb"
+    },
+    "fpm-trace-startup-negative/fpm.conf": {
+      "bytes": 420,
+      "sha256": "d89eb3640e137e94f809d9a3fc99181a3cbf9ec911bc8b9dc4648bba0033a845"
+    },
+    "fpm-trace-startup-negative/large.bin": {
+      "bytes": 12582912,
+      "sha256": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723"
+    },
+    "fpm-trace-startup-negative/report.json": {
+      "bytes": 1676,
+      "sha256": "3945bf903240a9fabf9d6842fa25e413a806b2437cddab5806ce64e63389bc27"
+    },
+    "fpm-trace-startup-negative/driver.stderr": {
+      "bytes": 245,
+      "sha256": "460b422cc893ca5530e7d7b009badbdad3ddc95d5fe7a37fcbc0227d9f1d7c55"
+    },
+    "fpm-trace-startup-negative/driver.stdout": {
+      "bytes": 1580,
+      "sha256": "51328405d47308d885e4fde8345de8e243d3f274c76c519cab017757ea1afaba"
+    },
+    "fpm-trace-startup-negative/fpm_poll_profile.php": {
+      "bytes": 1935,
+      "sha256": "4a4df7013ede3b7d676cfa93dd80d0910f9fc903b7cef39234b5eec546174934"
+    },
+    "fpm-trace-startup-negative/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-observer-integration-r2/state.json": {
+      "bytes": 919,
+      "sha256": "f05b6bce53a8c633473b5d685426901ad65b7f991739032c79d4375b4c89aeb2"
+    },
+    "fpm-observer-integration-r2/workload-driver.log": {
+      "bytes": 144,
+      "sha256": "740b6db5b4c5092805bd8890bdc6c58b4292aaf5a4c7befb05da6767b22e3fe6"
+    },
+    "fpm-observer-integration-r2/observer-driver.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-observer-integration-r2/observer/metadata.json": {
+      "bytes": 740,
+      "sha256": "19152ab5ab1e676862fb9b6743ae85a0edc3f4cef8cf579eb3e4fa3673cba03c"
+    },
+    "fpm-observer-integration-r2/observer/report.json": {
+      "bytes": 169,
+      "sha256": "6739a7f334a9377aaade90345d7786e9d1c54779e1b2c40adcda716184de8fd4"
+    },
+    "fpm-observer-integration-r2/observer/samples.jsonl": {
+      "bytes": 2302692,
+      "sha256": "be397e08fc7647dbf0449fa0e77dc08fc236e05c8bb282b83fe258afff36ef05"
+    },
+    "fpm-observer-integration-r2/workload/report.json": {
+      "bytes": 448818,
+      "sha256": "d5ed14d1ea2eb6ec08e5429f8cc3bcb04fc0bfddfe12cfff8420832a1eb863f9"
+    },
+    "fpm-observer-integration-r2/workload/provenance.json": {
+      "bytes": 1461,
+      "sha256": "9cfd7b1e5399c2c56a12ecb96557ff1ec3263298ef61fb93daae952cc1e8c8e1"
+    },
+    "fpm-observer-integration-r2/workload/mixed-responses.jsonl": {
+      "bytes": 2027833,
+      "sha256": "2343e4c558c734b7b9729810572aba1806500cea573069596d49a7ae7d86c581"
+    },
+    "fpm-observer-integration-r2/workload/mixed-samples.jsonl": {
+      "bytes": 171707,
+      "sha256": "31291291ba9a6698ffa2683a1739ae223d9deb7ecc0473a39bae0c283179072a"
+    },
+    "fpm-observer-integration-r2/workload/os-processes.jsonl": {
+      "bytes": 16634,
+      "sha256": "8edc94dedd30c5a811563b918960d3f354ab974957349a1983da9557a8861107"
+    }
+  },
+  "releaseClassification": "EXPERIMENTAL",
+  "remaining": "Original local FPM failures preserved. No six-/24-hour FPM executed; no new runtime fix or replacement archive claimed."
+}

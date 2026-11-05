@@ -113,6 +113,10 @@ mixed/FPM1h workloads. Frozen manifests, binary/archive fingerprints and raw
 resource trends were independently checked. These scoped passes coexist with a
 local FPM responsiveness failure and timer lag above one second; no hard latency,
 universal memory-safety or production-readiness claim follows. The FPM-only retry
-uses the original assertions. Its external owned-process scheduling observer
-records counters only, adds measurement overhead, and treats unavailable cgroup
-metrics as missing. Runtime code, signal handlers and host limits are unchanged.
+also failed its original responsiveness assertion. Its external observer's false
+ownership error on zombie exit is independently reproduced and repaired without
+relaxing live ownership/PID checks. The observer follows actual cgroup ancestry,
+records counters only and treats unavailable metrics as missing. Diagnostic FPM
+tracing is explicitly opt-in and adds synchronous logging/ptrace overhead; it
+must not be enabled in applications or treated as production latency evidence.
+Runtime code, signal handlers and host limits are unchanged.
