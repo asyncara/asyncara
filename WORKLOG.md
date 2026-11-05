@@ -923,3 +923,53 @@ FPM success is retained separately; no completed final-source hour,6h or24h is
 claimed. Next: collect these frozen reports, investigate any failed gate without
 weakening it, and only then continue lower-priority API/compatibility expansion.
 Release EXPERIMENTAL.
+
+## Frozen r4 endurance evidence recovered and independently reviewed — 2026-11-05
+
+Resumed at clean pushed6dc9f8374c81d5f5dff6403c533ae9c8c878a328. Verified frozen
+f2abb555caf8914821f648f8213ce7a433693685 worktree, r4 SHA256 and native fingerprints.
+The detached supervisor finished November4 at23:46:50Z. Mixed stages PASS:
+3600.230920s/8,488cycles;21600.161421s/69,836;86400.267716s/294,899. Each355-file
+snapshot manifest matches frozen source; reports match recorded SHA256 values.
+Raw timestamps/cycles increase, stderr is empty, unexpected errors zero, final
+Tasks/Futures/timers/watchers/native work zero. Independent fmean/fsum-centered
+least-squares, min/max and endpoint medians reproduce every reported trend.
+Steady RSS changes+1772/+332/+260KiB;24h slope14.414KiB/h. Full24h sampled RSS
+41,212–47,908KiB, steady47,524–47,784KiB after original20%warmup exclusion.
+Timer lag maxima0.987/1.474/1.264s retained; no latency SLA. Last24h sample records
+294,891,000burstTasks,294,891cancellations/timeouts each and2,948worker recoveries.
+Evidence: docs/phase4/endurance-r4.json, unchanged raw campaign-f2abb55-r1.
+
+Original local FPM chain FAIL: last364.506s/3,104mainresponses. Failed request
+has overlapping HTTP but zero ticker progress,352.592ms elapsed,14.489ms scheduled
+CPU,47.566ms runnable wait and333.027ms timer lag. Exact waiting site remains
+unproven. Combined supervisor correctly reportsFAIL despite its three mixed passes.
+No failed gate was weakened, omitted or relabeled.
+
+Downloaded all four completed public artifacts for hosted41675874490(f2abb55)
+and41668853738(76e6557). Every ZIP hash matches official GitHub metadata; embedded
+source archives are byte-identical to preserved r4/r3. Current-source hosted
+mixed PASS3600.015811s/28,358cycles; FPM PASS3600.055051s/67,824mainrequests plus all
+lifecycle/fault cases, max3120KiB growth beyond warmup and idle6fds/1thread. r3
+historical mixed/FPM also passed but lack destination repair. Hosted raw data
+under hosted-<runid>, provenance and summaries docs/phase4/hosted-r4.json.
+
+Started a new FPM-only frozen chain at21:37:31Z, supervisor4159158. Script/state:
+/tmp/asyncara-phase4-nrtjh3t1/campaign-supervisor-f2abb55-fpm-solo.py and
+campaign-f2abb55-fpm-solo-r1/state.json. Same source/binary/archive, unchanged
+assertions, no concurrent local mixed/build/fuzz/benchmark workload. Each local
+1h/6h/24h stage requires its own preceding pass. No six-/24-hour FPM executed yet.
+Launch snapshot/exact supervisor: docs/phase4/fpm-solo-r4-launch.json.
+
+A separate read-only observer now samples only the owned FPM tree every100ms for
+up to one hour, preserving PID/start-time identity, schedstat/wait channel and
+host CPU/pressure. It does not inject PHP instrumentation or change signals/
+settings. Missing cgroup counters are explicit; observer load and sampling gaps
+limit attribution. Exact source/metadata: docs/phase4/fpm-scheduling-observer.json.
+
+Updated canonical roadmap, delivery/readiness, soak/FPM, security/resource,
+network/database/HTTP/WebSocket compatibility and README. No runtime source
+changed; no replacement archive is needed for these evidence-only updates.
+Current packaged source remains r4/f2abb55 and no GitHub release is published.
+Next: complete/diagnose unchanged FPM stages, then resume lower-priority resource,
+remote-database and protocol work from a new source checkpoint. EXPERIMENTAL.

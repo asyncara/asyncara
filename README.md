@@ -2,7 +2,7 @@
 
 **Independent audit:** [findings, repaired defects and evidence](docs/INDEPENDENT_AUDIT.md). Release assessment: **EXPERIMENTAL**. The preserved original source archive contains known defects; the corrected audit snapshot is separately named.
 
-**Phase 4 continuation:** [verified baseline, preserved endurance failures and current evidence](docs/PHASE4_DELIVERY.md). Final-source endurance is not certified.
+**Phase 4 continuation:** [verified source, endurance results and remaining gates](docs/PHASE4_DELIVERY.md). Corrected-source mixed 1h/6h/24h and hosted FPM 1h passed; longer FPM and broader compatibility remain incomplete.
 
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 
@@ -61,8 +61,8 @@ Phase 3 resource admission and buffering policies: [RESOURCE_LIMITS.md](docs/RES
 Phase 3 hardening adds bounded pending work/results, RESP/IPC fuzz regressions,
 worker signal isolation, strict database TLS identity, separate Oracle MySQL
 8.4.13 tests, buffered TLS wakeup handling and atomic filesystem replacement.
-A frozen one-hour mixed baseline completed; six-/24-hour certification remains
-outstanding. See [release readiness](docs/RELEASE_READINESS.md),
+A Phase 3 one-hour mixed baseline completed. Later Phase 4 results and the
+remaining FPM gates are tracked separately. See [release readiness](docs/RELEASE_READINESS.md),
 [database matrix](docs/DATABASE_COMPATIBILITY.md), [filesystem contracts](docs/FILESYSTEM.md),
 [FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
 [ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies and one-file MIME. [WebSocket](docs/WEBSOCKET.md) now has tested bounded framing and independent client/server interop. Expanded hooks
@@ -71,7 +71,8 @@ and framework certification remain unavailable. Release status stays EXPERIMENTA
 Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs.
 Later Phase 4 hardening repairs UDP endpoint collisions, descriptor-exhaustion
 cleanup, destination-port wrap and implicit blocking resolver fallback. The
-corrected r4 package is independently tested on all three PHP branches; its new
-endurance campaigns are in progress. Release status remains **EXPERIMENTAL**;
+corrected r4 package is independently tested on all three PHP branches. Linux
+PHP8.5.12 passed mixed1h/6h/24h and hosted FPM1h workloads; a failed local FPM
+attempt is retained and a new isolated retry is running. Release stays **EXPERIMENTAL**;
 see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
 failures and remaining certification work.

@@ -1,27 +1,89 @@
 # Phase 4 engineering evidence
 
 **EXPERIMENTAL — work in progress.** This report separates completed checks
-from failed campaigns and shorter diagnostic runs. No endurance certification is claimed.
+from failed campaigns and shorter diagnostic runs. Mixed endurance is verified
+for the configuration below; broader FPM and compatibility gates remain incomplete.
 
-## Current evidence at 2026-11-03 16:45 UTC
+## Current evidence at 2026-11-05 21:46 UTC
 
 | Check | Tested source | Result |
 |---|---|---|
-| Clean r4 builds and installed tests, PHP 8.3/8.4/8.5 NTS | `f2abb55` | PASS; source/checksum below |
-| Hosted regression 8.3/8.4/8.5 and database lifecycle | `f2abb55` | All four jobs PASS; [run 41675874564](https://github.com/asyncara/asyncara/actions/runs/41675874564) |
-| Local mixed and FPM one-hour campaigns | frozen `f2abb55` | RUNNING from 16:44:17Z; no completed hour yet |
-| Hosted destination-repair one-hour workload | `f2abb55` | Queued behind active predecessors; [run 41675874490](https://github.com/asyncara/asyncara/actions/runs/41675874490) |
-| Historical local mixed/FPM | `76e6557` | INTERRUPTED for reproduced destination defects; last samples 972.031s mixed / 997.320s FPM |
-| Historical hosted ownership-repair workload | `76e6557` | Mixed and FPM RUNNING; predates destination repair; [run 41668853738](https://github.com/asyncara/asyncara/actions/runs/41668853738) |
-| Historical local one-hour FPM / mixed | `3587740` | FPM FAIL; mixed deliberately interrupted after UDP ownership defect reproduction |
-| Historical hosted mixed / FPM | `624cbe9` | Mixed FAIL at UDP receive; FPM PASS, 3,600.036s / 67,520 main requests; [run 41662855764](https://github.com/asyncara/asyncara/actions/runs/41662855764) |
-| Six-/24-hour campaigns | — | NOT EXECUTED; preceding durations must pass |
+| Reproducible r4 installed-package tests, PHP 8.3/8.4/8.5 NTS | `f2abb55` | PASS; 355 source files match Git |
+| Hosted regression and database lifecycle | `f2abb55` | All four jobs PASS; [run 41675874564](https://github.com/asyncara/asyncara/actions/runs/41675874564) |
+| Local mixed one hour | frozen `f2abb55` | PASS: 3,600.231s / 8,488 cycles |
+| Local mixed six hours | same source/binary | PASS: 21,600.161s / 69,836 cycles |
+| Local mixed 24 hours | same source/binary | PASS: 86,400.268s / 294,899 cycles |
+| Local FPM one hour, concurrent with mixed | frozen `f2abb55` | FAIL: responsiveness assertion; last sample 364.506s / 3,104 recorded main requests |
+| Hosted mixed one hour | `f2abb55` | PASS: 3,600.016s / 28,358 cycles |
+| Hosted FPM one hour | `f2abb55` | PASS: 3,600.055s / 67,824 main requests |
+| New local FPM-only retry | unchanged frozen `f2abb55` | RUNNING from November 5, 21:37:31Z; own 1h → 6h → 24h gates |
+| Six-/24-hour FPM | — | NOT EXECUTED; local preceding stage must pass |
 
-Local mixed includes separate Oracle and MariaDB fixtures. Hosted mixed has
-PostgreSQL, MariaDB and Redis plus extended networking, but no separate Oracle
-fixture. Running/queued jobs are not passes. Historical FPM success does not
-certify later native ownership or destination-validation changes. Release
-classification remains **EXPERIMENTAL**.
+The local mixed scope includes separate Oracle and MariaDB fixtures. Hosted mixed
+omits Oracle. Hosted results are [run 41675874490](https://github.com/asyncara/asyncara/actions/runs/41675874490),
+with ZIPs verified against official GitHub digests and embedded source archives
+byte-identical to r4. Earlier r3 hosted mixed/FPM jobs also passed one hour, but
+remain historical evidence because they lack the destination repair.
+
+The mixed stages do not erase the local FPM failure: the original supervisor
+correctly reports overall FAIL. The hosted FPM pass is scoped to that host and
+workload. All reports, failures and thresholds are retained. Release remains
+**EXPERIMENTAL**.
+
+## Independent review of completed endurance
+
+[Local evidence](phase4/endurance-r4.json) preserves complete reports, source and
+binary fingerprints, raw-file hashes, last samples and the local FPM failure.
+[Hosted evidence](phase4/hosted-r4.json) includes official artifact metadata,
+verified ZIP hashes, exact source identity, reports and host/dependency details.
+Every local stage matches the frozen 355-file manifest and native binary. Raw
+samples have increasing timestamps/cycle counts, zero unexpected errors, empty
+stderr and a single clean completion record. Independent centered least-squares,
+min/max and endpoint-median calculations reproduce the reported resource trends.
+
+| Local mixed stage | Steady RSS endpoint change | Steady RSS slope | Maximum timer lag |
+|---|---:|---:|---:|
+| 1 hour | +1,772 KiB | +2,889.137 KiB/hour | 0.987s |
+| 6 hours | +332 KiB | +71.277 KiB/hour | 1.474s |
+| 24 hours | +260 KiB | +14.414 KiB/hour | 1.264s |
+
+Steady calculations discard the first fifth of samples under the unchanged
+harness policy. The full 24-hour sampled RSS range is 41,212–47,908KiB; its steady
+range is 47,524–47,784KiB. Both ranges are preserved. Sampled native bytes are zero
+at completed-cycle boundaries; steady fds 23–24 and threads five. All final
+Tasks/Futures/timers/watchers/native operations are zero. Sampling omits temporary
+within-cycle peaks and cannot establish absence of all leaks. The measured timer
+lags prevent any hard latency guarantee or broad performance claim.
+
+The last 24-hour sample records 294,891,000 burst Tasks, 294,891 expected
+cancellations and timeouts each, 2,948 ProcessPool crash recoveries, 294,891 DNS
+lookups, 589,782 UDP datagrams and verified TLS connections each. The final
+completion has eight more cycles; last-sample counters are not silently
+extrapolated. WebSockets reconnect periodically: this is extended ws/wss workload
+coverage, not a single uninterrupted 24-hour connection test. SQL uses isolated
+local socket fixtures; WAN/database TLS/mTLS coverage is unchanged.
+
+Hosted r4 FPM passes A/B/C/D, recycling, reload, forced replacement, fatal/pending
+cleanup and request timeout after its complete steady hour. Maximum RSS growth
+beyond warmup is 3,120KiB; per-worker steady slopes 50.673–82.479KiB/hour, with
+strict idle six-fd/one-thread checks. Its parallel hosted mixed stage also passes.
+
+The failed local FPM request has four overlapping HTTP intervals, zero ticker
+progress, 352.592ms elapsed, 14.489ms scheduled CPU and 47.566ms runnable wait;
+maximum timer lag is 333.027ms. The remaining interval is not uniquely attributed.
+Earlier independent native-wait controls demonstrate host timing effects, but
+this individual request was not traced. No speculative runtime repair or relaxed
+assertion is justified by these observations.
+
+A new FPM-only attempt removes the concurrent local mixed workload while retaining
+all original four-worker, within-request and lifecycle assertions. It must pass
+its own full one hour before six/24-hour stages. [Launch provenance](phase4/fpm-solo-r4-launch.json)
+records the exact supervisor; live state is
+`/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json`.
+A separate [read-only observer](phase4/fpm-scheduling-observer.json) samples owned
+worker scheduling/wait counters and host pressure every 100ms for up to one hour.
+It adds observer load and cannot attribute every delay. Missing cgroup counters
+are explicit; no application instrumentation, signals or settings are changed.
 
 ## Corrected r4 distribution and current freeze
 
@@ -44,16 +106,16 @@ ownership defect. No GitHub release is published. Later evidence/documentation
 commits do not retroactively become part of the archive or tested freeze.
 
 The independent build at `/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55` completed
-before launching detached supervisor 3124165 at 16:44:17Z. Native/public runtime
-source stays unchanged during the campaign; no concurrent local builds, fuzzing
-or benchmarks are scheduled. [Launch attestation](phase4/campaign-f2abb55-launch.json)
+before launching supervisor 3124165 on November 3 at 16:44:17Z. That campaign
+finished on November 4 at 23:46:50Z: all mixed stages passed; its FPM stage failed.
+Native/public runtime source remains frozen for the new FPM-only attempt. [Launch attestation](phase4/campaign-f2abb55-launch.json)
 records the exact supervisor, environment, source and binary/archive fingerprints.
-Live state: `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`.
+Completed campaign state: `/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`.
 Independent mixed/FPM chains request 3,600 → 21,600 → 86,400 seconds; only a full
 clean pass with unchanged fingerprints advances that workload. All original
 assertions/resource thresholds remain. Overall success needs all six passes;
-one failed chain cannot be certified by success in the other. This snapshot is
-not a completion report.
+one failed chain cannot be certified by success in the other. The completed
+mixed results and remaining FPM gates are recorded above.
 
 ## Historical r3 distribution and frozen source
 
@@ -113,8 +175,8 @@ private data/configuration paths. [Interruption evidence](phase4/interrupted-cam
 retains the exact partial durations. All original files remain intact.
 
 Raw evidence: `/tmp/asyncara-phase4-nrtjh3t1`, also recorded by `build/phase4-path`.
-Neither final-source one-hour attempt passed. Six-hour and 24-hour stages were
-not started. Through checkpoint `624cbe9`, native and public runtime source were
+At the early checkpoint neither one-hour attempt passed, so six-/24-hour stages
+were not started. Later corrected-source results are above. Through `624cbe9`, native and public runtime source were
 unchanged. The later UDP repair below is the first Phase 4 runtime change. Every retry uses
 a new output directory and a detached process.
 
@@ -151,9 +213,10 @@ recorded below.
 
 ## Remaining engineering work
 
-Diagnose both failed one-hour attempts, preserving the original assertions.
-Repeat the affected campaigns from a new frozen checkpoint before advancing to
-six-/24-hour runs. Standalone controls reproduced the libpq unload allocation on16.15/17.11/18.6
+Complete the unchanged FPM-only chain and investigate any recurrence of the local
+responsiveness failure. Mixed1h/6h/24h and hosted1h FPM have passed; longer FPM
+stages remain gated. Preserve the frozen source and original assertions.
+Standalone controls reproduced the libpq unload allocation on16.15/17.11/18.6
 and PHP callback-type findings with and without Asyncara. These remain unresolved
 dependency findings; see [DEPENDENCY_FINDINGS](DEPENDENCY_FINDINGS.md).
 Subsequent native/API work requires new checkpoints and relevant repeated soaks.

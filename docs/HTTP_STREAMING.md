@@ -131,6 +131,13 @@ Historical hosted FPM at 624cbe9 subsequently completed one hour / 67,520 main
 requests with a streamed-HTTP request in each mixed four-request batch, plus the
 separate D-streaming concurrency case. This is local small-body streaming within
 that FPM workload, not large-transfer/proxy/TLS certification. It predates the UDP
-repairs; corrected-source endurance remains pending. The r4 extracted package's
+repairs; corrected-source evidence was pending at that checkpoint. The r4 package's
 existing streaming tests pass PHP 8.3/8.4/8.5, epoll/poll. Source identities and
 full evidence are in PHASE4_DELIVERY.md and phase4/hosted-fpm-1h.json.
+
+Frozen r4/f2abb55 subsequently passed mixed1h/6h/24h with buffered and streamed
+8KiB HTTP/HTTPS bodies, and hosted FPM1h with streamed requests. These reuse the
+current bounded API under the workload described in SOAK_TESTING.md. Large-body,
+multipart, upload, proxy and single-connection24h endurance remain unverified.
+No HTTP/2/3 or multi-file capability was added. See phase4/endurance-r4.json and
+phase4/hosted-r4.json for exact source, durations and retained local FPM failure.

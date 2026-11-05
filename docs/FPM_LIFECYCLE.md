@@ -235,11 +235,34 @@ ranges 364–536KiB. Strict idle six-fd/one-thread assertions passed. Raw result
 and the official artifact digest are in phase4/hosted-fpm-1h.json. This is an
 actual one-hour FPM pass, not a corrected-source or combined-workflow pass: the
 parallel mixed workload failed. The later local 76e6557 FPM attempt was deliberately
-interrupted after the 997.320s sample to repair destination validation. No final
-corrected-source one-/six-/24-hour completion is claimed.
+interrupted after the997.320s sample to repair destination validation. These
+records predate the completed corrected-source results below.
 
 Corrected f2abb55 r4 passes the ordinary A/B/C/D audit. Its new one-hour expanded
-FPM attempt began at 16:44:17Z after independent package tests finished; no result
-is inferred from launch. The staged supervisor may advance FPM independently only
-after a complete FPM pass. See PHASE4_DELIVERY.md for the immutable source and
-live-state path; historical passes and timing failures remain separate.
+FPM attempt began November3 at16:44:17Z after package tests finished. It later
+failed responsiveness as recorded below. The supervisor advances FPM only after
+a complete FPM pass. Historical passes and timing failures remain separate.
+
+## Corrected-source hosted hour and local retry, November 5
+
+Verified r4/f2abb55 hosted FPM completed3,600.055s/67,824mainrequests and every
+A/B/C/D, recycling/reload/kill/fatal/pending/timeout case. Maximum growth beyond
+warmup3,120KiB; steady worker slopes50.673–82.479KiB/hour, idle6fds/1thread.
+The official artifact digest and exact byte-identical r4 archive are verified in
+phase4/hosted-r4.json. Hosted mixed passed independently on the same source.
+
+The simultaneous local FPM attempt still failed: last sample364.506s,3,104main
+responses; a request had overlapping HTTP intervals but zero ticker progress,
+352.592ms elapsed/14.489ms scheduled CPU and333.027ms timer lag. Its precise wait
+site was not traced; earlier host controls cannot retroactively establish it.
+Full failure/log hashes remain in phase4/endurance-r4.json. No threshold changed.
+
+A new FPM-only1h→6h→24h chain began November5 at21:37:31Z using the same frozen
+source and binary, without concurrent local mixed/build/fuzz/benchmark load.
+Each local stage must pass; the hosted pass does not bypass the failed local gate.
+An external100ms observer records owned process identity, schedstat, wait channel
+and host pressure for up to one hour. It adds observer overhead, misses intervals
+between samples and cannot uniquely attribute global CPU events. Missing cgroup
+counters are explicit. No instrumentation is injected into PHP or its callbacks.
+See phase4/fpm-solo-r4-launch.json and phase4/fpm-scheduling-observer.json.
+Six-/24-hour FPM has not completed; broader FPM certification remains partial.

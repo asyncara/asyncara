@@ -92,3 +92,9 @@ zero still requests an ephemeral local bind; destination port zero is rejected.
 Invalid destinations raise ValueError without waiting for readiness or sending.
 The existing 65,507-byte datagram bound and native epoll/poll readiness remain.
 Tests: udp_destinations.php, including actual empty/maximum-size IPv4/IPv6 sends.
+
+Frozen r4 Linux/PHP8.5.12 NTS epoll mixed1h/6h/24h now passes with existing IPv4/
+IPv6 UDP, localhost DNS, verified TLS1.2/1.3 and HTTP/HTTPS/ws/wss peers. The last
+24h sample records589,782 UDP datagrams and verified TLS connections each. These
+are loopback workload observations. Poll retains three-version functional coverage;
+no new long-duration poll, WAN, platform or io_uring certification is inferred.

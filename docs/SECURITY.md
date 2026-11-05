@@ -92,7 +92,7 @@ Asyncara. See DEPENDENCY_FINDINGS.md for exact scope and unresolved status.
 New mixed/FPM output directories and newly created database fixture directories
 are private0700. No host configuration or deployed services are changed.
 
-Phase 4 one-hour mixed/FPM attempts failed responsiveness/deadline checks. Their
+Early Phase 4 one-hour mixed/FPM attempts failed responsiveness/deadline checks. Their
 sampled memory counts do not establish safe long-running deployment. Diagnostic
 tracing is confined to owned test processes and excludes application payload
 syscalls. The original thresholds and failures remain preserved. Source and
@@ -107,3 +107,12 @@ addresses from reaching the network even when run against affected source.
 See phase4/udp-destinations-fix.json. Historical archives are preserved unchanged;
 verified f2abb55 / phase4-r4 includes the repair. This repair does not add hostname or
 scope-ID support to the UDP API.
+
+The corrected r4 source has now completed mixed1h/6h/24h and independent hosted
+mixed/FPM1h workloads. Frozen manifests, binary/archive fingerprints and raw
+resource trends were independently checked. These scoped passes coexist with a
+local FPM responsiveness failure and timer lag above one second; no hard latency,
+universal memory-safety or production-readiness claim follows. The FPM-only retry
+uses the original assertions. Its external owned-process scheduling observer
+records counters only, adds measurement overhead, and treats unavailable cgroup
+metrics as missing. Runtime code, signal handlers and host limits are unchanged.

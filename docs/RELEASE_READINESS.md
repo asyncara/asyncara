@@ -1,20 +1,20 @@
 # Release readiness
 
-**Current assessment: EXPERIMENTAL.** Phase 4 expanded independent tests,
-resource-limit coverage, dependency controls and diagnostics, then repaired a
-reproducible UDP endpoint ownership defect and descriptor-exhaustion cleanup.
-Source `76e6557` is packaged as phase4-r3 and independently installed/tested on
-PHP 8.3/8.4/8.5 with four passing hosted CI jobs. Later controls exposed UDP
-destination-port wrap and synchronous resolver entry in r3. The public API fix
-passes all three branches, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind. Local
-76e6557 campaigns were interrupted to preserve source integrity. Corrected
-`f2abb55` r4 independently builds/installs/tests on all three PHP branches, is
-reproducible, and passes all four hosted CI jobs. New immutable mixed/FPM
-one-hour attempts began 16:44:17Z on November 3. Historical 624cbe9 hosted FPM passed one hour
-and 67,520 main requests; its mixed job failed. No corrected-source one-hour or
-six-/24-hour completion is claimed.
-Shorter diagnostic passes do not supersede those failures. Current evidence and
-the packaged/tested source distinction are in [PHASE4_DELIVERY](PHASE4_DELIVERY.md).
+**Current assessment: EXPERIMENTAL.** Corrected `f2abb55` / phase4-r4 independently
+builds/installs/tests on PHP 8.3/8.4/8.5 and has passed frozen one-, six- and
+24-hour mixed workloads on Linux PHP 8.5.12 NTS/epoll. The source archive and
+native fingerprints remain unchanged. Hosted r4 mixed and FPM each passed one
+hour; the FPM run completed 67,824 main requests plus lifecycle/fault checks.
+
+The simultaneous local FPM attempt failed responsiveness after 364.506 sampled
+seconds. That failure is retained and its exact waiting site remains unproven.
+A new FPM-only attempt began November 5 at 21:37:31Z, with unchanged assertions
+and no concurrent local mixed workload. Six-/24-hour FPM has not run. Mixed
+resource stability does not remove observed timer lag above one second or certify
+other PHP/platform/remote configurations. No release promotion follows.
+
+[PHASE4_DELIVERY](PHASE4_DELIVERY.md) contains complete source/archive identities,
+resource trends, hosted artifact provenance, failed controls and continuation.
 
 ## Historical Phase 3 checkpoint
 

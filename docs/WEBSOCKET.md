@@ -114,5 +114,12 @@ establishes one-hour WebSocket endurance or identifies a WebSocket defect.
 The f2abb55 / phase4-r4 extracted source independently passes the existing 41
 framing cases and bidirectional Python interoperability/network suite on PHP
 8.3.36, 8.4.27 and 8.5.12 NTS. The UDP repairs add no WebSocket capability.
-Its new extended mixed endurance attempt is running; no completed hour or new
-browser/Autobahn/server-WSS certification follows from the package tests.
+The completed mixed endurance results follow below; browser/Autobahn/server-WSS
+certification remains unavailable.
+
+Frozen r4/f2abb55 mixed1h/6h/24h passed with one ws and one verified wss client,
+echo/ping, receive cancellation and periodic reconnect. The last24h sample
+records2,948 reconnect rounds. These are repeated connections over a24h workload;
+single uninterrupted24h connections, server-WSS, browser and Autobahn coverage
+remain unverified. The source/protocol capability is unchanged; independent
+review and raw hashes are in phase4/endurance-r4.json.

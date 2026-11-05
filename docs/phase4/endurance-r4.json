@@ -1,0 +1,1420 @@
+{
+  "reviewedUtc": "2026-11-05T21:40:14.137413+00:00",
+  "source": "f2abb555caf8914821f648f8213ce7a433693685",
+  "archive": "build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+  "sha256": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+  "nativeSha256": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f",
+  "overallCampaignStatus": "FAIL",
+  "scope": "Local Linux PHP 8.5.12 NTS epoll mixed workload, including separate Oracle/MariaDB fixtures; three independent stages. Local FPM chain failed and cannot borrow the mixed pass.",
+  "supervisor": {
+    "status": "FAIL",
+    "startedUtc": "2026-11-03T16:44:17.084603+00:00",
+    "supervisorPid": 3124165,
+    "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r4.tar.gz": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+      "asyncara.so": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f"
+    },
+    "supervisorSha256": "799aef7f432c4539bf8681e3520a31c802091bbd9c810501ea8073e81034e344",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "jobs": [
+      {
+        "kind": "mixed",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:44:17.195987+00:00",
+        "status": "PASS",
+        "pid": 3124173,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/run.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600",
+          "--databases",
+          "--extended-network",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600",
+        "exit": 0,
+        "finishedUtc": "2026-11-03T17:44:55.429193+00:00",
+        "reportPresent": true,
+        "reportSha256": "75f6697662a95b179e787eefdbcdd745f01ee1e1044e5fee0231d2a7cb0b3a2a"
+      },
+      {
+        "kind": "fpm",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-03T16:44:17.227571+00:00",
+        "status": "FAIL",
+        "pid": 3124176,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/fpm.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600",
+        "exit": 1,
+        "finishedUtc": "2026-11-03T16:50:38.381547+00:00",
+        "reportPresent": false
+      },
+      {
+        "kind": "mixed",
+        "requestedSeconds": 21600,
+        "startedUtc": "2026-11-03T17:44:55.764024+00:00",
+        "status": "PASS",
+        "pid": 3163316,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/run.py",
+          "--seconds",
+          "21600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600",
+          "--databases",
+          "--extended-network",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600",
+        "exit": 0,
+        "finishedUtc": "2026-11-03T23:45:58.200697+00:00",
+        "reportPresent": true,
+        "reportSha256": "a9849ef70fff782cf68adf48e136f887d8cc56a90c57f69f17d27712817e05a6"
+      },
+      {
+        "kind": "mixed",
+        "requestedSeconds": 86400,
+        "startedUtc": "2026-11-03T23:45:58.503755+00:00",
+        "status": "PASS",
+        "pid": 3284611,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/run.py",
+          "--seconds",
+          "86400",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400",
+          "--databases",
+          "--extended-network",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400",
+        "exit": 0,
+        "finishedUtc": "2026-11-04T23:46:50.028473+00:00",
+        "reportPresent": true,
+        "reportSha256": "7f54c3ee9973b5e8b9dccd2734dcda12fc57e56293033c717ab16e00f8303e22"
+      }
+    ],
+    "gate": "Independent mixed/FPM chains; each must pass its preceding duration. No cross-workload certification. Any failed chain fails the overall campaign.",
+    "finishedUtc": "2026-11-04T23:46:50.259396+00:00"
+  },
+  "mixed": [
+    {
+      "requestedSeconds": 3600,
+      "status": "PASS",
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 3636.7278158580884,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 683,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 3600.23091951292,
+            "cycles": 8488,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 195395,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 1209227,
+              "taskSteps": 19763211,
+              "maxStepSeconds": 1.0398711191955954,
+              "maxTimerLagSeconds": 0.9871374410577118,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 47508,
+              "virtualKiB": 400552,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 45836,
+            "max": 47608,
+            "mean": 46832.0950639854,
+            "endMinusStartMedian": 1772,
+            "slopePerHour": 2889.1366145214784
+          },
+          "phpBytes": {
+            "min": 2151576,
+            "max": 2199592,
+            "mean": 2177991.297989031,
+            "endMinusStartMedian": -7128,
+            "slopePerHour": -310.44291561379913
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.049360146252315,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.06510409391192325
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.049360146252285,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.06510409391197867
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "lastSample": {
+        "type": "sample",
+        "seconds": 3595.9267075299285,
+        "cycles": 8476,
+        "tasksExecuted": 8476000,
+        "phpBytes": 2178872,
+        "phpAllocatedBytes": 27262976,
+        "os": {
+          "rssKiB": 47608,
+          "virtualKiB": 413384,
+          "threads": 5,
+          "fds": 23,
+          "sockets": 10
+        },
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 195395,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 1207531,
+          "taskSteps": 19735277,
+          "maxStepSeconds": 1.0398711191955954,
+          "maxTimerLagSeconds": 0.9871374410577118,
+          "activeTasks": 6,
+          "pendingFutures": 9,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 3,
+          "ioWatchers": 2,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "processPool": {
+          "workers": 2,
+          "restarts": 84,
+          "pendingJobs": 0,
+          "pendingBytes": 0,
+          "queueLimit": 256,
+          "queueBytes": 67108864,
+          "workerMemoryBytes": 268435456,
+          "closed": false
+        },
+        "queue": {
+          "capacity": 8,
+          "buffered": 0,
+          "waitingReaders": 0,
+          "waitingWriters": 0,
+          "unfinished": 0,
+          "closed": false
+        },
+        "databaseConnections": 4,
+        "network": {
+          "cycles": 8476,
+          "websocketConnections": 2,
+          "reconnections": 84,
+          "cancellations": 84,
+          "dnsLookups": 8476,
+          "udpDatagrams": 16952,
+          "verifiedTlsConnections": 16952,
+          "httpsResponses": 16952
+        },
+        "ticks": 188045,
+        "timeouts": 8476,
+        "cancellations": 8476,
+        "unexpectedErrors": 0,
+        "schedulingLatencyMs": {
+          "median": 15.820919070392847,
+          "p95": 41.818673023954034,
+          "p99": 42.773920111358166
+        }
+      },
+      "configuration": [
+        {
+          "type": "configuration",
+          "postgresql": [
+            {
+              "version": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit"
+            }
+          ],
+          "mariadb": [
+            {
+              "version": "11.8.9-MariaDB-ubu2404"
+            }
+          ],
+          "oracle": [
+            {
+              "version": "8.4.13"
+            }
+          ],
+          "redis": "# Server\r\nredis_version:7.0.15\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:d064f9f48c901a92\r\nredis_mode:standalone\r\nos:Linux 6.8.0-147-generic x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:13.3.0\r\nprocess_id:3126634\r\nprocess_supervised:no\r\nrun_id:7b151dd4c90a8ff6398d0183d5b839088336c86c\r\ntcp_port:46593\r\nserver_time_usec:1793724289611353\r\nuptime_in_seconds:3\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:15339393\r\nexecutable:/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/source/redis-server\r\nconfig_file:\r\nio_threads_active:0\r\n"
+        }
+      ],
+      "independentReview": {
+        "sourceManifestAndBinary": "Matched frozen f2abb55 source and launch fingerprint; 355 source file hashes each stage",
+        "sampleCount": 683,
+        "monotonicTimeAndCycles": true,
+        "unexpectedErrors": 0,
+        "stderrBytes": 0,
+        "recomputedTrends": {
+          "rssKiB": {
+            "min": 45836,
+            "max": 47608,
+            "mean": 46832.095063985376,
+            "endMinusStartMedian": 1772,
+            "slopePerHour": 2889.1366145215875
+          },
+          "phpBytes": {
+            "min": 2151576,
+            "max": 2199592,
+            "mean": 2177991.2979890313,
+            "endMinusStartMedian": -7128,
+            "slopePerHour": -310.44291561109554
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.049360146252287,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0651040939119687
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.049360146252285,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0651040939119687
+          }
+        },
+        "maxSampleGapSeconds": 7.048704911954701,
+        "method": "Read original JSONL; independent fmean/fsum-centered least squares, min/max and endpoint medians after discarding first floor(samples/5) samples; compare to report with 1e-7 tolerance. No changes to thresholds.",
+        "allSamples": {
+          "rssKiB": {
+            "first": 41148,
+            "last": 47608,
+            "min": 41148,
+            "max": 47608
+          },
+          "phpBytes": {
+            "first": 2117672,
+            "last": 2178872,
+            "min": 2117672,
+            "max": 2199592
+          },
+          "maxTimerLagSeconds": 0.9871374410577118,
+          "warmupDiscardSamples": 136
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/websocket-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/source-manifest.json",
+          "bytes": 36489,
+          "sha256": "6a8fe9730f3c12ae95814422e3408905038966a904883555a78738d704bfee80"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/report.json",
+          "bytes": 3513,
+          "sha256": "75f6697662a95b179e787eefdbcdd745f01ee1e1044e5fee0231d2a7cb0b3a2a"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/network-peers.json",
+          "bytes": 365,
+          "sha256": "10490f3b2d1ffc49f986756a5fbc0e4c9634ec298a8092b44ce2b961f715d9c3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/os-processes.jsonl",
+          "bytes": 2470660,
+          "sha256": "1d7dbb44e799342114684fca956baab15d7a4937b34dfa2981532c77af5b9e45"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/samples.jsonl",
+          "bytes": 1292025,
+          "sha256": "b7e9110173d20838a3dab4125c2492278b30ec94dc427d585c9313de1413475e"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/network-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/metadata.json",
+          "bytes": 841,
+          "sha256": "e8b0c687c246e8815c5ba512d41bec997740e7d76e9b1a494dedd1e253b6f733"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-3600/stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "requestedSeconds": 21600,
+      "status": "PASS",
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 21659.90765888407,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 4159,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 21600.16142086615,
+            "cycles": 69836,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 195396,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 9958707,
+              "taskSteps": 162570709,
+              "maxStepSeconds": 1.3180103041231632,
+              "maxTimerLagSeconds": 1.4741791081614792,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 48428,
+              "virtualKiB": 400552,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 48196,
+            "max": 48528,
+            "mean": 48385.396634615434,
+            "endMinusStartMedian": 332,
+            "slopePerHour": 71.27732309628266
+          },
+          "phpBytes": {
+            "min": 2165760,
+            "max": 2237408,
+            "mean": 2211637.6706730705,
+            "endMinusStartMedian": 21872,
+            "slopePerHour": 1243.8637111380142
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.02223557692311,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -5.3380414667488694e-05
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.022235576923054,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -5.3380414643183857e-05
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "lastSample": {
+        "type": "sample",
+        "seconds": 21595.61920813215,
+        "cycles": 69821,
+        "tasksExecuted": 69821000,
+        "phpBytes": 2199784,
+        "phpAllocatedBytes": 27262976,
+        "os": {
+          "rssKiB": 48528,
+          "virtualKiB": 413384,
+          "threads": 5,
+          "fds": 23,
+          "sockets": 10
+        },
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 195396,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 9956568,
+          "taskSteps": 162535816,
+          "maxStepSeconds": 1.3180103041231632,
+          "maxTimerLagSeconds": 1.4741791081614792,
+          "activeTasks": 6,
+          "pendingFutures": 9,
+          "retainedFailures": 0,
+          "readyTasks": 1,
+          "activeTimers": 2,
+          "ioWatchers": 2,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "processPool": {
+          "workers": 2,
+          "restarts": 698,
+          "pendingJobs": 0,
+          "pendingBytes": 0,
+          "queueLimit": 256,
+          "queueBytes": 67108864,
+          "workerMemoryBytes": 268435456,
+          "closed": false
+        },
+        "queue": {
+          "capacity": 8,
+          "buffered": 0,
+          "waitingReaders": 0,
+          "waitingWriters": 0,
+          "unfinished": 0,
+          "closed": false
+        },
+        "databaseConnections": 4,
+        "network": {
+          "cycles": 69821,
+          "websocketConnections": 2,
+          "reconnections": 698,
+          "cancellations": 698,
+          "dnsLookups": 69821,
+          "udpDatagrams": 139642,
+          "verifiedTlsConnections": 139642,
+          "httpsResponses": 139642
+        },
+        "ticks": 1397356,
+        "timeouts": 69821,
+        "cancellations": 69821,
+        "unexpectedErrors": 0,
+        "schedulingLatencyMs": {
+          "median": 13.122974894940853,
+          "p95": 28.637713054195046,
+          "p99": 30.015161959454417
+        }
+      },
+      "configuration": [
+        {
+          "type": "configuration",
+          "postgresql": [
+            {
+              "version": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit"
+            }
+          ],
+          "mariadb": [
+            {
+              "version": "11.8.9-MariaDB-ubu2404"
+            }
+          ],
+          "oracle": [
+            {
+              "version": "8.4.13"
+            }
+          ],
+          "redis": "# Server\r\nredis_version:7.0.15\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:d064f9f48c901a92\r\nredis_mode:standalone\r\nos:Linux 6.8.0-147-generic x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:13.3.0\r\nprocess_id:3163469\r\nprocess_supervised:no\r\nrun_id:101ab5ee6a0012064a885b251da0c8d4fb799868\r\ntcp_port:59487\r\nserver_time_usec:1793727952851683\r\nuptime_in_seconds:4\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:15343056\r\nexecutable:/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/source/redis-server\r\nconfig_file:\r\nio_threads_active:0\r\n"
+        }
+      ],
+      "independentReview": {
+        "sourceManifestAndBinary": "Matched frozen f2abb55 source and launch fingerprint; 355 source file hashes each stage",
+        "sampleCount": 4159,
+        "monotonicTimeAndCycles": true,
+        "unexpectedErrors": 0,
+        "stderrBytes": 0,
+        "recomputedTrends": {
+          "rssKiB": {
+            "min": 48196,
+            "max": 48528,
+            "mean": 48385.39663461538,
+            "endMinusStartMedian": 332,
+            "slopePerHour": 71.27732309629852
+          },
+          "phpBytes": {
+            "min": 2165760,
+            "max": 2237408,
+            "mean": 2211637.670673077,
+            "endMinusStartMedian": 21872,
+            "slopePerHour": 1243.8637111357293
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.022235576923077,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -5.338041464919509e-05
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.022235576923077,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -5.338041464919509e-05
+          }
+        },
+        "maxSampleGapSeconds": 7.680458014132455,
+        "method": "Read original JSONL; independent fmean/fsum-centered least squares, min/max and endpoint medians after discarding first floor(samples/5) samples; compare to report with 1e-7 tolerance. No changes to thresholds.",
+        "allSamples": {
+          "rssKiB": {
+            "first": 41264,
+            "last": 48528,
+            "min": 41264,
+            "max": 48528
+          },
+          "phpBytes": {
+            "first": 2117736,
+            "last": 2199784,
+            "min": 2117736,
+            "max": 2237408
+          },
+          "maxTimerLagSeconds": 1.4741791081614792,
+          "warmupDiscardSamples": 831
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/websocket-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/source-manifest.json",
+          "bytes": 36489,
+          "sha256": "6a8fe9730f3c12ae95814422e3408905038966a904883555a78738d704bfee80"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/report.json",
+          "bytes": 3523,
+          "sha256": "a9849ef70fff782cf68adf48e136f887d8cc56a90c57f69f17d27712817e05a6"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/network-peers.json",
+          "bytes": 366,
+          "sha256": "cf7cb4dc049b22e0f0820bf34ff3c2a97f94b97bf014e590e5a418e578fb1876"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/os-processes.jsonl",
+          "bytes": 14887128,
+          "sha256": "fadf627a970c276329a587ad2d677c084d87cb7f4239c7267ebc112145563fa0"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/samples.jsonl",
+          "bytes": 7911684,
+          "sha256": "2ebad1d434d86f11e01c4bac0e3ad42fbc67726d9bad4a866145251834c1d485"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/network-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/metadata.json",
+          "bytes": 842,
+          "sha256": "9000f8acf5783fe08990e07c346cded721fb04170d55dbc5c347885255852060"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-21600/stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "requestedSeconds": 86400,
+      "status": "PASS",
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 86444.22378111398,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 16701,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 86400.2677157321,
+            "cycles": 294899,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 195396,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 42071181,
+              "taskSteps": 686453208,
+              "maxStepSeconds": 1.3781296100933105,
+              "maxTimerLagSeconds": 1.2635354869998991,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 47824,
+              "virtualKiB": 400540,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 47524,
+            "max": 47784,
+            "mean": 47689.22296235298,
+            "endMinusStartMedian": 260,
+            "slopePerHour": 14.414095195926432
+          },
+          "phpBytes": {
+            "min": 2165208,
+            "max": 2241960,
+            "mean": 2213452.4601451964,
+            "endMinusStartMedian": 3872,
+            "slopePerHour": -22.3178822447478
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.018636329616054,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -0.00017343141431057092
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.018636329616038,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -0.00017343141430333295
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "lastSample": {
+        "type": "sample",
+        "seconds": 86397.82276834105,
+        "cycles": 294891,
+        "tasksExecuted": 294891000,
+        "phpBytes": 2197160,
+        "phpAllocatedBytes": 27262976,
+        "os": {
+          "rssKiB": 47784,
+          "virtualKiB": 413372,
+          "threads": 5,
+          "fds": 23,
+          "sockets": 10
+        },
+        "native": {
+          "version": "0.1.0-dev",
+          "eventLoopBackend": "epoll",
+          "filesystemBackend": "pthread-workers",
+          "networkBackend": "nonblocking-streams+curl-multi",
+          "dnsBackend": "worker-getaddrinfo",
+          "sqliteVersion": "3.45.1",
+          "curlVersion": "8.5.0",
+          "userlandThreads": false,
+          "ioUring": false,
+          "postgresql": true,
+          "mysql": true,
+          "nativeWorkers": 4,
+          "pendingOperations": 0,
+          "nativeBufferLimit": 16777216,
+          "nativeQueueLimit": 1024,
+          "nativeMemoryBytes": 0,
+          "nativeMemoryPeak": 195396,
+          "nativeMemoryRejections": 0,
+          "nativeMemoryLimit": 268435456,
+          "openFileHandles": 0,
+          "sqliteConnections": 0,
+          "httpReadinessSockets": 0,
+          "nativeQueueDepth": 0,
+          "httpStreamingTransfers": 0,
+          "httpStreamingBufferedBytes": 0,
+          "httpStreamingPaused": 0,
+          "httpStreamBufferLimit": 65536,
+          "httpStreamingUploads": 0,
+          "httpUploadBufferedBytes": 0,
+          "httpUploadPaused": 0
+        },
+        "scheduler": {
+          "turns": 42070013,
+          "taskSteps": 686434605,
+          "maxStepSeconds": 1.3781296100933105,
+          "maxTimerLagSeconds": 1.2635354869998991,
+          "activeTasks": 6,
+          "pendingFutures": 9,
+          "retainedFailures": 0,
+          "readyTasks": 0,
+          "activeTimers": 3,
+          "ioWatchers": 2,
+          "pendingNative": 0,
+          "memoryBytes": 27262976
+        },
+        "processPool": {
+          "workers": 2,
+          "restarts": 2948,
+          "pendingJobs": 0,
+          "pendingBytes": 0,
+          "queueLimit": 256,
+          "queueBytes": 67108864,
+          "workerMemoryBytes": 268435456,
+          "closed": false
+        },
+        "queue": {
+          "capacity": 8,
+          "buffered": 0,
+          "waitingReaders": 0,
+          "waitingWriters": 0,
+          "unfinished": 0,
+          "closed": false
+        },
+        "databaseConnections": 4,
+        "network": {
+          "cycles": 294891,
+          "websocketConnections": 2,
+          "reconnections": 2948,
+          "cancellations": 2948,
+          "dnsLookups": 294891,
+          "udpDatagrams": 589782,
+          "verifiedTlsConnections": 589782,
+          "httpsResponses": 589782
+        },
+        "ticks": 5846279,
+        "timeouts": 294891,
+        "cancellations": 294891,
+        "unexpectedErrors": 0,
+        "schedulingLatencyMs": {
+          "median": 9.481469169259071,
+          "p95": 48.65690879523754,
+          "p99": 50.34713493660092
+        }
+      },
+      "configuration": [
+        {
+          "type": "configuration",
+          "postgresql": [
+            {
+              "version": "PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit"
+            }
+          ],
+          "mariadb": [
+            {
+              "version": "11.8.9-MariaDB-ubu2404"
+            }
+          ],
+          "oracle": [
+            {
+              "version": "8.4.13"
+            }
+          ],
+          "redis": "# Server\r\nredis_version:7.0.15\r\nredis_git_sha1:00000000\r\nredis_git_dirty:0\r\nredis_build_id:d064f9f48c901a92\r\nredis_mode:standalone\r\nos:Linux 6.8.0-147-generic x86_64\r\narch_bits:64\r\nmonotonic_clock:POSIX clock_gettime\r\nmultiplexing_api:epoll\r\natomicvar_api:c11-builtin\r\ngcc_version:13.3.0\r\nprocess_id:3284748\r\nprocess_supervised:no\r\nrun_id:c16c480c7e9d578fc7110239ce9bc4b4a96adf20\r\ntcp_port:60979\r\nserver_time_usec:1793749595484643\r\nuptime_in_seconds:3\r\nuptime_in_days:0\r\nhz:10\r\nconfigured_hz:10\r\nlru_clock:15364699\r\nexecutable:/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/source/redis-server\r\nconfig_file:\r\nio_threads_active:0\r\n"
+        }
+      ],
+      "independentReview": {
+        "sourceManifestAndBinary": "Matched frozen f2abb55 source and launch fingerprint; 355 source file hashes each stage",
+        "sampleCount": 16701,
+        "monotonicTimeAndCycles": true,
+        "unexpectedErrors": 0,
+        "stderrBytes": 0,
+        "recomputedTrends": {
+          "rssKiB": {
+            "min": 47524,
+            "max": 47784,
+            "mean": 47689.22296235312,
+            "endMinusStartMedian": 260,
+            "slopePerHour": 14.414095195911662
+          },
+          "phpBytes": {
+            "min": 2165208,
+            "max": 2241960,
+            "mean": 2213452.4601451987,
+            "endMinusStartMedian": 3872,
+            "slopePerHour": -22.31788224485514
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 23,
+            "max": 24,
+            "mean": 23.018636329616047,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -0.0001734314143034858
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 10,
+            "max": 11,
+            "mean": 10.018636329616047,
+            "endMinusStartMedian": 0,
+            "slopePerHour": -0.0001734314143034858
+          }
+        },
+        "maxSampleGapSeconds": 7.165990184061229,
+        "method": "Read original JSONL; independent fmean/fsum-centered least squares, min/max and endpoint medians after discarding first floor(samples/5) samples; compare to report with 1e-7 tolerance. No changes to thresholds.",
+        "allSamples": {
+          "rssKiB": {
+            "first": 41212,
+            "last": 47784,
+            "min": 41212,
+            "max": 47908
+          },
+          "phpBytes": {
+            "first": 2118168,
+            "last": 2197160,
+            "min": 2118168,
+            "max": 2241960
+          },
+          "maxTimerLagSeconds": 1.2635354869998991,
+          "warmupDiscardSamples": 3340
+        }
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/websocket-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/source-manifest.json",
+          "bytes": 36489,
+          "sha256": "6a8fe9730f3c12ae95814422e3408905038966a904883555a78738d704bfee80"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/report.json",
+          "bytes": 3524,
+          "sha256": "7f54c3ee9973b5e8b9dccd2734dcda12fc57e56293033c717ab16e00f8303e22"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/network-peers.json",
+          "bytes": 366,
+          "sha256": "a11320462133e641f851e5c6ccf9f66bd2f510f146260c212232ea330f207c13"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/os-processes.jsonl",
+          "bytes": 59566879,
+          "sha256": "3bc2b7caa0d86d52de296fcbf54dbc0480a38a00406a37d3497b7547f3115210"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/samples.jsonl",
+          "bytes": 31936567,
+          "sha256": "b0201963b6e91be854b62a93a1ac66e75f5b4eb8ecfd28d15b27cd33ab7ad2c6"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/network-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/metadata.json",
+          "bytes": 842,
+          "sha256": "1219a3093ef8926dcaad26d279acc7c147141b72f3464e11be2c549ccea20ee6"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/mixed-86400/stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "fpmFailure": {
+    "status": "FAIL",
+    "requestedSeconds": 3600,
+    "error": "b'Status: 500 Internal Server Error\\r\\nX-Powered-By: PHP/8.5.12\\r\\nContent-type: text/html; charset=UTF-8\\r\\n\\r\\n'",
+    "completedCases": [
+      {
+        "name": "A-lifecycle",
+        "workers": 1,
+        "requests": 100,
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "workers": 1,
+        "requests": 10,
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "workers": 4,
+        "requests": 12,
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS",
+        "requests": 25,
+        "pids": [
+          3124948,
+          3125011,
+          3125079
+        ]
+      }
+    ],
+    "failedRequest": {
+      "ticks": 0,
+      "intervals": [
+        {
+          "start": 1793724632.8367846,
+          "end": 1793724633.0444531
+        },
+        {
+          "start": 1793724632.8380482,
+          "end": 1793724633.044065
+        },
+        {
+          "start": 1793724632.8422444,
+          "end": 1793724633.044977
+        },
+        {
+          "start": 1793724632.843803,
+          "end": 1793724633.0447998
+        }
+      ],
+      "cpuDelta": {
+        "monotonicNs": 352591864,
+        "userUs": 4251,
+        "systemUs": 10273,
+        "scheduledNs": 14488770,
+        "runnableWaitNs": 47566050,
+        "slices": 2
+      },
+      "lastTicksNs": [],
+      "scheduler": {
+        "turns": 12,
+        "taskSteps": 18,
+        "maxStepSeconds": 0.013129292987287045,
+        "maxTimerLagSeconds": 0.3330270240548998,
+        "activeTasks": 1,
+        "pendingFutures": 1,
+        "retainedFailures": 0,
+        "readyTasks": 0,
+        "activeTimers": 0,
+        "ioWatchers": 0,
+        "pendingNative": 0,
+        "memoryBytes": 2097152
+      }
+    },
+    "lastSample": {
+      "pid": 3125207,
+      "fds": 6,
+      "sockets": 1,
+      "threads": 1,
+      "rssKiB": 19036,
+      "virtualKiB": 508592,
+      "idleWaitSeconds": 0.00027594692073762417,
+      "transientThreadsBeforeReaping": 1,
+      "seconds": 364.5057064080611
+    },
+    "recordedMainRequests": 3104,
+    "interpretation": "Four HTTP intervals overlap, but no independent timer progress was recorded. Low CPU and prior standalone controls suggest host waiting/scheduling effects; the exact blocking site in this request was not traced and remains unproven. Failure is retained; no threshold relaxation or runtime fix is inferred.",
+    "artifacts": [
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/mixed-responses.jsonl",
+        "bytes": 7292709,
+        "sha256": "697eda2bc2c2fa6aae16fb7ddcd1d68b3b8d4f6a022df7d23a169a03098c8ab4"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/os-processes.jsonl",
+        "bytes": 94709,
+        "sha256": "fb1b86786fb99efbccf8d6dadaa69b25503d6658d7a459f98879c28968059ce7"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/provenance.json",
+        "bytes": 1006,
+        "sha256": "ce7255e60dd163ec9ecbc851310a7c8a3c68390b4be515c4a200bcef67ff5a0e"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/fatal-warmup.json",
+        "bytes": 21868,
+        "sha256": "1ffd9209fcee60179dc9b667eab87122f59569aaa06b5377c8d3433fc38d2a76"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/mixed-samples.jsonl",
+        "bytes": 627039,
+        "sha256": "bc972fef9e311275715edfdeb64d625c857bc24c35fa2efe2f5ee0ce66008648"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/failure.json",
+        "bytes": 476477,
+        "sha256": "0bd9f3a3b47f672bfcac070a9df2f96d876a73db5c74174e8f4cafacb984e675"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/mixed-reload-kill/error.log",
+        "bytes": 1201,
+        "sha256": "1d0e8e3b21c41444e1d1fbaf54fdc7143eba8e533ad0b7b3df3930afbcbc655e"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/mixed-reload-kill/php-errors.log",
+        "bytes": 48923,
+        "sha256": "1989e1284894c92d838ea25bb6ef6db1da27990525e1192e5227b8b6b4383b02"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/mixed-reload-kill/startup.log",
+        "bytes": 78,
+        "sha256": "917eaeb926e0c11310e993cf5b1fc9759ab99491d9fe0222c0b67dba0c61408a"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/C-multiple-workers/error.log",
+        "bytes": 283,
+        "sha256": "a395ab30d4b6c303ab32568f808f16d1f30fbc8a88f63210cab182d60dd6c9c3"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/C-multiple-workers/startup.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/recycling/error.log",
+        "bytes": 633,
+        "sha256": "4ffb09585eba5bc09b42bc9e0dbb51b5c8dbadd3cbb7281a3fe301cdf2aa5214"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/recycling/startup.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/A-lifecycle/error.log",
+        "bytes": 283,
+        "sha256": "88901028e94b50473d32a9ea5bde9e5ae7232e329b45006bf7e11a67d64cf5f5"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/A-lifecycle/php-errors.log",
+        "bytes": 352,
+        "sha256": "67991428b126344b5d8a83933611c0d01d2a08073d89b69dba668f1588384b8c"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/A-lifecycle/startup.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/D-streaming/error.log",
+        "bytes": 283,
+        "sha256": "44ebc6c931a06bba9eba69fd9c11781e7199ab32f8195fb50f267d083b4e0652"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/D-streaming/startup.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/B-within-request/error.log",
+        "bytes": 283,
+        "sha256": "ffb1150b4a38186e120af9cd5ba5917ecd971693a46c1b4e1beb336748abf5cc"
+      },
+      {
+        "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600/B-within-request/startup.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "boundaries": [
+    "Cycle-boundary samples omit within-cycle peaks and retained application work outside this workload.",
+    "Native ledger excludes external libraries, kernel buffers, PHP heap and child processes.",
+    "Recorded maximum timer lag exceeds one second; no hard latency guarantee.",
+    "SQL is local/plain socket transport, not remote TLS/WAN certification.",
+    "Fresh native/public-source changes require new frozen campaigns.",
+    "Release remains EXPERIMENTAL."
+  ]
+}

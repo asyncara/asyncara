@@ -120,3 +120,12 @@ implicit blocking resolver calls and integer narrowing in PHP's underlying
 sendto parser. Invalid input raises ValueError without network submission; it is
 an input bound, not a new global socket cap. Real maximum-size IPv4/IPv6 tests
 pass in the r4 package on PHP 8.3/8.4/8.5 with both event-loop backends.
+
+Completed frozen r4 mixed24h has zero sampled native bytes at cycle boundaries,
+steady23–24fds and five threads, and zero final scheduled/native work. Full sampled
+RSS41,212–47,908KiB includes warmup; steady47,524–47,784KiB gives+260KiB endpoint
+median growth. The unchanged report excludes the first fifth of samples for
+steady trends. Within-cycle peaks and third-party memory remain outside these
+observations. Hosted r4 FPM1h passed its strict idle6fd/1thread and8MiB growth
+thresholds; the local responsiveness failure remains a failure. Endurance evidence
+does not turn the admission ledger into a complete process memory limit.

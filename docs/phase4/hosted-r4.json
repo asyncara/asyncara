@@ -1,0 +1,1099 @@
+{
+  "reviewedUtc": "2026-11-05T21:40:15.403298+00:00",
+  "runs": [
+    {
+      "run": 41675874490,
+      "kind": "fpm",
+      "artifact": {
+        "id": 13259375218,
+        "node_id": "MDg6QXJ0aWZhY3QxMzI1OTM3NTIxOA==",
+        "name": "one-hour-soak-fpm",
+        "size_in_bytes": 9207570,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13259375218",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13259375218/zip",
+        "expired": false,
+        "digest": "sha256:314bd718953dd21cdcc36af5e8e38f296c861c8181ba68fe54395e2d319f7f5a",
+        "created_at": "2026-11-03T18:24:55Z",
+        "updated_at": "2026-11-03T18:24:55Z",
+        "expires_at": "2027-02-01T16:36:09Z",
+        "workflow_run": {
+          "id": 41675874490,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "f2abb555caf8914821f648f8213ce7a433693685"
+        }
+      },
+      "zip": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact.zip",
+      "sha256": "314bd718953dd21cdcc36af5e8e38f296c861c8181ba68fe54395e2d319f7f5a",
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact",
+      "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+      "archiveSha256": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+      "report": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 100,
+          "status": "PASS"
+        },
+        {
+          "name": "B-within-request",
+          "workers": 1,
+          "requests": 10,
+          "status": "PASS"
+        },
+        {
+          "name": "C-multiple-workers",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "D-streaming",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "recycling",
+          "status": "PASS",
+          "requests": 25,
+          "pids": [
+            15452,
+            15515,
+            15575
+          ]
+        },
+        {
+          "name": "mixed-reload-kill",
+          "status": "PASS",
+          "seconds": 3600.055050813,
+          "requests": 67824,
+          "reloads": 1,
+          "killedWorkers": 1,
+          "sampleCount": 67816,
+          "rssRangeKiBAfterWarmup": {
+            "15710": 528,
+            "15677": 416,
+            "15678": 404,
+            "15679": 484
+          },
+          "maxRssIncreaseKiB": {
+            "15710": 528,
+            "15677": 416,
+            "15678": 404,
+            "15679": 484
+          },
+          "warmupPeakKiB": {
+            "15710": 14616,
+            "15677": 18944,
+            "15678": 18876,
+            "15679": 16720
+          },
+          "growthBeyondWarmupPeakKiB": {
+            "15710": 3120,
+            "15677": 572,
+            "15678": 588,
+            "15679": 2632
+          },
+          "rssSlopeKiBPerHour": {
+            "15710": 50.672830947668345,
+            "15677": 78.62412117589163,
+            "15678": 82.47911649443951,
+            "15679": 74.44127813232528
+          },
+          "samplesFile": "mixed-samples.jsonl",
+          "responsesFile": "mixed-responses.jsonl"
+        },
+        {
+          "name": "request-timeout",
+          "status": "PASS",
+          "terminatedPid": 515214,
+          "replacement": {
+            "pid": 515223,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 15612,
+            "virtualKiB": 508364,
+            "idleWaitSeconds": 0.0002512399996703607,
+            "transientThreadsBeforeReaping": 1
+          }
+        }
+      ],
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "f2abb555caf8914821f648f8213ce7a433693685\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.85\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm48cm3 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-source.tar.gz.sha256",
+          "bytes": 90,
+          "sha256": "947e5fcd682c84de5c77c8d0ed3b7b9960995b251602ad7ef103d6b69f2224f3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-libraries.txt",
+          "bytes": 158,
+          "sha256": "7e10d64201c77c40140b2a2e885e5767aaa626fb26e11e8abe4afbfc68c545e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-commit.txt",
+          "bytes": 41,
+          "sha256": "f4689e901c0dc70268906e3c5c9802073b5473e64bf1c52ce9f599cce1d530de"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-cpu.txt",
+          "bytes": 3189,
+          "sha256": "4476e601951bb5e5dc85ca4b9d2e3bc795bb83c0d4e62b8d9f2bdec6659b0e7a"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-kernel.txt",
+          "bytes": 128,
+          "sha256": "a64b6d81308dc728b286592ae78f6594e185e6db8c474be3c8886f7694f38bb7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-fpm.txt",
+          "bytes": 222,
+          "sha256": "459c0721ba338c91436a87c14bdaff5a79b64f9b05475d738b401fba7b6ce9ec"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-compiler.txt",
+          "bytes": 245,
+          "sha256": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-php.txt",
+          "bytes": 217,
+          "sha256": "2be2611a039f78dcd99741d26f34181e74a3a074a7c8385ccb2838c3bd5195fb"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/endurance-os.txt",
+          "bytes": 400,
+          "sha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-responses.jsonl",
+          "bytes": 159108316,
+          "sha256": "dc9e6151f724a48cb23e7fb101c179d7d644e2dc7a16607af7696a1ba8d6eaa7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/report.json",
+          "bytes": 448664,
+          "sha256": "31f8618405a86c5ebd24684b1c3523e1592b27a40a99da082f10b063e1944912"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/os-processes.jsonl",
+          "bytes": 883790,
+          "sha256": "25a6af8691981cc0471681f5a80a89a4e1ccd616fc1ed13ebe736f61638e9561"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/provenance.json",
+          "bytes": 988,
+          "sha256": "bc90feb8cd14d5f4f713cb035b1b66c15ef6d29e72ef879cf995fac72772ad2a"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/fatal-warmup.json",
+          "bytes": 21725,
+          "sha256": "f7acbec1e94d57a63153cf191856e5edb13da64395964e96fd378954cd163c42"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-samples.jsonl",
+          "bytes": 13476493,
+          "sha256": "b47aea8a74319d38ad69b9e364debc0367eefa3bca1dee43c2951ba7488a7ad3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-growth.json",
+          "bytes": 693,
+          "sha256": "ae49c187ea2329147d13cc0637ca67e873cd6c3a5349793b5dc42d038f89299b"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-reload-kill/error.log",
+          "bytes": 1069,
+          "sha256": "f9d42c2c9bec24e629008be673a31c5786f75c69c060bd4013c6d957f30052e3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-reload-kill/php-errors.log",
+          "bytes": 314962,
+          "sha256": "aba34c0853615051e014309d3e305dfd523152a3749d7d5824cba8e7a2c6c45c"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/mixed-reload-kill/startup.log",
+          "bytes": 78,
+          "sha256": "a37f90f75c90fcef13cbc53ecf3041586829c24d634ad981786f156b84b57b81"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/C-multiple-workers/error.log",
+          "bytes": 281,
+          "sha256": "cd1309044f6bffad080f83fae3b0cee4c8f8f018cd8ba0efd9f974cca2b0b3e3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/C-multiple-workers/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/recycling/error.log",
+          "bytes": 623,
+          "sha256": "89b3048469daac63c7979aba9c204f4125e742adc0ff1ea3c39099a5d99ed150"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/recycling/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/A-lifecycle/error.log",
+          "bytes": 281,
+          "sha256": "97499933ebb5dc50b3fb35073d0eb57d14ff03d3031e7a7d351f15ba7639f451"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/A-lifecycle/php-errors.log",
+          "bytes": 334,
+          "sha256": "f8f3a242e9b15fb136deb37bf2ec9ec5114e7e7db217f94553f155066ae13d32"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/A-lifecycle/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/D-streaming/error.log",
+          "bytes": 281,
+          "sha256": "d5045e1ffb8c1523f0d6162daa3a78b714d65de84c88f78c250599ad7ff569ed"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/D-streaming/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/B-within-request/error.log",
+          "bytes": 281,
+          "sha256": "14ba1f047ede175907f1df513063f80c578e041bb6c7ea21d58948b9de6e5f77"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/B-within-request/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/request-timeout/error.log",
+          "bytes": 677,
+          "sha256": "40418880eae6d4598c65cac121dad7fdd8c7b934edc0c5316eeb10969308c3bc"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/fpm-artifact/soak-1h/request-timeout/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "run": 41675874490,
+      "kind": "mixed",
+      "artifact": {
+        "id": 13257595823,
+        "node_id": "MDg6QXJ0aWZhY3QxMzI1NzU5NTgyMw==",
+        "name": "one-hour-soak-mixed",
+        "size_in_bytes": 974451,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13257595823",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13257595823/zip",
+        "expired": false,
+        "digest": "sha256:735f42c27f429a1cd46fcfb66667b95bb868b6b483023a086d7ec67ed02611d4",
+        "created_at": "2026-11-03T17:58:15Z",
+        "updated_at": "2026-11-03T17:58:15Z",
+        "expires_at": "2027-02-01T16:36:09Z",
+        "workflow_run": {
+          "id": 41675874490,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "f2abb555caf8914821f648f8213ce7a433693685"
+        }
+      },
+      "zip": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact.zip",
+      "sha256": "735f42c27f429a1cd46fcfb66667b95bb868b6b483023a086d7ec67ed02611d4",
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact",
+      "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+      "archiveSha256": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 3604.03406254,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 711,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 3600.0158107740003,
+            "cycles": 28358,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 126638,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 4314166,
+              "taskSteps": 65546771,
+              "maxStepSeconds": 0.0038846080001349037,
+              "maxTimerLagSeconds": 0.008855608999965625,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 48016,
+              "virtualKiB": 433264,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 47768,
+            "max": 48096,
+            "mean": 47994.790861159934,
+            "endMinusStartMedian": 312,
+            "slopePerHour": 351.468763181691
+          },
+          "phpBytes": {
+            "min": 2287512,
+            "max": 2315680,
+            "mean": 2304898.882249562,
+            "endMinusStartMedian": -400,
+            "slopePerHour": 203.90718628783637
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 22,
+            "max": 22,
+            "mean": 22.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 9,
+            "max": 9,
+            "mean": 9.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "f2abb555caf8914821f648f8213ce7a433693685\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.86\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm48cm3 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-source.tar.gz.sha256",
+          "bytes": 90,
+          "sha256": "947e5fcd682c84de5c77c8d0ed3b7b9960995b251602ad7ef103d6b69f2224f3"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-libraries.txt",
+          "bytes": 158,
+          "sha256": "7e10d64201c77c40140b2a2e885e5767aaa626fb26e11e8abe4afbfc68c545e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-commit.txt",
+          "bytes": 41,
+          "sha256": "f4689e901c0dc70268906e3c5c9802073b5473e64bf1c52ce9f599cce1d530de"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-cpu.txt",
+          "bytes": 3189,
+          "sha256": "d893a2e1fe38c883e9c6304826742490a3e71cb4324cac80c4809870147219b4"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-kernel.txt",
+          "bytes": 128,
+          "sha256": "a64b6d81308dc728b286592ae78f6594e185e6db8c474be3c8886f7694f38bb7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-fpm.txt",
+          "bytes": 222,
+          "sha256": "459c0721ba338c91436a87c14bdaff5a79b64f9b05475d738b401fba7b6ce9ec"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-compiler.txt",
+          "bytes": 245,
+          "sha256": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-php.txt",
+          "bytes": 217,
+          "sha256": "2be2611a039f78dcd99741d26f34181e74a3a074a7c8385ccb2838c3bd5195fb"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/endurance-os.txt",
+          "bytes": 400,
+          "sha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/websocket-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/source-manifest.json",
+          "bytes": 36489,
+          "sha256": "6a8fe9730f3c12ae95814422e3408905038966a904883555a78738d704bfee80"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/report.json",
+          "bytes": 3450,
+          "sha256": "5b199cde66f897c88c2c97af1e86a990cce09643bbfd13196729af3135157aea"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/network-peers.json",
+          "bytes": 354,
+          "sha256": "93bc4624497e32a3dd90c4fef08d524fb644f4a62717cc0972d09869369d05dc"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/os-processes.jsonl",
+          "bytes": 2228651,
+          "sha256": "4301b9555afb8a90d04a5407ccac4f1e58f711cecfec3400956596fe3e3834c7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/samples.jsonl",
+          "bytes": 1352899,
+          "sha256": "ea7be4f9cc9190ab815120a5f148c9ea6b3f6745c16d639d9018ba33aaa76ed2"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/network-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/metadata.json",
+          "bytes": 797,
+          "sha256": "c3690c2d04d819b6f3ca8909471971bcee47ec077a5487140a1577a2562c66e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41675874490/mixed-artifact/soak-1h/stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "run": 41668853738,
+      "kind": "fpm",
+      "artifact": {
+        "id": 13253382226,
+        "node_id": "MDg6QXJ0aWZhY3QxMzI1MzM4MjIyNg==",
+        "name": "one-hour-soak-fpm",
+        "size_in_bytes": 9154295,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13253382226",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13253382226/zip",
+        "expired": false,
+        "digest": "sha256:5cf76f8ec485fed318f5793323c5cc5a7f8cbea1289f9e38d692802d788c3931",
+        "created_at": "2026-11-03T17:23:33Z",
+        "updated_at": "2026-11-03T17:23:33Z",
+        "expires_at": "2027-02-01T15:55:24Z",
+        "workflow_run": {
+          "id": 41668853738,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1"
+        }
+      },
+      "zip": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact.zip",
+      "sha256": "5cf76f8ec485fed318f5793323c5cc5a7f8cbea1289f9e38d692802d788c3931",
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact",
+      "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+      "archiveSha256": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+      "report": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 100,
+          "status": "PASS"
+        },
+        {
+          "name": "B-within-request",
+          "workers": 1,
+          "requests": 10,
+          "status": "PASS"
+        },
+        {
+          "name": "C-multiple-workers",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "D-streaming",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "recycling",
+          "status": "PASS",
+          "requests": 25,
+          "pids": [
+            15378,
+            15442,
+            15502
+          ]
+        },
+        {
+          "name": "mixed-reload-kill",
+          "status": "PASS",
+          "seconds": 3600.0238369940002,
+          "requests": 67568,
+          "reloads": 1,
+          "killedWorkers": 1,
+          "sampleCount": 67560,
+          "rssRangeKiBAfterWarmup": {
+            "15637": 448,
+            "15605": 500,
+            "15606": 388,
+            "15607": 472
+          },
+          "maxRssIncreaseKiB": {
+            "15637": 448,
+            "15605": 500,
+            "15606": 388,
+            "15607": 472
+          },
+          "warmupPeakKiB": {
+            "15637": 14736,
+            "15605": 18800,
+            "15606": 18972,
+            "15607": 17000
+          },
+          "growthBeyondWarmupPeakKiB": {
+            "15637": 3008,
+            "15605": 596,
+            "15606": 548,
+            "15607": 2516
+          },
+          "rssSlopeKiBPerHour": {
+            "15637": 58.227415244694626,
+            "15605": 56.01494141126236,
+            "15606": 43.181529780488354,
+            "15607": 74.7333878895873
+          },
+          "samplesFile": "mixed-samples.jsonl",
+          "responsesFile": "mixed-responses.jsonl"
+        },
+        {
+          "name": "request-timeout",
+          "status": "PASS",
+          "terminatedPid": 513219,
+          "replacement": {
+            "pid": 513228,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 15788,
+            "virtualKiB": 508364,
+            "idleWaitSeconds": 0.0002622389997668506,
+            "transientThreadsBeforeReaping": 1
+          }
+        }
+      ],
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.85\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm48cm3 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-source.tar.gz.sha256",
+          "bytes": 90,
+          "sha256": "a913440d2484b5f584276bbc9d8b3ea9ae03088a9317cf437a593cd7454bce3d"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-libraries.txt",
+          "bytes": 158,
+          "sha256": "7e10d64201c77c40140b2a2e885e5767aaa626fb26e11e8abe4afbfc68c545e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-commit.txt",
+          "bytes": 41,
+          "sha256": "45881e03c9274323566079b6b4b0d460876f879d855091f82350abe537bd3271"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-cpu.txt",
+          "bytes": 3189,
+          "sha256": "4476e601951bb5e5dc85ca4b9d2e3bc795bb83c0d4e62b8d9f2bdec6659b0e7a"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-kernel.txt",
+          "bytes": 128,
+          "sha256": "a64b6d81308dc728b286592ae78f6594e185e6db8c474be3c8886f7694f38bb7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-fpm.txt",
+          "bytes": 222,
+          "sha256": "459c0721ba338c91436a87c14bdaff5a79b64f9b05475d738b401fba7b6ce9ec"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-compiler.txt",
+          "bytes": 245,
+          "sha256": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-php.txt",
+          "bytes": 217,
+          "sha256": "2be2611a039f78dcd99741d26f34181e74a3a074a7c8385ccb2838c3bd5195fb"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/endurance-os.txt",
+          "bytes": 400,
+          "sha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-responses.jsonl",
+          "bytes": 158517212,
+          "sha256": "b60852ab8da1a363330e40911cf409ab362119df91a5c5cd34657e364760b5d4"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/report.json",
+          "bytes": 448700,
+          "sha256": "1f595b78a3254556f3934ae43a8a755499bf298d8886169fd17dd92589ec2dc2"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/os-processes.jsonl",
+          "bytes": 887407,
+          "sha256": "4de2ec7eb8b37ff62bbdf1e0d1bd22187a62f7f4c689c9051dde92ad846eff05"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/provenance.json",
+          "bytes": 988,
+          "sha256": "e1059e62014f0e7e47c000ae034da56e68b30f37a8b672337cbc69eb56fc61fd"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/fatal-warmup.json",
+          "bytes": 21719,
+          "sha256": "511b089ca516322949a0f2fa9fff6e795e8d955ca90ad7be3f3e6881fd72cf1a"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-samples.jsonl",
+          "bytes": 13397984,
+          "sha256": "4474c510098590b25bb7e88a5558d604683ef476c6492db17394c51cb26604cd"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-growth.json",
+          "bytes": 693,
+          "sha256": "5be960ceb052fca351c164b7293ad2b837905019fb341c9ded48fe2107dcd42b"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-reload-kill/error.log",
+          "bytes": 1069,
+          "sha256": "325f018c92fbe965a52444ea0bc5687c2b6648f8cb14c9fc5ba921ffb70aab59"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-reload-kill/php-errors.log",
+          "bytes": 313960,
+          "sha256": "9d90e350acbbd344c7a95354970a6de0f18e3e66210f427d8c51a3d96f134e91"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/mixed-reload-kill/startup.log",
+          "bytes": 78,
+          "sha256": "426a0b94b5e36bcce532bd42447850bd9e25b4746b5383b2611cf6ff1651534e"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/C-multiple-workers/error.log",
+          "bytes": 281,
+          "sha256": "6ea10b162a03e82acdfeb970cae174f187227ea3627f630dc22d9cf523b08b08"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/C-multiple-workers/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/recycling/error.log",
+          "bytes": 623,
+          "sha256": "e6cf30bae8df31c5eca3a76ba5bd7a0c7a6935a9bf950547d5e8dc70972e95aa"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/recycling/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/A-lifecycle/error.log",
+          "bytes": 281,
+          "sha256": "81786b44a79836606767360f67d7b16850b6c5400ac9a8950f7a8acfcbc8ba59"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/A-lifecycle/php-errors.log",
+          "bytes": 334,
+          "sha256": "a098ba243fcd537f31e322dde75484b7873d1a9a57bbbfcd9072fbd4fc64cb6f"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/A-lifecycle/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/D-streaming/error.log",
+          "bytes": 281,
+          "sha256": "6b434b866b8065ef5890f369cf2d1587dd3abdd953fc872834362ff1692408e7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/D-streaming/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/B-within-request/error.log",
+          "bytes": 281,
+          "sha256": "9125772fb0999105e867e8c9c936dafe0ab0f71e4b6ca881d2145b6509a7e8a6"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/B-within-request/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/request-timeout/error.log",
+          "bytes": 677,
+          "sha256": "b472a7cd682cdd1af499bbc08c92e65d60fa254d01ca64a4242b16c5c72a03e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/fpm-artifact/soak-1h/request-timeout/startup.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "run": 41668853738,
+      "kind": "mixed",
+      "artifact": {
+        "id": 13253005342,
+        "node_id": "MDg6QXJ0aWZhY3QxMzI1MzAwNTM0Mg==",
+        "name": "one-hour-soak-mixed",
+        "size_in_bytes": 952720,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13253005342",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13253005342/zip",
+        "expired": false,
+        "digest": "sha256:77a4c60f2d4e0cd300193729e1822394c6e4f8021febda02c9e5c55dddcf8bdd",
+        "created_at": "2026-11-03T16:57:11Z",
+        "updated_at": "2026-11-03T16:57:11Z",
+        "expires_at": "2027-02-01T15:55:24Z",
+        "workflow_run": {
+          "id": 41668853738,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1"
+        }
+      },
+      "zip": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact.zip",
+      "sha256": "77a4c60f2d4e0cd300193729e1822394c6e4f8021febda02c9e5c55dddcf8bdd",
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact",
+      "sourceCommit": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+      "archiveSha256": "b307ea18d785a74236b236974207878e19fca0c484c62472093eee452408c79a",
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 3603.6646243220002,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 710,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 3600.031775609,
+            "cycles": 28167,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 133157,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 4315768,
+              "taskSteps": 65094830,
+              "maxStepSeconds": 0.005087937000098464,
+              "maxTimerLagSeconds": 0.00939204500014057,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 45636,
+              "virtualKiB": 433260,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 45496,
+            "max": 45716,
+            "mean": 45641.40845070425,
+            "endMinusStartMedian": 220,
+            "slopePerHour": 263.2964852418681
+          },
+          "phpBytes": {
+            "min": 2281704,
+            "max": 2302960,
+            "mean": 2297788.2816901403,
+            "endMinusStartMedian": 16992,
+            "slopePerHour": 1188.8857915508402
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 22,
+            "max": 22,
+            "mean": 22.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 9,
+            "max": 9,
+            "mean": 9.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.25\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm48cm3 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "artifacts": [
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-source.tar.gz.sha256",
+          "bytes": 90,
+          "sha256": "a913440d2484b5f584276bbc9d8b3ea9ae03088a9317cf437a593cd7454bce3d"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-libraries.txt",
+          "bytes": 158,
+          "sha256": "7e10d64201c77c40140b2a2e885e5767aaa626fb26e11e8abe4afbfc68c545e5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-commit.txt",
+          "bytes": 41,
+          "sha256": "45881e03c9274323566079b6b4b0d460876f879d855091f82350abe537bd3271"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-cpu.txt",
+          "bytes": 3190,
+          "sha256": "01ea3cf14dd1d056af683892e0c2719f82754335b6de3a2b55690465f5d89b35"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-kernel.txt",
+          "bytes": 128,
+          "sha256": "a64b6d81308dc728b286592ae78f6594e185e6db8c474be3c8886f7694f38bb7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-fpm.txt",
+          "bytes": 222,
+          "sha256": "459c0721ba338c91436a87c14bdaff5a79b64f9b05475d738b401fba7b6ce9ec"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-compiler.txt",
+          "bytes": 245,
+          "sha256": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-php.txt",
+          "bytes": 217,
+          "sha256": "2be2611a039f78dcd99741d26f34181e74a3a074a7c8385ccb2838c3bd5195fb"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/endurance-os.txt",
+          "bytes": 400,
+          "sha256": "87458b3b1f1ca0e5c693ade771de7007c3783bdc692fa6b39eb6414bf2af2763"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/websocket-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/source-manifest.json",
+          "bytes": 35840,
+          "sha256": "09c8753e2e2e6415a371c634699336c52e89dee104fa6e4e4a8f3011d95c17c7"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/report.json",
+          "bytes": 3451,
+          "sha256": "4bd71154803b6013dc6db8db3802b7391c396bef533dfeca50bacdba83b759d5"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/network-peers.json",
+          "bytes": 354,
+          "sha256": "3f5e359e2bd85829763576bcc5ec35ca4a836ae195abd520217abd99068f103d"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/os-processes.jsonl",
+          "bytes": 2238045,
+          "sha256": "2f25360e895a55957a9049bfdbe7b23f24007057d648828cf4a96bd50d19f6df"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/samples.jsonl",
+          "bytes": 1349416,
+          "sha256": "089897b541fca64b90ad127bb64578482d123f00f9edc9c69eaf38d6a38bb1c8"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/network-peer.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/metadata.json",
+          "bytes": 797,
+          "sha256": "970a80f71845b90899273f7f977b757602bae8053d3b30eb6f014b12c34f8ab8"
+        },
+        {
+          "path": "/tmp/asyncara-phase4-nrtjh3t1/hosted-41668853738/mixed-artifact/soak-1h/stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "validation": "Downloaded public artifacts; ZIP SHA256 equals official GitHub digest; embedded source archive is byte-identical to preserved local r3/r4 archive; commits match official artifact metadata. Completed mixed/FPM durations each exceed 3600 seconds.",
+  "scope": "Independent hosted one-hour jobs only. Mixed omits Oracle. r3 results remain historical, r4 results match current corrected source. No six-/24-hour hosted pass is inferred."
+}

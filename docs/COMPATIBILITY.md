@@ -77,3 +77,10 @@ number is insufficient; build scripts check SDK patch versions. Legacy8.5.11
 results are not a recommendation to deploy an unpatched interpreter. The final
 package attestation contains the exact archive/install and current instrumentation
 matrix, including unclean upstream Clang function-type checks.
+
+Current endurance matrix: r4/f2abb55 on the recorded Linux host, PHP8.5.12 NTS
+and epoll passed mixed1h/6h/24h. A separate hosted PHP8.5 NTS Linux configuration
+passed mixed/FPM1h with its recorded dependencies. Local FPM failed responsiveness
+and is under a new isolated retry. PHP8.3/8.4 and poll remain functionally tested
+on the r4 archive; those results are not promoted to equivalent long-duration
+coverage. Source/archive identities and host-specific limits: PHASE4_DELIVERY.md.

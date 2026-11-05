@@ -1,13 +1,18 @@
 # Long-running reliability tests
 
-Current Phase 4 state: an independent hosted attempt failed at IPv4 UDP receive.
-A deterministic regression then reproduced duplicate live UDP endpoints and
-misdirected datagrams. The implementation now binds exclusively; earlier archives
-and endurance runs do not certify this repair. The local `3587740` retry was
-deliberately interrupted after 2,761.879 sampled seconds / 6,524 cycles. A corrected
-expanded smoke passed 60.106 seconds / 111 cycles with all local SQL fixtures,
-including Oracle separately, and extended networking. No long-duration pass is
-inferred. Corrected checkpoint/package and new campaigns: PHASE4_DELIVERY.md.
+Current Phase 4 source `f2abb55` / r4 has completed mixed 1h, 6h and 24h tests
+with the same frozen native binary and 355-file manifest. Durations/cycles:
+3,600.231s/8,488; 21,600.161s/69,836; 86,400.268s/294,899. The 24-hour steady RSS
+endpoint change is +260KiB; all final pending work is zero. Maximum timer lag
+was1.264s. The raw full RSS range, warmup policy and independent trend review
+are in phase4/endurance-r4.json. This certifies the stated workload on Linux
+PHP8.5.12 NTS/epoll, with isolated Oracle/MariaDB/PostgreSQL/Redis/SQLite and
+extended networking. It does not certify every driver/protocol/remote deployment.
+
+Hosted r4 mixed and FPM each passed one hour. Local FPM failed responsiveness
+at its364.506s sample, so the original combined campaign remains FAIL. A new
+FPM-only chain is running with unchanged assertions; six-/24-hour FPM is pending.
+Current identities, host differences and live paths: PHASE4_DELIVERY.md.
 
 The existing `tests/stress.php` and FPM audit remain intact. The new
 `tests/soak/run.py` creates an isolated source snapshot, copies the current native
@@ -224,28 +229,20 @@ cc -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Werror -O2 tests/soak/epoll
 build/epoll-latency 300 > build/new-epoll-latency.jsonl
 ```
 
-## UDP repairs and final-source boundary
+## UDP repairs and source boundaries
 
-The local 76e6557 mixed/FPM campaigns were deliberately interrupted before
-repairing independently reproduced UDP destination validation defects. Last
-completed samples were 972.031s / 2,635 cycles and 997.320s respectively; neither
-completed one hour. Preserve phase4/campaign-76e6557-interrupted.json and its raw
-files. The strict destination fix has a separate 60.119s / 166-cycle expanded
-mixed pass. Compilation overlapped that smoke; it is not a performance result.
-No six-/24-hour stage has run. A new immutable commit/archive must start a new
-campaign. Existing thresholds remain unchanged.
+The 76e6557 mixed/FPM attempts were deliberately interrupted before repairing
+UDP destination validation. Last samples972.031s/2,635cycles and997.320s do not
+establish one hour. phase4/campaign-76e6557-interrupted.json preserves them.
+Its separate60.119s smoke remains historical evidence. The subsequent corrected
+f2abb55/r4 campaign completed all three mixed stages; current results are at the
+top of this document. Local FPM still failed, with a separate hosted one-hour pass.
 
-Historical hosted FPM at 624cbe9 passed its full hour; its simultaneous mixed job
-failed at UDP receive. The hosted run predates both UDP repairs and cannot certify
-the corrected source. Current campaign identities are in PHASE4_DELIVERY.md.
-
-Corrected f2abb55 (r4) is now separately built and frozen. Independent archive
-installation/test checks on all three PHP versions finished before the new
-16:44:17Z campaign. No native/public runtime edits or competing local builds/fuzz/
-benchmarks occur during this attempt. Each unchanged workload advances through
-3,600/21,600/86,400 seconds only after its own preceding pass; overall success
-requires both complete chains. Live state is
-`/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/state.json`; exact supervisor,
-environment and fingerprints are retained in phase4/campaign-f2abb55-launch.json.
-Launch is not completion. A failed report remains failed and must be diagnosed
-before a newly named retry; never relabel partial observations as a full duration.
+The same frozen source is retained for the FPM-only retry. Its exact supervisor,
+environment and fingerprints are in phase4/fpm-solo-r4-launch.json; live state:
+`/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json`.
+Each FPM stage must finish cleanly at the requested duration before advancing.
+No native/public runtime changes, competing local mixed work, builds, fuzzing or
+benchmarks are scheduled during the attempt. The external scheduling observer is
+read-only and records its own scope/overhead in phase4/fpm-scheduling-observer.json.
+Original assertions/resource thresholds and every earlier report remain intact.

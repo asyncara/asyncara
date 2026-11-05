@@ -80,8 +80,16 @@ not Asyncara driver certification against newer PostgreSQL servers. Unresolved
 findings and reproduction are in DEPENDENCY_FINDINGS.md.
 
 The f2abb55 checkpoint has no database implementation changes from the preceding
-native repair; all four hosted regression/database lifecycle jobs pass. Its new
+native repair; all four hosted regression/database lifecycle jobs pass. Its
 local frozen mixed campaign includes the separate Oracle and MariaDB fixtures,
-while hosted mixed omits Oracle. These ongoing plain/local workloads do not
+while hosted mixed omits Oracle. These plain/local workloads do not
 extend the TLS/authentication matrix above. No mTLS, WAN or acknowledged SQL
 cancellation capability is newly advertised.
+
+Frozen r4 mixed1h/6h/24h has now passed with PostgreSQL16.15, MariaDB11.8.9,
+separate Oracle MySQL8.4.13, Redis7.0.15 and SQLite3.45.1. The SQL sockets are
+local/plain and Redis uses local TCP; network TLS elsewhere in the workload is
+not database TLS evidence. Existing private-CA results above retain their original
+scope. Hosted r4 mixed1h passes with PostgreSQL/MariaDB/Redis and no Oracle;
+its libpq18.6 dependency is recorded in the hosted environment, without implying
+a new remote TLS/version matrix. See phase4/endurance-r4.json and hosted-r4.json.

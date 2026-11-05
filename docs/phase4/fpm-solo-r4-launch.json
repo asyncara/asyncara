@@ -1,0 +1,96 @@
+{
+  "recordedUtc": "2026-11-05T21:41:48.434136+00:00",
+  "status": "LAUNCHED_NOT_COMPLETED",
+  "snapshot": {
+    "status": "RUNNING",
+    "startedUtc": "2026-11-05T21:37:31.854407+00:00",
+    "supervisorPid": 4159158,
+    "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+    "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55",
+    "platform": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "archive": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+    "artifactHashes": {
+      "asyncara-0.1.0-dev-phase4-r4.tar.gz": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8",
+      "asyncara.so": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f"
+    },
+    "supervisorSha256": "b8660e48b5855f247f4ac394d8c7d014eced4888b81cb6dcc1b9e02ad8152ef5",
+    "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+    "stagesSeconds": [
+      3600,
+      21600,
+      86400
+    ],
+    "jobs": [
+      {
+        "kind": "fpm",
+        "requestedSeconds": 3600,
+        "startedUtc": "2026-11-05T21:37:32.400855+00:00",
+        "status": "RUNNING",
+        "pid": 4159169,
+        "command": [
+          "/usr/bin/python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/fpm.py",
+          "--seconds",
+          "3600",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600"
+        ],
+        "output": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600"
+      }
+    ],
+    "gate": "FPM-only chain on the same frozen source, with no concurrent local mixed workload. Each duration must pass before the next. Prior local failure remains preserved; hosted passes do not bypass a local stage."
+  },
+  "rawState": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json",
+  "supervisorSource": "\"\"\"Frozen endurance chains. Each workload advances only after its own full-duration pass.\"\"\"\nfrom datetime import datetime, timezone\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\nimport platform\nimport subprocess\nimport sys\nimport time\n\nbase = Path(__file__).resolve().parent\nsource = base / 'frozen-f2abb55'\nout = base / 'campaign-f2abb55-fpm-solo-r1'\narchive = Path('/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-r4.tar.gz')\nexpected = 'f2abb555caf8914821f648f8213ce7a433693685'\nenv = os.environ | {\n    'PHP_BIN': '/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5',\n    'FPM_BIN': '/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5'}\nenv.pop('ASYNCARA_BACKEND', None)\nenv.pop('ASYNCARA_EXTENSION', None)\n\ndef utc():\n    return datetime.now(timezone.utc).isoformat()\n\ndef fingerprint():\n    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()\n    status = subprocess.check_output(['git', 'status', '--porcelain'], cwd=source, text=True)\n    if commit != expected or status:\n        raise RuntimeError('Frozen source identity/cleanliness changed')\n    return {p.name: hashlib.sha256(p.read_bytes()).hexdigest()\n            for p in [archive, source / 'build/asyncara.so']}\n\ndef valid_report(kind, data, seconds):\n    if kind == 'mixed':\n        return (isinstance(data, dict) and data.get('status') == 'PASS'\n            and data.get('completeRecords') == 1 and len(data.get('complete', [])) == 1\n            and data['complete'][0]['seconds'] >= seconds)\n    return (isinstance(data, list) and bool(data)\n        and all(r.get('status') == 'PASS' for r in data)\n        and any(r.get('name') == 'mixed-reload-kill' and r.get('seconds', 0) >= seconds for r in data))\n\nout.mkdir(mode=0o700)\nidentity = fingerprint()\nstate = {'status': 'RUNNING', 'startedUtc': utc(), 'supervisorPid': os.getpid(),\n    'sourceCommit': expected, 'sourceDirectory': str(source), 'platform': platform.platform(),\n    'archive': str(archive), 'artifactHashes': identity,\n    'supervisorSha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),\n    'php': subprocess.check_output([env['PHP_BIN'], '-n', '-v'], text=True),\n    'stagesSeconds': [3600, 21600, 86400], 'jobs': [],\n    'gate': 'FPM-only chain on the same frozen source, with no concurrent local mixed workload. Each duration must pass before the next. Prior local failure remains preserved; hosted passes do not bypass a local stage.'}\n\ndef save():\n    temporary = out / 'state.tmp'\n    temporary.write_text(json.dumps(state, indent=2) + '\\n')\n    temporary.replace(out / 'state.json')\n\ndef launch(kind, seconds):\n    if fingerprint() != identity:\n        raise RuntimeError('Frozen artifacts changed')\n    folder = out / f'{kind}-{seconds}'\n    command = [sys.executable, str(source / 'tests/soak' / ('run.py' if kind == 'mixed' else 'fpm.py')),\n               '--seconds', str(seconds), '--output', str(folder)]\n    if kind == 'mixed':\n        command += ['--databases', '--extended-network', '--oracle-prefix',\n                    '/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root']\n    log = (out / f'{kind}-{seconds}.log').open('x')\n    try:\n        child = subprocess.Popen(command, cwd=source, env=env, stdin=subprocess.DEVNULL,\n                                 stdout=log, stderr=subprocess.STDOUT)\n    except BaseException:\n        log.close()\n        raise\n    record = {'kind': kind, 'requestedSeconds': seconds, 'startedUtc': utc(), 'status': 'RUNNING',\n              'pid': child.pid, 'command': command, 'output': str(folder)}\n    state['jobs'].append(record)\n    save()\n    return child, log, record, folder\n\nsave()\nactive = {}\ntry:\n    for kind in ['fpm']:\n        active[kind] = launch(kind, state['stagesSeconds'][0])\n    while active:\n        for kind, (child, log, record, folder) in list(active.items()):\n            if child.poll() is None:\n                continue\n            record['exit'] = child.wait()\n            log.close()\n            record['finishedUtc'] = utc()\n            report = folder / 'report.json'\n            record['reportPresent'] = report.exists()\n            valid = False\n            if report.exists():\n                record['reportSha256'] = hashlib.sha256(report.read_bytes()).hexdigest()\n                try:\n                    valid = valid_report(kind, json.loads(report.read_text()), record['requestedSeconds'])\n                except (ValueError, TypeError, KeyError) as error:\n                    record['reportError'] = repr(error)\n            record['status'] = 'PASS' if child.returncode == 0 and valid else 'FAIL'\n            del active[kind]\n            if fingerprint() != identity:\n                record['status'] = 'FAIL'\n                record['error'] = 'Frozen artifacts changed during stage'\n            save()\n            if record['status'] == 'PASS':\n                index = state['stagesSeconds'].index(record['requestedSeconds']) + 1\n                if index < len(state['stagesSeconds']):\n                    active[kind] = launch(kind, state['stagesSeconds'][index])\n        if any(r['status'] == 'FAIL' for r in state['jobs']):\n            state['status'] = 'RUNNING_WITH_FAILURE' if active else 'FAIL'\n            save()\n        if active:\n            time.sleep(5)\n    state['status'] = 'PASS' if len(state['jobs']) == 3 and all(r['status'] == 'PASS' for r in state['jobs']) else 'FAIL'\nexcept BaseException as error:\n    state['status'] = 'SUPERVISOR_ERROR'\n    state['error'] = repr(error)\n    state['activeChildPids'] = [child.pid for child, _, _, _ in active.values() if child.poll() is None]\n    raise\nfinally:\n    state['finishedUtc'] = utc()\n    save()\n",
+  "supervisorSha256": "b8660e48b5855f247f4ac394d8c7d014eced4888b81cb6dcc1b9e02ad8152ef5",
+  "environment": {
+    "osRelease": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "kernel": "Linux vmi3676542.contaboserver.net 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:33:16 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+    "cpu": [
+      {
+        "field": "Architecture:",
+        "data": "x86_64"
+      },
+      {
+        "field": "CPU(s):",
+        "data": "6"
+      },
+      {
+        "field": "Model name:",
+        "data": "AMD EPYC Processor (with IBPB)"
+      },
+      {
+        "field": "Thread(s) per core:",
+        "data": "1"
+      },
+      {
+        "field": "Core(s) per socket:",
+        "data": "6"
+      },
+      {
+        "field": "Socket(s):",
+        "data": "1"
+      },
+      {
+        "field": "Hypervisor vendor:",
+        "data": "KVM"
+      }
+    ],
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "dynamicLibraries": "\tlinux-vdso.so.1 (0x00007ffc81907000)\n\tlibsqlite3.so.0 => /lib/x86_64-linux-gnu/libsqlite3.so.0 (0x000077435eaff000)\n\tlibcurl.so.4 => /lib/x86_64-linux-gnu/libcurl.so.4 (0x000077435ea3e000)\n\tlibpq.so.5 => /lib/x86_64-linux-gnu/libpq.so.5 (0x000077435e9e7000)\n\tlibmariadb.so.3 => /lib/x86_64-linux-gnu/libmariadb.so.3 (0x000077435e990000)\n\tlibssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x000077435e8e6000)\n\tlibcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x000077435e200000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000077435de00000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000077435e7fb000)\n\tlibnghttp2.so.14 => /lib/x86_64-linux-gnu/libnghttp2.so.14 (0x000077435e7d0000)\n\tlibidn2.so.0 => /lib/x86_64-linux-gnu/libidn2.so.0 (0x000077435e7ae000)\n\tlibrtmp.so.1 => /lib/x86_64-linux-gnu/librtmp.so.1 (0x000077435e790000)\n\tlibssh.so.4 => /lib/x86_64-linux-gnu/libssh.so.4 (0x000077435e71c000)\n\tlibpsl.so.5 => /lib/x86_64-linux-gnu/libpsl.so.5 (0x000077435e1ec000)\n\tlibgssapi_krb5.so.2 => /lib/x86_64-linux-gnu/libgssapi_krb5.so.2 (0x000077435e198000)\n\tlibldap.so.2 => /lib/x86_64-linux-gnu/libldap.so.2 (0x000077435e13a000)\n\tliblber.so.2 => /lib/x86_64-linux-gnu/liblber.so.2 (0x000077435e12a000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x000077435e070000)\n\tlibbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x000077435e062000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x000077435e046000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077435ec8e000)\n\tlibunistring.so.5 => /lib/x86_64-linux-gnu/libunistring.so.5 (0x000077435dc53000)\n\tlibgnutls.so.30 => /lib/x86_64-linux-gnu/libgnutls.so.30 (0x000077435da58000)\n\tlibhogweed.so.6 => /lib/x86_64-linux-gnu/libhogweed.so.6 (0x000077435da10000)\n\tlibnettle.so.8 => /lib/x86_64-linux-gnu/libnettle.so.8 (0x000077435d9bb000)\n\tlibgmp.so.10 => /lib/x86_64-linux-gnu/libgmp.so.10 (0x000077435d937000)\n\tlibkrb5.so.3 => /lib/x86_64-linux-gnu/libkrb5.so.3 (0x000077435d86e000)\n\tlibk5crypto.so.3 => /lib/x86_64-linux-gnu/libk5crypto.so.3 (0x000077435e01a000)\n\tlibcom_err.so.2 => /lib/x86_64-linux-gnu/libcom_err.so.2 (0x000077435e014000)\n\tlibkrb5support.so.0 => /lib/x86_64-linux-gnu/libkrb5support.so.0 (0x000077435d861000)\n\tlibsasl2.so.2 => /lib/x86_64-linux-gnu/libsasl2.so.2 (0x000077435d847000)\n\tlibbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x000077435d824000)\n\tlibp11-kit.so.0 => /lib/x86_64-linux-gnu/libp11-kit.so.0 (0x000077435d680000)\n\tlibtasn1.so.6 => /lib/x86_64-linux-gnu/libtasn1.so.6 (0x000077435d66a000)\n\tlibkeyutils.so.1 => /lib/x86_64-linux-gnu/libkeyutils.so.1 (0x000077435d663000)\n\tlibresolv.so.2 => /lib/x86_64-linux-gnu/libresolv.so.2 (0x000077435d651000)\n\tlibffi.so.8 => /lib/x86_64-linux-gnu/libffi.so.8 (0x000077435d645000)\n",
+    "installedLibraryPackages": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:11.8.9+maria~ubu2404\nlibpq5 16.15-0ubuntu0.24.04.1\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+    "php": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "version": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+      "sha256": "eb85560c0bea6c5d1c06a93a602697efe94ad9803da400211469529f041929fa"
+    },
+    "fpm": {
+      "path": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+      "version": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+      "sha256": "5bd265fd644c1bcc0125f9998ac5d29b31ce132bb6869e1e87f3e57e329f33fb"
+    }
+  },
+  "freeze": "Same immutable f2abb55 source, r4 archive and binary as the completed mixed campaign; no native/public source changes. This FPM-only retry has no concurrent local mixed workload or builds/fuzz/benchmarks.",
+  "stagePolicy": "Local FPM independently must pass 3600, then 21600, then 86400 seconds. Hosted one-hour success does not bypass the failed local stage. All original FPM assertions and resource thresholds remain.",
+  "environmentRecordedUtc": "2026-11-05T21:48:56.501749+00:00"
+}

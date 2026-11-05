@@ -50,64 +50,34 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | P6 ZTS investigation | PARTIALLY_IMPLEMENTED | PHP 8.5.11 ZTS DEBUG CLI full tests and database suite pass; concurrent interpreter threads unverified, ThreadPool BLOCKED |
 | Third-party aggregate memory accounting | PARTIALLY_IMPLEMENTED | SQLite value limits; other foreign allocators remain outside native ledger |
 
+## Phase 4 verified endurance checkpoint
+
+| Work | Status | Executed scope / remaining work |
+|---|---|---|
+| UDP endpoint ownership, descriptor exhaustion and destination validation repairs | IMPLEMENTED_AND_TESTED | f2abb55; 8.3/8.4/8.5, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind regressions |
+| Reproducible r4 distribution | IMPLEMENTED_AND_TESTED | 355 Git-matching source files; isolated three-version installations/tests; package-r4.json |
+| Frozen 1h / 6h / 24h mixed endurance | IMPLEMENTED_AND_TESTED | same f2abb55 source/binary, Linux PHP8.5.12 NTS epoll; 8,488 / 69,836 / 294,899 cycles; explicit local database/network scope in endurance-r4.json |
+| Frozen hosted 1h mixed and FPM | IMPLEMENTED_AND_TESTED | r4 archive byte identity and official artifact digests; FPM 67,824 requests plus lifecycle/fault cases; hosted-r4.json |
+| Local FPM and 6h / 24h FPM endurance | PARTIALLY_IMPLEMENTED | local 1h attempt failed responsiveness at364.506s; new FPM-only 1h → 6h → 24h chain running, original assertions retained |
+
+Mixed 24-hour steady RSS endpoint change is +260KiB, with zero final scheduled
+work. Recorded maximum timer lag exceeds one second; this is no latency SLA.
+The independent review recalculates trends from raw samples and preserves all
+historical failures. The native/public source and r4 archive remain unchanged.
+No new protocol, database TLS, hook, platform or framework capability follows
+from these scoped endurance passes. Overall release remains **EXPERIMENTAL**.
+
 ## Next engineering work, in order
 
-Phase 4 starts from verified pushed commit `179aa54`. The preserved r5 archive
-matches `f3d63ac` and includes final native source `e5d94fd`. Fresh three-version
-archive installs and baseline regression commands pass. First one-hour mixed/FPM
-attempts were interrupted after about 20 minutes; neither passed. Test collectors
-now use bounded memory and explicit process-resource observations. The expanded
-60-second epoll/poll mixed smokes passed, including existing DNS/UDP/TLS/HTTPS/ws/wss
-and a separate Oracle fixture. FPM observer smoke and failed-barrier regression
-passed. Frozen 2e2f84f one-hour attempts then failed: FPM ticker responsiveness
-after 651s, an unattributed mixed timeout after 5,517 sampled cycles. No six-/24-hour
-stage started. A 600s FPM diagnostic passed; syscall and standalone C controls
-show host epoll oversleep, without resolving the original failure attribution.
-Standalone dependency probes
-reproduce libpq unload and PHP callback-type findings (DEPENDENCY_FINDINGS.md).
-Runtime source was unchanged through `624cbe9`; the UDP repair below establishes
-a new native checkpoint. See
-[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and its durable evidence.
+Collect the unchanged FPM-only campaign at
+`/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/state.json`. Each stage
+must pass before the next; preserve and diagnose any failure. The external
+read-only scheduling observer records additional counters without altering FPM
+assertions. Do not rebuild or edit native/public runtime source during this
+campaign. Actual source identities, measurements, dependency findings and prior
+attempts are in [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and WORKLOG.md.
 
-Checkpoint `3587740` adds tested connection-limit cases and failure diagnostics.
-Its r2 archive is reproducible and independently installs/tests on all three PHP
-branches; all four hosted CI jobs pass. A detached retry started2026-11-03T14:53Z
-with the same runtime, unchanged thresholds and no concurrent local builds/fuzzing.
-Consult the live campaign state and delivery report; starting a run is not a pass.
-
-The3587740 FPM retry also failed after303.482s with535ms timer lag and one ticker
-step; CPU and runnable-wait diagnostics are preserved. Mixed retry was deliberately
-interrupted after 2,761.879s / 6,524 cycles when the independent hosted failure
-led to a reproducible UDP ownership defect.
-Six-/24-hour promotion is prevented. Diagnosis continues without lowering limits.
-
-Hosted source `624cbe9` passes all four fast regression/database jobs. Its mixed
-one-hour job failed at IPv4 UDP receive; the independent FPM job passed
-3,600.036 seconds / 67,520 main requests. This is historical pre-repair evidence. A separate
-600.256-second poll profile passed 5,312 requests and recorded native wait delays
-overlapping those in a PHP-free epoll control. This is timing evidence, not a
-replacement for the failed endurance tests. Current test matrix and limitations:
-[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md).
-
-UDP exclusive endpoint ownership is now repaired and regression-tested on
-8.3/8.4/8.5, epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind. Child-only `EMFILE`
-tests verify error/cleanup dependency loading and admission recovery. Core/audit,
-network-edge and FPM lifecycle checks pass. This is a new native source boundary:
-earlier endurance and archives cannot certify it. Corrected `76e6557` r3 archive
-independently builds/installs/tests on all three PHP branches and reproduces its
-checksum; all four hosted CI jobs pass. The subsequent local one-hour attempts
-were interrupted at last samples 972.031s mixed / 997.320s FPM after independently
-reproducing destination port wrap and a synchronous resolver fallback. Strict
-literal-IP/port validation and its regressions now pass all three PHP branches,
-epoll/poll, DEBUG, GCC ASan/UBSan and Valgrind; full verify/audit/FPM and a 60.119s
-expanded mixed smoke pass. Native C is unchanged from 76e6557. Corrected f2abb55
-r4 is reproducible and independently builds/installs/tests on all three branches;
-all four hosted CI jobs pass. New frozen mixed/FPM one-hour chains began at
-16:44:17Z. No completed corrected-source hour is claimed. Existing failures and
-thresholds remain; longer stages advance only after their own preceding pass.
-See phase4/udp-destinations-fix.json and phase4/hosted-fpm-1h.json.
-
-1. Extend the repaired FPM RSS/lifecycle coverage without weakening checks through one-/six-/24-hour frozen final-source soaks. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
+1. Complete the frozen FPM-only one-/six-/24-hour chain without weakening checks; hosted one-hour success and mixed 24-hour success remain separate evidence. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.
 3. Extend HTTP streaming/multipart certification and multiple-file uploads, WebSocket endurance/interoperability coverage, IPv6/TLS edge cases, and database remote auth/TLS/cancellation matrices.
 4. Extend individual transparent hooks with exact parameter/warning/resource/return/signal behavior tests; keep unsupported groups explicit.
