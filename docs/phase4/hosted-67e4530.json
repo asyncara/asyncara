@@ -1,0 +1,398 @@
+{
+  "reviewedUtc": "2026-11-06T00:24:32.991202+00:00",
+  "sourceCommit": "67e453077d401f57db3154f4218da4b636e4a499",
+  "runtimeUnchangedFrom": "f2abb555caf8914821f648f8213ce7a433693685",
+  "runs": [
+    {
+      "kind": "mixed",
+      "artifact": {
+        "id": 13464241902,
+        "node_id": "MDg6QXJ0aWZhY3QxMzQ2NDI0MTkwMg==",
+        "name": "one-hour-soak-mixed",
+        "size_in_bytes": 1033701,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13464241902",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13464241902/zip",
+        "expired": false,
+        "digest": "sha256:775dbc80c4b36cd0b832e0dff5be6571b5ee4087023453b5420629dce170c1e4",
+        "created_at": "2026-11-05T23:53:47Z",
+        "updated_at": "2026-11-05T23:53:47Z",
+        "expires_at": "2027-02-03T22:52:46Z",
+        "workflow_run": {
+          "id": 42125158090,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "67e453077d401f57db3154f4218da4b636e4a499"
+        }
+      },
+      "zipSha256": "775dbc80c4b36cd0b832e0dff5be6571b5ee4087023453b5420629dce170c1e4",
+      "archiveSha256": "522d75cb34bd08ef9e2e6fcd1befc6ca138bfa47244f25c2a4101213ab636984",
+      "sourceFiles": 366,
+      "report": {
+        "status": "PASS",
+        "wallSeconds": 3604.19176337,
+        "workloadExit": 0,
+        "workloadError": null,
+        "samples": 712,
+        "complete": [
+          {
+            "type": "complete",
+            "seconds": 3600.128689474,
+            "cycles": 27694,
+            "native": {
+              "version": "0.1.0-dev",
+              "eventLoopBackend": "epoll",
+              "filesystemBackend": "pthread-workers",
+              "networkBackend": "nonblocking-streams+curl-multi",
+              "dnsBackend": "worker-getaddrinfo",
+              "sqliteVersion": "3.45.1",
+              "curlVersion": "8.5.0",
+              "userlandThreads": false,
+              "ioUring": false,
+              "postgresql": true,
+              "mysql": true,
+              "nativeWorkers": 4,
+              "pendingOperations": 0,
+              "nativeBufferLimit": 16777216,
+              "nativeQueueLimit": 1024,
+              "nativeMemoryBytes": 0,
+              "nativeMemoryPeak": 134533,
+              "nativeMemoryRejections": 0,
+              "nativeMemoryLimit": 268435456,
+              "openFileHandles": 0,
+              "sqliteConnections": 0,
+              "httpReadinessSockets": 0,
+              "nativeQueueDepth": 0,
+              "httpStreamingTransfers": 0,
+              "httpStreamingBufferedBytes": 0,
+              "httpStreamingPaused": 0,
+              "httpStreamBufferLimit": 65536,
+              "httpStreamingUploads": 0,
+              "httpUploadBufferedBytes": 0,
+              "httpUploadPaused": 0
+            },
+            "scheduler": {
+              "turns": 4235910,
+              "taskSteps": 64034979,
+              "maxStepSeconds": 0.009820543000003568,
+              "maxTimerLagSeconds": 0.011500980999699095,
+              "activeTasks": 0,
+              "pendingFutures": 0,
+              "retainedFailures": 0,
+              "readyTasks": 0,
+              "activeTimers": 0,
+              "ioWatchers": 0,
+              "pendingNative": 0,
+              "memoryBytes": 27262976
+            },
+            "os": {
+              "rssKiB": 46656,
+              "virtualKiB": 433352,
+              "threads": 5,
+              "fds": 13,
+              "sockets": 4
+            }
+          }
+        ],
+        "completeRecords": 1,
+        "parseErrors": [],
+        "parseErrorCount": 0,
+        "steadyTrends": {
+          "rssKiB": {
+            "min": 46412,
+            "max": 46736,
+            "mean": 46611.20701754386,
+            "endMinusStartMedian": 324,
+            "slopePerHour": 360.8725220529365
+          },
+          "phpBytes": {
+            "min": 2279624,
+            "max": 2316864,
+            "mean": 2301604.4631578913,
+            "endMinusStartMedian": -6480,
+            "slopePerHour": -4872.8983220995815
+          },
+          "nativeBytes": {
+            "min": 0,
+            "max": 0,
+            "mean": 0.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "fds": {
+            "min": 22,
+            "max": 22,
+            "mean": 22.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "threads": {
+            "min": 5,
+            "max": 5,
+            "mean": 5.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          },
+          "sockets": {
+            "min": 9,
+            "max": 9,
+            "mean": 9.0,
+            "endMinusStartMedian": 0,
+            "slopePerHour": 0.0
+          }
+        },
+        "failures": [],
+        "notes": [
+          "Sampling at completed-cycle boundaries; peaks during cycles require separate instrumentation.",
+          "RSS contains library caches and allocator arenas; trend thresholds trigger investigation, not proof of absence of leaks.",
+          "Socket count includes cached connections; native HTTP readiness registrations do not count all pooled idle connections.",
+          "Active Tasks count scheduled Fibers, not arbitrary application-created Fibers.",
+          "Statistics use bounded memory; whole-series mean replaces median. Endpoint-median growth thresholds are unchanged."
+        ]
+      },
+      "metadata": {
+        "commit": "67e453077d401f57db3154f4218da4b636e4a499",
+        "gitStatus": "",
+        "sourceManifestSha256": "326025ff82c6c20fbf6a4b6ca27829197187d0beeb84859f2c548b61869fc11d",
+        "extensionSha256": "15e16167b150249791ddde2469121b257651b25d671ccd00ac7ed06ed18076c0",
+        "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+        "cpuCount": 4,
+        "php": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "requestedSeconds": 3600.0,
+        "tasksPerCycle": 1000,
+        "databases": true,
+        "startedUtc": "2026-11-05T22:53:41Z",
+        "workload": "mixed",
+        "websocketConnections": null,
+        "extendedNetwork": true,
+        "oraclePrefix": null
+      },
+      "independentChecks": "All 366 source hashes, duration, monotonic samples, zero final work, empty stderr and centered-fsum resource trends match.",
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "67e453077d401f57db3154f4218da4b636e4a499\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.85\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm7aw5e 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "rawFiles": {
+        "one-hour-soak-mixed/soak-1h/websocket-peer.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-mixed/soak-1h/source-manifest.json": "326025ff82c6c20fbf6a4b6ca27829197187d0beeb84859f2c548b61869fc11d",
+        "one-hour-soak-mixed/soak-1h/report.json": "43bd3ac49f006d36018adfd820c44cb88546c74388b03d9db85f23192d04e8f1",
+        "one-hour-soak-mixed/soak-1h/network-peers.json": "2e03740fedc2f38bbdea3b77c69334179c06bc76d3364b928a48eb37b7a9b347",
+        "one-hour-soak-mixed/soak-1h/os-processes.jsonl": "e929999acfe4e51f8541cb0457e7b8ad486deeb69359aeded87e0151c43a91ee",
+        "one-hour-soak-mixed/soak-1h/samples.jsonl": "06cd7ff22dab730e8b1f8c02a6f95043440bdae8587f4a9acceca671a42ca158",
+        "one-hour-soak-mixed/soak-1h/network-peer.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-mixed/soak-1h/metadata.json": "fbf07bfbeb9df1650cf0e018cf9d43277ba74fd73b87483b9c54ec647c025ca1",
+        "one-hour-soak-mixed/soak-1h/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "kind": "fpm",
+      "artifact": {
+        "id": 13463892539,
+        "node_id": "MDg6QXJ0aWZhY3QxMzQ2Mzg5MjUzOQ==",
+        "name": "one-hour-soak-fpm",
+        "size_in_bytes": 9192666,
+        "url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13463892539",
+        "archive_download_url": "https://api.github.com/repos/asyncara/asyncara/actions/artifacts/13463892539/zip",
+        "expired": false,
+        "digest": "sha256:1f20375f5b91830d1eca0d35adace54e30b66f1df6184446768f26df8e515ed2",
+        "created_at": "2026-11-05T23:54:10Z",
+        "updated_at": "2026-11-05T23:54:10Z",
+        "expires_at": "2027-02-03T22:52:46Z",
+        "workflow_run": {
+          "id": 42125158090,
+          "repository_id": 1443274738,
+          "head_repository_id": 1443274738,
+          "head_branch": "phase4-endurance",
+          "head_sha": "67e453077d401f57db3154f4218da4b636e4a499"
+        }
+      },
+      "zipSha256": "1f20375f5b91830d1eca0d35adace54e30b66f1df6184446768f26df8e515ed2",
+      "archiveSha256": "522d75cb34bd08ef9e2e6fcd1befc6ca138bfa47244f25c2a4101213ab636984",
+      "sourceFiles": 366,
+      "report": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 100,
+          "status": "PASS"
+        },
+        {
+          "name": "B-within-request",
+          "workers": 1,
+          "requests": 10,
+          "status": "PASS"
+        },
+        {
+          "name": "C-multiple-workers",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "D-streaming",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "recycling",
+          "status": "PASS",
+          "requests": 25,
+          "pids": [
+            15367,
+            15431,
+            15491
+          ]
+        },
+        {
+          "name": "mixed-reload-kill",
+          "status": "PASS",
+          "seconds": 3600.050548045,
+          "requests": 67740,
+          "reloads": 1,
+          "killedWorkers": 1,
+          "sampleCount": 67732,
+          "rssRangeKiBAfterWarmup": {
+            "15594": 412,
+            "15595": 336,
+            "15596": 412,
+            "15626": 488
+          },
+          "maxRssIncreaseKiB": {
+            "15594": 412,
+            "15595": 336,
+            "15596": 412,
+            "15626": 488
+          },
+          "warmupPeakKiB": {
+            "15594": 18996,
+            "15595": 18988,
+            "15596": 17004,
+            "15626": 14868
+          },
+          "growthBeyondWarmupPeakKiB": {
+            "15594": 588,
+            "15595": 604,
+            "15596": 2620,
+            "15626": 3092
+          },
+          "rssSlopeKiBPerHour": {
+            "15594": 108.14879950879893,
+            "15595": 76.36788035477042,
+            "15596": 88.99257383622599,
+            "15626": 94.87935418645274
+          },
+          "samplesFile": "mixed-samples.jsonl",
+          "responsesFile": "mixed-responses.jsonl"
+        },
+        {
+          "name": "request-timeout",
+          "status": "PASS",
+          "terminatedPid": 515187,
+          "replacement": {
+            "pid": 515196,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 15748,
+            "virtualKiB": 508364,
+            "idleWaitSeconds": 0.0002844670002559724,
+            "transientThreadsBeforeReaping": 1
+          }
+        }
+      ],
+      "provenance": {
+        "commit": "67e453077d401f57db3154f4218da4b636e4a499",
+        "gitStatus": "",
+        "extension": {
+          "selected": "/home/runner/work/asyncara/asyncara/build/asyncara.so",
+          "snapshot": "/home/runner/work/asyncara/asyncara/build/soak-1h/asyncara.so",
+          "sha256": "15e16167b150249791ddde2469121b257651b25d671ccd00ac7ed06ed18076c0"
+        },
+        "files": {
+          "tests/soak/fpm.py": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170",
+          "tests/soak/metrics.py": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7",
+          "tests/soak/monitor.py": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910",
+          "tests/audit/fpm_request.php": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075"
+        },
+        "mixedModes": [
+          "buffered HTTP",
+          "streamed HTTP",
+          "SQLite",
+          "filesystem",
+          "pending shutdown"
+        ],
+        "requestedSeconds": 3600.0
+      },
+      "independentChecks": "Every source/provenance hash, response ID/count, ticker assertion, idle fd/thread observation and centered-fsum worker slope matches. Original 8MiB growth limit retained.",
+      "environment": {
+        "endurance-libraries.txt": "libcurl4t64 8.5.0-2ubuntu10.16\nlibmariadb3 1:10.11.14-0ubuntu0.24.04.1\nlibpq5 18.6-1.pgdg24.04+2\nlibsqlite3-0 3.45.1-1ubuntu2.8\nlibssl3t64 3.0.13-0ubuntu3.16\n",
+        "endurance-commit.txt": "67e453077d401f57db3154f4218da4b636e4a499\n",
+        "endurance-cpu.txt": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.27\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+        "endurance-kernel.txt": "Linux runnervm7aw5e 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+        "endurance-fpm.txt": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-compiler.txt": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "endurance-php.txt": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "endurance-os.txt": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n"
+      },
+      "rawFiles": {
+        "one-hour-soak-fpm/soak-1h/mixed-responses.jsonl": "232dc25dab6266530d2a6cdcaf65cfa03badb0327901e2b02e85305ee1069277",
+        "one-hour-soak-fpm/soak-1h/report.json": "893a30f31d320cceced1e1cbf6859b47b23b571833cefe6bdc2a7fab33621f40",
+        "one-hour-soak-fpm/soak-1h/os-processes.jsonl": "9e3fd8e1f58cad3f3bfcfaf16f16cba29c862f01cf4fe15feb27d872a0e5ab67",
+        "one-hour-soak-fpm/soak-1h/provenance.json": "36de49123ec45d44a2e904008122d65772ca041d59d9c26973bc1ad99a15d44b",
+        "one-hour-soak-fpm/soak-1h/fatal-warmup.json": "488e9ce754862d407bcf1354ccc25f9065d6d8b7eaba319ada92bca80b1ed7f2",
+        "one-hour-soak-fpm/soak-1h/mixed-samples.jsonl": "b7f0ef2864ad8510358c285924a20d20a69ceeb2cb7d2a8363c71659f7ecd6e4",
+        "one-hour-soak-fpm/soak-1h/mixed-growth.json": "b79e667fd8c45cb373394e6540edd609cee84c4eb01b88548827f86409fbea1e",
+        "one-hour-soak-fpm/soak-1h/mixed-reload-kill/error.log": "1409d1f3e9bceb7c6eb786f9ee12b5b8c4fd0a7831d77378337197f52068544f",
+        "one-hour-soak-fpm/soak-1h/mixed-reload-kill/php-errors.log": "2c0e0051d463c90818b72329eb5f55a9974e8cc46155c9c97a5803334068a170",
+        "one-hour-soak-fpm/soak-1h/mixed-reload-kill/startup.log": "a436ad61a8720601210a2c0b986e9431223eec1a33d05bdaf7f714b9519b368e",
+        "one-hour-soak-fpm/soak-1h/C-multiple-workers/error.log": "14eeaf0cb49b42f8cbe137493c68492ea32ebdd54ff72590047dba6685f9a32c",
+        "one-hour-soak-fpm/soak-1h/C-multiple-workers/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-fpm/soak-1h/recycling/error.log": "971a1f2ea0e9a64bc330492949b36b544049b542bc913ef910fc5553e041b453",
+        "one-hour-soak-fpm/soak-1h/recycling/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-fpm/soak-1h/A-lifecycle/error.log": "d28ceea7011d93d159bc7247c58a99fcea0c698d1974aecf3a06da43912d9805",
+        "one-hour-soak-fpm/soak-1h/A-lifecycle/php-errors.log": "6b3ec3d7a4fc6c6d6450941b7c0943edc14d622e50b8048414600425b4f3dc71",
+        "one-hour-soak-fpm/soak-1h/A-lifecycle/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-fpm/soak-1h/D-streaming/error.log": "ae1fd4a5b3b73b96d4109502170b458391dc5b11c124b98afc61115f19a0fd15",
+        "one-hour-soak-fpm/soak-1h/D-streaming/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-fpm/soak-1h/B-within-request/error.log": "89ba4a5aa573fc21f23bdacf77b68db1a6b7be40ff6b7b936d6aaf1aa1be342a",
+        "one-hour-soak-fpm/soak-1h/B-within-request/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "one-hour-soak-fpm/soak-1h/request-timeout/error.log": "0691ba0882c028db7b30fd9be1257d69708b997971256a69d79bd64e51a9650a",
+        "one-hour-soak-fpm/soak-1h/request-timeout/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "verification": {
+    "run": "https://github.com/asyncara/asyncara/actions/runs/42125157943",
+    "jobs": [
+      {
+        "id": 127587334958,
+        "name": "database-lifecycle",
+        "conclusion": "success"
+      },
+      {
+        "id": 127587335171,
+        "name": "regression (8.5)",
+        "conclusion": "success"
+      },
+      {
+        "id": 127587335230,
+        "name": "regression (8.4)",
+        "conclusion": "success"
+      },
+      {
+        "id": 127587335427,
+        "name": "regression (8.3)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "boundary": "Hosted one-hour results only. Oracle fixture omitted; local SQL sockets, not remote database TLS. Later wait-probe tools are not in this archive. Historical local responsiveness failures remain unresolved; no six-/24-hour FPM evidence."
+}

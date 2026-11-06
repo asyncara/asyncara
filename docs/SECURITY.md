@@ -120,3 +120,13 @@ records counters only and treats unavailable metrics as missing. Diagnostic FPM
 tracing is explicitly opt-in and adds synchronous logging/ptrace overhead; it
 must not be enabled in applications or treated as production latency evidence.
 Runtime code, signal handlers and host limits are unchanged.
+
+The additional direct wait probe is an opt-in Linux test interposer, loaded only
+into an explicitly owned FPM diagnostic with `LD_PRELOAD`. It uses public libc
+symbols and no Zend API or engine-pointer modification. It logs numeric timing,
+PID/TID, timeout/result/errno metadata; no request or network payload. It is not
+installed system-wide and must not be used in application configuration. An
+initialization, clock or log-I/O failure exits that diagnostic process with125.
+The analyzer rejects malformed, overlapping or oversized observations and closes
+its temporary index deterministically. Instrumentation changes timing; neither
+these measurements nor scoped sanitizer passes establish production readiness.

@@ -314,3 +314,77 @@ must not be extrapolated to six hours. All original assertions remain intact.
 selected correlated trace lines, tool hashes,19passing regression tests, raw-file
 hashes and build commands. No new native/public runtime fix is claimed. The
 corrected r4 archive remains immutable; these later diagnostic tools are in Git.
+
+## Direct readiness-wait measurement, November 6
+
+The `67e4530` hosted jobs passed independently: mixed 3,600.129s / 27,694 cycles;
+FPM 3,600.051s / 67,740 main requests plus all lifecycle cases. The official
+artifact digests, all 366 archived files, mixed source manifest, response counts,
+idle resources and recalculated trends were verified. The hosted archive has
+SHA-256 `522d75cb34bd08ef9e2e6fcd1befc6ca138bfa47244f25c2a4101213ab636984`.
+It contains later diagnostic/documentation files; its native/public runtime is
+identical to r4. It is not a replacement published distribution. See
+[hosted evidence](phase4/hosted-67e4530.json). Local failures remain preserved.
+
+`fpm_trace.py --instrumentation wait` builds and preloads a **test-only** Linux
+libc interposer into its owned FPM process. It measures `poll` and `epoll_wait`
+with `CLOCK_MONOTONIC` and per-thread CPU clocks. The normal PHP poll wrapper now
+records the same monotonic start/end boundaries. No Zend APIs, engine function
+pointers or runtime implementation are modified. The module uses supported
+`LD_PRELOAD`/`dlsym` interposition and has no persistent descriptors. Only waits
+longer than 50ms are logged, after their measured interval; no application payload
+or socket contents are captured. Existing test assertions remain unchanged.
+
+```sh
+FPM_BIN=/path/to/php-fpm8.5 python3 tests/soak/fpm_trace.py --seconds 180 --workers 4 --instrumentation wait --output build/new-fpm-waits
+python3 tests/soak/analyze_waits.py build/new-fpm-waits --output build/new-fpm-waits/analysis.json
+python3 tests/soak/test_wait_probe.py
+python3 tests/soak/test_wait_analysis.py
+```
+
+The probe is not a production extension, transparent hook, or kernel off-CPU
+tracer. Clock reads and post-measurement logging add overhead; preemption near
+libc entry/exit is included. A long interval cannot by itself distinguish kernel
+work, scheduler delay, or a dependency implementation. Successful calls may
+retain a previous `errno`; only negative results make it an error indication.
+The probe forwards return values, event data, `errno` and signal interruption.
+Diagnostic logging/clock/initialization failure exits the owned process with125
+and an explicit error, rather than silently producing unmeasured results. A
+pre-existing `LD_PRELOAD` is rejected by the runner. Never enable this tool in an
+application or a system PHP/FPM configuration.
+Waits that never return, including some killed-process paths, cannot produce a
+completion record. Waits below the50ms reporting threshold are not recorded.
+
+The analyzer uses a temporary SQLite index and attributes only main-thread waits
+wholly contained in a matching process's native-call interval. It detects duplicate
+or overlapping waits and changed input logs. It preserves all raw input, retaining
+only the largest20 waits in its summary. Hard failure limits are256MiB/file,
+one million records/file,64KiB/line,4,096 native process IDs,4,096 fatal records
+and1,024 fatal-call summaries. Its2MiB SQLite page cache is not a total process
+memory limit. The index is explicitly closed even when garbage collection is
+disabled; analyze completed diagnostic logs, not a live stream.
+
+The first direct-probe run passed180.039s /2,348 requests. There were235 slow
+native calls;209 contained a recorded long readiness wait. The largest matched
+5ms wait took317.356ms with311.782ms thread CPU. Another took294.997ms with0.054ms
+thread CPU. Both low-CPU and CPU-heavy delays also occur in the independent C
+controls; neither class is omitted. These observations narrow the measured delay
+to the wait interval, but do not establish the exact site of the earlier untraced
+failed request or certify a latency guarantee.
+
+Real native controls cover return values/readiness, EBADF, EINTR, concurrent
+processes and threads, complete log records, and descriptor cleanup. GCC
+ASan/UBSan, TSan (child-only non-PIE/no-ASLR configuration) and static analysis
+pass for this diagnostic module/control. The PHP wrapper forwarding test passes
+8.3.36,8.4.27 and8.5.12. These are scoped tool checks, not new sanitizer or ZTS
+certification of the production runtime.
+
+The longer diagnostic passed900.052s /12,152 requests. Of992 slow native calls,
+864 contained a recorded long wait. The largest matched5ms wait took659.389ms
+with0.028ms thread CPU. A separate full lifecycle smoke on frozen f2abb55 and its
+original binary passed60.170s /836mainrequests plus all lifecycle/fault cases,
+with six idle fds/one thread and at most2,692KiB growth beyond warmup. No probe
+initialization, clock or logging error was found. Its107 fatal records are
+deliberate fault cases; fatal PHP memory exhaustion does not become recoverable.
+These checks are in [probe evidence](phase4/wait-probe.json). They do not satisfy
+the one-hour or longer uninstrumented FPM endurance gates.

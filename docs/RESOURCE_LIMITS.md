@@ -137,3 +137,13 @@ readable, while `cpu.max` was absent. Neither a missing root limit nor zero
 throttle counters proves absence of host scheduling delay. This is observation,
 not resource enforcement; no cgroup/OS limit or application default changes.
 Zombie-exit handling has independent real-process regression coverage.
+
+The optional readiness-wait diagnostic keeps no log fd across calls or requests.
+Its small stack record is written only after a measured wait exceeds50ms; logging
+failure terminates that diagnostic process explicitly. Offline correlation uses
+a temporary SQLite index with a2MiB page cache,256MiB/file input limit, one million
+records/file,64KiB lines,4,096 native process IDs and fatal records, and1,024 fatal
+call summaries. Limits reject oversized input rather than silently truncating it.
+Only the20 largest matches are retained in the summary; original logs are kept.
+These are test-tool boundaries, not new runtime quotas or complete SQLite/RSS
+accounting. See FPM_LIFECYCLE.md.

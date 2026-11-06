@@ -11,7 +11,8 @@ namespace Asyncara {
         try {
             return \asyncara_poll($readers, $writers, $timeout);
         } finally {
-            $elapsed = \hrtime(true) - $before;
+            $finished = \hrtime(true);
+            $elapsed = $finished - $before;
             if ($elapsed > 50_000_000) {
                 $after = \getrusage();
                 $cpu = static fn(array $r): int =>
@@ -20,6 +21,7 @@ namespace Asyncara {
                 \file_put_contents(__DIR__ . '/native-polls.jsonl', \json_encode([
                     'pid' => \getmypid(), 'request' => $_SERVER['AUDIT_ID'] ?? null,
                     'unixSeconds' => \microtime(true), 'elapsedNs' => $elapsed,
+                    'startedMonotonicNs' => $before, 'finishedMonotonicNs' => $finished,
                     'cpuUs' => $cpu($after) - $cpu($cpuBefore), 'timeoutMs' => $timeout,
                     'readers' => \count($readers), 'writers' => \count($writers),
                 ], JSON_THROW_ON_ERROR) . "\n", FILE_APPEND | LOCK_EX);

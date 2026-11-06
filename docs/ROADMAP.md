@@ -1,6 +1,6 @@
 # Implementation status
 
-Updated 2026-11-05 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
+Updated 2026-11-06 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
 
 | Area | Status | Evidence / remaining work |
 |---|---|---|
@@ -60,6 +60,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | Frozen hosted 1h mixed and FPM | IMPLEMENTED_AND_TESTED | r4 archive byte identity and official artifact digests; FPM 67,824 requests plus lifecycle/fault cases; hosted-r4.json |
 | Local FPM and 6h / 24h FPM endurance | PARTIALLY_IMPLEMENTED | local attempts failed responsiveness at364.506s and998.680s; six-/24-hour stages unstarted; all original assertions retained |
 | Scheduling observer and independent wait controls | IMPLEMENTED_AND_TESTED | reproduced zombie-exit ownership error repaired; live identity/cgroup ancestry tests; epoll/poll/nanosleep controls and opt-in combined native-call/syscall diagnostics; these do not certify FPM endurance |
+| Direct libc wait probe and bounded interval analysis | IMPLEMENTED_AND_TESTED | 180s/900s FPM diagnostics and 60s full lifecycle smoke; native forwarding/thread/errno/fd controls, scoped ASan/UBSan/TSan/static analysis; instrumentation only, not a production hook |
 
 Mixed 24-hour steady RSS endpoint change is +260KiB, with zero final scheduled
 work. Recorded maximum timer lag exceeds one second; this is no latency SLA.
@@ -77,7 +78,10 @@ unchanged; a host wait-control delay alone does not establish a runtime defect
 or exonerate the failed request. The observer repair and combined tracing do not
 weaken any workload assertion. Actual source identities, measurements, dependency
 findings and prior attempts are in [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and
-WORKLOG.md. No uninstrumented local retry is currently running.
+WORKLOG.md. The latest67e4530 hosted mixed/FPM hour and all four CI jobs also pass;
+native/public runtime is unchanged from r4. No uninstrumented local retry is
+currently running. Use the verified direct probe for the next full lifecycle
+diagnostic; keep its instrumentation scope separate from endurance certification.
 
 1. Complete the frozen FPM-only one-/six-/24-hour chain without weakening checks; hosted one-hour success and mixed 24-hour success remain separate evidence. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

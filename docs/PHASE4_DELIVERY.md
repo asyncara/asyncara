@@ -4,7 +4,7 @@
 from failed campaigns and shorter diagnostic runs. Mixed endurance is verified
 for the configuration below; broader FPM and compatibility gates remain incomplete.
 
-## Current evidence at 2026-11-05 22:50 UTC
+## Current evidence at 2026-11-06
 
 | Check | Tested source | Result |
 |---|---|---|
@@ -17,6 +17,8 @@ for the configuration below; broader FPM and compatibility gates remain incomple
 | Hosted mixed one hour | `f2abb55` | PASS: 3,600.016s / 28,358 cycles |
 | Hosted FPM one hour | `f2abb55` | PASS: 3,600.055s / 67,824 main requests |
 | Local FPM-only retry | unchanged frozen `f2abb55` | FAIL: responsiveness; last sample998.680s /12,568 recorded main requests |
+| Latest hosted verification | `67e4530`; runtime unchanged from r4 | Four PHP/database jobs PASS; mixed hour27,694cycles; FPM hour67,740mainrequests |
+| Direct wait-probe diagnostics | runtime unchanged from r4; instrumented test tools | PASS180.039s/2,348requests and900.052s/12,152requests; full lifecycle smoke60.170s/836mainrequests |
 | Six-/24-hour FPM | — | NOT EXECUTED; local preceding stage must pass |
 
 The local mixed scope includes separate Oracle and MariaDB fixtures. Hosted mixed
@@ -29,6 +31,16 @@ The mixed stages do not erase the local FPM failure: the original supervisor
 correctly reports overall FAIL. The hosted FPM pass is scoped to that host and
 workload. All reports, failures and thresholds are retained. Release remains
 **EXPERIMENTAL**.
+
+The latest [hosted review](phase4/hosted-67e4530.json) verifies the official ZIP
+digests, all366 source files, the mixed source manifest, FPM response counts,
+idle fd/thread checks and independently recalculated resource trends. These runs
+are [verification42125157943](https://github.com/asyncara/asyncara/actions/runs/42125157943)
+and [endurance42125158090](https://github.com/asyncara/asyncara/actions/runs/42125158090).
+The hosted archive SHA-256 is
+`522d75cb34bd08ef9e2e6fcd1befc6ca138bfa47244f25c2a4101213ab636984`.
+It includes later tools/documentation and differs from the r4 distribution;
+native/public runtime bytes are identical. No replacement release was published.
 
 ## Independent review of completed endurance
 
@@ -132,6 +144,40 @@ All19 monitor, scheduling-observer, metric, HTTP-peer, poll-wrapper and wait-con
 regressions pass locally. New observer/control tests are included in fast CI.
 These changes affect test tools only. Native C stays76e6557 and public runtime
 staysf2abb55; the preserved r4 archive does not contain these later tools.
+
+## Direct wait probe checkpoint
+
+The new test-only Linux libc probe measures `poll`/`epoll_wait` boundaries with
+monotonic and per-thread CPU clocks. It forwards readiness, errors and signal
+interruption without Zend access or persistent descriptors. PHP poll-profile
+records now carry matching monotonic intervals. A bounded offline analyzer joins
+only same-process, main-thread waits contained within a native call; raw logs are
+preserved. This is instrumentation, not a production hook or a runtime rewrite.
+
+The three-minute run recorded235 slow native calls,209 containing a long wait.
+The15-minute run recorded992 slow native calls,864 containing a long wait. Its
+largest matched5ms wait took659.389ms with0.028ms thread CPU. CPU-heavy waits also
+occur: the earlier run recorded317.356ms with311.782ms thread CPU. Both patterns
+occur in the independent C controls without PHP. These measurements narrow the
+observed delay to the libc wait interval, including nearby descheduling; they do
+not establish a kernel defect or retrospectively identify the earlier failure.
+
+Full lifecycle instrumentation was checked against the original frozen f2abb55
+source and exact native binary:60.170s/836mainrequests, all A/B/C/D, recycling,
+reload, forced replacement, fatal/pending and timeout cases pass. Idle workers
+return to six descriptors/one thread; maximum growth beyond warmup is2,692KiB.
+Expected fatal requests remain fatal; this is not PHP memory-exhaustion recovery.
+
+Probe controls pass normal forwarding, EBADF/EINTR, concurrent processes/threads,
+record integrity and descriptor checks. GCC ASan/UBSan, TSan and static analysis
+pass for the probe/control. Three native-probe and five analyzer regression cases
+pass; the PHP wrapper regression passes8.3.36/8.4.27/8.5.12. Actual FPM probe tests
+use8.5.12 NTS/epoll. These do not constitute a new full-runtime sanitizer campaign.
+[Probe evidence](phase4/wait-probe.json) preserves82raw-file fingerprints, build
+commands, exact tool hashes, results and boundaries; [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md)
+documents reproduction. Native/public runtime and historical artifacts remain
+unchanged. The interrupted session had not launched the intended instrumented
+hour; its eventual launch must be recorded separately.
 
 ## Corrected r4 distribution and current freeze
 

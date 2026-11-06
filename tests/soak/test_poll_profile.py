@@ -44,6 +44,7 @@ if (asyncara_poll([5], [], 0) !== [[5], [], 0]) exit(13);
             for record in records:
                 self.assertEqual(record['request'], 'control')
                 self.assertGreater(record['elapsedNs'], 50_000_000)
+                self.assertEqual(record['finishedMonotonicNs'] - record['startedMonotonicNs'], record['elapsedNs'])
                 self.assertGreaterEqual(record['cpuUs'], 0)
             self.assertFalse((folder / 'fatal-requests.jsonl').exists())
             script.write_text("<?php require __DIR__ . '/profile.php'; throw new RuntimeException('fatal control');")

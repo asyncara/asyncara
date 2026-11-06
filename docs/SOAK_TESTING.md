@@ -15,6 +15,15 @@ FPM-only retry also failed at998.680s/12,568 recorded main responses. Six-/24-ho
 FPM has not started. Current identities, host differences and diagnostic results:
 PHASE4_DELIVERY.md and phase4/fpm-solo-r4-result.json.
 
+The later `67e4530` hosted jobs also passed one hour: mixed 27,694 cycles and
+FPM 67,740 main requests. Official artifact digests, the 366-file source archive,
+response counts and resource trends were independently checked in
+[hosted evidence](phase4/hosted-67e4530.json). Native/public runtime remains r4.
+The direct libc wait probe subsequently passed 180s and 900s diagnostics and a
+60s full lifecycle smoke. Those instrumented tests do not erase the uninstrumented
+failures or satisfy the longer endurance gates. Reproduction and measurement
+limitations are in [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md).
+
 The existing `tests/stress.php` and FPM audit remain intact. The new
 `tests/soak/run.py` creates an isolated source snapshot, copies the current native
 binary, records a per-file manifest and extension SHA-256, and runs the workload

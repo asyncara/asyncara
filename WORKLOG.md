@@ -1053,3 +1053,86 @@ with the retained responsiveness assertion before another local endurance chain.
 Any justified runtime fix needs a new immutable source/archive and affected-soak
 reruns. Six-/24-hour FPM remain unexecuted; remote SQL/protocol/hook expansion
 does not advance on this diagnostic checkpoint. Release EXPERIMENTAL.
+
+## Direct wait diagnostics and hosted verification — 2026-11-06
+
+Resumed from pushed 67e453077d401f57db3154f4218da4b636e4a499. Hosted runtime
+verification 42125157943 passes all four PHP/database jobs. Hosted endurance
+42125158090 passes mixed 3,600.128689s / 27,694 cycles and FPM 3,600.050548s /
+67,740 main requests plus all lifecycle cases. Downloaded both artifacts;
+their SHA-256 values match official GitHub metadata. Every one of the 366
+archived source files matches Git. The mixed manifest and FPM provenance match;
+independent centered-fsum calculations reproduce resource slopes and endpoint
+changes. FPM idle resources remain six fds/one thread, maximum growth beyond
+warmup 3,092KiB. Mixed steady RSS endpoint change +324KiB, zero final pending
+work. Evidence: docs/phase4/hosted-67e4530.json; raw hosted-42125158090 under the
+existing Phase 4 evidence directory. Hosted archive SHA-256:
+522d75cb34bd08ef9e2e6fcd1befc6ca138bfa47244f25c2a4101213ab636984.
+This is a CI source artifact, not a replacement published distribution.
+
+Implemented tests/soak/wait_probe.c: Linux/glibc test-only LD_PRELOAD/dlsym
+interposition of poll/epoll_wait, monotonic intervals and per-thread CPU clocks.
+No Zend access, engine pointer patching or persistent log descriptors. Only waits
+above 50ms are logged after measurement. Readiness, return values, errno and
+EINTR are forwarded; diagnostic clock/init/log failure exits explicitly with125.
+fpm_trace.py adds opt-in wait mode and records compiler/source/binary provenance.
+The PHP profile now records matching monotonic boundaries. These are diagnostic
+tools, not runtime changes or new transparent hooks.
+
+Added analyze_waits.py with a temporary SQLite index, exact same-process/main-
+thread interval containment, overlap checks and immutable-input verification.
+Hard bounds reject input over 256MiB/file, one million records/file, 64KiB/line,
+4,096 native PIDs or fatal records and 1,024 fatal-call summaries. Raw data is
+preserved; the summary retains the largest20 matches. The 2MiB SQLite page cache
+is not a total process memory limit. Explicit close avoids relying on GC for
+temporary-index descriptors. Native-probe and analyzer regressions join fast CI.
+
+Executed commands/results (raw directories under /tmp/asyncara-phase4-nrtjh3t1):
+
+- tests/soak/test_wait_probe.py: 3 tests PASS, covering plain/interposed calls,
+  readiness, EBADF/EINTR, concurrent processes/threads, record integrity, errno
+  and fd cleanup. Initial -Werror compilation rejected an ignored stderr-write
+  return value; checked partial-write/EINTR handling fixed it. No suppression.
+- tests/soak/test_wait_analysis.py: 5 tests PASS, covering interval/thread
+  attribution, invalid/duplicate records, input/identity capacities and temporary
+  index closure with GC disabled. test_poll_profile.py PASS on PHP 8.3.36,
+  8.4.27 and 8.5.12 with forwarding/exception/fatal and monotonic-boundary checks.
+  Logs: wait-probe-validation-r1. py_compile and git diff --check pass.
+- Probe/control GCC ASan/UBSan, native TSan and -fanalyzer: PASS; warning-free
+  builds and empty sanitizer stderr. TSan uses the existing child-only non-PIE /
+  setarch -R technique; no host setting changed. Exact commands and outputs:
+  wait-probe-sanitizers-r1, wait-probe-tsan-r1, wait-probe-static-r1. These are
+  scoped tests of the new diagnostic module, not a full-runtime sanitizer rerun.
+- fpm_trace.py --seconds180 --workers4 --instrumentation wait: PASS180.038593s /
+  2,348 requests. 235 slow native calls; 209 contain a recorded long wait. The
+  largest matched 5ms wait took317.355563ms with311.781610ms thread CPU. Another
+  took294.996541ms with0.054190ms thread CPU. Both CPU-heavy and low-CPU delays
+  also occur in the previously retained standalone C controls without PHP.
+- Same diagnostic for900s: PASS900.052334s /12,152 requests; 992 slow native
+  calls, 864 containing a long wait. Largest matched 5ms wait659.389444ms with
+  0.027520ms thread CPU. Raw fpm-wait-probe-r1/r2 and their analyzer results.
+  Passing ticker counts do not imply a latency guarantee.
+- Frozen original f2abb55 tests/soak/fpm.py --seconds60, with a private FPM exec
+  wrapper loading the tested probe/profile: PASS60.170293s /836 main requests
+  plus A/B/C/D, recycling, reload, forced replacement, fatal/pending and timeout
+  cases. Idle6fds/1thread, maximum2,692KiB growth beyond warmup;107 deliberately
+  fatal records. Native binary is the original frozen0bfeb954... artifact.
+  Raw fpm-full-wait-probe-r1, wrapper source and launch/completion provenance.
+  No probe init/clock/log error. Fatal PHP memory exhaustion remains fatal.
+
+docs/phase4/wait-probe.json preserves82 raw-file fingerprints, complete commands,
+tool hashes, scoped test results and measurement boundaries. Instrumentation
+includes clock overhead and nearby descheduling; a libc wait interval is not a
+kernel off-CPU trace. Unreturned waits and waits below50ms lack records. No exact
+cause of the earlier uninstrumented ticker failure is claimed. Thresholds remain
+unchanged; six-/24-hour FPM tests remain unexecuted.
+
+The session was interrupted after these tests, before committing or starting the
+proposed one-hour instrumented full lifecycle run. On resumption at17:39UTC, all
+tool hashes match the evidence and all three diagnostic runs are complete. The
+unrelated untracked bash file appeared during the interruption and is preserved
+outside engineering commits. Native/public runtime matches f2abb55; r4 SHA-256
+remains5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8.
+No replacement archive/release or production feature is claimed. Next: checkpoint
+these tools, then launch the one-hour instrumented full lifecycle diagnostic on
+the original frozen runtime/binary with unchanged assertions. EXPERIMENTAL.

@@ -18,6 +18,14 @@ failure. Six-/24-hour FPM has not run. Mixed
 resource stability does not remove observed timer lag above one second or certify
 other PHP/platform/remote configurations. No release promotion follows.
 
+The later `67e4530` checkpoint passed all four hosted verification jobs and another
+separate mixed/FPM hour (27,694 cycles / 67,740 main requests). Native/public
+runtime remains identical to r4. Direct-probe diagnostics passed 180s and 900s,
+plus a full 60s lifecycle smoke. A matched 5ms wait took 659.389ms; instrumentation
+narrows its measured interval but does not identify the original failed request's
+exact cause. These results improve evidence coverage without closing the remaining
+FPM endurance or remote-compatibility gates.
+
 [PHASE4_DELIVERY](PHASE4_DELIVERY.md) contains complete source/archive identities,
 resource trends, hosted artifact provenance, failed controls and continuation.
 

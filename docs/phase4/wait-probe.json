@@ -1,0 +1,1885 @@
+{
+  "reviewedUtc": "2026-11-06T00:46:51.072394+00:00",
+  "parentCommit": "67e453077d401f57db3154f4218da4b636e4a499",
+  "runtimeSource": "f2abb555caf8914821f648f8213ce7a433693685",
+  "nativeSource": "76e6557bf3925e58e6db3dee07b30aac33a9f9c1",
+  "runtimeDiff": "",
+  "archive": {
+    "path": "build/asyncara-0.1.0-dev-phase4-r4.tar.gz",
+    "bytes": 846094,
+    "sha256": "5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8"
+  },
+  "toolFiles": {
+    ".github/workflows/verify.yml": {
+      "bytes": 8600,
+      "sha256": "6b976ef47d97900a476ab92146615a84a01eb08f3e3cba08fea292494d23a819"
+    },
+    "tests/soak/fpm_trace.py": {
+      "bytes": 7629,
+      "sha256": "cfbbeb7002d5c2b64b4bb8d30ac5b55dc183c4af8e61f0cf33e945dd24b1f525"
+    },
+    "tests/soak/fpm_poll_profile.php": {
+      "bytes": 2059,
+      "sha256": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699"
+    },
+    "tests/soak/test_poll_profile.py": {
+      "bytes": 2925,
+      "sha256": "a573c15923ecfb8b1cffa5caa5733b36cb37eab918134a0411522dd8893f2a6c"
+    },
+    "tests/soak/wait_probe.c": {
+      "bytes": 4219,
+      "sha256": "902fd447263f28991a901ebbfd92afdf5c1c6f3c0f37b0be1059ff8a0956b389"
+    },
+    "tests/soak/wait_probe_control.c": {
+      "bytes": 2932,
+      "sha256": "6c2802f02f7aea430c9e30501046a82c5a7842b3364394a0872ac6fd454ee67f"
+    },
+    "tests/soak/test_wait_probe.py": {
+      "bytes": 4612,
+      "sha256": "6677d7607b52c36bafcfbfed34ae9c557da6dd920ee1db7f3a7648f3e41caf91"
+    },
+    "tests/soak/analyze_waits.py": {
+      "bytes": 7018,
+      "sha256": "3d6a4f50686ca0647f62bad0ce2a6d0508464495869013838da22c362def7b37"
+    },
+    "tests/soak/test_wait_analysis.py": {
+      "bytes": 4249,
+      "sha256": "b1b2636193d2ef0114db8d2077b511c498819c2042a9aea28f3d6492ec394312"
+    }
+  },
+  "runs": [
+    {
+      "report": {
+        "status": "PASS",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r1/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r1/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 180.0,
+        "startedUtc": "2026-11-06T00:22:56.919501+00:00",
+        "instrumentation": "wait",
+        "workers": 4,
+        "waitProbe": {
+          "compileCommand": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-O2",
+            "-shared",
+            "-fPIC",
+            "/home/coder/Asyncara/tests/soak/wait_probe.c",
+            "-ldl",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r1/wait-probe.so"
+          ],
+          "binarySha256": "fb882848219a0ca401f024cf892478107daf69bdf794797c96dd46df93211bdd",
+          "sourceSha256": "902fd447263f28991a901ebbfd92afdf5c1c6f3c0f37b0be1059ff8a0956b389",
+          "scope": "Linux libc poll/epoll_wait only, CLOCK_MONOTONIC and per-thread CPU; >50ms waits logged after measurement; no persistent descriptors, payloads or Zend access."
+        },
+        "source": "67e453077d401f57db3154f4218da4b636e4a499",
+        "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/fpm_poll_profile.php\n M tests/soak/fpm_trace.py\n M tests/soak/test_poll_profile.py\n?? tests/soak/test_wait_probe.py\n?? tests/soak/wait_probe.c\n?? tests/soak/wait_probe_control.c\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "cfbbeb7002d5c2b64b4bb8d30ac5b55dc183c4af8e61f0cf33e945dd24b1f525",
+          "tests/soak/fpm_poll_profile.php": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "seconds": 180.03859313181601,
+        "requests": 2348,
+        "finishedUtc": "2026-11-06T00:25:57.397554+00:00",
+        "recordedResponses": 2348,
+        "elapsedThroughCleanupSeconds": 180.1668200378772
+      },
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r1",
+      "analysis": {
+        "waitRecords": 984,
+        "nativeCalls": 235,
+        "nativeCallsWithLongWait": 209,
+        "matchedWaits": 209,
+        "largestMatchedWaits": [
+          {
+            "request": "2254",
+            "nativeElapsedNs": 317563599,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105150,
+              "tid": 105150,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585369536816485,
+              "finishedMonotonicNs": 1585369854172048,
+              "elapsedNs": 317355563,
+              "threadCpuNs": 311781610
+            }
+          },
+          {
+            "request": "2319",
+            "nativeElapsedNs": 295324610,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1585376283325574,
+              "finishedMonotonicNs": 1585376578322115,
+              "elapsedNs": 294996541,
+              "threadCpuNs": 54190
+            }
+          },
+          {
+            "request": "2316",
+            "nativeElapsedNs": 259755104,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105150,
+              "tid": 105150,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585376268730389,
+              "finishedMonotonicNs": 1585376527710232,
+              "elapsedNs": 258979843,
+              "threadCpuNs": 25290
+            }
+          },
+          {
+            "request": "2318",
+            "nativeElapsedNs": 245768586,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585376282507021,
+              "finishedMonotonicNs": 1585376528205865,
+              "elapsedNs": 245698844,
+              "threadCpuNs": 17580
+            }
+          },
+          {
+            "request": "2317",
+            "nativeElapsedNs": 245619932,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105152,
+              "tid": 105152,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585376282380048,
+              "finishedMonotonicNs": 1585376527897337,
+              "elapsedNs": 245517289,
+              "threadCpuNs": 21710
+            }
+          },
+          {
+            "request": "2320",
+            "nativeElapsedNs": 234505044,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105152,
+              "tid": 105152,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1585376894882954,
+              "finishedMonotonicNs": 1585377129077230,
+              "elapsedNs": 234194276,
+              "threadCpuNs": 26840
+            }
+          },
+          {
+            "request": "897",
+            "nativeElapsedNs": 230323807,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585268844451656,
+              "finishedMonotonicNs": 1585269074361742,
+              "elapsedNs": 229910086,
+              "threadCpuNs": 34150
+            }
+          },
+          {
+            "request": "2321",
+            "nativeElapsedNs": 228933670,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1585376900902911,
+              "finishedMonotonicNs": 1585377129290276,
+              "elapsedNs": 228387365,
+              "threadCpuNs": 100660
+            }
+          },
+          {
+            "request": "1685",
+            "nativeElapsedNs": 227625323,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585325583113163,
+              "finishedMonotonicNs": 1585325810340084,
+              "elapsedNs": 227226921,
+              "threadCpuNs": 63830
+            }
+          },
+          {
+            "request": "2091",
+            "nativeElapsedNs": 217775434,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585355507324468,
+              "finishedMonotonicNs": 1585355724677020,
+              "elapsedNs": 217352552,
+              "threadCpuNs": 34920
+            }
+          },
+          {
+            "request": "1521",
+            "nativeElapsedNs": 201005364,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 1,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585313725415860,
+              "finishedMonotonicNs": 1585313926278850,
+              "elapsedNs": 200862990,
+              "threadCpuNs": 197629560
+            }
+          },
+          {
+            "request": "834",
+            "nativeElapsedNs": 198608156,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105150,
+              "tid": 105150,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585262701936326,
+              "finishedMonotonicNs": 1585262900355647,
+              "elapsedNs": 198419321,
+              "threadCpuNs": 21520
+            }
+          },
+          {
+            "request": "833",
+            "nativeElapsedNs": 180679627,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585262463001778,
+              "finishedMonotonicNs": 1585262643491260,
+              "elapsedNs": 180489482,
+              "threadCpuNs": 45600
+            }
+          },
+          {
+            "request": "899",
+            "nativeElapsedNs": 178296359,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1585268826912978,
+              "finishedMonotonicNs": 1585269004826787,
+              "elapsedNs": 177913809,
+              "threadCpuNs": 35000
+            }
+          },
+          {
+            "request": "2153",
+            "nativeElapsedNs": 174561973,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105152,
+              "tid": 105152,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585360542895187,
+              "finishedMonotonicNs": 1585360715311771,
+              "elapsedNs": 172416584,
+              "threadCpuNs": 41770
+            }
+          },
+          {
+            "request": "480",
+            "nativeElapsedNs": 172007164,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1585234959244168,
+              "finishedMonotonicNs": 1585235130718696,
+              "elapsedNs": 171474528,
+              "threadCpuNs": 29400
+            }
+          },
+          {
+            "request": "482",
+            "nativeElapsedNs": 162976221,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105151,
+              "tid": 105151,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1585234939647282,
+              "finishedMonotonicNs": 1585235102275573,
+              "elapsedNs": 162628291,
+              "threadCpuNs": 41630
+            }
+          },
+          {
+            "request": "2251",
+            "nativeElapsedNs": 157665794,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105152,
+              "tid": 105152,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585369156488256,
+              "finishedMonotonicNs": 1585369313760339,
+              "elapsedNs": 157272083,
+              "threadCpuNs": 27620
+            }
+          },
+          {
+            "request": "832",
+            "nativeElapsedNs": 155051574,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105153,
+              "tid": 105153,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585262485103203,
+              "finishedMonotonicNs": 1585262640062855,
+              "elapsedNs": 154959652,
+              "threadCpuNs": 17280
+            }
+          },
+          {
+            "request": "835",
+            "nativeElapsedNs": 154507490,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 105152,
+              "tid": 105152,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585262485265667,
+              "finishedMonotonicNs": 1585262639517920,
+              "elapsedNs": 154252253,
+              "threadCpuNs": 24580
+            }
+          }
+        ],
+        "fatalRequestCalls": [],
+        "files": {
+          "waits.jsonl": {
+            "sha256": "329e04839a8123a2aecfaa79468b49c5dfa7ea48b83d10fedf2b0d2916cadd1f",
+            "bytes": 220025
+          },
+          "native-polls.jsonl": {
+            "sha256": "9fdd6b3663d9a0c7f9e5980a7433efa68b588b1bbd6c6ebee89efaf68b6db56b",
+            "bytes": 49886
+          }
+        },
+        "boundary": "Top 20 matched waits retained; complete raw logs preserved. Only waits above 50ms are logged. Unmatched time is not automatically blocking or CPU work. Intervals include descheduling near libc call entry/exit and measurement overhead; this is not a kernel off-CPU trace. Temporary index uses a 2MiB SQLite page cache; 256MiB/file, one million records/file, 64KiB lines, 4096 native PIDs, 4096 fatal records and 1024 fatal-call summaries are hard failure bounds. The cache size is not a total process memory limit."
+      }
+    },
+    {
+      "report": {
+        "status": "PASS",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+          "-n",
+          "-F",
+          "-d",
+          "extension=/home/coder/Asyncara/build/asyncara.so",
+          "-d",
+          "display_errors=0",
+          "-y",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r2/fpm.conf",
+          "-d",
+          "auto_prepend_file=/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r2/fpm_poll_profile.php"
+        ],
+        "requestedSeconds": 900.0,
+        "startedUtc": "2026-11-06T00:27:25.634390+00:00",
+        "instrumentation": "wait",
+        "workers": 4,
+        "waitProbe": {
+          "compileCommand": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-O2",
+            "-shared",
+            "-fPIC",
+            "/home/coder/Asyncara/tests/soak/wait_probe.c",
+            "-ldl",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r2/wait-probe.so"
+          ],
+          "binarySha256": "fb882848219a0ca401f024cf892478107daf69bdf794797c96dd46df93211bdd",
+          "sourceSha256": "902fd447263f28991a901ebbfd92afdf5c1c6f3c0f37b0be1059ff8a0956b389",
+          "scope": "Linux libc poll/epoll_wait only, CLOCK_MONOTONIC and per-thread CPU; >50ms waits logged after measurement; no persistent descriptors, payloads or Zend access."
+        },
+        "source": "67e453077d401f57db3154f4218da4b636e4a499",
+        "gitStatus": " M .github/workflows/verify.yml\n M tests/soak/fpm_poll_profile.php\n M tests/soak/fpm_trace.py\n M tests/soak/test_poll_profile.py\n?? docs/phase4/hosted-67e4530.json\n?? tests/soak/test_wait_probe.py\n?? tests/soak/wait_probe.c\n?? tests/soak/wait_probe_control.c\n",
+        "extensionSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+        "requestSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "observerFiles": {
+          "tests/soak/fpm_trace.py": "cfbbeb7002d5c2b64b4bb8d30ac5b55dc183c4af8e61f0cf33e945dd24b1f525",
+          "tests/soak/fpm_poll_profile.php": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699",
+          "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+        },
+        "note": "Instrumentation changes timing; targeted HTTP/stream/SQLite/files diagnostic, not a full FPM lifecycle or endurance test.",
+        "seconds": 900.0523337121122,
+        "requests": 12152,
+        "finishedUtc": "2026-11-06T00:42:26.184749+00:00",
+        "recordedResponses": 12152,
+        "elapsedThroughCleanupSeconds": 900.3380344400648
+      },
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r2",
+      "analysis": {
+        "waitRecords": 4733,
+        "nativeCalls": 992,
+        "nativeCallsWithLongWait": 864,
+        "matchedWaits": 864,
+        "largestMatchedWaits": [
+          {
+            "request": "11289",
+            "nativeElapsedNs": 659638390,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124181,
+              "tid": 124181,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586309210044716,
+              "finishedMonotonicNs": 1586309869434160,
+              "elapsedNs": 659389444,
+              "threadCpuNs": 27520
+            }
+          },
+          {
+            "request": "1944",
+            "nativeElapsedNs": 545453594,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585627553153326,
+              "finishedMonotonicNs": 1585628098483616,
+              "elapsedNs": 545330290,
+              "threadCpuNs": 46780
+            }
+          },
+          {
+            "request": "7304",
+            "nativeElapsedNs": 393141905,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1586031809319989,
+              "finishedMonotonicNs": 1586032202103083,
+              "elapsedNs": 392783094,
+              "threadCpuNs": 49100
+            }
+          },
+          {
+            "request": "8620",
+            "nativeElapsedNs": 373375866,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": -1,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1586123957314116,
+              "finishedMonotonicNs": 1586124330513616,
+              "elapsedNs": 373199500,
+              "threadCpuNs": 30240
+            }
+          },
+          {
+            "request": "115",
+            "nativeElapsedNs": 354755767,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585480762827126,
+              "finishedMonotonicNs": 1585481117370227,
+              "elapsedNs": 354543101,
+              "threadCpuNs": 27940
+            }
+          },
+          {
+            "request": "224",
+            "nativeElapsedNs": 345935390,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124181,
+              "tid": 124181,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1585493181979026,
+              "finishedMonotonicNs": 1585493524923013,
+              "elapsedNs": 342943987,
+              "threadCpuNs": 36400
+            }
+          },
+          {
+            "request": "6772",
+            "nativeElapsedNs": 334247367,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124181,
+              "tid": 124181,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1585994164209697,
+              "finishedMonotonicNs": 1585994498125565,
+              "elapsedNs": 333915868,
+              "threadCpuNs": 25070
+            }
+          },
+          {
+            "request": "113",
+            "nativeElapsedNs": 330558077,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585480742039741,
+              "finishedMonotonicNs": 1585481072133375,
+              "elapsedNs": 330093634,
+              "threadCpuNs": 125710
+            }
+          },
+          {
+            "request": "7306",
+            "nativeElapsedNs": 328662652,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 2,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1586031872826044,
+              "finishedMonotonicNs": 1586032201219939,
+              "elapsedNs": 328393895,
+              "threadCpuNs": 321020250
+            }
+          },
+          {
+            "request": "114",
+            "nativeElapsedNs": 323900094,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124178,
+              "tid": 124178,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1585480750770133,
+              "finishedMonotonicNs": 1585481073893664,
+              "elapsedNs": 323123531,
+              "threadCpuNs": 25270
+            }
+          },
+          {
+            "request": "2526",
+            "nativeElapsedNs": 322983107,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": -1,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585682521429481,
+              "finishedMonotonicNs": 1585682844248393,
+              "elapsedNs": 322818912,
+              "threadCpuNs": 25750
+            }
+          },
+          {
+            "request": "5860",
+            "nativeElapsedNs": 307344809,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585924295323064,
+              "finishedMonotonicNs": 1585924602075447,
+              "elapsedNs": 306752383,
+              "threadCpuNs": 30880
+            }
+          },
+          {
+            "request": "225",
+            "nativeElapsedNs": 297081918,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124178,
+              "tid": 124178,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585493189697529,
+              "finishedMonotonicNs": 1585493486232782,
+              "elapsedNs": 296535253,
+              "threadCpuNs": 37580
+            }
+          },
+          {
+            "request": "237",
+            "nativeElapsedNs": 292546312,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124180,
+              "tid": 124180,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585494346887041,
+              "finishedMonotonicNs": 1585494639135186,
+              "elapsedNs": 292248145,
+              "threadCpuNs": 21100
+            }
+          },
+          {
+            "request": "1653",
+            "nativeElapsedNs": 288947748,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124181,
+              "tid": 124181,
+              "timeoutMs": -1,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1585603839234564,
+              "finishedMonotonicNs": 1585604127981756,
+              "elapsedNs": 288747192,
+              "threadCpuNs": 40820
+            }
+          },
+          {
+            "request": "2525",
+            "nativeElapsedNs": 282574883,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585682520945347,
+              "finishedMonotonicNs": 1585682803323565,
+              "elapsedNs": 282378218,
+              "threadCpuNs": 8161980
+            }
+          },
+          {
+            "request": "6266",
+            "nativeElapsedNs": 268284786,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1585954864880139,
+              "finishedMonotonicNs": 1585955132327042,
+              "elapsedNs": 267446903,
+              "threadCpuNs": 21667770
+            }
+          },
+          {
+            "request": "7691",
+            "nativeElapsedNs": 266288135,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124178,
+              "tid": 124178,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1586059903841544,
+              "finishedMonotonicNs": 1586060169819251,
+              "elapsedNs": 265977707,
+              "threadCpuNs": 78170
+            }
+          },
+          {
+            "request": "111",
+            "nativeElapsedNs": 275373170,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1585479265502725,
+              "finishedMonotonicNs": 1585479530739925,
+              "elapsedNs": 265237200,
+              "threadCpuNs": 29310
+            }
+          },
+          {
+            "request": "1945",
+            "nativeElapsedNs": 260994276,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 124179,
+              "tid": 124179,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1585627551681305,
+              "finishedMonotonicNs": 1585627812203608,
+              "elapsedNs": 260522303,
+              "threadCpuNs": 69650
+            }
+          }
+        ],
+        "fatalRequestCalls": [],
+        "files": {
+          "waits.jsonl": {
+            "sha256": "0f52eed2f7d801e91123fb767dd9a6117e3590ed07fb2cdc723c25647b9460e9",
+            "bytes": 1058525
+          },
+          "native-polls.jsonl": {
+            "sha256": "5ca609497cebd9ab000a64c2880eb0c5412df4c72dca3d461fc428688bcbe082",
+            "bytes": 210934
+          }
+        },
+        "boundary": "Top 20 matched waits retained; complete raw logs preserved. Only waits above 50ms are logged. Unmatched time is not automatically blocking or CPU work. Intervals include descheduling near libc call entry/exit and measurement overhead; this is not a kernel off-CPU trace. Temporary index uses a 2MiB SQLite page cache; 256MiB/file, one million records/file, 64KiB lines, 4096 native PIDs, 4096 fatal records and 1024 fatal-call summaries are hard failure bounds. The cache size is not a total process memory limit."
+      }
+    },
+    {
+      "launch": {
+        "status": "PREPARED",
+        "sourceDirectory": "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55",
+        "sourceCommit": "f2abb555caf8914821f648f8213ce7a433693685",
+        "sourceStatus": "",
+        "command": [
+          "python3",
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/tests/soak/fpm.py",
+          "--seconds",
+          "60",
+          "--output",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1/workload"
+        ],
+        "environmentOverrides": {
+          "FPM_BIN": "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1/fpm-wrapper.py"
+        },
+        "files": {
+          "/tmp/asyncara-phase4-nrtjh3t1/frozen-f2abb55/build/asyncara.so": "0bfeb95478190be16fc5eeed29a387c7d0dd0b372ab9d0b335184ce2c722b66f",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1/fpm-wrapper.py": "9e793f7ce7c5fb008d69cc6e2353a91e35c868f7fdd57b7e5088a04e4e23f623",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1/wait-probe.so": "fb882848219a0ca401f024cf892478107daf69bdf794797c96dd46df93211bdd",
+          "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1/fpm_poll_profile.php": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699"
+        },
+        "boundary": "Instrumented full lifecycle smoke on the original frozen runtime/harness and binary, with unchanged assertions. Not an uninstrumented endurance stage."
+      },
+      "completion": {
+        "exit": 0,
+        "startedUtc": "2026-11-06T00:42:59.009539+00:00",
+        "finishedUtc": "2026-11-06T00:44:10.261150+00:00"
+      },
+      "report": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 100,
+          "status": "PASS"
+        },
+        {
+          "name": "B-within-request",
+          "workers": 1,
+          "requests": 10,
+          "status": "PASS"
+        },
+        {
+          "name": "C-multiple-workers",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "D-streaming",
+          "workers": 4,
+          "requests": 12,
+          "status": "PASS"
+        },
+        {
+          "name": "recycling",
+          "status": "PASS",
+          "requests": 25,
+          "pids": [
+            223052,
+            223115,
+            223175
+          ]
+        },
+        {
+          "name": "mixed-reload-kill",
+          "status": "PASS",
+          "seconds": 60.17029303382151,
+          "requests": 836,
+          "reloads": 1,
+          "killedWorkers": 1,
+          "sampleCount": 828,
+          "rssRangeKiBAfterWarmup": {
+            "223310": 304,
+            "223277": 288,
+            "223278": 212,
+            "223279": 268
+          },
+          "maxRssIncreaseKiB": {
+            "223310": 304,
+            "223277": 288,
+            "223278": 212,
+            "223279": 268
+          },
+          "warmupPeakKiB": {
+            "223310": 14632,
+            "223277": 18624,
+            "223278": 18740,
+            "223279": 18660
+          },
+          "growthBeyondWarmupPeakKiB": {
+            "223310": 2692,
+            "223277": 400,
+            "223278": 400,
+            "223279": 416
+          },
+          "rssSlopeKiBPerHour": {
+            "223310": 11597.045603831675,
+            "223277": 7661.5775428936895,
+            "223278": 7265.641174172422,
+            "223279": 7487.106845332176
+          },
+          "samplesFile": "mixed-samples.jsonl",
+          "responsesFile": "mixed-responses.jsonl"
+        },
+        {
+          "name": "request-timeout",
+          "status": "PASS",
+          "terminatedPid": 229819,
+          "replacement": {
+            "pid": 229831,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 15432,
+            "virtualKiB": 442756,
+            "idleWaitSeconds": 0.00771292089484632,
+            "transientThreadsBeforeReaping": 1
+          }
+        }
+      ],
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1",
+      "analysis": {
+        "waitRecords": 352,
+        "nativeCalls": 32,
+        "nativeCallsWithLongWait": 27,
+        "matchedWaits": 27,
+        "largestMatchedWaits": [
+          {
+            "request": "752",
+            "nativeElapsedNs": 107476247,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223278,
+              "tid": 223278,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586463313251734,
+              "finishedMonotonicNs": 1586463400955510,
+              "elapsedNs": 87703776,
+              "threadCpuNs": 20240
+            }
+          },
+          {
+            "request": "754",
+            "nativeElapsedNs": 85603297,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223310,
+              "tid": 223310,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586463312686509,
+              "finishedMonotonicNs": 1586463398061520,
+              "elapsedNs": 85375011,
+              "threadCpuNs": 20150
+            }
+          },
+          {
+            "request": "786",
+            "nativeElapsedNs": 83156470,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223278,
+              "tid": 223278,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586465951741616,
+              "finishedMonotonicNs": 1586466034521766,
+              "elapsedNs": 82780150,
+              "threadCpuNs": 28320
+            }
+          },
+          {
+            "request": "753",
+            "nativeElapsedNs": 82814942,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223277,
+              "tid": 223277,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586463316835353,
+              "finishedMonotonicNs": 1586463399496010,
+              "elapsedNs": 82660657,
+              "threadCpuNs": 19000
+            }
+          },
+          {
+            "request": "785",
+            "nativeElapsedNs": 78463832,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223277,
+              "tid": 223277,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586465956438095,
+              "finishedMonotonicNs": 1586466034736582,
+              "elapsedNs": 78298487,
+              "threadCpuNs": 20760
+            }
+          },
+          {
+            "request": "800",
+            "nativeElapsedNs": 77700442,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 4,
+              "errno": 11,
+              "startedMonotonicNs": 1586467754947480,
+              "finishedMonotonicNs": 1586467832306093,
+              "elapsedNs": 77358613,
+              "threadCpuNs": 26850
+            }
+          },
+          {
+            "request": "785",
+            "nativeElapsedNs": 74180935,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223277,
+              "tid": 223277,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586465798122403,
+              "finishedMonotonicNs": 1586465872149123,
+              "elapsedNs": 74026720,
+              "threadCpuNs": 18820
+            }
+          },
+          {
+            "request": "784",
+            "nativeElapsedNs": 73792243,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223310,
+              "tid": 223310,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586465980485715,
+              "finishedMonotonicNs": 1586466054050352,
+              "elapsedNs": 73564637,
+              "threadCpuNs": 21870
+            }
+          },
+          {
+            "request": "765",
+            "nativeElapsedNs": 119357874,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 2,
+              "errno": 11,
+              "startedMonotonicNs": 1586464453339522,
+              "finishedMonotonicNs": 1586464523921198,
+              "elapsedNs": 70581676,
+              "threadCpuNs": 37530
+            }
+          },
+          {
+            "request": "788",
+            "nativeElapsedNs": 69071734,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1586466352881177,
+              "finishedMonotonicNs": 1586466421776197,
+              "elapsedNs": 68895020,
+              "threadCpuNs": 26320
+            }
+          },
+          {
+            "request": "806",
+            "nativeElapsedNs": 68933931,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223278,
+              "tid": 223278,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586468136742560,
+              "finishedMonotonicNs": 1586468205463605,
+              "elapsedNs": 68721045,
+              "threadCpuNs": 29110
+            }
+          },
+          {
+            "request": "766",
+            "nativeElapsedNs": 68554470,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223278,
+              "tid": 223278,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586464451944324,
+              "finishedMonotonicNs": 1586464519802815,
+              "elapsedNs": 67858491,
+              "threadCpuNs": 355980
+            }
+          },
+          {
+            "request": "790",
+            "nativeElapsedNs": 67352257,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223310,
+              "tid": 223310,
+              "timeoutMs": 5,
+              "result": 3,
+              "errno": 11,
+              "startedMonotonicNs": 1586466353980578,
+              "finishedMonotonicNs": 1586466421000345,
+              "elapsedNs": 67019767,
+              "threadCpuNs": 50050
+            }
+          },
+          {
+            "request": "789",
+            "nativeElapsedNs": 66509334,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223277,
+              "tid": 223277,
+              "timeoutMs": 5,
+              "result": 1,
+              "errno": 11,
+              "startedMonotonicNs": 1586466357257087,
+              "finishedMonotonicNs": 1586466423583566,
+              "elapsedNs": 66326479,
+              "threadCpuNs": 26870
+            }
+          },
+          {
+            "request": "808",
+            "nativeElapsedNs": 63393789,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223277,
+              "tid": 223277,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586468499046286,
+              "finishedMonotonicNs": 1586468562310901,
+              "elapsedNs": 63264615,
+              "threadCpuNs": 26850
+            }
+          },
+          {
+            "request": "764",
+            "nativeElapsedNs": 63649266,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223310,
+              "tid": 223310,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586464452430377,
+              "finishedMonotonicNs": 1586464514672944,
+              "elapsedNs": 62242567,
+              "threadCpuNs": 34890
+            }
+          },
+          {
+            "request": "809",
+            "nativeElapsedNs": 61951459,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223278,
+              "tid": 223278,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586468498885991,
+              "finishedMonotonicNs": 1586468560520992,
+              "elapsedNs": 61635001,
+              "threadCpuNs": 21980
+            }
+          },
+          {
+            "request": "765",
+            "nativeElapsedNs": 61060854,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586464196215401,
+              "finishedMonotonicNs": 1586464257084360,
+              "elapsedNs": 60868959,
+              "threadCpuNs": 52028240
+            }
+          },
+          {
+            "request": "805",
+            "nativeElapsedNs": 70771570,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586468221721411,
+              "finishedMonotonicNs": 1586468281508570,
+              "elapsedNs": 59787159,
+              "threadCpuNs": 51070
+            }
+          },
+          {
+            "request": "810",
+            "nativeElapsedNs": 59548524,
+            "wait": {
+              "type": "wait",
+              "operation": "epoll_wait",
+              "pid": 223279,
+              "tid": 223279,
+              "timeoutMs": 5,
+              "result": 0,
+              "errno": 11,
+              "startedMonotonicNs": 1586468501155953,
+              "finishedMonotonicNs": 1586468560473461,
+              "elapsedNs": 59317508,
+              "threadCpuNs": 27380
+            }
+          }
+        ],
+        "fatalRequestCalls": [],
+        "files": {
+          "waits.jsonl": {
+            "sha256": "e2ac441af5665e8da88a29689de3633dd0977ba9d7ff628482a7782dda2cdb7c",
+            "bytes": 79230
+          },
+          "native-polls.jsonl": {
+            "sha256": "5ed002742fed18b18f06d9799ddcb32340b010e8bcfe37931c1b01a38b08c190",
+            "bytes": 6769
+          },
+          "fatal-requests.jsonl": {
+            "sha256": "d530871fb0418069d18aafbecc004d0939000b33b3375015993bbc920cc1236a",
+            "bytes": 35400
+          }
+        },
+        "boundary": "Top 20 matched waits retained; complete raw logs preserved. Only waits above 50ms are logged. Unmatched time is not automatically blocking or CPU work. Intervals include descheduling near libc call entry/exit and measurement overhead; this is not a kernel off-CPU trace. Temporary index uses a 2MiB SQLite page cache; 256MiB/file, one million records/file, 64KiB lines, 4096 native PIDs, 4096 fatal records and 1024 fatal-call summaries are hard failure bounds. The cache size is not a total process memory limit."
+      }
+    }
+  ],
+  "checks": {
+    "wait-probe-validation-r1": {
+      "report.json": [
+        {
+          "command": [
+            "python3",
+            "tests/soak/test_wait_probe.py"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "python3",
+            "tests/soak/test_poll_profile.py"
+          ],
+          "exit": 0
+        }
+      ],
+      "profile-matrix.json": [
+        {
+          "version": "PHP 8.3.36 (cli) (built: Oct 21 2026 14:32:55) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.36, Copyright (c) Zend Technologies\n",
+          "exit": 0
+        },
+        {
+          "version": "PHP 8.4.27 (cli) (built: Oct 21 2026 14:35:21) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.4.27, Copyright (c) Zend Technologies\n",
+          "exit": 0
+        }
+      ]
+    },
+    "wait-probe-sanitizers-r1": {
+      "report.json": [
+        {
+          "command": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-g",
+            "-O1",
+            "-fno-omit-frame-pointer",
+            "-fsanitize=address,undefined",
+            "-shared",
+            "-fPIC",
+            "tests/soak/wait_probe.c",
+            "-ldl",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/probe.so"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-g",
+            "-O1",
+            "-fno-omit-frame-pointer",
+            "-fsanitize=address,undefined",
+            "-pthread",
+            "tests/soak/wait_probe_control.c",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/control"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/control"
+          ],
+          "exit": 0,
+          "environment": {
+            "LD_PRELOAD": "/usr/lib/gcc/x86_64-linux-gnu/13/libasan.so:/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/probe.so",
+            "ASYNCARA_WAIT_LOG": "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/plain.jsonl",
+            "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+            "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+          }
+        },
+        {
+          "command": [
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/control",
+            "threads"
+          ],
+          "exit": 0,
+          "environment": {
+            "LD_PRELOAD": "/usr/lib/gcc/x86_64-linux-gnu/13/libasan.so:/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/probe.so",
+            "ASYNCARA_WAIT_LOG": "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-sanitizers-r1/threads.jsonl",
+            "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+            "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+          }
+        }
+      ]
+    },
+    "wait-probe-tsan-r1": {
+      "report.json": [
+        {
+          "command": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-g",
+            "-O1",
+            "-fno-omit-frame-pointer",
+            "-fsanitize=thread",
+            "-shared",
+            "-fPIC",
+            "tests/soak/wait_probe.c",
+            "-ldl",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-tsan-r1/probe.so"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "cc",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-g",
+            "-O1",
+            "-fno-omit-frame-pointer",
+            "-fsanitize=thread",
+            "-pthread",
+            "-no-pie",
+            "tests/soak/wait_probe_control.c",
+            "-o",
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-tsan-r1/control"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "setarch",
+            "x86_64",
+            "-R",
+            "env",
+            "TSAN_OPTIONS=halt_on_error=1",
+            "LD_PRELOAD=/usr/lib/gcc/x86_64-linux-gnu/13/libtsan.so:/tmp/asyncara-phase4-nrtjh3t1/wait-probe-tsan-r1/probe.so",
+            "ASYNCARA_WAIT_LOG=/tmp/asyncara-phase4-nrtjh3t1/wait-probe-tsan-r1/waits.jsonl",
+            "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-tsan-r1/control",
+            "threads"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    "wait-probe-static-r1": {
+      "report.json": {
+        "command": [
+          "cc",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fanalyzer",
+          "-shared",
+          "-fPIC",
+          "tests/soak/wait_probe.c",
+          "-ldl",
+          "-o",
+          "/tmp/asyncara-phase4-nrtjh3t1/wait-probe-static-r1/probe.so"
+        ],
+        "exit": 0
+      }
+    }
+  },
+  "rawFiles": {
+    "fpm-wait-probe-r1/analysis.json": {
+      "bytes": 9440,
+      "sha256": "b2ab35422829d10f8f2db19016a78bc7e53e4b29be3562368b4bb7c44644df15"
+    },
+    "fpm-wait-probe-r1/waits.jsonl": {
+      "bytes": 220025,
+      "sha256": "329e04839a8123a2aecfaa79468b49c5dfa7ea48b83d10fedf2b0d2916cadd1f"
+    },
+    "fpm-wait-probe-r1/probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-wait-probe-r1/analysis-current.json": {
+      "bytes": 9525,
+      "sha256": "673ca1b6c44d5983b55f71ec29227d7812a656c6f680d98f4165b38da94bb9af"
+    },
+    "fpm-wait-probe-r1/native-polls.jsonl": {
+      "bytes": 49886,
+      "sha256": "9fdd6b3663d9a0c7f9e5980a7433efa68b588b1bbd6c6ebee89efaf68b6db56b"
+    },
+    "fpm-wait-probe-r1/report.json": {
+      "bytes": 2346,
+      "sha256": "e37283ab88f9e0c5090d300259d75139967a85cfaea899be6fb51282f6ad53fe"
+    },
+    "fpm-wait-probe-r1/fpm_poll_profile.php": {
+      "bytes": 2059,
+      "sha256": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699"
+    },
+    "fpm-wait-probe-r1/fpm.log": {
+      "bytes": 282,
+      "sha256": "288d0005515e7fa86d05beb1c54b6c4f36cbbc2d4f816f48971cb18ce4cb6c5a"
+    },
+    "fpm-wait-probe-r1/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-wait-probe-r1/responses.jsonl": {
+      "bytes": 5985305,
+      "sha256": "c321b4a41c9dc51eea7c40dd9cad262fe2f451bf17917053f5df8073feb0f5b3"
+    },
+    "fpm-wait-probe-r2/analysis.json": {
+      "bytes": 9534,
+      "sha256": "7c3b9b57497ce1a6be922b193e8e406dd33e9b2541e2907ebb8ba4f3616283a1"
+    },
+    "fpm-wait-probe-r2/waits.jsonl": {
+      "bytes": 1058525,
+      "sha256": "0f52eed2f7d801e91123fb767dd9a6117e3590ed07fb2cdc723c25647b9460e9"
+    },
+    "fpm-wait-probe-r2/probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-wait-probe-r2/native-polls.jsonl": {
+      "bytes": 210934,
+      "sha256": "5ca609497cebd9ab000a64c2880eb0c5412df4c72dca3d461fc428688bcbe082"
+    },
+    "fpm-wait-probe-r2/report.json": {
+      "bytes": 2383,
+      "sha256": "b445deeef5c9a0c5c3a6ba3ff62b09e50a4d3572d76bfe7d4aab3a68c68d6972"
+    },
+    "fpm-wait-probe-r2/fpm_poll_profile.php": {
+      "bytes": 2059,
+      "sha256": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699"
+    },
+    "fpm-wait-probe-r2/fpm.log": {
+      "bytes": 282,
+      "sha256": "2683c8b6049338a660138959e3aa3385464bacaf8b516320a82ff08b4df4ae25"
+    },
+    "fpm-wait-probe-r2/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-wait-probe-r2/responses.jsonl": {
+      "bytes": 30984489,
+      "sha256": "8ee4865bb8c48d5d757da97cef617c7e8db9642acc396a377eb49ddefbd70386"
+    },
+    "fpm-full-wait-probe-r1/launch.json": {
+      "bytes": 1271,
+      "sha256": "0718cc95c28dcd44e19cc8d305290cd45d5e879f7ae1350a35e526dddbb5ca06"
+    },
+    "fpm-full-wait-probe-r1/analysis.json": {
+      "bytes": 9607,
+      "sha256": "90889357a66f4934c48eee99026ef0962a33667fe4cfbf386c95ed186ed036eb"
+    },
+    "fpm-full-wait-probe-r1/waits.jsonl": {
+      "bytes": 79230,
+      "sha256": "e2ac441af5665e8da88a29689de3633dd0977ba9d7ff628482a7782dda2cdb7c"
+    },
+    "fpm-full-wait-probe-r1/driver.log": {
+      "bytes": 144,
+      "sha256": "740b6db5b4c5092805bd8890bdc6c58b4292aaf5a4c7befb05da6767b22e3fe6"
+    },
+    "fpm-full-wait-probe-r1/completion.json": {
+      "bytes": 121,
+      "sha256": "c8eab73bedc5fbe5cd19553502450210a63ad9efc5112b90781c9b50451cd930"
+    },
+    "fpm-full-wait-probe-r1/native-polls.jsonl": {
+      "bytes": 6769,
+      "sha256": "5ed002742fed18b18f06d9799ddcb32340b010e8bcfe37931c1b01a38b08c190"
+    },
+    "fpm-full-wait-probe-r1/fpm-wrapper.py": {
+      "bytes": 577,
+      "sha256": "9e793f7ce7c5fb008d69cc6e2353a91e35c868f7fdd57b7e5088a04e4e23f623"
+    },
+    "fpm-full-wait-probe-r1/fpm_poll_profile.php": {
+      "bytes": 2059,
+      "sha256": "bf2f4c63dda0f0c75aab5e491406ccf71f97df9df69257681590a4ccd48d5699"
+    },
+    "fpm-full-wait-probe-r1/fatal-requests.jsonl": {
+      "bytes": 35400,
+      "sha256": "d530871fb0418069d18aafbecc004d0939000b33b3375015993bbc920cc1236a"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-responses.jsonl": {
+      "bytes": 1963044,
+      "sha256": "86e8fe1edbba080fdc254e2288717e3951cbe32dda20485c11d1918455c3c5c8"
+    },
+    "fpm-full-wait-probe-r1/workload/report.json": {
+      "bytes": 448934,
+      "sha256": "148a7aa7572d2201f301c8c49969ae02747896026c95dbe6b4165ce40ee3fada"
+    },
+    "fpm-full-wait-probe-r1/workload/os-processes.jsonl": {
+      "bytes": 17542,
+      "sha256": "fbaf92f3659567c46dafb5865081e05caa5c73c3c6f2cdd993d936b5b2af9dc0"
+    },
+    "fpm-full-wait-probe-r1/workload/provenance.json": {
+      "bytes": 1007,
+      "sha256": "ef2f3b43a0ca6007eefda73567f22fbdfe6df1bf1634aa7332382d91a86eb0a9"
+    },
+    "fpm-full-wait-probe-r1/workload/fatal-warmup.json": {
+      "bytes": 21781,
+      "sha256": "1a9e16b61cc289e5be72201c887764d7a94df3c3c299489171283e49e484ab5c"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-samples.jsonl": {
+      "bytes": 166945,
+      "sha256": "3edcdf05e716808df47a2f06334bf20bfb080c918db4faf5d35b2ed4edc70df9"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-growth.json": {
+      "bytes": 711,
+      "sha256": "63b64d13c584d0a84d2925fb3ac8aa039029ba2a6dfe6274b7e2ca51ce69b74a"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-reload-kill/error.log": {
+      "bytes": 1304,
+      "sha256": "1305507fba74c394b66b68cb8b1e02b303787fa2da8c48cb2f2d69a3c6701f53"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-reload-kill/php-errors.log": {
+      "bytes": 37312,
+      "sha256": "13b33b485b4c3a654fde064d460cb71825bf566396920e870648bd130950d428"
+    },
+    "fpm-full-wait-probe-r1/workload/mixed-reload-kill/startup.log": {
+      "bytes": 78,
+      "sha256": "56fb05f846a2f5b684438602850ce4a54fe402b9e732c0d9d79f6b348847b5bf"
+    },
+    "fpm-full-wait-probe-r1/workload/C-multiple-workers/error.log": {
+      "bytes": 282,
+      "sha256": "ceac3b8ff4810fcf355133eeaeeab515ea61edb88730d7308faf4082fd1aa590"
+    },
+    "fpm-full-wait-probe-r1/workload/C-multiple-workers/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-full-wait-probe-r1/workload/recycling/error.log": {
+      "bytes": 628,
+      "sha256": "7ce84364873ad318a7c62086efc0c132c61399a670d626b23f57d805861d28e3"
+    },
+    "fpm-full-wait-probe-r1/workload/recycling/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-full-wait-probe-r1/workload/A-lifecycle/error.log": {
+      "bytes": 282,
+      "sha256": "6a6eb2c6bf0d254d8945565386ae5bedaa3cb8c397eeb0b2a0abb7dcc94a6939"
+    },
+    "fpm-full-wait-probe-r1/workload/A-lifecycle/php-errors.log": {
+      "bytes": 352,
+      "sha256": "6fc3bc6a70c4e9250cee45201efe0b2a58451dc45a478d952eb0763d3568359a"
+    },
+    "fpm-full-wait-probe-r1/workload/A-lifecycle/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-full-wait-probe-r1/workload/D-streaming/error.log": {
+      "bytes": 282,
+      "sha256": "bffc2372d2b54d9876ae1dc93e83c943608631a07cdfdec9e8281cb3fdac72a8"
+    },
+    "fpm-full-wait-probe-r1/workload/D-streaming/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-full-wait-probe-r1/workload/B-within-request/error.log": {
+      "bytes": 282,
+      "sha256": "035d9e0e048121300e27d80bfc52e5a69632e38ea47f80febce45278234b8251"
+    },
+    "fpm-full-wait-probe-r1/workload/B-within-request/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-full-wait-probe-r1/workload/request-timeout/error.log": {
+      "bytes": 686,
+      "sha256": "04be82878e6487b85b99f152cb7bf757bdd302d883501defebad1dd1bf3d0b3a"
+    },
+    "fpm-full-wait-probe-r1/workload/request-timeout/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-validation-r1/analysis-final.log": {
+      "bytes": 102,
+      "sha256": "d735bef7e5fb2d1de683604e057398f197e3ea9a7ecd7fa133d5f404ac558dde"
+    },
+    "wait-probe-validation-r1/profile-8.4.log": {
+      "bytes": 98,
+      "sha256": "9d770f6615276ff4de7d7555ea471a2ece7904b4f84d4e2c2b8e7bf4313d2845"
+    },
+    "wait-probe-validation-r1/analysis-current.log": {
+      "bytes": 103,
+      "sha256": "d219ad6e0d9cb3d3206a11751c7e6995d2e850de11d8f3144007268716653004"
+    },
+    "wait-probe-validation-r1/analysis.log": {
+      "bytes": 102,
+      "sha256": "95372458801a0f43248c5b5709fa8122ceeb897df5f32a6b3d9fee6500bdcf47"
+    },
+    "wait-probe-validation-r1/profile-8.3.log": {
+      "bytes": 98,
+      "sha256": "38474e2b1cb567a48d230591db84af140ac2258dd239910bb20bba42f19be2a2"
+    },
+    "wait-probe-validation-r1/probe.log": {
+      "bytes": 101,
+      "sha256": "8ac5efaa9144003914656777cb73b8abba8ceaa371548dbb285de748e9a75e28"
+    },
+    "wait-probe-validation-r1/profile.log": {
+      "bytes": 98,
+      "sha256": "6ab7163adad11a9b8bf54b24f4cdb483afb8dc6506af77eb4fb58b94a28c81a6"
+    },
+    "wait-probe-validation-r1/report.json": {
+      "bytes": 209,
+      "sha256": "1e0e73b1d0169c7f5cad85f033c72c376459c48fcfb7fcf580a394d843ef98a4"
+    },
+    "wait-probe-validation-r1/profile-matrix.json": {
+      "bytes": 378,
+      "sha256": "a93fb46213d4736296ce6f79a2eedaea40764f8ffb4f2f07f8743680988c7104"
+    },
+    "wait-probe-sanitizers-r1/control": {
+      "bytes": 62960,
+      "sha256": "ae6a7023417b9661d1c6554e5cf24a86b4f4139eb53026911bad7be9d315d387"
+    },
+    "wait-probe-sanitizers-r1/plain.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-sanitizers-r1/probe.so": {
+      "bytes": 34504,
+      "sha256": "d6593605882824aa4ab81f8ae7ebd4874055217e390b2cb05ad70bc920555916"
+    },
+    "wait-probe-sanitizers-r1/build-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-sanitizers-r1/plain.stdout": {
+      "bytes": 42,
+      "sha256": "8b7bb40c7330f2fb25698103c5ad9db4ba93b7c5c5d77f1d8847e212c98da2f4"
+    },
+    "wait-probe-sanitizers-r1/threads.jsonl": {
+      "bytes": 1825,
+      "sha256": "e8a4341bb5d6518ff8382ae2ecb7417fe6afa6ee72cff3f79c4db703e7cd9c61"
+    },
+    "wait-probe-sanitizers-r1/report.json": {
+      "bytes": 1753,
+      "sha256": "6dda192b9909f9688e1181232b8ce6be4a0894ac604b1637f22314696f8bc949"
+    },
+    "wait-probe-sanitizers-r1/build-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-sanitizers-r1/threads.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-sanitizers-r1/plain.jsonl": {
+      "bytes": 497,
+      "sha256": "45aa846854fe2c8b9c678e9ce550b2e487901f9aa0698e796e45d663f69e2564"
+    },
+    "wait-probe-sanitizers-r1/threads.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-tsan-r1/control": {
+      "bytes": 32368,
+      "sha256": "0aada3eed6a972956ad641da6e235f66dd50904657373310f78b58b33023f8a8"
+    },
+    "wait-probe-tsan-r1/probe.so": {
+      "bytes": 26368,
+      "sha256": "4f5b7bf088797d77c312022361df00b50894cfc8614f2ffbf2fac83dec65c453"
+    },
+    "wait-probe-tsan-r1/waits.jsonl": {
+      "bytes": 1821,
+      "sha256": "5de5f413de1f806143cf3159f4e7e7978dfd85dd6edc537c4ba066da08277431"
+    },
+    "wait-probe-tsan-r1/build-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-tsan-r1/report.json": {
+      "bytes": 1170,
+      "sha256": "5db6f3cfe28ce8d5c0cc302ac81e5ba6cf48641f996420a032653134ed85c0a8"
+    },
+    "wait-probe-tsan-r1/build-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-tsan-r1/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-tsan-r1/stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-static-r1/probe.so": {
+      "bytes": 16544,
+      "sha256": "49e26c78f57ff8cfe0f5d70e3e23f6e9f64a99cb9ad0126c8d21f56b929c74f4"
+    },
+    "wait-probe-static-r1/analysis.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "wait-probe-static-r1/report.json": {
+      "bytes": 270,
+      "sha256": "1feb232e587e278339266c50d645de51fa282d1a539cc7973777e545c58ce95c"
+    }
+  },
+  "validationScope": {
+    "probe": "3 real native forwarding/concurrency/error/descriptor tests, warning-free compilation; GCC ASan/UBSan, TSan and static analysis on probe/control, not a new full-runtime sanitizer campaign.",
+    "analysis": "5 tests: interval containment/thread identity, malformed/duplicate input, capacities, temporary-index closure with GC disabled.",
+    "phpWrapper": "Forwarding/exception/fatal and monotonic boundary regression on PHP 8.3.36, 8.4.27, 8.5.12; actual FPM probe workloads only 8.5.12 NTS epoll.",
+    "initialCompilerFinding": "First -Werror build rejected the ignored return value of diagnostic stderr write. Repaired with checked partial-write/EINTR handling; no warning suppressed."
+  },
+  "boundary": "Readiness waits are timed around public libc calls, including nearby descheduling and clock overhead. No exact kernel/off-CPU attribution, production latency guarantee or reproduction of the earlier untraced failed request. Thresholds unchanged; six-/24-hour FPM remains unexecuted.",
+  "releaseClassification": "EXPERIMENTAL"
+}
