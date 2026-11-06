@@ -82,6 +82,10 @@ WORKLOG.md. The latest67e4530 hosted mixed/FPM hour and all four CI jobs also pa
 native/public runtime is unchanged from r4. No uninstrumented local retry is
 currently running. Use the verified direct probe for the next full lifecycle
 diagnostic; keep its instrumentation scope separate from endurance certification.
+That one-hour diagnostic started November6 at17:49:09Z on frozen f2abb55 with
+tools7e104c0. Observe `fpm-full-wait-probe-r2/state.json` under the existing evidence
+root; its launch attestation is in phase4/fpm-wait-hour-launch.json. No completed
+hour or automatic six-/24-hour advancement is claimed.
 
 1. Complete the frozen FPM-only one-/six-/24-hour chain without weakening checks; hosted one-hour success and mixed 24-hour success remain separate evidence. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

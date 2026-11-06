@@ -23,6 +23,10 @@ The direct libc wait probe subsequently passed 180s and 900s diagnostics and a
 60s full lifecycle smoke. Those instrumented tests do not erase the uninstrumented
 failures or satisfy the longer endurance gates. Reproduction and measurement
 limitations are in [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md).
+The one-hour instrumented full lifecycle diagnostic launched November6 at
+17:49:09Z; state is `fpm-full-wait-probe-r2/state.json` under the Phase4 evidence
+directory. This is a separate diagnostic, with unchanged assertions and no
+automatic advancement of the uninstrumented endurance chain.
 
 The existing `tests/stress.php` and FPM audit remain intact. The new
 `tests/soak/run.py` creates an isolated source snapshot, copies the current native

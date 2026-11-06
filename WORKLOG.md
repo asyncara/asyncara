@@ -1136,3 +1136,28 @@ remains5f479eb313a4b9a82aa8d8425d59724bbe9359c39181ef4d81d033cadc8a8cb8.
 No replacement archive/release or production feature is claimed. Next: checkpoint
 these tools, then launch the one-hour instrumented full lifecycle diagnostic on
 the original frozen runtime/binary with unchanged assertions. EXPERIMENTAL.
+
+## Instrumented FPM hour launched — 2026-11-06 17:49 UTC
+
+Committed tools and completed evidence at
+7e104c042a31f628aa47c406f6d8af380b40d17c. Rechecked all82 raw-file hashes and
+confirmed all107 fatal records in the full smoke were intended memory-exhaustion
+errors. Frozen f2abb55 is clean and native/public runtime remains unchanged.
+The unrelated untracked bash file remains untouched and unstaged.
+
+Prepared a new private output directory, fpm-full-wait-probe-r2, under the
+existing Phase4 evidence root. Copied the verified probe, PHP profile and bounded
+analyzer; generated an explicit-argument FPM exec wrapper. Detached supervisor
+317320 started at17:49:09.174192Z; runner317328 executes the original frozen
+tests/soak/fpm.py --seconds3600 --output <directory>/workload. Its source manifest,
+archive, original native binary, PHP/FPM executables and instrumentation are
+fingerprinted before/after. Probe errors and analyzer failures prevent PASS.
+The supervisor runs only this diagnostic hour; no six-/24-hour stage is scheduled.
+
+Raw state: /tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2/state.json.
+docs/phase4/fpm-wait-hour-launch.json preserves launch state, exact supervisor/
+wrapper sources, PID/start identity and environment including52 linked-library
+file hashes. Initial A/B/C/D checks pass. The run remains RUNNING; no completed
+hour is claimed. Keep instrumentation scope distinct from uninstrumented
+endurance and retain all earlier local failures. No system configuration or
+native/public runtime code changed. Release remains EXPERIMENTAL.

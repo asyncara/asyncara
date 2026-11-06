@@ -388,3 +388,14 @@ initialization, clock or logging error was found. Its107 fatal records are
 deliberate fault cases; fatal PHP memory exhaustion does not become recoverable.
 These checks are in [probe evidence](phase4/wait-probe.json). They do not satisfy
 the one-hour or longer uninstrumented FPM endurance gates.
+
+A one-hour instrumented full lifecycle diagnostic started November6 at17:49:09Z,
+using the original frozen f2abb55 runtime, original native binary and checkpointed
+tools7e104c0. It retains all original assertions and records call/wait intervals
+through recycling, reload, fatal requests and shutdown. A detached supervisor
+checks immutable source/binaries, completed duration, probe-error logs and offline
+analysis before reporting a result. [Launch provenance](phase4/fpm-wait-hour-launch.json)
+includes its exact code and environment. Live state is
+`/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2/state.json`.
+It is currently RUNNING, with no completed-hour claim; the six-/24-hour
+uninstrumented stages remain unstarted.

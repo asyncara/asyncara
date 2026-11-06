@@ -19,6 +19,7 @@ for the configuration below; broader FPM and compatibility gates remain incomple
 | Local FPM-only retry | unchanged frozen `f2abb55` | FAIL: responsiveness; last sample998.680s /12,568 recorded main requests |
 | Latest hosted verification | `67e4530`; runtime unchanged from r4 | Four PHP/database jobs PASS; mixed hour27,694cycles; FPM hour67,740mainrequests |
 | Direct wait-probe diagnostics | runtime unchanged from r4; instrumented test tools | PASS180.039s/2,348requests and900.052s/12,152requests; full lifecycle smoke60.170s/836mainrequests |
+| Instrumented full FPM hour | frozen `f2abb55` runtime/binary; tools `7e104c0` | RUNNING from November6,17:49:09Z; no completion claimed |
 | Six-/24-hour FPM | — | NOT EXECUTED; local preceding stage must pass |
 
 The local mixed scope includes separate Oracle and MariaDB fixtures. Hosted mixed
@@ -177,7 +178,14 @@ use8.5.12 NTS/epoll. These do not constitute a new full-runtime sanitizer campai
 commands, exact tool hashes, results and boundaries; [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md)
 documents reproduction. Native/public runtime and historical artifacts remain
 unchanged. The interrupted session had not launched the intended instrumented
-hour; its eventual launch must be recorded separately.
+hour. After checkpointing the tools at `7e104c042a31f628aa47c406f6d8af380b40d17c`,
+a detached supervisor launched that diagnostic at November6,17:49:09Z.
+[Launch attestation](phase4/fpm-wait-hour-launch.json) preserves its exact source,
+wrapper, source manifest, binaries, environment and initial process identity.
+Live state: `/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2/state.json`.
+This single instrumented hour does not automatically advance to uninstrumented
+six-/24-hour FPM stages. The supervisor checks the original duration/lifecycle
+assertions, source and binary fingerprints, probe errors and completed-log analysis.
 
 ## Corrected r4 distribution and current freeze
 
