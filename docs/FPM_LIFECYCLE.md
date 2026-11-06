@@ -423,3 +423,12 @@ all original wait matches and finds no profiler-write warnings. The active
 one-hour run still uses its unchanged7e104c0 private tools. Once it finishes,
 review the original warning paths and run the stricter analyzer into a new
 output file. No FPM campaign with the newly changed PHP profiler is claimed yet.
+
+That post-run check is now queued by a detached private supervisor, with exact
+code/hashes in [launch provenance](phase4/profile-log-review-launch.json).
+Follow `fpm-full-wait-probe-r2-review/state.json` in the existing evidence root.
+It verifies the original source/binary result and library hashes, scans old
+logging warnings, and preserves the hardened analysis separately. On a passing
+hour only, it runs one60s full lifecycle smoke in `fpm-full-wait-probe-r3` using
+the corrected profiler at a3d6f7d. It is currently waiting, so neither follow-up
+completion nor longer uninstrumented endurance is claimed.

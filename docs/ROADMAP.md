@@ -90,6 +90,10 @@ hour or automatic six-/24-hour advancement is claimed.
 The later profiler-write repair does not modify that campaign's private tools;
 check its completed logs with the hardened analyzer before accepting measurement
 evidence. See phase4/profile-log-errors.json for the reproduced tool failures.
+The detached `fpm-full-wait-probe-r2-review/state.json` checker waits for that
+terminal result, verifies the old warning paths, and queues one60s full lifecycle
+smoke of the repaired profiler only after an instrumented-hour PASS. Its exact
+code is retained in phase4/profile-log-review-launch.json. No longer stage starts.
 
 1. Complete the frozen FPM-only one-/six-/24-hour chain without weakening checks; hosted one-hour success and mixed 24-hour success remain separate evidence. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

@@ -200,6 +200,17 @@ The latest push is verified by the Git remote. Subsequent unauthenticated GitHub
 API reads returned404 on November6; new hosted job status is not verified. This
 does not revise the already downloaded and checked67e4530 hosted results.
 
+A detached post-run checker started at18:05:21Z, in
+`/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2-review`. It waits for the
+original terminal state without altering that run. It then verifies the frozen
+artifacts and52 library hashes, rejects original profiler-write warnings, and
+runs the hardened analyzer to a new result. Only a passing instrumented hour
+allows the separate60s full lifecycle regression at `fpm-full-wait-probe-r3`,
+using checkpointa3d6f7d instrumentation and the original frozen runtime/binary.
+[Follow-up launch provenance](phase4/profile-log-review-launch.json) retains the
+exact checker and supervisor sources. The checker is WAITING_FOR_HOUR; the new
+smoke has not started. This does not schedule or certify longer endurance.
+
 ## Corrected r4 distribution and current freeze
 
 Implemented, independently tested, packaged and pushed source:

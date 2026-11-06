@@ -1199,3 +1199,29 @@ tools7e104c0. Review its original warning paths and rerun the hardened analyzer
 after completion. No full FPM run with the changed profiler is claimed; no
 six-/24-hour local FPM run or release promotion follows. Preserve the unrelated
 untracked bash file. Release remains EXPERIMENTAL.
+
+## Post-hour review queued — 2026-11-06 18:05 UTC
+
+Committed/pushed the logging-error repair at
+a3d6f7dae64b17819ce5eaa23221759862c41577. Prepared separate private directories
+fpm-full-wait-probe-r2-review and fpm-full-wait-probe-r3 without modifying the
+running hour. Copied the checkpointed analyzer/profile, original probe and
+verified full-lifecycle supervisor. Recorded all prepared file/binary hashes and
+the52 libraries recorded at hour launch. The full smoke still uses frozen
+f2abb55/native0bfeb954; only its test instrumentation changes to a3d6f7d.
+
+Detached checker419196 started18:05:21.024594Z and reports WAITING_FOR_HOUR.
+It checks original supervisor PID/start identity while waiting, with a90min
+deadline; no signals or workload mutation. On terminal state it validates
+artifacts/libraries, runs the corrected analyzer, and scans the old profile's
+ordinary write/encoding warnings. Only an original PASS with unchanged identity
+allows one60s full lifecycle regression smoke. Failure stops progression and
+retains reports; no uninstrumented one-/six-/24-hour stage is scheduled.
+
+Python compilation passes for the private checker/supervisor/wrapper. Launch
+logs are empty and the original campaign remains RUNNING. Exact sources and
+launch state are preserved in docs/phase4/profile-log-review-launch.json.
+No completed follow-up or new FPM profiler pass is claimed. Next review both
+state files after the hour, inspect matched intervals if it fails, and validate
+the full regression smoke if it runs. Native/public runtime and historical r4
+archive remain unchanged; release remains EXPERIMENTAL.
