@@ -13,6 +13,42 @@ import sqlite3
 import tempfile
 
 MAX_FILE_BYTES = 256 * 1024 * 1024
+MAX_DIAGNOSTIC_LOGS = 4096
+ERROR_LOG_NAMES = {'error.log', 'php-errors.log', 'startup.log', 'fpm.log'}
+ERROR_MARKERS = (b'Asyncara wait probe failed:', b'Asyncara poll profile failed:')
+
+
+def diagnostic_log_files(folder):
+    files = {}
+    for path in folder.rglob('*.log'):
+        if path.name not in ERROR_LOG_NAMES:
+            continue
+        if len(files) >= MAX_DIAGNOSTIC_LOGS:
+            raise ValueError('Diagnostic error-log capacity exceeded')
+        files[path.relative_to(folder).as_posix()] = path
+    return files
+
+
+def check_diagnostic_logs(folder):
+    """Expected PHP OOM cases cannot hide a failed measurement logger."""
+    files = diagnostic_log_files(folder)
+    initial = {name: fingerprint(path) for name, path in files.items()}
+    for path in files.values():
+        size = 0
+        with path.open('rb') as stream:
+            for count in range(1_000_001):
+                line = stream.readline(65537)
+                if not line:
+                    break
+                size += len(line)
+                if count == 1_000_000 or len(line) > 65536 or size > MAX_FILE_BYTES:
+                    raise ValueError('Diagnostic error-log capacity exceeded: ' + str(path))
+                if any(marker in line for marker in ERROR_MARKERS):
+                    raise ValueError('Diagnostic instrumentation failed: ' + str(path))
+    final = {name: fingerprint(path) for name, path in diagnostic_log_files(folder).items()}
+    if initial != final:
+        raise ValueError('Error logs changed during analysis; wait for diagnostic completion')
+    return initial
 
 
 def records(path, maximum=1_000_000):
@@ -61,6 +97,7 @@ def fingerprint(path):
 
 
 def analyze(folder):
+    error_logs = check_diagnostic_logs(folder)
     files = {name: folder/name for name in ['waits.jsonl', 'native-polls.jsonl', 'fatal-requests.jsonl']
              if (folder/name).exists()}
     if 'waits.jsonl' not in files:
@@ -118,14 +155,18 @@ def analyze(folder):
                     'matchedWaitNs': elapsed, 'remainingNativeIntervalNs': call['elapsedNs'] - elapsed})
     final = {name: fingerprint(folder/name) for name in ['waits.jsonl', 'native-polls.jsonl', 'fatal-requests.jsonl']
              if (folder/name).exists()}
-    if initial != final:
+    final_errors = {name: fingerprint(path) for name, path in diagnostic_log_files(folder).items()}
+    if initial != final or error_logs != final_errors:
         raise ValueError('Logs changed during analysis; wait for diagnostic completion')
     result['files'] = initial
+    result['errorLogs'] = error_logs
     result['boundary'] = ('Top 20 matched waits retained; complete raw logs preserved. Only waits above 50ms are logged. '
         'Unmatched time is not automatically blocking or CPU work. Intervals include descheduling near libc call entry/exit '
         'and measurement overhead; this is not a kernel off-CPU trace. Temporary index uses a 2MiB SQLite page cache; '
         '256MiB/file, one million records/file, 64KiB lines, 4096 native PIDs, 4096 fatal records '
-        'and 1024 fatal-call summaries are hard failure bounds. The cache size is not a total process memory limit.')
+        'and 1024 fatal-call summaries are hard failure bounds. At most 4096 known FPM error logs are checked '
+        'for instrumentation failures with the same per-file byte/line/record limits. '
+        'The cache size is not a total process memory limit.')
     return result
 
 

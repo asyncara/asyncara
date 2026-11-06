@@ -6,10 +6,36 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from analyze_waits import analyze, records
+from analyze_waits import analyze, records, check_diagnostic_logs
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_error_log_scan_has_file_and_line_bounds(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder/'php-errors.log').write_text(' ' * 65537)
+            with self.assertRaisesRegex(ValueError, 'capacity'):check_diagnostic_logs(folder)
+            (folder/'php-errors.log').write_text('')
+            (folder/'startup.log').write_text('')
+            with patch('analyze_waits.MAX_DIAGNOSTIC_LOGS', 1):
+                with self.assertRaisesRegex(ValueError, 'capacity'):check_diagnostic_logs(folder)
+            self.assertEqual(len(check_diagnostic_logs(folder)), 2)
+
+    def test_profile_failures_in_fpm_logs_prevent_successful_analysis(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder/'waits.jsonl').write_text('')
+            nested = folder/'workload'/'mixed-reload-kill'
+            nested.mkdir(parents=True)
+            log = nested/'php-errors.log'
+            log.write_text('PHP Fatal error: Allowed memory size exhausted\n')
+            self.assertEqual(analyze(folder)['waitRecords'], 0)
+            for marker in ['Asyncara poll profile failed:', 'Asyncara wait probe failed:']:
+                with self.subTest(marker=marker):
+                    log.write_text('PHP Fatal error: Allowed memory size exhausted\n' + marker + ' log I/O\n')
+                    with self.assertRaisesRegex(ValueError, 'Diagnostic instrumentation failed'):
+                        analyze(folder)
+
     def test_fatal_and_process_identity_limits_fail_without_truncation(self):
         with tempfile.TemporaryDirectory() as directory:
             folder=Path(directory)

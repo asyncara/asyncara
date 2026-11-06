@@ -61,6 +61,7 @@ A compiled native extension; B Fiber scheduler; C TCP; D concurrent HTTP; E work
 | Local FPM and 6h / 24h FPM endurance | PARTIALLY_IMPLEMENTED | local attempts failed responsiveness at364.506s and998.680s; six-/24-hour stages unstarted; all original assertions retained |
 | Scheduling observer and independent wait controls | IMPLEMENTED_AND_TESTED | reproduced zombie-exit ownership error repaired; live identity/cgroup ancestry tests; epoll/poll/nanosleep controls and opt-in combined native-call/syscall diagnostics; these do not certify FPM endurance |
 | Direct libc wait probe and bounded interval analysis | IMPLEMENTED_AND_TESTED | 180s/900s FPM diagnostics and 60s full lifecycle smoke; native forwarding/thread/errno/fd controls, scoped ASan/UBSan/TSan/static analysis; instrumentation only, not a production hook |
+| Diagnostic logging failure propagation | IMPLEMENTED_AND_TESTED | negative controls reproduce ignored PHP write failures and accepted instrumentation errors; PHP8.3/8.4/8.5 and seven analyzer tests pass; historical logs rechecked; changed profiler not yet run in FPM |
 
 Mixed 24-hour steady RSS endpoint change is +260KiB, with zero final scheduled
 work. Recorded maximum timer lag exceeds one second; this is no latency SLA.
@@ -86,6 +87,9 @@ That one-hour diagnostic started November6 at17:49:09Z on frozen f2abb55 with
 tools7e104c0. Observe `fpm-full-wait-probe-r2/state.json` under the existing evidence
 root; its launch attestation is in phase4/fpm-wait-hour-launch.json. No completed
 hour or automatic six-/24-hour advancement is claimed.
+The later profiler-write repair does not modify that campaign's private tools;
+check its completed logs with the hardened analyzer before accepting measurement
+evidence. See phase4/profile-log-errors.json for the reproduced tool failures.
 
 1. Complete the frozen FPM-only one-/six-/24-hour chain without weakening checks; hosted one-hour success and mixed 24-hour success remain separate evidence. The four hosted regression/database jobs are passing; scheduled endurance is separate. Repeated libpq unloads accumulate allocations; resident connection controls do not. Follow up the unresolved upstream lifetime issue. Expand remote SQL auth/TLS and acknowledged cancellation tests; keep native and fully instrumented PHP regressions. Review remaining third-party memory/process quotas.
 2. Broaden atomic-file ACL/mount/race and crash-durability testing. io_uring file operations remain optional and require complete completion/cancellation/fallback tests; preserve the worker fallback.

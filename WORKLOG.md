@@ -1161,3 +1161,41 @@ file hashes. Initial A/B/C/D checks pass. The run remains RUNNING; no completed
 hour is claimed. Keep instrumentation scope distinct from uninstrumented
 endurance and retain all earlier local failures. No system configuration or
 native/public runtime code changed. Release remains EXPERIMENTAL.
+
+## Diagnostic log-write failures — 2026-11-06
+
+Pushed the probe/tools checkpoint7e104c0 and launch recordd387760 to
+phase4-endurance; remote SHA confirmed by git ls-remote. Unauthenticated GitHub
+repository/actions API reads now return404, so no new hosted CI result is claimed.
+The earlier verified67e4530 artifacts remain separate evidence.
+
+During the frozen instrumented hour, source review found unchecked PHP profiler
+log writes. Added negative controls using private directories at the log paths:
+the old native-poll profile returned exit0 after a failed write; the fatal-log
+path omitted the explicit instrumentation error. Both new subcases failed as
+expected against the old source. A separate negative control showed the analyzer
+accepted both PHP-profiler and native-probe failure markers in nested FPM logs.
+Raw failures are retained in profile-write-errors-r1 under the Phase4 evidence root.
+
+Changed tests/soak/fpm_poll_profile.php to check the full write count, retain PHP's
+warning and throw an explicit diagnostic error. Changed analyze_waits.py and
+fpm_trace.py to inspect bounded known FPM error logs, including fatal-request
+logging failures. New tests cover the two write paths, both failure markers,
+normal intentional OOM messages and error-log file/line limits. No native/public
+runtime source or running private campaign copy changed.
+
+Validation: both PHP profiler tests pass independently on8.3.36/8.4.27/8.5.12;
+seven analyzer tests pass. Python compilation and git diff --check pass.
+Commands: python3 -m unittest discover -s tests/soak -p test_poll_profile.py -v
+(PHP_BIN selects each isolated PHP), equivalent test_wait_analysis.py command,
+and python3 tests/soak/analyze_waits.py <completed-directory> --output <new-file>.
+Reanalyzed fpm-wait-probe-r1/r2 and fpm-full-wait-probe-r1:209/864/27 matched waits,
+all original counts/intervals/input hashes unchanged;2/2/16 FPM error logs checked.
+No historical profiler-write/JSON warning found. New result filenames preserve
+the original analysis. docs/phase4/profile-log-errors.json records hashes/results.
+
+The one-hour diagnostic remains RUNNING on frozen f2abb55/native0bfeb954 and
+tools7e104c0. Review its original warning paths and rerun the hardened analyzer
+after completion. No full FPM run with the changed profiler is claimed; no
+six-/24-hour local FPM run or release promotion follows. Preserve the unrelated
+untracked bash file. Release remains EXPERIMENTAL.

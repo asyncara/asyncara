@@ -187,6 +187,19 @@ This single instrumented hour does not automatically advance to uninstrumented
 six-/24-hour FPM stages. The supervisor checks the original duration/lifecycle
 assertions, source and binary fingerprints, probe errors and completed-log analysis.
 
+An independent follow-up reproduced two diagnostic acceptance defects: ignored
+PHP profile write failures and an analyzer that did not inspect FPM error logs
+for failed instrumentation. Both are repaired with negative controls and PHP
+8.3/8.4/8.5 plus seven analyzer tests. Existing180s/900s/60s reports retain exactly
+the same correlation results under the stricter checks. The active hour retains
+its frozen private tools; a new full FPM run of the changed profiler is not yet
+claimed. [Logging-error evidence](phase4/profile-log-errors.json) records the
+scope and hashes. Native/public source and the r4 distribution remain unchanged.
+
+The latest push is verified by the Git remote. Subsequent unauthenticated GitHub
+API reads returned404 on November6; new hosted job status is not verified. This
+does not revise the already downloaded and checked67e4530 hosted results.
+
 ## Corrected r4 distribution and current freeze
 
 Implemented, independently tested, packaged and pushed source:

@@ -1,0 +1,212 @@
+{
+  "recordedUtc": "2026-11-06T18:00:52.301643+00:00",
+  "parentCommit": "d3877606671f819876a1a62bc1a3572eb39de73c",
+  "scope": "Test-only diagnostic failure propagation; native/public runtime and running campaign private tools unchanged",
+  "negativeControls": {
+    "profile": {
+      "exit": 1,
+      "failures": 2,
+      "detail": "Ignored native-poll log write returned exit0; failed fatal log lacked instrumentation failure marker"
+    },
+    "analyzer": {
+      "exit": 1,
+      "failures": 2,
+      "detail": "Instrumentation failures in FPM PHP error logs previously ignored"
+    }
+  },
+  "positiveTests": {
+    "finishedUtc": "2026-11-06T17:57:39.660714+00:00",
+    "results": [
+      {
+        "version": "PHP 8.3.36 (cli) (built: Oct 21 2026 14:32:55) (NTS)\nCopyright (c) The PHP Group\nZend Engine v4.3.36, Copyright (c) Zend Technologies\n",
+        "php": "/tmp/asyncara-audit-vdvyqsv4/php8.3/root/usr/bin/php8.3",
+        "exit": 0,
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/soak",
+          "-p",
+          "test_poll_profile.py",
+          "-v"
+        ]
+      },
+      {
+        "version": "PHP 8.4.27 (cli) (built: Oct 21 2026 14:35:21) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.4.27, Copyright (c) Zend Technologies\n",
+        "php": "/tmp/asyncara-audit-vdvyqsv4/php8.4/root/usr/bin/php8.4",
+        "exit": 0,
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/soak",
+          "-p",
+          "test_poll_profile.py",
+          "-v"
+        ]
+      },
+      {
+        "version": "PHP 8.5.12 (cli) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+        "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "exit": 0,
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/soak",
+          "-p",
+          "test_poll_profile.py",
+          "-v"
+        ]
+      }
+    ]
+  },
+  "analysisTests": {
+    "count": 7,
+    "exit": 0
+  },
+  "sourceFiles": {
+    "tests/soak/fpm_poll_profile.php": {
+      "bytes": 2454,
+      "sha256": "2b009c973d974db745dfb22bcd6fbc91a1bf63595ebfff6c2597e176b4f2fb66"
+    },
+    "tests/soak/test_poll_profile.py": {
+      "bytes": 4366,
+      "sha256": "cdda995ac3c2fc205dd845720b522f771d302c5fd5d7ac485c2f21fe50684d7c"
+    },
+    "tests/soak/analyze_waits.py": {
+      "bytes": 8968,
+      "sha256": "6b63a02ee507d3bc607d8a40967a47e94faa2ae636a55644c2f1a8a5b1798c24"
+    },
+    "tests/soak/test_wait_analysis.py": {
+      "bytes": 5812,
+      "sha256": "ece8308fb45e3ebfe02256093b5b6e7210c91e7aec8607892f27c816e15c0365"
+    },
+    "tests/soak/fpm_trace.py": {
+      "bytes": 7557,
+      "sha256": "66b30929cc81977f1a02cebe2e59d4ca31639c5c0bf4c7eb4f10f40b306e78c3"
+    }
+  },
+  "rawFiles": {
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fpm-wait-probe-r2-analysis.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fixed-8.4.log": {
+      "bytes": 352,
+      "sha256": "3491c1662fe05c6ce4c43c159c057eadc0afd81fec7dcfa1a6fdf722b26f3f3f"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/analysis-fixed.log": {
+      "bytes": 1144,
+      "sha256": "6dda0e39fba1c1a135a374ade19bd4bb853aea6f316ab687288e6fe06dbb3438"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fixed-8.5.log": {
+      "bytes": 352,
+      "sha256": "92756c11edb8d7f9a0943e5a3c290523a8d654bc814cbab4ed7862427782decc"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fpm-wait-probe-r1-analysis.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fixed-8.3.log": {
+      "bytes": 352,
+      "sha256": "5bffa35e41056e91361e1f62b5559c4f681cd6c11029556787384898021e3019"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/fpm-full-wait-probe-r1-analysis.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/analysis-negative-control.log": {
+      "bytes": 2729,
+      "sha256": "57017937ad9e415af6c6a1dd494ec2029434236ff85516d15d5ae63be92453eb"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/results.json": {
+      "bytes": 1545,
+      "sha256": "3b2c6009d36fd9696a7d3610db3dd366afc686b9d5cce7108799cd0aeab65d6b"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/negative-control.json": {
+      "bytes": 378,
+      "sha256": "b1d818268a2ef0f72e041e33cbce2f6b4a3dc92c48ae4b4b70f1977dc3ccbeb5"
+    },
+    "/tmp/asyncara-phase4-nrtjh3t1/profile-write-errors-r1/negative-control.log": {
+      "bytes": 2336,
+      "sha256": "bc4ab880bffbe63ae2b50cba0926a8f23a75e623bf7c57cfbc43e9ad10b02202"
+    }
+  },
+  "historicalReanalysis": [
+    {
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r1",
+      "originalAnalysis": {
+        "bytes": 9525,
+        "sha256": "673ca1b6c44d5983b55f71ec29227d7812a656c6f680d98f4165b38da94bb9af"
+      },
+      "newAnalysis": {
+        "bytes": 9925,
+        "sha256": "495ba091b69abc50ee0b8da28a54b18e941e5efc5ac5e6163eb8b7681ce47dd1"
+      },
+      "unchangedCorrelationFields": [
+        "waitRecords",
+        "nativeCalls",
+        "nativeCallsWithLongWait",
+        "matchedWaits",
+        "largestMatchedWaits",
+        "fatalRequestCalls",
+        "files"
+      ],
+      "errorLogsChecked": 2,
+      "oldLoggingWarningsFound": false
+    },
+    {
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-wait-probe-r2",
+      "originalAnalysis": {
+        "bytes": 9534,
+        "sha256": "7c3b9b57497ce1a6be922b193e8e406dd33e9b2541e2907ebb8ba4f3616283a1"
+      },
+      "newAnalysis": {
+        "bytes": 9934,
+        "sha256": "455a4a79cad1947d674686a57a2cc56f756f3338fe46c2cd7469bdc0a294791d"
+      },
+      "unchangedCorrelationFields": [
+        "waitRecords",
+        "nativeCalls",
+        "nativeCallsWithLongWait",
+        "matchedWaits",
+        "largestMatchedWaits",
+        "fatalRequestCalls",
+        "files"
+      ],
+      "errorLogsChecked": 2,
+      "oldLoggingWarningsFound": false
+    },
+    {
+      "directory": "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r1",
+      "originalAnalysis": {
+        "bytes": 9607,
+        "sha256": "90889357a66f4934c48eee99026ef0962a33667fe4cfbf386c95ed186ed036eb"
+      },
+      "newAnalysis": {
+        "bytes": 12211,
+        "sha256": "c087aad8ad6a474e2f5eaa63f21df69ca4c818bc8e14a39c8b3e6b0dc240e31d"
+      },
+      "unchangedCorrelationFields": [
+        "waitRecords",
+        "nativeCalls",
+        "nativeCallsWithLongWait",
+        "matchedWaits",
+        "largestMatchedWaits",
+        "fatalRequestCalls",
+        "files"
+      ],
+      "errorLogsChecked": 16,
+      "oldLoggingWarningsFound": false
+    }
+  ],
+  "liveCampaign": "/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2/state.json",
+  "boundary": "No full FPM campaign with the changed PHP profile has run yet. The ongoing instrumented hour still uses checkpoint7e104c0; after completion review its old warning paths and analyze with the hardened tool in a new output. Existing duration/resource assertions are unchanged."
+}

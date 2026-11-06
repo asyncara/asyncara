@@ -15,6 +15,8 @@ import socket
 import subprocess
 import time
 
+from analyze_waits import check_diagnostic_logs
+
 root = Path(__file__).resolve().parents[2]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--seconds', type=float, default=300)
@@ -131,9 +133,8 @@ try:
             # failure exits 125 and must never become a passing measurement.
             if not (out / 'waits.jsonl').stat().st_size:
                 raise RuntimeError('Wait probe did not initialize')
-            for path in [out / 'startup.log', out / 'fpm.log']:
-                if path.exists() and 'Asyncara wait probe failed' in path.read_text():
-                    raise RuntimeError('Native wait probe failed; inspect diagnostic logs')
+        if args.instrumentation in ('poll', 'both', 'wait'):
+            report['errorLogs'] = check_diagnostic_logs(out)
 except BaseException as error:
     report.update(status='FAIL', error=repr(error))
     raise

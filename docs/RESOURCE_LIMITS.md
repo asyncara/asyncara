@@ -147,3 +147,9 @@ call summaries. Limits reject oversized input rather than silently truncating it
 Only the20 largest matches are retained in the summary; original logs are kept.
 These are test-tool boundaries, not new runtime quotas or complete SQLite/RSS
 accounting. See FPM_LIFECYCLE.md.
+
+The diagnostic analyzer also checks at most4,096 known FPM error logs, each
+limited to256MiB, one million lines and64KiB per line. It rejects instrumentation
+failure markers even when the workload deliberately expects a fatal PHP request.
+PHP profiler writes now require the complete record length; write failure is a
+failed diagnostic, not silently missing evidence. Old raw reports remain intact.

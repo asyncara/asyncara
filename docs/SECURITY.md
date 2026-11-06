@@ -130,3 +130,10 @@ initialization, clock or log-I/O failure exits that diagnostic process with125.
 The analyzer rejects malformed, overlapping or oversized observations and closes
 its temporary index deterministically. Instrumentation changes timing; neither
 these measurements nor scoped sanitizer passes establish production readiness.
+
+The PHP-side profiler now rejects failed or incomplete log writes explicitly.
+Known FPM error logs are checked for instrumentation failures even in tests that
+expect fatal memory exhaustion, so a failed measurement cannot silently count as
+a clean diagnostic. Negative controls reproduced the previous acceptance paths.
+These changes concern test evidence, not PHP memory-exhaustion recovery or the
+application runtime; the frozen running campaign retains its original tools.

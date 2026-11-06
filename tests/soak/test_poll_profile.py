@@ -9,6 +9,32 @@ import unittest
 
 
 class ProfileTests(unittest.TestCase):
+    def test_failed_profile_writes_are_explicit_errors(self):
+        # A directory at either log path reproduces write failure without
+        # changing host permissions or filling the filesystem.
+        for name in ['native-polls.jsonl', 'fatal-requests.jsonl']:
+            with self.subTest(log=name), tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory)
+                shutil.copy2(Path(__file__).with_name('fpm_poll_profile.php'), folder/'profile.php')
+                (folder/name).mkdir()
+                script = folder/'request.php'
+                if name == 'native-polls.jsonl':
+                    script.write_text('''<?php
+function asyncara_poll(array $readers, array $writers, int $timeout): array {
+    usleep(60000);
+    return [];
+}
+require __DIR__ . '/profile.php';
+Asyncara\\asyncara_poll([], [], 1);
+''')
+                else:
+                    script.write_text("<?php require __DIR__ . '/profile.php'; throw new RuntimeException('fatal control');")
+                result = subprocess.run([os.environ.get('PHP_BIN', 'php'), '-n', str(script)],
+                                        capture_output=True, text=True, timeout=10)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('Asyncara poll profile failed:', result.stdout + result.stderr)
+                self.assertIn(name, result.stdout + result.stderr)
+
     def test_return_exception_and_fatal_records(self):
         with tempfile.TemporaryDirectory() as folder:
             folder = Path(folder)

@@ -399,3 +399,27 @@ includes its exact code and environment. Live state is
 `/tmp/asyncara-phase4-nrtjh3t1/fpm-full-wait-probe-r2/state.json`.
 It is currently RUNNING, with no completed-hour claim; the six-/24-hour
 uninstrumented stages remain unstarted.
+
+While that frozen campaign runs, independent negative controls exposed a
+diagnostic error path: the PHP profiler ignored a failed `file_put_contents()`.
+A directory at the log pathname caused a warning but the measured call still
+returned successfully. A second control showed the offline analyzer accepted
+explicit instrumentation failures in FPM error logs. These are measurement-tool
+defects, not newly demonstrated runtime defects.
+
+The profiler now checks the complete write count and throws an explicit
+`Asyncara poll profile failed:` error on failure. It preserves PHP's warning;
+instrumentation failure may replace the application's return/exception and is
+always a failed diagnostic. The analyzer and trace runner scan known FPM error
+logs for both PHP-profiler and native-probe failure markers, including failures
+during intentional OOM requests. Scanning is bounded and recorded by hash.
+Seven analyzer tests and both profiler tests on PHP8.3.36/8.4.27/8.5.12 pass;
+the new regressions fail against the preceding tools. CI already runs these
+test files. [Evidence](phase4/profile-log-errors.json) retains the negative
+controls and exact source hashes.
+
+Reanalysis of the completed180s,900s and60s full-lifecycle diagnostics preserves
+all original wait matches and finds no profiler-write warnings. The active
+one-hour run still uses its unchanged7e104c0 private tools. Once it finishes,
+review the original warning paths and run the stricter analyzer into a new
+output file. No FPM campaign with the newly changed PHP profiler is claimed yet.
