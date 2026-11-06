@@ -121,7 +121,17 @@ final class HttpClient
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options): Response {
             $future = Scheduler::current()->native('http', [$url, $body, $options, (int)ceil($this->timeout * 1000)]);
             try { $result = $future->await(); return new Response($result['status'], $result['body'], $result['headers']); }
-            finally { if (!$future->isCompleted()) $future->cancel(); }
+            finally {
+                // The request owns this native operation and its admission slot.
+                // Retain both until cancellation has been collected, just as
+                // streaming requests and uploads join their native completion.
+                if (!$future->isCompleted()) {
+                    $future->cancel();
+                    Async::shield(static function () use ($future): void {
+                        try { $future->await(); } catch (\Throwable) {}
+                    });
+                }
+            }
         }));
     }
     private function options(string $method, string $url, array $headers, bool $followRedirects): array

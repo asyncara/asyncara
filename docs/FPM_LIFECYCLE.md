@@ -1,5 +1,57 @@
 # PHP-FPM lifecycle verification
 
+## Native API lifecycle continuation, November 7
+
+The continuation starts from rewritten `phase4-endurance` commit
+`8b6537409c08bcdf7fe7b0e47899fca0ef0f5b54`. Before edits, `ext/` and `src/` were
+byte-identical to historical `f2abb55`; no active local soak/FPM workload was
+found. The preserved CURRENT audit was read from the pre-migration local-work
+backup; its old commit IDs remain historical references.
+
+Both original raw failure directories were re-read and hashed. The first failed
+request spent352.592ms wall time with14.489ms scheduled CPU; the isolated retry
+spent273.372ms with2.023ms scheduled CPU and0.195ms reported runnable wait. Both
+had zero pending-operation ticks, four overlapping server intervals, no pending
+native operation when the assertion ran, and substantial timer lag. No exact
+syscall/off-CPU interval was captured for those original failures. Their cause
+remains **unresolved**; no scheduler/native-wait fix is claimed.
+
+`tests/soak/fpm_progress_control.py` is a new, separate diagnostic. It runs one
+private FPM worker and one HTTP operation per request, preserving the5ms ticker
+and at-least-two-ticks predicate. It compares an ordinary slow response, deliberate
+SIGSTOP/SIGCONT while the independent server completes, a response withheld until
+two timer ticks and a worker-backed file gate, and a subsequent healthy request.
+Only the fixture-owned child is signalled; pidfds protect against PID reuse.
+Every trial retains tick times, server/stop times, scheduler metrics and native
+counts. This is not an acceptance fixture and does not alter `fpm_request.php`.
+
+The initial control incorrectly assumed every injected pause must fail the tick
+predicate; it observed two ticks and failed that assumption. Its report remains
+preserved. Repeated epoll/poll controls then produced one tick in each of eight
+paused requests while ordinary/gated/recovery requests passed. This establishes
+that external suspension can violate this wall-time progress predicate. It does
+not reproduce the exact zero-tick historical trace or prove an environmental
+cause. Signal-interrupted waits and descheduling need not have identical ordering.
+The final pidfd-protected revision on the freshly built module observed missed
+progress in7/8 injected epoll cases and8/8 poll cases; all individual trials,
+including the two-tick epoll case, remain in its report.
+
+The unchanged full A/B/C/D functional suite passes on PHP8.5.12 with the rebuilt
+module and the targeted HTTP/SQLite ownership fixes. Those fixes address separate
+lifecycle regressions, not the original FPM timer failure. Uninstrumented1h/6h/24h
+results must be read from the new frozen campaign report; neither these controls
+nor historical instrumented/hosted passes substitute for that gate.
+
+```sh
+FPM_BIN=/path/to/php-fpm8.5 ASYNCARA_EXTENSION=/path/to/asyncara.so \
+  python3 tests/soak/fpm_progress_control.py --output /new/private/progress-epoll
+ASYNCARA_BACKEND=poll FPM_BIN=/path/to/php-fpm8.5 ASYNCARA_EXTENSION=/path/to/asyncara.so \
+  python3 tests/soak/fpm_progress_control.py --output /new/private/progress-poll
+```
+
+The source/binary/test matrix and current acceptance state are recorded in
+[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md). All older failures below are preserved.
+
 Commands (isolated loopback-only fixtures; no installed FPM configuration changes):
 
 ```sh

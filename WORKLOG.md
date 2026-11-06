@@ -1225,3 +1225,57 @@ No completed follow-up or new FPM profiler pass is claimed. Next review both
 state files after the hour, inspect matched intervals if it fails, and validate
 the full regression smoke if it runs. Native/public runtime and historical r4
 archive remain unchanged; release remains EXPERIMENTAL.
+
+## 2026-11-07 — Native API direction and lifecycle regressions
+
+Inspected clean phase4-endurance HEAD8b6537409c08bcdf7fe7b0e47899fca0ef0f5b54,
+all existing worktrees, process state, preserved CURRENT.md and Phase4 reports.
+No local active soak/FPM/fuzz campaign was found. Before changes, ext/src matched
+historical f2abb55 byte-for-byte. Preserved all archives/worktrees/backups and
+created evidence root /tmp/asyncara-lifecycle-20261106T231254Z.
+
+Recorded Native Async API First in docs/NATIVE_API_FIRST.md and linked the existing
+architecture. Added docs/IO_LIFECYCLE_CONTRACT.md from actual Future/Scheduler,
+HTTP, SQL/Redis, file-worker and request-shutdown code. No hooks or new backends.
+
+Re-read/hash-checked original local FPM failure logs: zero ticks,352.592/273.372ms
+wall time and14.489/2.023ms scheduled CPU. Exact native wait cause remains unknown.
+Added separate one-worker progress diagnostic with private HTTP peer, gated
+response, timestamped injected process stops and recovery. First control failed
+its overly strong assumption (two ticks despite stop); retained its raw report.
+Eight-trial epoll/poll runs then each measured one tick in injected stop cases.
+This is a measured counterexample to unconditional wall-time progress, not proof
+of the cause of either historical zero-tick failure. Acceptance fixture unchanged.
+
+tests/io_lifecycle.php reproduced two independent ownership gaps: SQLite accepted
+copies of its native ID; buffered HTTP cancellation settled the public Task before
+native result collection. Added SQLite copy/serialization guards and shielded HTTP
+draining before releasing the client permit. Four other shared-waiter, repeated
+result, abandoned file, SQLite timeout/reuse and file-stream cleanup cases passed
+on the old implementation. A malformed serialized test literal was corrected
+using strlen(Connection::class); its failed logs remain, no error was suppressed.
+
+Commands executed: build-local.sh with matching PHP8.5.12 SDK and unique output;
+scripts/test.sh with epoll then poll (44 core cases plus all auxiliary suites,
+including six new lifecycle cases); scripts/audit.py (all regressions,1k/10k Tasks,
+slow-I/O controls and fatal conversion); scripts/audit-fpm.py (A/B/C/D PASS).
+Database suite and resource bounds pass for PostgreSQL/MariaDB/Redis. An Oracle
+fixture was started by --oracle-prefix, but the default tests/databases.php does
+not query it, so this run is not new Oracle compatibility evidence.
+Fresh GCC ASan/UBSan PHP8.5.12 module plus lifecycle suite PASS. Native C source
+unchanged. Multi-PHP/debug/Valgrind validation and independent source packaging
+are next, before the original uninstrumented local FPM1h gate. No endurance pass
+or production-readiness promotion is claimed.
+
+Follow-up validation: fresh8.3.36/8.4.27/debug8.5.12 modules and six lifecycle
+tests pass epoll/poll. Final private-pidfd FPM controls pass as diagnostics;
+injected stop cases missed the original tick predicate7/8(epoll),8/8(poll), with
+ordinary/gated/recovery requests passing. Original acceptance remains unchanged.
+Valgrind on distribution PHP exited99 with904 direct/120 indirect lost bytes and
+Fiber-stack warnings. Its SDK lacks HAVE_VALGRIND. The original Asyncara source
+also reports losses (2312/360) in this new workload; a plain PHP Fiber control
+reports stack warnings but no loss. The matching Valgrind-aware DEBUG build
+passes with0 errors/0 lost and no suppressions. Exact configuration discrepancy
+remains unresolved; no unconditional leak-free claim. All commands/results/raw
+hashes are in docs/phase4/lifecycle-hardening.json. No native C changes, no new
+long-duration acceptance completed yet. Next freeze/package and stage FPM1h.

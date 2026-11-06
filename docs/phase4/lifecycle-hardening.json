@@ -1,0 +1,1022 @@
+{
+  "reviewedUtc": "2026-11-06T23:34:22.512657+00:00",
+  "releaseClassification": "EXPERIMENTAL",
+  "baseCommit": "8b6537409c08bcdf7fe7b0e47899fca0ef0f5b54",
+  "rawDirectory": "/tmp/asyncara-lifecycle-20261106T231254Z",
+  "nativeSourceChanged": false,
+  "runtimeChanges": {
+    "src/Asyncara/HTTP/HttpClient.php": "Drain owned native cancellation before completing buffered request Task and releasing permit.",
+    "src/Asyncara/SQLite/Connection.php": "Reject copies and serialization of request-local native identity."
+  },
+  "historicalFpmFailureCause": "UNRESOLVED; original zero-tick records rechecked, no native/scheduler repair claimed",
+  "historicalFailures": [
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-r1/fpm-3600",
+      "failureDetails": [
+        {
+          "ticks": 0,
+          "intervals": [
+            {
+              "start": 1793724632.8367846,
+              "end": 1793724633.0444531
+            },
+            {
+              "start": 1793724632.8380482,
+              "end": 1793724633.044065
+            },
+            {
+              "start": 1793724632.8422444,
+              "end": 1793724633.044977
+            },
+            {
+              "start": 1793724632.843803,
+              "end": 1793724633.0447998
+            }
+          ],
+          "cpuDelta": {
+            "monotonicNs": 352591864,
+            "userUs": 4251,
+            "systemUs": 10273,
+            "scheduledNs": 14488770,
+            "runnableWaitNs": 47566050,
+            "slices": 2
+          },
+          "lastTicksNs": [],
+          "scheduler": {
+            "turns": 12,
+            "taskSteps": 18,
+            "maxStepSeconds": 0.013129292987287045,
+            "maxTimerLagSeconds": 0.3330270240548998,
+            "activeTasks": 1,
+            "pendingFutures": 1,
+            "retainedFailures": 0,
+            "readyTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ],
+      "files": {
+        "failure.json": {
+          "sha256": "0bd9f3a3b47f672bfcac070a9df2f96d876a73db5c74174e8f4cafacb984e675",
+          "bytes": 476477
+        },
+        "provenance.json": {
+          "sha256": "ce7255e60dd163ec9ecbc851310a7c8a3c68390b4be515c4a200bcef67ff5a0e",
+          "bytes": 1006
+        },
+        "mixed-responses.jsonl": {
+          "sha256": "697eda2bc2c2fa6aae16fb7ddcd1d68b3b8d4f6a022df7d23a169a03098c8ab4",
+          "bytes": 7292709
+        },
+        "mixed-samples.jsonl": {
+          "sha256": "bc972fef9e311275715edfdeb64d625c857bc24c35fa2efe2f5ee0ce66008648",
+          "bytes": 627039
+        },
+        "mixed-reload-kill/php-errors.log": {
+          "sha256": "1989e1284894c92d838ea25bb6ef6db1da27990525e1192e5227b8b6b4383b02",
+          "bytes": 48923
+        },
+        "mixed-reload-kill/error.log": {
+          "sha256": "1d0e8e3b21c41444e1d1fbaf54fdc7143eba8e533ad0b7b3df3930afbcbc655e",
+          "bytes": 1201
+        }
+      }
+    },
+    {
+      "path": "/tmp/asyncara-phase4-nrtjh3t1/campaign-f2abb55-fpm-solo-r1/fpm-3600",
+      "failureDetails": [
+        {
+          "ticks": 0,
+          "intervals": [
+            {
+              "start": 1793915661.4398236,
+              "end": 1793915661.6674285
+            },
+            {
+              "start": 1793915661.4483151,
+              "end": 1793915661.6599467
+            },
+            {
+              "start": 1793915661.4504125,
+              "end": 1793915661.6560173
+            },
+            {
+              "start": 1793915661.4534473,
+              "end": 1793915661.65856
+            }
+          ],
+          "cpuDelta": {
+            "monotonicNs": 273371673,
+            "userUs": 2104,
+            "systemUs": 0,
+            "scheduledNs": 2023020,
+            "runnableWaitNs": 195260,
+            "slices": 1
+          },
+          "lastTicksNs": [],
+          "scheduler": {
+            "turns": 12,
+            "taskSteps": 18,
+            "maxStepSeconds": 0.000313368858769536,
+            "maxTimerLagSeconds": 0.2672194931656122,
+            "activeTasks": 1,
+            "pendingFutures": 1,
+            "retainedFailures": 0,
+            "readyTasks": 0,
+            "activeTimers": 0,
+            "ioWatchers": 0,
+            "pendingNative": 0,
+            "memoryBytes": 2097152
+          }
+        }
+      ],
+      "files": {
+        "failure.json": {
+          "sha256": "db8f5af2baba7321925f11a97ad0b8507c13db3452311ba58b3ee0675c0c8283",
+          "bytes": 476496
+        },
+        "provenance.json": {
+          "sha256": "d1e3b99e9c70e3d6b5cd457983600f778a63764ccfd0ef6e2f323806771407e4",
+          "bytes": 1015
+        },
+        "mixed-responses.jsonl": {
+          "sha256": "5874f4f4b43e4aa41ff4d2f14ffe4d4675de653a1c0fcc141e36db834ad98ab9",
+          "bytes": 29538295
+        },
+        "mixed-samples.jsonl": {
+          "sha256": "c289bcde27b142306f0366b129ae6e33dc75793f21d2dffad9bced89a0ed561d",
+          "bytes": 2541110
+        },
+        "mixed-reload-kill/php-errors.log": {
+          "sha256": "4d5a5e012d85fee10bebb6de35b23d7efb821b399ac344e5338ab027baae418a",
+          "bytes": 90805
+        },
+        "mixed-reload-kill/error.log": {
+          "sha256": "3a319b52add6c070e7e5f7a2ee29edaa89f3bfc142ef41c07dc95754aa258930",
+          "bytes": 1219
+        }
+      }
+    }
+  ],
+  "progressControls": {
+    "epoll": {
+      "status": "PASS",
+      "php": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+      "moduleSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+      "ticks": [
+        [
+          "baseline",
+          35
+        ],
+        [
+          "stopped-0",
+          1
+        ],
+        [
+          "stopped-1",
+          1
+        ],
+        [
+          "stopped-2",
+          1
+        ],
+        [
+          "stopped-3",
+          1
+        ],
+        [
+          "stopped-4",
+          1
+        ],
+        [
+          "stopped-5",
+          1
+        ],
+        [
+          "stopped-6",
+          1
+        ],
+        [
+          "stopped-7",
+          2
+        ],
+        [
+          "gated",
+          2
+        ],
+        [
+          "recovery",
+          32
+        ]
+      ],
+      "injectedMissedProgressCases": [
+        "stopped-0",
+        "stopped-1",
+        "stopped-2",
+        "stopped-3",
+        "stopped-4",
+        "stopped-5",
+        "stopped-6"
+      ],
+      "boundary": "Injected SIGSTOP counterexample, not attribution of historical failures or acceptance certification."
+    },
+    "poll": {
+      "status": "PASS",
+      "php": "PHP 8.5.12 (fpm-fcgi) (built: Oct 21 2026 14:37:30) (NTS)\nCopyright (c) The PHP Group\nBuilt by Ubuntu\nZend Engine v4.5.12, Copyright (c) Zend Technologies\n    with Zend OPcache v8.5.12, Copyright (c), by Zend Technologies\n",
+      "moduleSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+      "ticks": [
+        [
+          "baseline",
+          33
+        ],
+        [
+          "stopped-0",
+          1
+        ],
+        [
+          "stopped-1",
+          1
+        ],
+        [
+          "stopped-2",
+          1
+        ],
+        [
+          "stopped-3",
+          1
+        ],
+        [
+          "stopped-4",
+          1
+        ],
+        [
+          "stopped-5",
+          1
+        ],
+        [
+          "stopped-6",
+          1
+        ],
+        [
+          "stopped-7",
+          1
+        ],
+        [
+          "gated",
+          2
+        ],
+        [
+          "recovery",
+          21
+        ]
+      ],
+      "injectedMissedProgressCases": [
+        "stopped-0",
+        "stopped-1",
+        "stopped-2",
+        "stopped-3",
+        "stopped-4",
+        "stopped-5",
+        "stopped-6",
+        "stopped-7"
+      ],
+      "boundary": "Injected SIGSTOP counterexample, not attribution of historical failures or acceptance certification."
+    }
+  },
+  "regressionResults": [
+    {
+      "name": "core-epoll",
+      "command": [
+        "./scripts/test.sh"
+      ],
+      "exit": 0,
+      "seconds": 25.905074154026806,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/asyncara-lifecycle-20261106.so"
+      }
+    },
+    {
+      "name": "core-poll",
+      "command": [
+        "./scripts/test.sh"
+      ],
+      "exit": 0,
+      "seconds": 21.94861945696175,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/asyncara-lifecycle-20261106.so",
+        "ASYNCARA_BACKEND": "poll"
+      }
+    },
+    {
+      "name": "audit",
+      "command": [
+        "python3",
+        "scripts/audit.py"
+      ],
+      "exit": 0,
+      "seconds": 17.611560642020777,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/asyncara-lifecycle-20261106.so",
+        "ASYNCARA_AUDIT_DIR": "/tmp/asyncara-lifecycle-20261106T231254Z/independent-audit"
+      }
+    },
+    {
+      "name": "fpm-functional",
+      "command": [
+        "python3",
+        "scripts/audit-fpm.py"
+      ],
+      "exit": 0,
+      "seconds": 6.922040475066751,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/asyncara-lifecycle-20261106.so",
+        "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "ASYNCARA_FPM_DIR": "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-functional"
+      }
+    }
+  ],
+  "databaseResults": [
+    {
+      "name": "databases",
+      "command": [
+        "python3",
+        "scripts/test-databases.py",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "exit": 0,
+      "seconds": 22.721519144950435
+    },
+    {
+      "name": "database-bounds",
+      "command": [
+        "python3",
+        "scripts/test-databases.py",
+        "--test-file",
+        "tests/database/resource_bounds.php"
+      ],
+      "exit": 0,
+      "seconds": 1.7372710891067982
+    }
+  ],
+  "databaseScope": "PostgreSQL/MariaDB/Redis exercised. Oracle fixture launched but default test did not use it; no new Oracle/TLS certification.",
+  "asan": [
+    {
+      "name": "asan-build",
+      "exit": 0,
+      "command": [
+        "./scripts/build-local.sh"
+      ],
+      "seconds": 14.678559968946502
+    },
+    {
+      "name": "asan-lifecycle",
+      "exit": 0,
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-gcc-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "seconds": 1.6158790660556406
+    }
+  ],
+  "versionAndInstrumentation": [
+    {
+      "name": "build-83",
+      "command": [
+        "./scripts/build-local.sh"
+      ],
+      "exit": 0,
+      "seconds": 5.9274237379431725,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php83/usr/include/php/20230831",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-83-20261106.so"
+      }
+    },
+    {
+      "name": "lifecycle-83-epoll",
+      "command": [
+        "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-83-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.4555439059622586,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php83/usr/include/php/20230831",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-83-20261106.so",
+        "ASYNCARA_BACKEND": "epoll"
+      }
+    },
+    {
+      "name": "lifecycle-83-poll",
+      "command": [
+        "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-83-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.318065458908677,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php83/usr/include/php/20230831",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-83-20261106.so",
+        "ASYNCARA_BACKEND": "poll"
+      }
+    },
+    {
+      "name": "build-84",
+      "command": [
+        "./scripts/build-local.sh"
+      ],
+      "exit": 0,
+      "seconds": 5.490603639977053,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php84/usr/include/php/20240924",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-84-20261106.so"
+      }
+    },
+    {
+      "name": "lifecycle-84-epoll",
+      "command": [
+        "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-84-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.4336980418302119,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php84/usr/include/php/20240924",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-84-20261106.so",
+        "ASYNCARA_BACKEND": "epoll"
+      }
+    },
+    {
+      "name": "lifecycle-84-poll",
+      "command": [
+        "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-84-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.4142674941103905,
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara/.local/php84/usr/include/php/20240924",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-84-20261106.so",
+        "ASYNCARA_BACKEND": "poll"
+      }
+    },
+    {
+      "name": "build-debug",
+      "command": [
+        "./scripts/build-local.sh"
+      ],
+      "exit": 0,
+      "seconds": 5.722991578979418,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "PHP_INCLUDE_DIR": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/include/php",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-debug-20261106.so"
+      }
+    },
+    {
+      "name": "lifecycle-debug-epoll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-debug-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.2307121409103274,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "PHP_INCLUDE_DIR": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/include/php",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-debug-20261106.so",
+        "ASYNCARA_BACKEND": "epoll"
+      }
+    },
+    {
+      "name": "lifecycle-debug-poll",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-debug-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 0,
+      "seconds": 1.293886438012123,
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "PHP_INCLUDE_DIR": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/include/php",
+        "ASYNCARA_OUTPUT": "build/asyncara-lifecycle-debug-20261106.so",
+        "ASYNCARA_BACKEND": "poll"
+      }
+    },
+    {
+      "name": "valgrind-lifecycle",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=definite",
+        "--errors-for-leak-kinds=definite",
+        "--error-exitcode=99",
+        "--log-file=/tmp/asyncara-lifecycle-20261106T231254Z/valgrind-memory.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara/build/asyncara-lifecycle-20261106.so",
+        "tests/io_lifecycle.php"
+      ],
+      "exit": 99,
+      "seconds": 8.416760455118492,
+      "environment": {
+        "USE_ZEND_ALLOC": "0",
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind"
+      }
+    }
+  ],
+  "valgrindDebug": {
+    "command": [
+      "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+      "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+      "--keep-debuginfo=yes",
+      "--leak-check=full",
+      "--show-leak-kinds=definite",
+      "--errors-for-leak-kinds=definite",
+      "--error-exitcode=99",
+      "--log-file=/tmp/asyncara-lifecycle-20261106T231254Z/valgrind-debug-memory.log",
+      "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+      "-n",
+      "-d",
+      "extension=/home/coder/Asyncara/build/asyncara-lifecycle-debug-20261106.so",
+      "tests/io_lifecycle.php"
+    ],
+    "exit": 0
+  },
+  "valgrindBaseline": {
+    "command": [
+      "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+      "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+      "--keep-debuginfo=yes",
+      "--leak-check=full",
+      "--show-leak-kinds=definite",
+      "--errors-for-leak-kinds=definite",
+      "--error-exitcode=99",
+      "--log-file=/tmp/asyncara-lifecycle-20261106T231254Z/valgrind-baseline-memory.log",
+      "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "-n",
+      "-d",
+      "extension=/home/coder/Asyncara/build/asyncara-lifecycle-20261106.so",
+      "/tmp/asyncara-lifecycle-20261106T231254Z/baseline-valgrind/tests/io_lifecycle.php"
+    ],
+    "exit": 99,
+    "source": "8b6537409c08bcdf7fe7b0e47899fca0ef0f5b54",
+    "expectedFunctionalFailures": [
+      "SQLite copy guard",
+      "HTTP cancellation drain"
+    ]
+  },
+  "valgrindPlainPhp": {
+    "exit": 0,
+    "command": [
+      "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+      "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+      "--leak-check=full",
+      "--show-leak-kinds=definite",
+      "--errors-for-leak-kinds=definite",
+      "--error-exitcode=99",
+      "--log-file=/tmp/asyncara-lifecycle-20261106T231254Z/valgrind-plain-fiber.log",
+      "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "-n",
+      "/tmp/asyncara-lifecycle-20261106T231254Z/plain-fiber-control.php"
+    ]
+  },
+  "valgrindBoundary": "Release PHP lacks HAVE_VALGRIND and emitted stack-switch warnings plus 904 direct/120 indirect lost bytes on updated source; baseline emitted 2312/360. Matching Valgrind-aware debug PHP passed with zero lost/errors. Plain Fiber control without Asyncara had warnings but zero lost. Exact discrepancy unresolved; no suppression or general leak-free claim.",
+  "binaries": {
+    "build/asyncara-lifecycle-debug-20261106.so": {
+      "sha256": "10a447b69586cb95b56c7134de9cd195c64c39f40ace34119f1e782306514e5b",
+      "bytes": 458960
+    },
+    "build/asyncara-lifecycle-20261106.so": {
+      "sha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+      "bytes": 452448
+    },
+    "build/asyncara-lifecycle-84-20261106.so": {
+      "sha256": "a1fc5096521b1efd3bf909c8220237a67dc3a9074caf208d9cb81980c8e5e58c",
+      "bytes": 451896
+    },
+    "build/asyncara-lifecycle-83-20261106.so": {
+      "sha256": "c79cd131dd83c261156aae428d1ec0faad97acb60a7c071f3b86274048b47575",
+      "bytes": 446064
+    },
+    "build/asyncara-lifecycle-gcc-20261106.so": {
+      "sha256": "754ee6322fe0ee69b04ccbe2ffd0651c3059b36f86a5de5a9aed7aefa662ea46",
+      "bytes": 1705816
+    }
+  },
+  "sourceFiles": {
+    "tests/io_lifecycle.php": "ad68f797f665910c09a9ee3289ab7d8a1b5d4389ff0f7f16b4c6db7dc01d2069",
+    "tests/audit/fpm_progress_request.php": "3aac79b193aa11d09d4ab4ecc654f0d960e13e2205f5f81bedf45bd81dfead0f",
+    "tests/soak/fpm_progress_control.py": "d27b99b4fe940a9e5ee351b2dcec1ad07184752e17ab1501163d3b8705be7906",
+    "tests/audit/fpm_request.php": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+    "tests/soak/fpm.py": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170",
+    "scripts/audit-fpm.py": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910",
+    "src/Asyncara/HTTP/HttpClient.php": "17b107ba259fdecf6ed27942764b6a853db5f196de887d7c5e9ba84ad655af63",
+    "src/Asyncara/SQLite/Connection.php": "a223f275e74f00fc1837ec94972c70a1869e59d2ef734f67f2a058d3e1e125f8"
+  },
+  "artifacts": {
+    "asan-build.log": {
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "asan-lifecycle.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "asan-results.json": {
+      "bytes": 462,
+      "sha256": "1376dfc6de3f017cc7811543e8b49c133e8a2689fb6d517aad2540fa8704e956"
+    },
+    "audit.log": {
+      "bytes": 699,
+      "sha256": "dc35daa5c7978bc869ab2591df02b5a2ea9e6c080114e03652bcece45f3c1b47"
+    },
+    "baseline.json": {
+      "bytes": 278,
+      "sha256": "54e5012c96a62aed7ebed13495652df58c3b6a1d032e1eec3747a9957dee000c"
+    },
+    "build-83.log": {
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "build-84.log": {
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "build-debug.log": {
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "build.log": {
+      "bytes": 257,
+      "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "core-epoll.log": {
+      "bytes": 4504,
+      "sha256": "77fe044e698492fd35cbd7c40faf185a4853db30933d79a24ce1f46d1577ae1d"
+    },
+    "core-poll.log": {
+      "bytes": 4504,
+      "sha256": "de772accef579930d9ffd9d4a21a6e597c5cfe52b3dcf3ee262d33bdffb4c556"
+    },
+    "database-bounds.log": {
+      "bytes": 77,
+      "sha256": "2f667be744592abfe2412d609dc6ce004dd2ed3eb9ffa300b43bc57cc43e4c73"
+    },
+    "database-results.json": {
+      "bytes": 470,
+      "sha256": "ed6d68e002a5958912aebad443b6b52081b166fd7a875e0e0c46790a502d5570"
+    },
+    "databases.log": {
+      "bytes": 424,
+      "sha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+    },
+    "fpm-functional/A-lifecycle/error.log": {
+      "bytes": 282,
+      "sha256": "fb84772688fa2c12d2e1d804d5db5c1a471f8129f021c5cd8ad4b3a924724dd6"
+    },
+    "fpm-functional/A-lifecycle/php-errors.log": {
+      "bytes": 304,
+      "sha256": "ccca0ab0d582ef0a8d755075f9c59e0b1b4f9d635373bcbabe71d22ce3d0fadf"
+    },
+    "fpm-functional/A-lifecycle/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-functional/B-within-request/error.log": {
+      "bytes": 282,
+      "sha256": "4c0f298ce538b162c4ac7c09c95ba86723e71329cd20dbffa715bd6bda147cfb"
+    },
+    "fpm-functional/B-within-request/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-functional/C-multiple-workers/error.log": {
+      "bytes": 282,
+      "sha256": "26330e017d4f980e3fafc4e01986c97086465608b9572147cd288bc12e227b45"
+    },
+    "fpm-functional/C-multiple-workers/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-functional/D-streaming/error.log": {
+      "bytes": 282,
+      "sha256": "b3742ee6ccfb5ddc8fab841d9e22b33f01687a667dc7c6e59ef08d126721755f"
+    },
+    "fpm-functional/D-streaming/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fpm-functional/results.json": {
+      "bytes": 447558,
+      "sha256": "48217bfbd6d54645a8ff8f459492dbbc0d05d7b960989ad1088b526ed7e41a6d"
+    },
+    "fpm-functional.log": {
+      "bytes": 80,
+      "sha256": "5ddf2d16f3b4ed4533dc152102c10cf00551cc97aae11c21ec97198d6bd76cd8"
+    },
+    "historical-failures-rechecked.json": {
+      "bytes": 4394,
+      "sha256": "f87164097e4170ed216d6279391595a5e80a4edf61660428447f00b43b23c5d1"
+    },
+    "independent-audit/fatal-batch.log": {
+      "bytes": 271,
+      "sha256": "c5785e26e5ef86b85aa79bc4f50f8b09058284aa288e3d46683e31cc526e861b"
+    },
+    "independent-audit/hooks.log": {
+      "bytes": 143,
+      "sha256": "78e69648094a135d7dfa1e934e0109cc504adc05c63ffe3d128194fc27bfc2ec"
+    },
+    "independent-audit/idle-epoll.log": {
+      "bytes": 326,
+      "sha256": "66a8326305818d6f25394925df43a55fe84cdbef8dfcde4f687db7d64bc6210b"
+    },
+    "independent-audit/idle-poll.log": {
+      "bytes": 327,
+      "sha256": "8042f384c0defd68bb23aa60c21910f5afa07ae2099871bb97ff29199245d996"
+    },
+    "independent-audit/independent-results.json": {
+      "bytes": 7180,
+      "sha256": "53d18fece55bab5fef28363eb7b241dac027b2c3a9cd0f0e71ede7d6fa58c7a7"
+    },
+    "independent-audit/latency.log": {
+      "bytes": 401,
+      "sha256": "3e0443cf4154d29e9a83ab876a71515d885338b7b35fb413defd1a51fc995c92"
+    },
+    "independent-audit/process-cpu.log": {
+      "bytes": 309,
+      "sha256": "8212891a1b1be1d0aa4ea30abd9a68b51eaa92f857ce342a3ccc942a56136807"
+    },
+    "independent-audit/regression-cleanup_delayed_callback.log": {
+      "bytes": 31,
+      "sha256": "0f375d4128629259f6d290b0067cc5ca1175a0fc4f1566b7289a9b55e39cfdda"
+    },
+    "independent-audit/regression-foreign_fiber.log": {
+      "bytes": 20,
+      "sha256": "fdcd6dd914595a7b0c93ce7aa2bc98452345fcb47020ac6d142ac52f9e3f6262"
+    },
+    "independent-audit/regression-pool_acquire_cancel.log": {
+      "bytes": 26,
+      "sha256": "d2e8473cbcaaf13d47b3511b9f03a77b216f4ca0075876a0dc5d3a82286faed5"
+    },
+    "independent-audit/regression-pool_close_failure.log": {
+      "bytes": 25,
+      "sha256": "dbcfde5826b38ab0ed220577323f0c056f7647b19ff1b2e9eea66cd9d56ce049"
+    },
+    "independent-audit/regression-pool_close_queued_borrower.log": {
+      "bytes": 33,
+      "sha256": "42096142212d6bc6b766b9d73665525ae500b1fba372746aaf04cadcfbdd7526"
+    },
+    "independent-audit/regression-pool_pending_close.log": {
+      "bytes": 25,
+      "sha256": "c5d99a0ceef04d3cf267eddbee72ed11bb10ca0425d6ae35acff75b6c87d78ed"
+    },
+    "independent-audit/regression-root_failure_shielded_wait.log": {
+      "bytes": 33,
+      "sha256": "6b4d8f7bef9ef3192a30d149652366e120b2b9d956b414aaeb36ddd3c3ecd71f"
+    },
+    "independent-audit/regression-root_failure_timer.log": {
+      "bytes": 25,
+      "sha256": "5a473c137ff12200a9f0d66cba3438168508c72b69609ecda746d9878f296274"
+    },
+    "independent-audit/regression-sqlite_parallel_transaction.log": {
+      "bytes": 34,
+      "sha256": "13c7ad28042be7ac08cf89588627e02dbc5b860468b48a638a1ed8f9824dcfdb"
+    },
+    "independent-audit/regression-waiter_ready_cancel.log": {
+      "bytes": 26,
+      "sha256": "f435117b68f7e238736822b3ff13e51d68d46024f41f95e21edae010bb6ba7b9"
+    },
+    "independent-audit/slow-io.log": {
+      "bytes": 339,
+      "sha256": "c4f004a40f3738ba1b31ed8e8a3eb031ceaf76695f92b0d7115f102220f4e637"
+    },
+    "independent-audit/slow-path.log": {
+      "bytes": 76,
+      "sha256": "aa55d2ce6e9aa041449048a7b420b58057b8dec95250f7010531a248e36c33b9"
+    },
+    "independent-audit/tasks-1000-0.log": {
+      "bytes": 317,
+      "sha256": "8a2a265331ec41f79f431027c1c00b843e5bd91de60e82accbd377bf092244a2"
+    },
+    "independent-audit/tasks-1000-1.log": {
+      "bytes": 316,
+      "sha256": "6d182053a54867c16548e0a58754f694339b45cda39235048854a8cb2014f69f"
+    },
+    "independent-audit/tasks-1000-2.log": {
+      "bytes": 317,
+      "sha256": "660aed4b0bc58e3962e9f93ca0ce8ddbcc28cd3d68564b11a15c194c9133a9b7"
+    },
+    "independent-audit/tasks-10000-0.log": {
+      "bytes": 316,
+      "sha256": "48b2d3e91cb8471a3126f12ac329e93be6a573c3eda5f1e2bccec96ed902724a"
+    },
+    "independent-audit/tasks-10000-1.log": {
+      "bytes": 319,
+      "sha256": "3b5b0d1bf20ecacfe1bd2381c247b51725e288016a9cb491ebffc68550d3cbe6"
+    },
+    "independent-audit/tasks-10000-2.log": {
+      "bytes": 317,
+      "sha256": "8a08809230c5a568ad4b54ae0b791300286893b002bf6a8d9f2fce41a72ccc29"
+    },
+    "instrumented-version-results.json": {
+      "bytes": 5598,
+      "sha256": "6143af53f2b03fb92cef656a917a8aa080a33863be874f680fa6654e1c1742d1"
+    },
+    "io-lifecycle-before.log": {
+      "bytes": 2552,
+      "sha256": "4fedf8fbbbcfd3b329f729cec38d4aaf07bc0b6d437139bdf3d8c99098e4c0d8"
+    },
+    "io-lifecycle-fixed-epoll.log": {
+      "bytes": 1599,
+      "sha256": "50d0ef8f414cab2f21c72148bf3a7f07f2ef35532777fdb34379e24cb1fc3415"
+    },
+    "io-lifecycle-fixed-poll.log": {
+      "bytes": 1599,
+      "sha256": "50d0ef8f414cab2f21c72148bf3a7f07f2ef35532777fdb34379e24cb1fc3415"
+    },
+    "io-lifecycle-fixed.json": {
+      "bytes": 554,
+      "sha256": "766201c385dd6b9aefc9567bbab72bdd6b794dfa15e9d1e8a624bd8c1d677af0"
+    },
+    "lifecycle-83-epoll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "lifecycle-83-poll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "lifecycle-84-epoll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "lifecycle-84-poll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "lifecycle-debug-epoll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "lifecycle-debug-poll.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "plain-fiber-control.log": {
+      "bytes": 33,
+      "sha256": "69b0e57978daaa8929bd2cfa60df50bc1a31a664cf51bc864de3b24b848b0f3c"
+    },
+    "plain-fiber-result.json": {
+      "bytes": 517,
+      "sha256": "982d17c9851444de41afaae6875c6844934c0a8ed0cd8a89ee961112f5a15d83"
+    },
+    "progress-epoll/error.log": {
+      "bytes": 346,
+      "sha256": "cd145060a16debc9fbc91b3a5fdf089b6ef24b5f67c5026a715595dada9b6a18"
+    },
+    "progress-epoll/report.json": {
+      "bytes": 4627,
+      "sha256": "3b3919cc8e082a2dd6bcf6e09efac14ca66ee1bd45a72c8f66420e25f93fc312"
+    },
+    "progress-epoll/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "progress-epoll-r2/error.log": {
+      "bytes": 794,
+      "sha256": "0f79be651fd82c6e77825f8836a5e893ac532d4598a7da80bf14e31014575ea0"
+    },
+    "progress-epoll-r2/report.json": {
+      "bytes": 25089,
+      "sha256": "09d16a3240390a227901120c49a6944e0be2ca83d4630952a84e93edd57bb45f"
+    },
+    "progress-epoll-r2/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "progress-final-epoll/error.log": {
+      "bytes": 794,
+      "sha256": "453eae0fdb1514ef1e4857670822fd789f596d2cc3b230a05c56f8aa8983eea8"
+    },
+    "progress-final-epoll/report.json": {
+      "bytes": 25144,
+      "sha256": "95ea53f8df5797c0e29d6d2222cad8bd1768256d313d087588a36c0d289968f6"
+    },
+    "progress-final-epoll/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "progress-final-epoll.log": {
+      "bytes": 224,
+      "sha256": "a98e3c840c05d659839e73b010a43950740f4e51179efe8012c924311a279fce"
+    },
+    "progress-final-poll/error.log": {
+      "bytes": 794,
+      "sha256": "808bb0410ba34031b50c6f08ffbe4d4af0c1aa4ebeb6b86bac03d929ed7c06d1"
+    },
+    "progress-final-poll/report.json": {
+      "bytes": 24807,
+      "sha256": "3c9aa6d563142c49fc045272e898d1db4bd4fe4c18fd2b4e823c95d16a12a741"
+    },
+    "progress-final-poll/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "progress-final-poll.log": {
+      "bytes": 224,
+      "sha256": "28db18c7d6aa046627c78da8c759f20d3e4350673a8830667822bbde6ea899a4"
+    },
+    "progress-poll-r2/error.log": {
+      "bytes": 794,
+      "sha256": "4d607630aef5e0ba71ed887640a4a3d3c0e204a417f21ae6b7b04ab311d43778"
+    },
+    "progress-poll-r2/report.json": {
+      "bytes": 25034,
+      "sha256": "b546456b3d07d534b711dfb9542cce0639b157a2c5f06848fa75c2e312e8c633"
+    },
+    "progress-poll-r2/startup.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "regression-results.json": {
+      "bytes": 1560,
+      "sha256": "46d08e698e6b7f8cb44649b3a767adff7359e8dbb5a0a7980d915098780ded32"
+    },
+    "valgrind-baseline-lifecycle.log": {
+      "bytes": 3464,
+      "sha256": "3ba8bdc29d7fdced94fe90be53579e9127e657a6f1f61725b52be5dd68287d16"
+    },
+    "valgrind-baseline-memory.log": {
+      "bytes": 8972,
+      "sha256": "3b4917c9f7f3ec3bfe546dc71d2459fecd7b8e5ae65910d020dc4ed349f5aa98"
+    },
+    "valgrind-baseline-result.json": {
+      "bytes": 802,
+      "sha256": "e18fa7e37beed1ea75e1a69845c9be775ac5377ef366e645fba6368f70c05e17"
+    },
+    "valgrind-debug-lifecycle.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "valgrind-debug-memory.log": {
+      "bytes": 1205,
+      "sha256": "5087a62da51967508c98e6bc4865ef30f87d35be8d4a7e48f9e64fb9b0a4756e"
+    },
+    "valgrind-debug-result.json": {
+      "bytes": 589,
+      "sha256": "466b79b6a16008de36720417ea81cbc1bad7bae1b4f03940285ca66e51fba346"
+    },
+    "valgrind-lifecycle.log": {
+      "bytes": 429,
+      "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+    },
+    "valgrind-memory.log": {
+      "bytes": 6543,
+      "sha256": "8a95c00159c71c68e0cc1871aef934e783ea3a50efa689091f40115c1e1e352a"
+    },
+    "valgrind-plain-fiber.log": {
+      "bytes": 1746,
+      "sha256": "850ead343a590ef74eb08ceef0065e93e9581e8858b4670e922f4956c51b2465"
+    }
+  },
+  "acceptanceStatus": "NOT_STARTED; requires frozen package validation first",
+  "testDataCorrection": "First fixed-only runs contained a wrong serialized class-name length. Replaced hardcoded length with strlen(Connection::class); full suites and instrumented tests pass; failed logs preserved."
+}

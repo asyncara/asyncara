@@ -4,7 +4,49 @@
 from failed campaigns and shorter diagnostic runs. Mixed endurance is verified
 for the configuration below; broader FPM and compatibility gates remain incomplete.
 
-## Current evidence at 2026-11-06
+## Native API lifecycle continuation
+
+Starting source: rewritten `phase4-endurance`
+`8b6537409c08bcdf7fe7b0e47899fca0ef0f5b54`. Official direction and implemented
+semantics are in [NATIVE_API_FIRST](NATIVE_API_FIRST.md) and
+[IO_LIFECYCLE_CONTRACT](IO_LIFECYCLE_CONTRACT.md). This checkpoint changes two
+PHP runtime classes, tests and documentation; native C, timer hooks, scheduler,
+existing FPM acceptance fixture and thresholds are unchanged.
+
+| Check | Actual result / scope |
+|---|---|
+| Ownership regressions before fix | SQLite copy guard and buffered HTTP completion-drain assertions FAIL; logs preserved |
+| Ownership fixes | SQLite rejects cloned/serialized native IDs; buffered HTTP retains Task/permit through cancellation collection |
+| PHP8.5.12 epoll/poll | Full scripts/test.sh PASS on both:44 core cases plus all auxiliary suites including6 new lifecycle cases |
+| PHP8.3.36/8.4.27 and8.5.12 DEBUG | Fresh modules and6 lifecycle regressions PASS on both epoll/poll |
+| Independent audit | All scheduler/pool/transaction regressions,1k/10k Tasks, slow-I/O and fatal-memory controls PASS |
+| FPM functional | Original A/B/C/D PASS, PHP8.5.12 |
+| Database suite/bounds | PostgreSQL/MariaDB/Redis PASS; Oracle fixture startup was not an Oracle query test; no new remote TLS claim |
+| GCC ASan/UBSan | Fresh matching instrumented PHP/module lifecycle tests PASS |
+| Valgrind-aware DEBUG PHP | Lifecycle suite PASS;0 errors and0 lost bytes, no suppressions |
+| Distribution PHP under Valgrind | Exit99,904 direct/120 indirect lost bytes plus unregistered Fiber-stack warnings; old source also reports losses (2312/360). Plain PHP Fiber control has stack warnings but no losses. Exact difference unresolved |
+| Deliberate FPM worker-stop controls | epoll7/8 and poll8/8 injected cases fail original two-tick predicate; ordinary/gated/recovery controls PASS. These are diagnostics, not endurance acceptance |
+| Original local FPM failures | Raw logs rechecked; exact zero-tick cause remains unresolved |
+
+[Durable evidence](phase4/lifecycle-hardening.json) records commands, raw log
+hashes, binary identities, preserved failures and narrower instrumentation scope.
+The initial progress-control assumption and malformed serialization test literal
+also have retained failed reports. No warning or existing assertion was suppressed.
+Native TSan was not rerun for these PHP-only runtime changes; historical TSan
+results keep their original scope. Broader HTTP/API expansion and benchmarks are
+deferred behind reliability rather than added speculatively.
+
+The next gate is a frozen, independently packaged uninstrumented FPM1h attempt,
+followed by6h and24h only after each preceding stage passes. Before its launch,
+the new campaign remains **NOT_STARTED**, not certified by this test matrix.
+Package/launch evidence will be recorded separately so implemented, tested,
+packaged and endurance-tested source remain distinguishable.
+
+## Historical evidence at 2026-11-06
+
+See the [Native API lifecycle continuation](#native-api-lifecycle-continuation)
+for the subsequent checkpoint. The following earlier source hashes, archives,
+completed campaigns and failures remain historical evidence.
 
 | Check | Tested source | Result |
 |---|---|---|

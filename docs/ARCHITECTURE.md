@@ -1,5 +1,9 @@
 # Architecture
 
+The official direction is [Native Async API First — Optional Transparent
+Compatibility](NATIVE_API_FIRST.md). Existing explicit APIs are the primary
+product; hooks are optional adapters and are not prerequisites for core I/O.
+
 Asyncara has one native extension and a strict-typed Composer library. Native code owns OS readiness, native work queues, curl handles, SQLite connections and native buffers. PHP owns Fiber scheduling, Tasks/Futures, cancellation, structured scopes and public APIs. This keeps Zend object lifecycle on its interpreter thread and permits testing scheduling independently from native drivers.
 
 The native boundary uses operation IDs and copied scalar inputs. Worker threads never call Zend, access request zvals, or execute PHP callbacks. Completed native results are converted to PHP values only on the loop thread. Native request shutdown joins workers before freeing their queues or database connections. Limits apply before submission and while accumulating responses. An atomic allocation ledger bounds retained native payloads/metadata independently of PHP memory_limit. Job lifetime tracking extends through result conversion so Zend bailout leaves resources reachable by request shutdown.

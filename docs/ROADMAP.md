@@ -1,6 +1,26 @@
 # Implementation status
 
-Updated 2026-11-06 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
+Updated 2026-11-07 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
+
+## Native API lifecycle continuation
+
+The official direction is [Native Async API First — Optional Transparent
+Compatibility](NATIVE_API_FIRST.md). No new hooks, driver replacements or backend
+claims are part of this continuation. [IO_LIFECYCLE_CONTRACT.md](IO_LIFECYCLE_CONTRACT.md)
+documents eager submission, shared waiting versus owned cancellation, draining,
+partial results, backpressure and request shutdown against existing source.
+
+| Item | Status | Evidence / remaining work |
+|---|---|---|
+| Buffered HTTP cancellation ownership | IMPLEMENTED_AND_TESTED | `tests/io_lifecycle.php`: public Task and client permit now remain owned until native cancellation collection; prior implementation failed the completion-listener regression |
+| SQLite connection copy protection | IMPLEMENTED_AND_TESTED | Same regression rejects cloning/serialization/unserialization of request-local native identity; original implementation allowed copies |
+| Shared-waiter/file/SQLite lifecycle regressions | IMPLEMENTED_AND_TESTED | Six cases in `tests/io_lifecycle.php`, included in `scripts/test.sh`; epoll/poll PHP 8.5.12 and GCC ASan/UBSan pass |
+| Local uninstrumented FPM cause and endurance | PARTIALLY_IMPLEMENTED | Original zero-tick failures remain unresolved. Controlled worker stops reproduce fewer-than-two ticks, not attribution of original failures. Original acceptance workload and thresholds remain unchanged |
+| Comprehensive lifecycle certification | PARTIALLY_IMPLEMENTED | Existing functional suites pass; shared operation-wide cancellation authority, arbitrary shutdown deadlines, wider database/platform coverage and long local FPM acceptance remain limited |
+
+Current executions and frozen-source acceptance state are recorded in
+[PHASE4_DELIVERY.md](PHASE4_DELIVERY.md). Historical sections below retain the
+source identities and scope of their original measurements.
 
 | Area | Status | Evidence / remaining work |
 |---|---|---|

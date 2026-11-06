@@ -1,5 +1,22 @@
 # Measured performance
 
+## Lifecycle continuation regression probe (November 7, 2026)
+
+The new lifecycle checkpoint reran `scripts/audit.py` on PHP8.5.12 with epoll.
+Its1,000-sample/64-yielding-task latency probe measured median0.519ms,
+p953.796ms, p9918.464ms and maximum56.303ms timer lag. It also retained three
+independent samples each for1,000 and10,000 Tasks. Raw results are under
+`/tmp/asyncara-lifecycle-20261106T231254Z/independent-audit/`; file hashes and
+commands are in [lifecycle-hardening.json](phase4/lifecycle-hardening.json).
+
+This is regression evidence on a shared host, not an HTTP/database/filesystem
+throughput comparison or a claim of improvement. The cancellation-drain repair
+prioritizes completed resource cleanup over early Task completion. No allocator,
+pool or timing threshold was relaxed. Broader equivalent-workload benchmarks
+remain deferred while the local FPM reliability gate is unresolved. The earlier
+measurements below keep their original source/environment and are not relabelled
+as results for this checkpoint.
+
 Recorded 2026-11-02T17:11:32.545674+00:00. These are development measurements from a shared VM, not production capacity numbers. The complete [raw results](../benchmarks/results/latest.json) retain all samples and source/artifact provenance. Historical invalid measurements are identified in [the provenance note](../benchmarks/results/README.md).
 
 ## Environment and reproduction
