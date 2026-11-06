@@ -10,6 +10,9 @@ final class Connection
     private bool $closed = false;
     private ?Task $transactionOwner = null;
     private function __construct(private int $id) { $this->gate = new Semaphore(1); $this->operations = new Semaphore(1); }
+    private function __clone() {}
+    public function __serialize(): array { throw new \LogicException('Native SQLite connections cannot be serialized'); }
+    public function __unserialize(array $data): void { throw new \LogicException('Native SQLite connections cannot be unserialized'); }
     public static function open(string $path): Future
     {
         return Async::spawn(static fn() => Async::shield(static fn() => new self(Scheduler::current()->native('sqlite_open', [$path])->await())));
