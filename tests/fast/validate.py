@@ -42,7 +42,7 @@ for variant in a.variants:
   run(variant+'-'+version+'-info',[php,'-n','-d','extension='+str(module),'--ri','asyncara'])
   for backend in ['epoll','poll']:
    env={'ASYNCARA_BACKEND':backend}
-   for test in ['kernel','virtual_time']:
+   for test in ['kernel','virtual_time','sqlite_encoding']:
     run(variant+'-'+version+'-'+backend+'-'+test,[php,'-n','-d','extension='+str(module),'tests/fast/'+test+'.php',a.iterations,a.seed],env)
    run(variant+'-'+version+'-'+backend+'-negative-oracle',[php,'-n','-d','extension='+str(module),'tests/fast/kernel.php',1,a.seed,'--negative-early-io'],env,expected=1)
 print('Recorded',len(rows),'commands; expected historical failures remain failures, not passing implementations.')

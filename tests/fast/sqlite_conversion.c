@@ -16,6 +16,11 @@ const void *__wrap_sqlite3_column_blob(sqlite3_stmt *s,int i){
  if(atomic_load(&inject)==2&&!atomic_exchange(&injected,1))return NULL;
  return __real_sqlite3_column_blob(s,i);
 }
+const unsigned char *__real_sqlite3_column_text(sqlite3_stmt*,int);
+const unsigned char *__wrap_sqlite3_column_text(sqlite3_stmt *s,int i){
+ if(atomic_load(&inject)==4&&!atomic_exchange(&injected,1))return NULL;
+ return __real_sqlite3_column_text(s,i);
+}
 int __real_sqlite3_column_bytes(sqlite3_stmt*,int);
 int __wrap_sqlite3_column_bytes(sqlite3_stmt *s,int i){
  if(atomic_load(&inject)==3&&!atomic_exchange(&injected,1))return 0;
@@ -29,9 +34,9 @@ static ar_job *query(ar_engine *e,ar_db *db,const char *sql){
  assert(done==j&&!done->done_next&&!e->pending&&!db->busy);return j;
 }
 int main(int argc,char **argv){
- int mode=argc>1?atoi(argv[1]):1;assert(mode>=0&&mode<=3);assert(curl_global_init(CURL_GLOBAL_DEFAULT)==CURLE_OK);
+ int mode=argc>1?atoi(argv[1]):1;assert(mode>=0&&mode<=4);assert(curl_global_init(CURL_GLOBAL_DEFAULT)==CURLE_OK);
  ar_engine *e=ar_engine_new();assert(e);ar_db *db=ar_calloc(e,1,sizeof(*db));assert(db);db->id=1;e->dbs=db;assert(sqlite3_open(":memory:",&db->handle)==SQLITE_OK);
- atomic_store(&inject,mode);ar_job *j=query(e,db,"SELECT 42 AS prefix, 'payload' AS value");
+ atomic_store(&inject,mode);ar_job *j=query(e,db,mode==2?"SELECT 42 AS prefix, x'7061796c6f6164' AS value":"SELECT 42 AS prefix, 'payload' AS value");
  if(mode){assert(atomic_load(&injected));if(!j->error[0]){fprintf(stderr,"conversion OOM accepted as successful data: mode=%d\n",mode);return 2;}}
  else assert(!j->error[0]&&j->result&&j->result->count==1);
  ar_job_free(j);atomic_store(&inject,0);atomic_store(&injected,0);

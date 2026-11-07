@@ -582,7 +582,8 @@ static void do_sqlite(ar_job *j) {
                 goto finish;
             }
             ar_value *v = NULL;
-            switch (sqlite3_column_type(stmt, i)) {
+            int type = sqlite3_column_type(stmt, i);
+            switch (type) {
             case SQLITE_NULL:
                 v = ar_value_new(j->engine, V_NULL);
                 break;
@@ -595,7 +596,11 @@ static void do_sqlite(ar_job *j) {
                     v->number = sqlite3_column_double(stmt, i);
                 break;
             default: {
-                const void *data = sqlite3_column_blob(stmt, i);
+                /* Force TEXT to UTF-8 before obtaining its byte count; the
+                 * BLOB accessor preserves a database's UTF-16 representation.
+                 * BLOB values must retain their original binary bytes. */
+                const void *data = type == SQLITE_TEXT ? (const void *)sqlite3_column_text(stmt, i)
+                                                       : sqlite3_column_blob(stmt, i);
                 if (!data && sqlite3_errcode(db->handle) == SQLITE_NOMEM) {
                     ar_value_free(row);
                     failure(j, "SQLite value conversion allocation failure");
