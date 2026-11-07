@@ -7,12 +7,18 @@ final class TcpStream
 {
     use \Asyncara\Internal\NonCopyable;
 
+    /** Weak registration prevents a second wrapper owning the same resource. */
+    private static array $owners = [];
+    private int $identity;
     private bool $reading = false, $writing = false;
     /** @param resource $stream */
     public function __construct(private mixed $stream)
     {
-        if (!is_resource($stream)) throw new \ValueError('Expected stream resource');
+        if (!is_resource($stream) || get_resource_type($stream) !== 'stream') throw new \ValueError('Expected stream resource');
+        $id = (int)$stream;
+        if (isset(self::$owners[$id]) && self::$owners[$id]->get() !== null) throw new \LogicException('Stream already has a canonical TcpStream owner');
         stream_set_blocking($stream, false); stream_set_read_buffer($stream, 0); stream_set_write_buffer($stream, 0);
+        $this->identity = $id; self::$owners[$id] = \WeakReference::create($this);
     }
     public static function connect(string $host, int $port, float $timeout = 30, bool $tls = false, ?string $caFile = null): Future
     {
@@ -86,6 +92,10 @@ final class TcpStream
         } finally { $this->writing = false; }
     }
     public function resource(): mixed { return is_resource($this->stream) ? $this->stream : throw new OperationException('Stream is closed'); }
-    public function close(): void { if (is_resource($this->stream)) { Scheduler::tryCurrent()?->closed($this->stream); fclose($this->stream); } }
+    public function close(): void
+    {
+        if (is_resource($this->stream)) { Scheduler::tryCurrent()?->closed($this->stream); fclose($this->stream); }
+        if (isset($this->identity) && (self::$owners[$this->identity] ?? null)?->get() === $this) unset(self::$owners[$this->identity]);
+    }
     public function __destruct() { $this->close(); }
 }
