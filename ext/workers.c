@@ -571,6 +571,16 @@ static void do_sqlite(ar_job *j) {
             goto finish;
         }
         for (int i = 0; i < sqlite3_column_count(stmt); i++) {
+            /* SQLite may allocate both column names and converted values. A
+             * NULL result can mean OOM, not just an empty SQL value. Check the
+             * connection error immediately, before another SQLite call can
+             * replace it; retain pointers only until this statement is reset. */
+            const char *name = sqlite3_column_name(stmt, i);
+            if (!name) {
+                ar_value_free(row);
+                failure(j, "SQLite column name allocation failure");
+                goto finish;
+            }
             ar_value *v = NULL;
             switch (sqlite3_column_type(stmt, i)) {
             case SQLITE_NULL:
@@ -585,14 +595,25 @@ static void do_sqlite(ar_job *j) {
                     v->number = sqlite3_column_double(stmt, i);
                 break;
             default: {
+                const void *data = sqlite3_column_blob(stmt, i);
+                if (!data && sqlite3_errcode(db->handle) == SQLITE_NOMEM) {
+                    ar_value_free(row);
+                    failure(j, "SQLite value conversion allocation failure");
+                    goto finish;
+                }
                 size_t len = (size_t)sqlite3_column_bytes(stmt, i);
+                if ((!len && sqlite3_errcode(db->handle) == SQLITE_NOMEM) || (!data && len)) {
+                    ar_value_free(row);
+                    failure(j, "SQLite value conversion allocation failure");
+                    goto finish;
+                }
                 bytes += len;
                 if (bytes <= AR_LIMIT)
-                    v = ar_string(j->engine, sqlite3_column_blob(stmt, i), len);
+                    v = ar_string(j->engine, data, len);
             }
             }
-            bytes += sizeof(ar_value) + strlen(sqlite3_column_name(stmt, i)) + 1;
-            if (bytes > AR_LIMIT || ar_add(row, sqlite3_column_name(stmt, i), v)) {
+            bytes += sizeof(ar_value) + strlen(name) + 1;
+            if (bytes > AR_LIMIT || ar_add(row, name, v)) {
                 if (bytes > AR_LIMIT)
                     ar_value_free(v);
                 ar_value_free(row);

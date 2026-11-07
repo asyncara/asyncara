@@ -1430,3 +1430,9 @@ backends; it does not attribute the historical failure. No timer priority change
 Revised B1/B2/C runners are being validated; the original response-count gate
 remains INCOMPLETE. See docs/NATIVE_RELIABILITY_PROGRAM.md. Next: compatibility
 validation, frozen checkpoint, B1/B2/C, differential Valgrind and ownership audit.
+
+## 2026-11-07 — SQLite allocation-boundary correction
+
+The documented SQLite column-name/conversion allocation failures were injected through linker wrappers into the actual worker query path. Before the correction: NULL name and NULL converted data terminated with SIGSEGV; failed byte conversion incorrectly returned success (exit 2). Preserved under `/home/coder/Asyncara-native-program-20261107T173550Z/sqlite-before-*`. The minimal correction checks names and immediately checks SQLite errors after allocation-sensitive value access, preserving empty blob/string semantics and statement finalization. All four focused after-controls passed; complete matrix and gates pending at this checkpoint. `ext/workers.c`, `tests/fast/sqlite_conversion.c`, and Gate A changed.
+
+The distribution-PHP Valgrind discrepancy is separately reproducible without Asyncara using ordinary object/closure cycles. Explicit collection clears the losses; DEBUG PHP performs an extra shutdown collection. Original losses and Fiber warnings remain preserved. `tests/dependencies/php_cycle_shutdown.php` is an independent control, not a suppression or runtime workaround. Detailed controls are under the same evidence root, `cycles-*`, `distribution-gc-*`, and original distribution reports.
