@@ -377,3 +377,32 @@ respectively. These aggregate maxima exceed the historical failed request's
 276.595ms maximum while its required progress still succeeds in the new runs.
 They cannot, by themselves, attribute the original zero-tick cause. Full
 latency distributions and caveats are in [PERFORMANCE.md](PERFORMANCE.md).
+
+## Reproducible source distribution
+
+Packaged source: `7ffeaf8146d067bfb8b62963b1851f96cae244bb` (documentation/evidence after native
+`9bee5c3`; runtime/test bytes unchanged). Archive:
+`build/asyncara-0.1.0-dev-native-program-r2.tar.gz`, 416 files, SHA-256:
+
+`7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a`
+
+Two independent generations are byte-identical. Every member matches Git.
+Fresh extraction built matching PHP 8.3.36/8.4.27/8.5.12 modules using public SDK
+headers and system library dependencies; no prior generated module or vendor
+tree was reused. The shipped Composer lock was installed independently. Kernel,
+SQLite encoding and lifecycle regressions pass on epoll/poll for all three
+versions; full PHP 8.5 suites pass on both backends. All packaged source files,
+including LICENSE/composer.lock, remain unchanged after build/tests.
+
+The first extraction's validation failed because the external orchestration
+omitted test-certificate preparation before a direct lifecycle invocation. Its
+FileNotFoundError/PHP failure remains preserved. A second clean extraction uses
+the existing `scripts/prepare-test-certs.sh`, with no test or archive change, and
+passes. Composer validation succeeds; outside Git it emits a root-version
+fallback notice. No dependency or metadata change was made to silence it.
+
+[Package attestation](phase5/native-program-package.json) retains commands,
+exits, logs, module hashes and both validation results. Archive source and final
+attestation commit are distinct; no GitHub release/push occurred. The original
+fast-r1 archive and Phase 4 history remain unchanged. The independent package
+build does not claim another A/B/C run on its new binaries.

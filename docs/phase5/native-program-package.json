@@ -1,0 +1,572 @@
+{
+  "createdUtc": "2026-11-07T19:27:17.903038+00:00",
+  "release": "EXPERIMENTAL",
+  "runtimeCheckpoint": "9bee5c3eeb1ba89124bb35251d679bbda0b8b7f8",
+  "packagedSource": "7ffeaf8146d067bfb8b62963b1851f96cae244bb",
+  "distribution": {
+    "source": "7ffeaf8146d067bfb8b62963b1851f96cae244bb",
+    "archive": "/home/coder/Asyncara-fast-reliability-20261107T155547Z/build/asyncara-0.1.0-dev-native-program-r2.tar.gz",
+    "sha256": "7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a",
+    "repeatArchive": "/home/coder/Asyncara-native-program-20261107T173550Z/repro-native-program-r2.tar.gz",
+    "repeatSha256": "7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a",
+    "cleanSource": true
+  },
+  "validation": {
+    "status": "PASS",
+    "identity": {
+      "archive": "/home/coder/Asyncara-fast-reliability-20261107T155547Z/build/asyncara-0.1.0-dev-native-program-r2.tar.gz",
+      "sha256": "7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a",
+      "source": "7ffeaf8146d067bfb8b62963b1851f96cae244bb",
+      "fileCount": 416,
+      "gitContentMatch": true,
+      "tree": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev",
+      "dependencies": "Public PHP/library headers copied independently; dynamic system libraries. No previous generated build/module/vendor reused. Composer installs the shipped lock independently; ext-asyncara presence is deferred to explicit module load/tests.",
+      "moduleHashes": {
+        "83": "e5c5250dcf2cf33cb923c1830d28deacba3f87d4bb191e5d050fbbba47776fd1",
+        "84": "845e0591b5c563ced5f037c7fa644786d1b8a1669d5614215cc931143b31e1eb",
+        "85": "34e1e6bac90cceef1714d494dbe55ea275a0e98755b4e3701d32239c15a4f257"
+      }
+    },
+    "commands": [
+      {
+        "name": "composer-version",
+        "command": [
+          "/usr/local/bin/composer",
+          "--version"
+        ],
+        "environment": {
+          "COMPOSER_HOME": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-home"
+        },
+        "exit": 0,
+        "wallSeconds": 0.36786622693762183,
+        "cpuSeconds": 0.338854,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-version.log",
+        "sha256": "2bd4492e6ef0c1d0d45a693fdb50738c444464b6eb18ef2e03d49538d2745812"
+      },
+      {
+        "name": "composer-validate",
+        "command": [
+          "/usr/local/bin/composer",
+          "validate",
+          "--no-check-publish"
+        ],
+        "environment": {
+          "COMPOSER_HOME": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-home"
+        },
+        "exit": 0,
+        "wallSeconds": 0.3671618669759482,
+        "cpuSeconds": 0.359127,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-validate.log",
+        "sha256": "20147e0124102a9a43fd893c4110125e9ab15c72726217865b2e71aa98f3cdb2"
+      },
+      {
+        "name": "composer-install",
+        "command": [
+          "/usr/local/bin/composer",
+          "install",
+          "--no-interaction",
+          "--prefer-dist",
+          "--no-progress",
+          "--no-scripts",
+          "--ignore-platform-req=ext-asyncara"
+        ],
+        "environment": {
+          "COMPOSER_HOME": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-home",
+          "COMPOSER_CACHE_DIR": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-cache"
+        },
+        "exit": 0,
+        "wallSeconds": 1.226506661856547,
+        "cpuSeconds": 1.1041169999999996,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/composer-install.log",
+        "sha256": "8a5f37f50ea8fe75e0c5c3a4f4f6220be8721fcd40df2672fce4f9ce25b6d561"
+      },
+      {
+        "name": "prepare-test-certificates",
+        "command": [
+          "bash",
+          "scripts/prepare-test-certs.sh"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 1.246287896996364,
+        "cpuSeconds": 1.1911039999999997,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/prepare-test-certificates.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "build-83",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "ASYNCARA_OUTPUT": "build/archive83.so",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/sdk83"
+        },
+        "exit": 0,
+        "wallSeconds": 3.353977497899905,
+        "cpuSeconds": 3.3427849999999983,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/build-83.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "83-epoll-kernel",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.5254777611698955,
+        "cpuSeconds": 1.4316440000000012,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-epoll-kernel.log",
+        "sha256": "989d3fadf556114b2273000f26f07ea0b855e05aeeda15839522573e48a9243b"
+      },
+      {
+        "name": "83-epoll-sqlite_encoding",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.0661173309199512,
+        "cpuSeconds": 0.05971400000000049,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-epoll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "83-epoll-lifecycle",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.1750368629582226,
+        "cpuSeconds": 0.20889300000000022,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-epoll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "83-poll-kernel",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.3339872639626265,
+        "cpuSeconds": 1.2443959999999992,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-poll-kernel.log",
+        "sha256": "6dadf7815c219845b41b386794c9dcd8b08b63c32fe2acd6e1c0ae5c6d952766"
+      },
+      {
+        "name": "83-poll-sqlite_encoding",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.06623431504704058,
+        "cpuSeconds": 0.04538700000000073,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-poll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "83-poll-lifecycle",
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive83.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.2392881289124489,
+        "cpuSeconds": 0.20982599999999962,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/83-poll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "build-84",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "ASYNCARA_OUTPUT": "build/archive84.so",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/sdk84"
+        },
+        "exit": 0,
+        "wallSeconds": 4.971483383793384,
+        "cpuSeconds": 4.2169440000000025,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/build-84.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "84-epoll-kernel",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.7459973401855677,
+        "cpuSeconds": 1.5157979999999984,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-epoll-kernel.log",
+        "sha256": "ec3ae1fbf2a4931752b1d2d0c610b79d5447a2c378c470f07b93c2fe1ab838fd"
+      },
+      {
+        "name": "84-epoll-sqlite_encoding",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.15260379295796156,
+        "cpuSeconds": 0.0624480000000025,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-epoll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "84-epoll-lifecycle",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.291185042122379,
+        "cpuSeconds": 0.2708050000000011,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-epoll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "84-poll-kernel",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.4869210917968303,
+        "cpuSeconds": 1.178529000000001,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-poll-kernel.log",
+        "sha256": "1f60682589744b721150ebe457f9100850ac59a6c8be6d9a2aebb2bef52e5e5f"
+      },
+      {
+        "name": "84-poll-sqlite_encoding",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.13685380201786757,
+        "cpuSeconds": 0.06819699999999962,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-poll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "84-poll-lifecycle",
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive84.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.3250706570688635,
+        "cpuSeconds": 0.31716300000000075,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/84-poll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "build-85",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "ASYNCARA_OUTPUT": "build/archive85.so"
+        },
+        "exit": 0,
+        "wallSeconds": 4.623381297104061,
+        "cpuSeconds": 3.8870160000000027,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/build-85.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "85-epoll-kernel",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.5838123820722103,
+        "cpuSeconds": 1.4166589999999974,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-epoll-kernel.log",
+        "sha256": "a5da48bb3bbd18702cfe2448252baab32e6e541ccb741e2767c52e073bb144d0"
+      },
+      {
+        "name": "85-epoll-sqlite_encoding",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.11621420318260789,
+        "cpuSeconds": 0.0671170000000032,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-epoll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "85-epoll-lifecycle",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.291071915999055,
+        "cpuSeconds": 0.25518799999999864,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-epoll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "85-poll-kernel",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/fast/kernel.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.7921403690706939,
+        "cpuSeconds": 1.3408650000000009,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-poll-kernel.log",
+        "sha256": "124631948a6e09c2972e095d145b0f9a248f385891acab4329e14de349a62342"
+      },
+      {
+        "name": "85-poll-sqlite_encoding",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/fast/sqlite_encoding.php",
+          "1000",
+          "17"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.11982923396863043,
+        "cpuSeconds": 0.05477399999999655,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-poll-sqlite_encoding.log",
+        "sha256": "00bad08fca2cc6b70b0a19d772095434eda10aeca2c7cec72da60e07f5b047f9"
+      },
+      {
+        "name": "85-poll-lifecycle",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/asyncara-0.1.0-dev/build/archive85.so",
+          "tests/io_lifecycle.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.243772568879649,
+        "cpuSeconds": 0.23883800000000477,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-poll-lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "85-epoll-full",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "ASYNCARA_EXTENSION": "build/archive85.so",
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 22.55989149096422,
+        "cpuSeconds": 10.792761,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-epoll-full.log",
+        "sha256": "cb9d34db254e737a9e29f76f01118b13d570a2be0ca4d7f647f1bf1750b01d7c"
+      },
+      {
+        "name": "85-poll-full",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "ASYNCARA_EXTENSION": "build/archive85.so",
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 21.404662266839296,
+        "cpuSeconds": 10.478224999999995,
+        "log": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r3/85-poll-full.log",
+        "sha256": "14383ce393964f9af6a091403ba3c637fd5a435fe9133965704fd515286eec9b"
+      }
+    ],
+    "sourceUnchangedAfterBuild": true
+  },
+  "artifacts": {
+    "package-r2/report.json": {
+      "sha256": "2d39af8b0110b0ac1f92f13667a9cb72c28333a55ccfede629a4271b3fda16fa",
+      "bytes": 5509
+    },
+    "package-r2-validation/result.json": {
+      "sha256": "2fa12d865608d740564ae7b91c9936d3f610b606a915e6745db756fef0f712fb",
+      "bytes": 629
+    },
+    "package-r3/report.json": {
+      "sha256": "074cd265ab6eeb5989fc931dcea4ca4b47ddeb9f449911fc07b227baa420c3db",
+      "bytes": 19014
+    },
+    "package-r3-validation/result.json": {
+      "sha256": "58f3846c9418e3ea0a5576f9252357d36046923a3ce206076de2e53adf11e2fd",
+      "bytes": 632
+    },
+    "final-preservation.json": {
+      "sha256": "a3e8b1a78302c072abe76765aa67d75bb3ed0d3de4b77abe7d3a5bd746249289",
+      "bytes": 1696
+    },
+    "historical-files-comparison.json": {
+      "sha256": "09bb6667dd84e54846ab4ffd24fddbd6e62afc541d57c7e75bf45ae8cbc482aa",
+      "bytes": 76
+    },
+    "process-cleanup-review.json": {
+      "sha256": "68f85f52688a96ca44a175d1852b23383d5322a3c2733f355ae7bc1714eef53f",
+      "bytes": 280
+    }
+  },
+  "evidenceRoot": "/home/coder/Asyncara-native-program-20261107T173550Z",
+  "priorValidationFailure": {
+    "status": "FAIL",
+    "path": "/home/coder/Asyncara-native-program-20261107T173550Z/package-r2/report.json",
+    "reason": "Independent orchestration omitted scripts/prepare-test-certs.sh before direct lifecycle test. HTTP/TLS fixture raised FileNotFoundError; PHP json_decode received false. Archive, tests, assertions and runtime unchanged. New extraction repeats build/tests after documented fixture preparation."
+  },
+  "composerWarnings": [
+    "Outside Git, Composer could not detect the root version and defaulted to 1.0.0; composer.json is valid. Existing lock and license metadata unchanged."
+  ],
+  "publication": "Local source archive; no GitHub push or release publication in this program.",
+  "scope": "All 416 packaged files match Git, repeated archive byte-identical, independent fresh builds with public SDK dependencies and separately installed locked Composer dependencies; kernel/encoding/lifecycle on PHP83/84/85 epoll/poll and full PHP85 epoll/poll. A/B/C are original private-module evidence, not rerun on extracted modules."
+}

@@ -1491,3 +1491,18 @@ frozen; no concurrent heavy validation ran. `summarize.py` and
 source checkpoint, distinct archive and independent extraction/build validation.
 
 Final preservation: all 1,347 archived regular Phase 4 evidence files match their originals; historical tar checksum, fast-r1 archive, twelve protected file hashes, main HEAD/untracked status and LICENSE are unchanged. Fixture fidelity tests (two cases) and diff whitespace check pass. Final proof is in `final-preservation.json`, `historical-files-comparison.json` and the durable evidence index. The terminal observer corrections are documented; original observations are retained.
+
+## Independent native-program source distribution
+
+Packaged clean source `7ffeaf8146d067bfb8b62963b1851f96cae244bb` as 416-file
+`build/asyncara-0.1.0-dev-native-program-r2.tar.gz`, SHA-256
+`7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a`. Repeated generation matches byte-for-byte.
+First extraction validation failed at direct lifecycle fixture startup because
+this validation orchestration omitted certificate preparation; all raw failure
+logs remain under `package-r2`. New `package-r3` extraction ran the documented
+certificate preparation, independently installed six locked Composer packages,
+built PHP 8.3/8.4/8.5 modules and passed kernel/UTF-16/lifecycle on epoll/poll for
+all six combinations plus full PHP 8.5 suites on both backends. Every packaged
+source file still matches Git. Composer validation passes with root-version
+fallback notice outside Git. Attestation: `docs/phase5/native-program-package.json`.
+This final attestation changes documentation only. No push/release publication.
