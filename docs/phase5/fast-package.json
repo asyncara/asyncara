@@ -1,0 +1,184 @@
+{
+  "sourceCommit": "7c0fbda089a204f81f6bab80513b8807cd05b769",
+  "archive": "/home/coder/Asyncara-fast-reliability-20261107T155547Z/build/asyncara-0.1.0-dev-fast-reliability-r1.tar.gz",
+  "archiveSha256": "ac1f5c76e15fd235341f9e70b83220bec585c62a7b5b2955ea9ce93691d0a876",
+  "fileCount": 399,
+  "allArchivedFilesMatchGit": true,
+  "repeatArchiveHashMatches": true,
+  "outsideGit": true,
+  "licenseUnchanged": true,
+  "archiveModuleSha256": "073deaf495fe13fab538a576391c2a41b2ddacef45871e13b4b8337ab7bc6d5f",
+  "moduleCopiedFromWorktree": false,
+  "headersCopiedAsBuildDependencies": true,
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5"
+      },
+      "exit": 0,
+      "wallSeconds": 5.544883930124342,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    {
+      "name": "epoll-kernel",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/kernel.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.32407954102382064,
+      "logSha256": "f19c45251572b04a348f9348c476e95e9c593c26df2bfab8f8084668c4807793"
+    },
+    {
+      "name": "epoll-virtual_time",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/virtual_time.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.08412176999263465,
+      "logSha256": "53ee38fad755c28f72afffb7c36871c2ee2edde0de19bc3f02eb066beb65cd43"
+    },
+    {
+      "name": "epoll-deadlines",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/deadlines.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.11900330404751003,
+      "logSha256": "e2b975f2dc08f7b0bde656fa48ec2e2154eb08ea058e857e91d6e6b3c7ec9083"
+    },
+    {
+      "name": "epoll-resources",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/resources.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.43915085797198117,
+      "logSha256": "60512840b980a3335f42b9ebd00503163eafecc15f98388f348b7f2fada91b2c"
+    },
+    {
+      "name": "poll-kernel",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/kernel.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.27452679607085884,
+      "logSha256": "faa47326a169a0b16647d9565f05330db64154fa84d8cb02fc68514812c83fc2"
+    },
+    {
+      "name": "poll-virtual_time",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/virtual_time.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.16419795877300203,
+      "logSha256": "d928bf393b11e017e95f3dad5cec1430a5eca6cd14600e87dd3592f2d1373562"
+    },
+    {
+      "name": "poll-deadlines",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/deadlines.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.1294808911625296,
+      "logSha256": "0f1860638691f85a75cbe537921a43a9b5574ed179a3e55f4af93cc4f0f1e112"
+    },
+    {
+      "name": "poll-resources",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-fast-evidence-20261107T155547Z/archive-check/asyncara-0.1.0-dev/build/asyncara.so",
+        "tests/fast/resources.php",
+        "128",
+        "17"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.5034494150895625,
+      "logSha256": "92dce54c85e26478bdc1cf05823b1214466b35d14dca448ecc367992c7a0b378"
+    },
+    {
+      "name": "native-close",
+      "command": [
+        "bash",
+        "scripts/test-native-close.sh"
+      ],
+      "environment": null,
+      "exit": 0,
+      "wallSeconds": 4.461027511861175,
+      "logSha256": "d2ef0a6087f5e21b0d7337a8f346f72313597313774b4f57ad31847ad25d0890"
+    }
+  ],
+  "scope": "independent clean archive build plus 128-iteration PHP smoke and native close controls; not a full Gate A/B rerun"
+}

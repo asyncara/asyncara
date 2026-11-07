@@ -2033,6 +2033,42 @@
     "run-gate-b.py": {
       "sha256": "0a44521b67a2a83f2230191369423ce788f97747d43156a38172d51d0518e638",
       "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/run-gate-b.py"
+    },
+    "post-gate/valgrind-distribution-io_lifecycle-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-distribution-io_lifecycle-memory.log",
+      "sha256": "acada833c05d7679389167562ab14fd0fcdc70a8df413454c6fa9ac6829795c9"
+    },
+    "post-gate/valgrind-distribution-fast-kernel-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-distribution-fast-kernel-memory.log",
+      "sha256": "6c097d307557985b5d33b11d9192e996752ffeccb602094783a95222f280e6ec"
+    },
+    "post-gate/valgrind-native-close-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-native-close-memory.log",
+      "sha256": "3900cefe497afaf098578462aafccbeeff2fed08fb34d37858a0aab39c7d3352"
+    },
+    "post-gate/valgrind-debug-io_lifecycle-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-debug-io_lifecycle-memory.log",
+      "sha256": "6b6c62d7f22ac35f49850f09908d09ffa4cec26398ff4cf9ad99e476a76d7f50"
+    },
+    "post-gate/valgrind-debug-fast-kernel-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-debug-fast-kernel-memory.log",
+      "sha256": "641e0bfd3ebd5169f10476893c600adcc9b5321772581d9c9f27233fffde1ade"
+    },
+    "post-gate/valgrind-native-wait-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-native-wait-memory.log",
+      "sha256": "d9d4e512d5722177a1eb30df0956a2045495f52bd10bd794e220cba7b5346df1"
+    },
+    "post-gate-r2/valgrind-debug-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-debug-memory.log",
+      "sha256": "7768aa3989ca3b26d7a0a2b4823ddbaba494a20dfe74d1e4d052a7d2010824a7"
+    },
+    "post-gate-r2/valgrind-distribution-1-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-distribution-1-memory.log",
+      "sha256": "be0b9d693abb0f21b32cf2f94f328cc9a352f604f880576f81db15f0b88bdf53"
+    },
+    "post-gate-r2/valgrind-distribution-2-memory.log": {
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-distribution-2-memory.log",
+      "sha256": "c806591d33d5a75c6d57ece50b29d02a3f3b2b3d1356d7a4bcc50feae893efd8"
     }
   },
   "integrity": {
@@ -2149,5 +2185,79 @@
     "build/fast-full.so": "8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84",
     "build/fast-debug.so": "1f7c4654ce06be7038089f11392fab8591093539e5dad67deef06ac67e188e4e",
     "build/fast-sanitized.so": "5555b2afd999c99c79244e256c916623813049abbea1e4e8939b5e23f6c42bde"
+  },
+  "memorySummaries": {
+    "post-gate/valgrind-distribution-io_lifecycle-memory.log": {
+      "definitely lost": 1128,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 77515,
+      "suppressed": 0,
+      "errors": 3
+    },
+    "post-gate/valgrind-distribution-fast-kernel-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 77515,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate/valgrind-native-close-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 56,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate/valgrind-debug-io_lifecycle-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 3888,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate/valgrind-debug-fast-kernel-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 3888,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate/valgrind-native-wait-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 56,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate-r2/valgrind-debug-memory.log": {
+      "definitely lost": 0,
+      "indirectly lost": 0,
+      "possibly lost": 0,
+      "still reachable": 3888,
+      "suppressed": 0,
+      "errors": 0
+    },
+    "post-gate-r2/valgrind-distribution-1-memory.log": {
+      "definitely lost": 904,
+      "indirectly lost": 120,
+      "possibly lost": 0,
+      "still reachable": 77515,
+      "suppressed": 0,
+      "errors": 5
+    },
+    "post-gate-r2/valgrind-distribution-2-memory.log": {
+      "definitely lost": 1888,
+      "indirectly lost": 120,
+      "possibly lost": 0,
+      "still reachable": 77515,
+      "suppressed": 0,
+      "errors": 6
+    }
   }
 }

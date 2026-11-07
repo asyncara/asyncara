@@ -240,3 +240,30 @@ No new hook, backend, protocol, framework feature, or scheduler rewrite was made
 Filesystem/SQLite/DNS remain worker-backed; HTTP remains curl multi event-driven.
 No new TSan or remote database certification was performed. Release remains
 **EXPERIMENTAL**. No new GitHub release, force-push or history rewrite occurred.
+
+## Packaged source and independent build
+
+[Package attestation](phase5/fast-package.json) identifies source
+`7c0fbda089a204f81f6bab80513b8807cd05b769` and the 399-file archive
+`build/asyncara-0.1.0-dev-fast-reliability-r1.tar.gz`:
+
+```text
+ac1f5c76e15fd235341f9e70b83220bec585c62a7b5b2955ea9ce93691d0a876
+```
+
+Every archived file matches that Git tree. Repeating `git archive` produces the
+same checksum; LICENSE is unchanged. Extraction and compilation took place
+outside Git under the evidence directory's `archive-check/`. Only development
+headers were copied as dependencies, never modules or generated build outputs.
+The newly compiled archive module is
+`073deaf495fe13fab538a576391c2a41b2ddacef45871e13b4b8337ab7bc6d5f`;
+binary paths/debug information differ from the worktree build. It passed
+128-iteration kernel/virtual-time/deadline/resource smoke tests on both backends
+and native close controls. This is independent package validation of that scope,
+not another full Gate A/B execution. Later attestation/documentation commits do
+not change the packaged native/PHP runtime bytes. Nothing was installed into
+Phase 4 or published as a GitHub release.
+
+Metrics report live owner counts and explicit loop counts. They do not expose a
+universal cumulative Task/Future/watcher creation counter, nor account for all
+third-party or kernel allocations. No missing metric is inferred from RSS.

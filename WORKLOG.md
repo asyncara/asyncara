@@ -1403,3 +1403,16 @@ resources, limits and reproduction. Main/native-core worktrees remain unchanged;
 all 12 protected hashes and the historical tar comparison pass. Source package
 verification follows this checkpoint. Release stays EXPERIMENTAL; historical
 zero-tick root cause and distribution-PHP allocation discrepancy remain unresolved.
+
+### Source distribution verified
+
+Packaged source `7c0fbda089a204f81f6bab80513b8807cd05b769`, 399 files, as
+`build/asyncara-0.1.0-dev-fast-reliability-r1.tar.gz`, SHA-256
+`ac1f5c76e15fd235341f9e70b83220bec585c62a7b5b2955ea9ce93691d0a876`.
+Every archive file was compared with Git; repeated generation gives the same
+checksum. Fresh extraction outside Git independently compiled a new module;
+128-iteration kernel/virtual/deadline/resource tests on epoll and poll and native
+close controls pass. Header dependencies only were copied, no build outputs.
+`docs/phase5/fast-package.json` retains all commands and archive-module identity.
+This attestation update changes documentation only; source/binary/endurance
+identities remain distinct. No push, release publication or history rewrite.
