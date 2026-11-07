@@ -278,3 +278,22 @@ See [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md) for the two
 additional C corrections, final-source gates, PHP shutdown controls, ownership
 audit and new package identity. The original zero-tick cause remains distinct
 from the proven injected EINTR notification defect.
+
+## Resource-provenance continuation
+
+The latest continuation is [RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md).
+Gate A now includes canonical-owner copying/lifetime checks, bounded diagnostic
+ring/extraction controls and real shuffled duplicate-watcher readiness with
+allocation failure/recovery. Final-source Gate A passed in161.403s with three
+seeds on epoll/poll. Current B1 passes 350,004 real waits and 210,000 worker jobs;
+B2 passes 9,376 responses over 600.013s, minimum nine ticks. C passes 27,636
+responses over 1,800.071s, minimum six ticks. Independent reviews pass original
+resource/lifecycle limits. A+B take 15.45 minutes; optional C adds 33.89 minutes.
+Earlier program results do not certify the new binary. The original 200,000-FPM-response gate
+remains incomplete historical scope; redesigned B1 counts real native operations
+and B2 separately counts main requests and dense operations.
+
+Diagnostics are an explicitly separate workload. The normal gates do not enable
+Trace or preload wait instrumentation. Controlled interpreter delay, dropped
+trace events and distribution-PHP Valgrind failures remain diagnostic evidence,
+not normal acceptance. See DIAGNOSTICS.md for overhead and extraction limits.

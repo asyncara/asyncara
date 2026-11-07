@@ -26,7 +26,12 @@ Snapshot or output failure neither consumes the ring nor releases operations.
 `ext/memory.c:ar_trace_emit` records fixed 64-byte events in one request-local
 ring. Capacity is 16..4096 and cannot change once allocated in that request.
 On the validated ABI the ring uses `72 + capacity * 64` bytes: 65,608 by default,
-262,216 maximum. Snapshot conversion uses a separate 262,144-byte temporary
+262,216 maximum. Fixed bookkeeping additionally increases `sizeof(ar_engine)`
+from 296 to 328 bytes, plus 24 bytes of process/thread identity counters on this
+NTS ABI. Maximum additional native storage is therefore 262,272 bytes for one
+engine, excluding allocator bookkeeping; the API byte counter reports the ring
+only. Disabled capture allocates no ring but retains the fixed metadata.
+Snapshot conversion uses a separate 262,144-byte temporary
 Zend allocation, then bounded PHP arrays and optional JSON (at most 4 MiB).
 Those export allocations are subject to PHP's memory limit. The ring has a
 separate hard bound and is reported as `nativeDiagnosticBytes`; it is not part
@@ -105,3 +110,52 @@ Validation commands: `tests/diagnostics/run.py`, `tests/diagnostics/fpm.py`,
 `tests/diagnostics/overhead.php`, and `tests/fast/dispatch_control.py --trace`.
 The last deliberately delays the interpreter: diagnostic evidence only. Actual
 measurements and source identities belong to the program's execution report.
+
+## Measured scope (resource-provenance continuation)
+
+Five alternating samples/backend, 10,000 real pending socket reads plus timer
+transitions each, compare the previous package, current diagnostics disabled,
+WAIT only and ALL classes. Median wall seconds:
+
+| Backend | Previous package | Disabled | WAIT | ALL |
+|---|---:|---:|---:|---:|
+| epoll |1.654718|1.770669|1.994051|1.979777|
+| poll |1.200841|1.269530|1.342579|1.516294|
+
+Disabled differs from the old package by +7.01%/+5.72%; this includes ownership
+guards and all native changes, not just tracing. ALL adds +11.81%/+19.44% over
+the same current binary disabled. Retrospective local guardrails are10% disabled
+versus prior and25% ALL versus disabled; these measurements fit them. These are
+scoped engineering budgets, not a latency SLA or proof of non-invasive behavior.
+An unrelated host benchmark was observed during this validation period; raw
+samples and CPU times remain available rather than removing inconvenient runs.
+
+At capacity4096, long ALL workloads attempt480,009 events and overwrite475,913;
+the retained4096 cannot reconstruct the complete run. Kernel-control traces with
+sufficient capacity have no loss. The final separate diagnostic FPM run exports
+136 unique request traces (including fatal/recovery), zero overwrite,66 contention
+drops. Loss is explicit; these are diagnostic checks, not uninstrumented
+acceptance. Snapshot timing is before native request teardown.
+
+Raw evidence: `diagnostic-measurements.json`, `final-diagnostic-overhead.json`,
+`final-diagnostic-fpm-data/report.json`, `trace-data-r3`, and all original failures
+under `/home/coder/Asyncara-resource-provenance-20261107T212909Z`.
+
+Measurement boundary: workload wall/CPU timing stops before deferred extraction.
+The reported PHP memory delta is observed after snapshot conversion and includes
+retained PHP allocator pages; it is not an additional permanent native ring.
+Export latency depends on the caller's output stream and is not given an SLA.
+
+The recorder does not expose every curl/library-internal transition. Native
+watcher mapping records describe PHP-supplied watchers; HTTP has job/wait/pause
+provenance without a complete library socket-to-transfer graph. Worker job IDs
+are request-wide; scheduler scope is sampled at publication, not a promise that
+a late native notification belongs to the currently active scheduler. Correlate
+job IDs and request identity. During concurrent publication, individual counters
+can reflect slightly different instants; quiescent tests verify exact accounting.
+
+Wait duration is wall-clock monotonic time, not thread CPU or runnable-queue time.
+A long recorded syscall interval localizes the delay but does not alone prove
+kernel blocking rather than host descheduling. Existing separate OS/wait
+observers remain necessary for that distinction; they are not enabled in normal
+acceptance. The historical failed request had no such complete correlated trace.

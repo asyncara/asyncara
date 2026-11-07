@@ -1,6 +1,11 @@
 # Native ownership audit — 2026-11-07
 
-Scope: source review from `f2c0b83` through `9bee5c3`, focused negative controls,
+The current per-object matrix and tested copy policies are below under
+“Resource copy policy continuation”; the opening review records the historical
+checkpoint and its then-open gaps. Current evidence is in
+[RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md).
+
+Historical scope: source review from `f2c0b83` through `9bee5c3`, focused negative controls,
 existing lifecycle tests, and the final validation indexed in
 [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md). This is a scoped
 ownership review, not universal safety certification. Scheduler objects, Tasks,
@@ -137,6 +142,8 @@ continued operation/cleanup, not only exception type.
 | HttpClient / permit | NON_COPYABLE; concurrent Tasks share one client | client Semaphore; request Task retains permit | owned Task cancellation drains native job | permit finally released; request-local curl multi freed by engine | resource_copy, HTTP lifecycle; no curl hook dependency |
 | Response / ResponseHead | VALUE_COPY | PHP values | none | PHP GC | resource_copy, HTTP tests; header arrays contain values |
 | ResponseStream / AsyncStream | NON_COPYABLE; one iterator | producer Task, queue, completion/head Future | explicit stream close cancels and joins producer | bounded queue + producer cleanup; request owns pending jobs | resource_copy, io_lifecycle/stream tests; dropping a consumer is not a universal join |
+| HTTP upload/download operation | NON_COPYABLE Task/Future; body streams remain single-consumer | request Task, permit and pump; download owns response producer and file writer | explicit operation cancellation drains job/pump; one waiter token only detaches that waiter | finally closes response/ReadableStream input and owned file stream, releases permit; request engine owns unfinished native jobs | io_lifecycle, http_streaming, resource_copy; an application iterable may block and must not be concurrently consumed elsewhere |
+| curl multi/cache entries | no copyable PHP native owner | request engine owns one multi/cache; request jobs own easy handles | cancel a job removes its transfer, not the shared multi | easy cleanup at collection; multi/global lifecycle at engine/module teardown | HTTP lifecycle/limits/FPM; foreign curl allocations outside ledger |
 | Emitter | SAFE_CLONE shares canonical Queue | producer and queue | queue close/producer cancellation | producer finally closes; PHP GC | resource_copy cloned emission + serialization rejection |
 | PSR client adapter | SAFE_CLONE shares HttpClient/factories | adapter + canonical client | underlying request ownership | normal response/exception cleanup | resource_copy when Composer dependencies installed; core PSR HTTP tests |
 | SQLite Connection / native ar_db | NON_COPYABLE | request engine owns handle; PHP gate owns operation ordering | owned query Task cancellation; progress callback | explicit queued close; collect frees closed entry; shutdown joins then closes | live resource_copy, io_lifecycle, close_cancellation, sqlite conversion; executing transaction effects not undone by dropping references |

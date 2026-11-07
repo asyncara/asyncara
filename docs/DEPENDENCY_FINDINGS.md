@@ -199,3 +199,11 @@ Evidence: `/home/coder/Asyncara-resource-provenance-20261107T212909Z/` contains
 hashes), all `memory-*-memory.log`, launch/results and the exact differential
 scripts. Independent sources are `tests/dependencies/php_cycle_shutdown.php`,
 `native-memory-control.php`, and `plain-fiber.php`.
+
+The final `resource-provenance-r2.so` repetition (native checkpoint b7ea081)
+retains the same1784 direct/648 indirect loss,0 possible loss,77515 reachable
+bytes and exit99. `final-distribution-memory.log` is the full unsuppressed report;
+`final-distribution/result.json` records binary path, environment and command.
+`final-distribution-native` reports zero loss for raw worker operations. Final
+DEBUG lifecycle/copy/trace controls and native ring/index/worker controls also
+report zero loss/errors. These results preserve the distinction above.

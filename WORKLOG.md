@@ -1546,3 +1546,29 @@ a universal clean Asyncara heap. See DEPENDENCY_FINDINGS.md. Distribution PHP
 losses remain explicit; no production GC workaround or suppression was added.
 Historical Phase4 one-hour PASS, six-hour FAIL and unresolved zero-tick cause
 remain unchanged.
+
+Final runtime b7ea081 and test-only ce9b977: PHP83/84/85 epoll/poll targeted
+regressions pass, full85 epoll/poll and local databases pass, scoped native/PHP
+GCC sanitizers/DEBUG plus native TSan/Valgrind pass. Distribution Valgrind remains
+FAIL1784 direct/648 indirect (0 possible,77515 reachable). Gate A PASS161.403s.
+Independent audit first failed CPU/wall1.09165 against unchanged1.1 assertion;
+foreign benchmark observed, three matched prior/current repetitions pass, full
+audit rerun passes unchanged. Every failed result is retained. Final B/C run
+sequentially from frozen runtime/module with diagnostics disabled; status pending.
+
+
+## Resource-provenance final gates (2026-11-08 local / 2026-11-07 UTC)
+
+Runtime b7ea081 / tests ce9b977 remained frozen. A PASS161.403s; B PASS765.869s
+(B1 350,004 kernel waits +210,000 jobs; B2 9,376 main responses/600.013s, min9ticks).
+C PASS2033.494s total, 27,636 main responses/1800.071s, min6ticks, plus420,000
+worker jobs and repeated real-kernel prechecks. Independent raw resource reviews
+pass unchanged limits; four idle workers each6FD/1thread. Terminal logs contain
+only deliberate fault-test errors; all recorded owned PIDs gone. Final protected
+Phase4/archive/license checks pass. No historical failure changed.
+
+Validation index: docs/phase5/resource-provenance-validation.json. Fixed trace
+metadata measured32engine+24identity bytes in addition to bounded ring.
+Distribution Valgrind remains FAIL1784direct/648indirect; historical zero-tick
+cause unresolved. Next: new source archive, clean independent build/test and
+package attestation. Release EXPERIMENTAL.

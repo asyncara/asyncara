@@ -82,3 +82,8 @@ now uses deterministic real-kernel tests plus operation-volume and short FPM
 gates; the original local FPM failures remain unresolved historical evidence.
 No public API, optional timer hook policy, filesystem backend or driver strategy
 is replaced by this work.
+
+Resource ownership and opt-in bounded provenance now extend the same APIs; see
+[RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md). Neither tracing
+nor optional timer hooks are required for native I/O. Diagnostics expose backend
+metadata without creating an interchangeable filesystem backend.

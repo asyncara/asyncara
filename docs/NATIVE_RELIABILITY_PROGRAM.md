@@ -1,5 +1,9 @@
 # Native reliability program
 
+The subsequent resource-safety and observability program is recorded in
+[RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md). Results below
+remain attached to this earlier program and its package, not the newer source.
+
 Release: **EXPERIMENTAL**. Native Async API First; no hook/backend expansion.
 This continuation starts at `f2c0b83be64597db994e2a9b3df6383c197fd540`.
 Evidence root: `/home/coder/Asyncara-native-program-20261107T173550Z`.

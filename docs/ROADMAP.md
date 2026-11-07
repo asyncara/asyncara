@@ -1,5 +1,21 @@
 # Implementation status
 
+## Resource ownership and provenance continuation (2026-11-07)
+
+Runtime checkpoint `b7ea081`; diagnostic-output regression checkpoint `ce9b977`.
+[RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md) is the current
+engineering report; the older tables below retain historical source scope.
+Release remains **EXPERIMENTAL**.
+
+| Item | State | Evidence / boundary |
+|---|---|---|
+| Canonical owner copy policies | IMPLEMENTED_AND_TESTED | Owner/alias/value policies, PHP83/84/85 epoll/poll; duplicate TcpStream ownership rejected; live local database controls |
+| Bounded opt-in numeric trace | IMPLEMENTED_AND_TESTED | Ring, overflow, producer contention, deferred output, controlled delay and diagnostic FPM; limited pre-RSHUTDOWN export |
+| Large watcher index / native count validation | IMPLEMENTED_AND_TESTED | Matched real readiness benchmark, bounds negative control, allocation failure/recovery, sanitizer checks |
+| Final source Gates A/B/C | IMPLEMENTED_AND_TESTED | A 161.403s; B1 350,004 waits/210,000 jobs; B2 9,376 responses/600.013s; C 27,636/1800.071s; independent review PASS, unchanged limits |
+| Historical zero-tick attribution | BLOCKED | Original missing provenance cannot be recreated by new tracing |
+| Distribution-PHP memory discrepancy | PARTIALLY_IMPLEMENTED | Matched PHP-only shutdown-cycle effect reproduced; richer workload retention differences remain unresolved, original losses retained |
+
 ## Native reliability continuation (2026-11-07)
 
 Current native checkpoint: `9bee5c3eeb1ba89124bb35251d679bbda0b8b7f8`.

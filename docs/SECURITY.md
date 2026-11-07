@@ -154,3 +154,23 @@ controls and DEBUG's additional shutdown collection explain the build
 comparison. This is not an unconditional leak-free claim, nor a suppression of
 Fiber warnings. See DEPENDENCY_FINDINGS.md and NATIVE_OWNERSHIP_AUDIT.md. Exact
 final-source instrumentation/gate coverage is in NATIVE_RELIABILITY_PROGRAM.md.
+
+## Resource identity and diagnostic provenance continuation
+
+Canonical owner objects now reject shallow cloning and serialization; ordinary
+PHP reference assignment remains supported. TcpStream rejects a second wrapper
+for an already owned stream. Statement/emitter/source/PSR clones share a canonical
+owner instead of fabricating a new native handle. These policies do not authorize
+external raw resource manipulation or turn PHP Reflection into a sandbox.
+
+The opt-in diagnostic ring stores bounded numeric metadata, no payloads or
+credentials. It never performs producer-side output or Zend access from workers.
+Exports may contain operational process/descriptor/timing information and should
+be protected. Output can fail or be incomplete; successful capture cannot be
+guaranteed after fatal termination. See DIAGNOSTICS.md for explicit losses and
+maximum memory, and RESOURCE_PROVENANCE_PROGRAM.md for measured overhead.
+
+The distribution-PHP memory workload still reports losses. Matched PHP cycle
+controls explain shutdown behavior but not every rich-workload retention
+difference. Scoped clean DEBUG/native results are not a universal clean-memory
+claim. DEPENDENCY_FINDINGS.md retains full unsuppressed evidence.

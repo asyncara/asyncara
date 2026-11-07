@@ -1,6 +1,16 @@
 # Release readiness
 
-**Current assessment: EXPERIMENTAL.** Corrected `f2abb55` / phase4-r4 independently
+**Current assessment: EXPERIMENTAL.** The independent Phase5 resource-safety
+continuation implements guarded resource identities, opt-in bounded provenance
+and measured native watcher setup improvements. Its current evidence and remaining
+limits are in [RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md).
+Historical six-hour FPM remains FAIL; zero-tick attribution and distribution-PHP
+retention differences remain unresolved. New short gates are not long-duration
+certification. No production release or GitHub publication is authorized here.
+
+## Historical Phase 4 assessment
+
+**Assessment at that checkpoint: EXPERIMENTAL.** Corrected `f2abb55` / phase4-r4 independently
 builds/installs/tests on PHP 8.3/8.4/8.5 and has passed frozen one-, six- and
 24-hour mixed workloads on Linux PHP 8.5.12 NTS/epoll. The source archive and
 native fingerprints remain unchanged. Hosted r4 mixed and FPM each passed one
