@@ -1,5 +1,17 @@
 # Implementation status
 
+## Isolated native track (2026-11-07)
+
+This branch starts from frozen `d74f3b3`; the Phase 4 tables below are inherited
+checkpoint records, not a live report of the separate running campaign.
+
+| Item | Status | Evidence / limits |
+|---|---|---|
+| Accepted file/SQLite close ownership under cancellation | IMPLEMENTED_BUT_NOT_FULLY_TESTED | `ext/workers.c` dispatch correction and deterministic native regression written; NOT_YET_BUILT / NOT_YET_TESTED while Phase 4 FPM is active. Static source analysis only; [engineering report](NATIVE_CORE_ENGINEERING.md) |
+| Native close build, PHP 8.3/8.4/8.5 regressions and sanitizers | BLOCKED | Intentionally deferred by campaign resource/isolation policy, not an environment/compiler failure |
+
+No Phase 4 result certifies this new native patch. No new hooks or backend are added.
+
 Updated 2026-11-07 (Europe/Berlin). Status describes implemented behavior and executed evidence, not interface declarations. Release assessment after the independent audit: **EXPERIMENTAL**. The original archive is preserved with known defects; the working tree repairs seven high-severity issues. See [INDEPENDENT_AUDIT.md](INDEPENDENT_AUDIT.md) and its durable evidence. Broad production readiness is not complete.
 
 ## Native API lifecycle continuation

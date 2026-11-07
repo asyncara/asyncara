@@ -1,0 +1,189 @@
+{
+  "observedUtc": "2026-11-07T01:54:10.159309+00:00",
+  "base": "d74f3b3d4e36a3280aa57d3b4c3bb8c1d9765e15",
+  "branch": "phase5-native-core",
+  "mainHead": "6a7e0f45cb64577b3ba0cf30e160bd98901e4d90",
+  "mainStatusUnchanged": true,
+  "mainStatus": "?? tests/soak/campaign_review.py\n?? tests/soak/response_order.py\n?? tests/soak/test_campaign_review.py",
+  "protectedHashes": {
+    "/home/coder/Asyncara/tests/soak/campaign_review.py": {
+      "expected": "8b845f420dcfe540bcce1babec25ae260a74bb88885b42a1d9ea311ede714eba",
+      "actual": "8b845f420dcfe540bcce1babec25ae260a74bb88885b42a1d9ea311ede714eba"
+    },
+    "/home/coder/Asyncara/tests/soak/response_order.py": {
+      "expected": "5c672b274201f54b934985ce1dc278c21129fe818583173b3c25d8c13f20e7c5",
+      "actual": "5c672b274201f54b934985ce1dc278c21129fe818583173b3c25d8c13f20e7c5"
+    },
+    "/home/coder/Asyncara/tests/soak/test_campaign_review.py": {
+      "expected": "7c1eb82492d638d770a9a8d5befb807c616108884d53f8bb2e6d4ffb60f68105",
+      "actual": "7c1eb82492d638d770a9a8d5befb807c616108884d53f8bb2e6d4ffb60f68105"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-supervisor.py": {
+      "expected": "db977914ceb29d63076c62e5bc3dfb44a1dab93ef76cc29d8b0ce2e7617f4031",
+      "actual": "db977914ceb29d63076c62e5bc3dfb44a1dab93ef76cc29d8b0ce2e7617f4031"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/build/asyncara.so": {
+      "expected": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c",
+      "actual": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600/asyncara.so": {
+      "expected": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c",
+      "actual": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600/mixed-reload-kill/fpm.conf": {
+      "expected": "2abb897b9af7b93ff7895c875b66257cf18df970f47548bbe524be428ad784c6",
+      "actual": "2abb897b9af7b93ff7895c875b66257cf18df970f47548bbe524be428ad784c6"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/audit/fpm_request.php": {
+      "expected": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+      "actual": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/fpm.py": {
+      "expected": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170",
+      "actual": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/metrics.py": {
+      "expected": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7",
+      "actual": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/monitor.py": {
+      "expected": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6",
+      "actual": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6"
+    },
+    "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/scripts/audit-fpm.py": {
+      "expected": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910",
+      "actual": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+    }
+  },
+  "frozenManifestFilesChecked": 382,
+  "frozenChanges": [],
+  "changedNativePaths": [
+    "ext/workers.c"
+  ],
+  "nativeManifestNow": {
+    "ext/backend.c": "102d9df47db7864148f8a4d89a1db6d4caf807dc51eace6e01bdcc6307a8764e",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+    "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+    "ext/memory.c": "83cf4cb7999b470a78be6e07b5cc97fe448ccabd8e01ab2321987b58fdf6bdab",
+    "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+    "ext/native.h": "e41f1802bcb402bffbad37841ffd935434276e5fc93cb7c69a181abc14169426",
+    "ext/php_asyncara.c": "4fc8aed8de674850acaa5eece9517c3fce042160eb1ce47003d17cbf40efc311",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+    "ext/workers.c": "dd3d07eb476c00b250eb084970b78ee4b170ab6525fc939d6e0687bff7f9447a"
+  },
+  "processes": [
+    {
+      "pid": 730751,
+      "parentPid": 1,
+      "startTicks": 166919150,
+      "state": "S",
+      "command": "/usr/bin/python3 /tmp/asyncara-lifecycle-20261106T231254Z/fpm-supervisor.py",
+      "tracerPid": 0,
+      "preloadPresent": false
+    },
+    {
+      "pid": 1089000,
+      "parentPid": 730751,
+      "startTicks": 167281061,
+      "state": "S",
+      "command": "/usr/bin/python3 /tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/fpm.py --seconds 21600 --output /tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600",
+      "tracerPid": 0,
+      "preloadPresent": false
+    },
+    {
+      "pid": 1089871,
+      "parentPid": 1089000,
+      "startTicks": 167282008,
+      "state": "S",
+      "command": "php-fpm: master process (/tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600/mixed-reload-kill/fpm.conf)",
+      "tracerPid": 0,
+      "preloadPresent": false
+    }
+  ],
+  "fpmWorkers": [
+    {
+      "pid": 1089941,
+      "parentPid": 1089871,
+      "startTicks": 167282089,
+      "state": "S",
+      "command": "php-fpm: pool soak",
+      "tracerPid": 0,
+      "preloadPresent": false
+    },
+    {
+      "pid": 1089942,
+      "parentPid": 1089871,
+      "startTicks": 167282089,
+      "state": "S",
+      "command": "php-fpm: pool soak",
+      "tracerPid": 0,
+      "preloadPresent": false
+    },
+    {
+      "pid": 1089943,
+      "parentPid": 1089871,
+      "startTicks": 167282090,
+      "state": "S",
+      "command": "php-fpm: pool soak",
+      "tracerPid": 0,
+      "preloadPresent": false
+    },
+    {
+      "pid": 1089974,
+      "parentPid": 1089871,
+      "startTicks": 167282134,
+      "state": "S",
+      "command": "php-fpm: pool soak",
+      "tracerPid": 0,
+      "preloadPresent": false
+    }
+  ],
+  "campaignStages": [
+    {
+      "requestedSeconds": 3600,
+      "status": "PASS",
+      "pid": 730759,
+      "startedUtc": "2026-11-06T23:42:49.478694+00:00"
+    },
+    {
+      "requestedSeconds": 21600,
+      "status": "RUNNING",
+      "pid": 1089000,
+      "startedUtc": "2026-11-07T00:43:08.215029+00:00"
+    }
+  ],
+  "sourceValidation": {
+    "diffCheck": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    "shellSyntax": {
+      "command": [
+        "bash",
+        "-n",
+        "scripts/test-native-close.sh"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  },
+  "nativeBuild": "NOT_YET_BUILT",
+  "nativeRuntimeTests": "NOT_YET_TESTED",
+  "generatedFiles": [
+    "build/native-plan.json"
+  ],
+  "previousFailedReviewSha256": "fbb2c9cefa1e88d1193a4328d88a72b8d37ab02e29c4cbe75af85621d40f01f6",
+  "newReview": {
+    "path": "/tmp/asyncara-review-ordering-20261107T013022Z/hour-review-r1/report.json",
+    "sha256": "35a158267c6d483f2334441371a554539c3247ec4e404a03496a9c5acc2c38e1",
+    "status": "INDETERMINATE",
+    "acceptanceChecksStatus": "PASS"
+  }
+}

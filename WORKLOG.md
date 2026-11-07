@@ -1279,3 +1279,48 @@ passes with0 errors/0 lost and no suppressions. Exact configuration discrepancy
 remains unresolved; no unconditional leak-free claim. All commands/results/raw
 hashes are in docs/phase4/lifecycle-hardening.json. No native C changes, no new
 long-duration acceptance completed yet. Next freeze/package and stage FPM1h.
+## 2026-11-07 — isolated native close ownership patch (unbuilt)
+
+Created `/home/coder/Asyncara-native-core-20261107T013453Z`, branch
+`phase5-native-core`, from frozen `d74f3b3d4e36a3280aa57d3b4c3bb8c1d9765e15`.
+Main Phase 4 remains at `6a7e0f45cb64577b3ba0cf30e160bd98901e4d90` with its
+three pre-existing untracked reviewer files preserved. Recorded all 382 base
+source hashes and 11 native paths in `docs/phase5/native-baseline.json`.
+
+Read native module/request lifecycle, Zend bridge, epoll/poll, curl multi,
+pthread workers, file/SQLite jobs, optional PG/MySQL state machines, allocator,
+and corresponding PHP scheduler/Future/stream/pool ownership paths. Architecture
+map, execution traces, three ranked improvements and deferred validation commands
+are in `docs/NATIVE_CORE_ENGINEERING.md`.
+
+Static defect evidence: `worker()` previously skipped cancelled close jobs and
+could replace close success/error with cancellation. Accepted file/SQLite cleanup
+now executes and reports its actual result. Ordinary job cancellation is unchanged.
+This is a source-backed correction, NOT a reproduced/verified runtime fix yet.
+No claim links it to historical zero-ticker FPM failures.
+
+Changed `ext/workers.c`; added `tests/audit/close_cancellation.c` and
+`scripts/test-native-close.sh`, plus a CI step. Regression gates real worker
+entry at link time, submits/cancels through native entry points, then releases
+workers. Prepared file/SQLite cleanup, EBADF, SQLITE_BUSY/retry, allocation failure,
+ordinary cancelled write and single-collection/ledger assertions on epoll/poll.
+Updated the lifecycle contract and roadmap only in this new worktree.
+
+Commands performed: Git/source/process/hash inspection; `git worktree add -b`;
+source/test edits; `git diff --check`; shell static syntax inspection. No native
+build, phpize/configure/make, PHP regression, sanitizer, Valgrind, stress, fuzzing,
+benchmark or competing FPM was run. Status: NOT_YET_BUILT / NOT_YET_TESTED.
+The new private build directory contains only a validation plan, no copied module.
+
+The separately initiated low-CPU reviewer finished: 16 Python regression tests
+passed; hour evidence acceptance checks PASS, overall INDETERMINATE because
+within-batch independent clock order was not recorded. Original report/logs
+retained. This is neither validation of the C patch nor an FPM acceptance change.
+The six-hour supervisor remained live; final protected-file/process comparison
+is in `docs/phase5/native-integrity.json`.
+
+Next: after the protected campaign reaches a verified terminal state, provision
+this worktree's own SDK, run baseline negative controls and patched native tests,
+then matching PHP 8.3/8.4/8.5 epoll/poll lifecycle suites and memory tools. Preserve
+all failures. Do not merge, install, publish or attribute endurance to this patch
+before actual validation. Release remains EXPERIMENTAL.
