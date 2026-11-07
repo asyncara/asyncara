@@ -18,6 +18,7 @@ static pthread_cond_t condition=PTHREAD_COND_INITIALIZER;
 static int requested,finished,stop,action;
 static atomic_int interrupted_writes;
 static int actual_eintr;
+static unsigned long long kernel_calls, injected_waits;
 static volatile sig_atomic_t signals;
 ssize_t __real_write(int,const void*,size_t);
 ssize_t __wrap_write(int fd,const void *p,size_t n){
@@ -40,13 +41,13 @@ static int boundary(void){
  return 0;
 }
 int __real_poll(struct pollfd*,nfds_t,int);
-int __wrap_poll(struct pollfd *fds,nfds_t n,int timeout){if(boundary())return -1;int r=__real_poll(fds,n,timeout);if(r<0&&errno==EINTR)actual_eintr++;return r;}
+int __wrap_poll(struct pollfd *fds,nfds_t n,int timeout){if(boundary()){injected_waits++;return -1;}kernel_calls++;int r=__real_poll(fds,n,timeout);if(r<0&&errno==EINTR)actual_eintr++;return r;}
 /* Fortified libc headers can redirect production poll to __poll_chk. Retain
  * that bounds check and the real syscall; control both linker entry points. */
 int __real___poll_chk(struct pollfd*,nfds_t,int,size_t);
-int __wrap___poll_chk(struct pollfd *fds,nfds_t n,int timeout,size_t bytes){if(boundary())return -1;int r=__real___poll_chk(fds,n,timeout,bytes);if(r<0&&errno==EINTR)actual_eintr++;return r;}
+int __wrap___poll_chk(struct pollfd *fds,nfds_t n,int timeout,size_t bytes){if(boundary()){injected_waits++;return -1;}kernel_calls++;int r=__real___poll_chk(fds,n,timeout,bytes);if(r<0&&errno==EINTR)actual_eintr++;return r;}
 int __real_epoll_wait(int,struct epoll_event*,int,int);
-int __wrap_epoll_wait(int fd,struct epoll_event *ev,int n,int timeout){if(boundary())return -1;int r=__real_epoll_wait(fd,ev,n,timeout);if(r<0&&errno==EINTR)actual_eintr++;return r;}
+int __wrap_epoll_wait(int fd,struct epoll_event *ev,int n,int timeout){if(boundary()){injected_waits++;return -1;}kernel_calls++;int r=__real_epoll_wait(fd,ev,n,timeout);if(r<0&&errno==EINTR)actual_eintr++;return r;}
 static void handler(int number){(void)number;signals++;}
 static void completion(int iterations){
  for(int i=0;i<iterations;i++){
@@ -91,13 +92,13 @@ int main(int argc,char **argv){
  assert(curl_global_init(CURL_GLOBAL_DEFAULT)==CURLE_OK);
  for(int backend=0;backend<2;backend++){
   if(argc>3&&backend!=atoi(argv[3]))continue;
-  engine=ar_engine_new();assert(engine);engine->use_epoll=backend;stop=0;requested=finished=0;
+  kernel_calls=injected_waits=0;engine=ar_engine_new();assert(engine);engine->use_epoll=backend;stop=0;requested=finished=0;
   pthread_t thread;assert(!pthread_create(&thread,NULL,publisher,NULL));
   if(strcmp(selection,"kernel"))completion(n);
   if(strcmp(selection,"wakeup"))descriptors(n);
   assert(!pthread_mutex_lock(&mutex));stop=1;assert(!pthread_cond_broadcast(&condition));assert(!pthread_mutex_unlock(&mutex));assert(!pthread_join(thread,NULL));
   assert(atomic_load(&engine->memory_bytes)==0);ar_engine_free(engine);engine=NULL;
-  printf("{\"status\":\"PASS\",\"backend\":\"%s\",\"iterationsPerPath\":%d,\"selection\":\"%s\",\"actualKernelEINTR\":%d}\n",backend?"epoll":"poll",n,selection,actual_eintr);
+  printf("{\"status\":\"PASS\",\"backend\":\"%s\",\"iterationsPerPath\":%d,\"selection\":\"%s\",\"actualKernelEINTR\":%d,\"realKernelWaitCalls\":%llu,\"injectedWaitEINTR\":%llu}\n",backend?"epoll":"poll",n,selection,actual_eintr,kernel_calls,injected_waits);
  }
  curl_global_cleanup();return 0;
 }
