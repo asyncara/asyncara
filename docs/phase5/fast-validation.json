@@ -1,0 +1,2153 @@
+{
+  "createdUtc": "2026-11-07T16:50:04.578085+00:00",
+  "release": "EXPERIMENTAL",
+  "branch": "phase5-fast-reliability",
+  "nativeCheckpoint": "8263fcdca5c02a89555053553d6e760bb7792ee5",
+  "fpmCheckpoint": "cd91b4955e36f3f68246f96eb2c6e7ddf98c151d",
+  "baseline": "d74f3b3d4e36a3280aa57d3b4c3bb8c1d9765e15",
+  "candidate": "6ee73d8563d6f7c5313eea47ceca2d4ba9fa55e4",
+  "evidenceRoot": "/home/coder/Asyncara-fast-evidence-20261107T155547Z",
+  "sourceIdentity": {
+    "utc": "2026-11-07T16:16:20.670124+00:00",
+    "system": {
+      "system": "Linux",
+      "node": "vmi3676542.contaboserver.net",
+      "release": "6.8.0-147-generic",
+      "version": "#147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:33:16 UTC 2026",
+      "machine": "x86_64",
+      "processor": "x86_64"
+    },
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "checkpoint": "8263fcdca5c02a89555053553d6e760bb7792ee5",
+    "variants": {
+      "baseline": {
+        "commit": "d74f3b3d4e36a3280aa57d3b4c3bb8c1d9765e15",
+        "exportMatchesGit": true,
+        "files": {
+          "ext/backend.c": "102d9df47db7864148f8a4d89a1db6d4caf807dc51eace6e01bdcc6307a8764e",
+          "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+          "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+          "ext/memory.c": "83cf4cb7999b470a78be6e07b5cc97fe448ccabd8e01ab2321987b58fdf6bdab",
+          "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+          "ext/native.h": "e41f1802bcb402bffbad37841ffd935434276e5fc93cb7c69a181abc14169426",
+          "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+          "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+          "ext/workers.c": "769c7cd15f0a3ab577c71398232554e906aeebe1ae9156f72fe37de220f7c428",
+          "ext/php_asyncara.c": "4fc8aed8de674850acaa5eece9517c3fce042160eb1ce47003d17cbf40efc311",
+          "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40"
+        }
+      },
+      "candidate": {
+        "commit": "6ee73d8563d6f7c5313eea47ceca2d4ba9fa55e4",
+        "exportMatchesGit": true,
+        "files": {
+          "ext/backend.c": "102d9df47db7864148f8a4d89a1db6d4caf807dc51eace6e01bdcc6307a8764e",
+          "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+          "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+          "ext/memory.c": "83cf4cb7999b470a78be6e07b5cc97fe448ccabd8e01ab2321987b58fdf6bdab",
+          "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+          "ext/native.h": "e41f1802bcb402bffbad37841ffd935434276e5fc93cb7c69a181abc14169426",
+          "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+          "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+          "ext/workers.c": "dd3d07eb476c00b250eb084970b78ee4b170ab6525fc939d6e0687bff7f9447a",
+          "ext/php_asyncara.c": "4fc8aed8de674850acaa5eece9517c3fce042160eb1ce47003d17cbf40efc311",
+          "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40"
+        }
+      }
+    },
+    "fullModule": {
+      "path": "/home/coder/Asyncara-fast-reliability-20261107T155547Z/build/fast-full.so",
+      "sha256": "8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84"
+    },
+    "fixtureSha256": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+    "nativeFiles": {
+      "ext/backend.c": "102d9df47db7864148f8a4d89a1db6d4caf807dc51eace6e01bdcc6307a8764e",
+      "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+      "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+      "ext/memory.c": "83cf4cb7999b470a78be6e07b5cc97fe448ccabd8e01ab2321987b58fdf6bdab",
+      "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+      "ext/native.h": "e41f1802bcb402bffbad37841ffd935434276e5fc93cb7c69a181abc14169426",
+      "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+      "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+      "ext/workers.c": "529bc817f78c4886b441ed197c4cf7a51cbd9c59ccd77c619a0e1e686318bea7",
+      "ext/php_asyncara.c": "4fc8aed8de674850acaa5eece9517c3fce042160eb1ce47003d17cbf40efc311",
+      "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40"
+    }
+  },
+  "historicalPreservation": {
+    "utc": "20261107T155547Z",
+    "archive": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/phase4-original-evidence.tar",
+    "sha256": "ecff33b16db232ffd81e9f219f2cac87d3aef71bbb74a8ad1abdccaf573919b4",
+    "members": 1573,
+    "bytes": 691517440,
+    "comparisonExit": 0,
+    "historicalResults": {
+      "hour": "PASS",
+      "sixHour": "FAIL",
+      "twentyFourHour": "NOT_STARTED"
+    },
+    "sources": [
+      "/tmp/asyncara-lifecycle-20261106T231254Z",
+      "/tmp/asyncara-review-ordering-20261107T013022Z",
+      "/tmp/asyncara-reliability-20261107T000935Z"
+    ]
+  },
+  "gateA": {
+    "status": "PASS",
+    "wallSeconds": 190.92039746209048,
+    "cpuSeconds": 151.80151700000002,
+    "iterationsPerPath": 10000,
+    "seeds": [
+      17,
+      271828,
+      104729
+    ]
+  },
+  "gateB": {
+    "status": "INCOMPLETE",
+    "workloadAndResourceChecks": "PASS",
+    "mainResponses": 7980,
+    "twoTickRequests": 5985,
+    "minTicks": 8,
+    "maxTicks": 71,
+    "workerResponseCounts": {
+      "2591219": 1,
+      "2591218": 1,
+      "2591217": 1,
+      "2591220": 1,
+      "2591286": 1996,
+      "2591289": 2002,
+      "2591287": 1984,
+      "2591288": 1,
+      "2591320": 1993
+    },
+    "resources": {
+      "2591320": {
+        "samples": 1993,
+        "rssMinKiB": 16956,
+        "rssMaxKiB": 17496,
+        "warmupPeakKiB": 14660,
+        "beyondWarmupKiB": 2836,
+        "rangeAfterFirstThreeKiB": 304,
+        "slopeKiBPerHour": 913.4989713057072,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "2591289": {
+        "samples": 1993,
+        "rssMinKiB": 18680,
+        "rssMaxKiB": 19044,
+        "warmupPeakKiB": 18576,
+        "beyondWarmupKiB": 468,
+        "rangeAfterFirstThreeKiB": 280,
+        "slopeKiBPerHour": 509.4097842773029,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "2591286": {
+        "samples": 1993,
+        "rssMinKiB": 18776,
+        "rssMaxKiB": 19156,
+        "warmupPeakKiB": 16844,
+        "beyondWarmupKiB": 2312,
+        "rangeAfterFirstThreeKiB": 280,
+        "slopeKiBPerHour": 279.41099947267423,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "2591287": {
+        "samples": 1993,
+        "rssMinKiB": 18788,
+        "rssMaxKiB": 19340,
+        "warmupPeakKiB": 18784,
+        "beyondWarmupKiB": 556,
+        "rangeAfterFirstThreeKiB": 420,
+        "slopeKiBPerHour": 1135.0506935817873,
+        "idleFds": 6,
+        "idleThreads": 1
+      }
+    },
+    "lifecycleCases": [
+      {
+        "name": "A-lifecycle",
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS"
+      },
+      {
+        "name": "mixed-reload-kill",
+        "status": "PASS"
+      },
+      {
+        "name": "request-timeout",
+        "status": "PASS"
+      }
+    ],
+    "gate": {
+      "status": "INCOMPLETE",
+      "reason": "response target not reached within budget",
+      "mainResponses": 7980,
+      "targetResponses": 200000,
+      "mixedSeconds": 600.0265901931562,
+      "responsesPerSecond": 13.299410610171687,
+      "workloadAssertions": "PASS",
+      "seed": 17,
+      "totalWallSeconds": 612.4179363399744,
+      "runnerCpuSeconds": 120.209088,
+      "fpmExitRecords": [
+        {
+          "pid": 2591060,
+          "exit": 0
+        },
+        {
+          "pid": 2591216,
+          "exit": 0
+        },
+        {
+          "pid": 2651557,
+          "exit": 0
+        }
+      ]
+    },
+    "limitations": [
+      "Within-batch independent worker chronology was not recorded; no clock-rollback certification.",
+      "Helper A/B/C/D master exit codes are not separately recorded; their original functional assertions and shutdown logic are reused.",
+      "Short observation is not endurance certification."
+    ]
+  },
+  "gateC": "NOT_STARTED: Gate B volume target not met",
+  "resourceRuns": {
+    "epoll": {
+      "status": "PASS",
+      "php": "8.5.12",
+      "wallSeconds": 79.974477129,
+      "cycles": 30000,
+      "workerJobs": 210000,
+      "rssIsLeakProof": false,
+      "rssMinimumKiB": 31196,
+      "rssMaximumKiB": 34104,
+      "lastRssKiB": 33224,
+      "fdCounts": [
+        7
+      ],
+      "threadCounts": [
+        5
+      ],
+      "checkpoints": 30,
+      "trackedOwnersZero": true
+    },
+    "poll": {
+      "status": "PASS",
+      "php": "8.5.12",
+      "wallSeconds": 63.862107418,
+      "cycles": 30000,
+      "workerJobs": 210000,
+      "rssIsLeakProof": false,
+      "rssMinimumKiB": 31280,
+      "rssMaximumKiB": 33740,
+      "lastRssKiB": 32936,
+      "fdCounts": [
+        7
+      ],
+      "threadCounts": [
+        5
+      ],
+      "checkpoints": 30,
+      "trackedOwnersZero": true
+    }
+  },
+  "commands": {
+    "matrix": [
+      {
+        "name": "baseline-wait-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.317259777104482,
+        "cpuSeconds": 2.302896,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-wait-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-wait-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.3102068840526044,
+        "cpuSeconds": 2.1388589999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-wait-kernel.log",
+        "sha256": "cc9da5687ef8c4f5ce08e2a9b0b40094af0470c93c9bc63826fe0c6c8f70f8ae"
+      },
+      {
+        "name": "baseline-wait-wakeup",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.06938680377788842,
+        "cpuSeconds": 0.028907999999999934,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-wait-wakeup.log",
+        "sha256": "e80165e213709d443966c0d066cbd6484377ddd902ad606da78b7efe0b925d68"
+      },
+      {
+        "name": "baseline-close-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.1716381011065096,
+        "cpuSeconds": 2.1502810000000006,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-close-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-close-file",
+        "exit": -6,
+        "expectedExit": -6,
+        "wallSeconds": 1.3850361967924982,
+        "cpuSeconds": 0.027037999999999673,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-close-file.log",
+        "sha256": "9e1f9629beebc0c472ee14b6bd26c72408bf0d314f67a452ca319a00a0de7c4a"
+      },
+      {
+        "name": "baseline-close-sqlite",
+        "exit": -6,
+        "expectedExit": -6,
+        "wallSeconds": 1.3430609470233321,
+        "cpuSeconds": 0.023309000000000246,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-close-sqlite.log",
+        "sha256": "0c616c131f31c4f6ee6f2f497e4f51151c2247ba11a74991c3e7c2d65a6aaab4"
+      },
+      {
+        "name": "baseline-close-control",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.03457628912292421,
+        "cpuSeconds": 0.027026999999999468,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-close-control.log",
+        "sha256": "47c942802bbe45fea4f98ff7a1e4d0380c873b914c3a26791963e6860c715cfb"
+      },
+      {
+        "name": "baseline-83-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.928240530891344,
+        "cpuSeconds": 2.887376000000001,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-83-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.17000506701879203,
+        "cpuSeconds": 0.08431999999999862,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "baseline-83-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 15.15542796603404,
+        "cpuSeconds": 14.573578999999997,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-epoll-kernel.log",
+        "sha256": "517b78c9fa409ab1eac41c680d3523304ab7936b443b701f951cbe2861897ff0"
+      },
+      {
+        "name": "baseline-83-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.2181316048372537,
+        "cpuSeconds": 2.124131,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-epoll-virtual_time.log",
+        "sha256": "4c78d14a453e3eea49b25713a29322213da6c0abd3f86bc69a48c848cfb5c61e"
+      },
+      {
+        "name": "baseline-83-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.07005406310781837,
+        "cpuSeconds": 0.04711500000000157,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-epoll-negative-oracle.log",
+        "sha256": "005e7cc570fdfb593b1ed0ca35673a8f2cdf483d5a34194d4dffa7e95d7387b0"
+      },
+      {
+        "name": "baseline-83-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 13.360242653870955,
+        "cpuSeconds": 12.784411999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-poll-kernel.log",
+        "sha256": "dd33486990961f207127d7268f1bd8c0da0dbf042d70947734185d1467232ccf"
+      },
+      {
+        "name": "baseline-83-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.251620403956622,
+        "cpuSeconds": 2.1559510000000017,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-poll-virtual_time.log",
+        "sha256": "1a672deb9f5de6d1f73831aafb8bb06bce243d5fa5f9df4e75f8759ddcb7cb3a"
+      },
+      {
+        "name": "baseline-83-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.11721353302709758,
+        "cpuSeconds": 0.05753599999999892,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-83-poll-negative-oracle.log",
+        "sha256": "3ba4f983c38bef03b0386f16a634e943ac827bf5d44832b6b10c88fe7d3933df"
+      },
+      {
+        "name": "baseline-84-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.9868557639420033,
+        "cpuSeconds": 2.9345910000000046,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-84-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.17226719786413014,
+        "cpuSeconds": 0.06869299999999967,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "baseline-84-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 15.637370710959658,
+        "cpuSeconds": 14.957308999999999,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-epoll-kernel.log",
+        "sha256": "dc14cd3a36903975934de2b939d924913c57981f6a2debfc354163d7759f89ec"
+      },
+      {
+        "name": "baseline-84-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.9894756651483476,
+        "cpuSeconds": 1.8826520000000038,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-epoll-virtual_time.log",
+        "sha256": "808a3bf19c0545ccef2453a37c12db5f50ba4e62f7c5de1a917529c3307b823e"
+      },
+      {
+        "name": "baseline-84-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.06727322679944336,
+        "cpuSeconds": 0.047034999999997495,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-epoll-negative-oracle.log",
+        "sha256": "37da3689beec6b5c2e47c2f4337ce57d2b3e09537ae4e7c854d9a372341644d1"
+      },
+      {
+        "name": "baseline-84-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 11.832655058940873,
+        "cpuSeconds": 11.451423999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-poll-kernel.log",
+        "sha256": "84d6c85b970131d5955d7e9e164d492bcd2673f69a358609240fbc1c10485177"
+      },
+      {
+        "name": "baseline-84-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.2197305590379983,
+        "cpuSeconds": 2.097556999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-poll-virtual_time.log",
+        "sha256": "7869a587c43b26b7d95d1d3c38b20ab622d198799ea2c8c20d65eb6425e19db6"
+      },
+      {
+        "name": "baseline-84-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.11786051094532013,
+        "cpuSeconds": 0.056147000000002834,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-84-poll-negative-oracle.log",
+        "sha256": "b8f7daeb37c3a3a9744be5567b81114c4e5ab8c515c95880c9b9477ed9420cd9"
+      },
+      {
+        "name": "baseline-85-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.826411276124418,
+        "cpuSeconds": 2.802184000000004,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-85-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06771689909510314,
+        "cpuSeconds": 0.04817400000000305,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "baseline-85-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 17.17272431589663,
+        "cpuSeconds": 16.50855999999999,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-epoll-kernel.log",
+        "sha256": "3c35312a5fe29fdced2c7046583a0e73a003fd011cc0015d2f60da5d4b9bde3b"
+      },
+      {
+        "name": "baseline-85-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.423123922199011,
+        "cpuSeconds": 2.2911459999999906,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-epoll-virtual_time.log",
+        "sha256": "350290a74b50b041d29172ed7dbc3eda54f179e500efc9d8248178594e60ec57"
+      },
+      {
+        "name": "baseline-85-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.0798938600346446,
+        "cpuSeconds": 0.0567919999999944,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-epoll-negative-oracle.log",
+        "sha256": "128b1c834fceba5f3c5e471a26afad8ceee8df49bfe9bfece87bdeae2ebaafb2"
+      },
+      {
+        "name": "baseline-85-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 14.105542212026194,
+        "cpuSeconds": 13.608600000000003,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-poll-kernel.log",
+        "sha256": "16a0bec3ae6e4a1e8d5f0cee5e4b2d8a55fee10040a8d9a26d5e8096bcfa08d7"
+      },
+      {
+        "name": "baseline-85-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.4209847471211106,
+        "cpuSeconds": 2.3356720000000024,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-poll-virtual_time.log",
+        "sha256": "c4f78dbd884c73a65fca25c16d21484d1d67436576813683177af7ff3d4b3cac"
+      },
+      {
+        "name": "baseline-85-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.1276808779221028,
+        "cpuSeconds": 0.07324600000000459,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/baseline-85-poll-negative-oracle.log",
+        "sha256": "ea11812cb1d2f2de23d6e7de6c5f42e3edf311e498f95719cb11ab1d6104439c"
+      },
+      {
+        "name": "candidate-wait-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.4097880211193115,
+        "cpuSeconds": 2.382902999999999,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-wait-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-wait-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.385863671079278,
+        "cpuSeconds": 2.220276999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-wait-kernel.log",
+        "sha256": "cc9da5687ef8c4f5ce08e2a9b0b40094af0470c93c9bc63826fe0c6c8f70f8ae"
+      },
+      {
+        "name": "candidate-wait-wakeup",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.06752484408207238,
+        "cpuSeconds": 0.02076700000000642,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-wait-wakeup.log",
+        "sha256": "e80165e213709d443966c0d066cbd6484377ddd902ad606da78b7efe0b925d68"
+      },
+      {
+        "name": "candidate-close-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.393831479130313,
+        "cpuSeconds": 2.3487089999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-close-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-close-file",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.03792968997731805,
+        "cpuSeconds": 0.03797300000000803,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-close-file.log",
+        "sha256": "a9bd10a657ce98347e5794785357b0d949e24b256eb0e41e4bb567398a32cdb0"
+      },
+      {
+        "name": "candidate-close-sqlite",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.03363096294924617,
+        "cpuSeconds": 0.038294000000000494,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-close-sqlite.log",
+        "sha256": "533d01866e5c243df39c820029e8f839cf595e658a3742a3cbdc342cd1257259"
+      },
+      {
+        "name": "candidate-close-control",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.03622423391789198,
+        "cpuSeconds": 0.019446000000002073,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-close-control.log",
+        "sha256": "47c942802bbe45fea4f98ff7a1e4d0380c873b914c3a26791963e6860c715cfb"
+      },
+      {
+        "name": "candidate-83-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.52847425499931,
+        "cpuSeconds": 3.423096000000001,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-83-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06909781694412231,
+        "cpuSeconds": 0.0456039999999831,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "candidate-83-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.31585834012367,
+        "cpuSeconds": 15.684861000000005,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-epoll-kernel.log",
+        "sha256": "9b9973620e28c535740226a6d895829614aee3b51d71ef34f93307864edbf957"
+      },
+      {
+        "name": "candidate-83-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.334492436144501,
+        "cpuSeconds": 2.211342000000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-epoll-virtual_time.log",
+        "sha256": "d6c6c743ed7aabadbd2b60a31d528a65a6aee15f3dd57ae0b4df3d506dd526a4"
+      },
+      {
+        "name": "candidate-83-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.11914889607578516,
+        "cpuSeconds": 0.06447700000001078,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-epoll-negative-oracle.log",
+        "sha256": "91c17c7a914ab15d119393569270d01fb0dc780febfe0ad5b299017624a6f50a"
+      },
+      {
+        "name": "candidate-83-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 14.31706972583197,
+        "cpuSeconds": 13.75685,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-poll-kernel.log",
+        "sha256": "d25d21b1a950b73d9d567e74a8aee1dbbbc8c68fb1c92387e50d215933acd0fc"
+      },
+      {
+        "name": "candidate-83-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.2406178871169686,
+        "cpuSeconds": 2.1123640000000137,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-poll-virtual_time.log",
+        "sha256": "b45782f472cc751275af87bf5c3078ddf01fb0b0bace075d35dbadcc817cd299"
+      },
+      {
+        "name": "candidate-83-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.07320154807530344,
+        "cpuSeconds": 0.04813000000000045,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-83-poll-negative-oracle.log",
+        "sha256": "c1f0aa149d0811fb8ad811330b657876c567699d6892a59603cb7e8cfbe8167a"
+      },
+      {
+        "name": "candidate-84-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.067570717073977,
+        "cpuSeconds": 2.9893330000000162,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-84-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.0732791309710592,
+        "cpuSeconds": 0.05542400000000214,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "candidate-84-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.946011500200257,
+        "cpuSeconds": 16.23678099999998,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-epoll-kernel.log",
+        "sha256": "d0335936a7550ac571ffe3f6cf4865be951d8049b52a54ab0ae49df478adeeb0"
+      },
+      {
+        "name": "candidate-84-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.2888875280041248,
+        "cpuSeconds": 2.159984999999992,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-epoll-virtual_time.log",
+        "sha256": "b2c0ab5259a4b9968ba012af1834cc8e3964b49059c40a8c2a60d24fcb801356"
+      },
+      {
+        "name": "candidate-84-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.06940401485189795,
+        "cpuSeconds": 0.051806999999982395,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-epoll-negative-oracle.log",
+        "sha256": "bd65e2844b2fa51b663a24fbab95dc19361398ce75ff15ca6da366790310cc76"
+      },
+      {
+        "name": "candidate-84-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 12.87007377599366,
+        "cpuSeconds": 12.394010999999992,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-poll-kernel.log",
+        "sha256": "6aba87e7aa447ca784044a8e9d42d59b11d0134750296920113fc1c3662b36d6"
+      },
+      {
+        "name": "candidate-84-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.9416078140493482,
+        "cpuSeconds": 1.8479999999999848,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-poll-virtual_time.log",
+        "sha256": "b0b283be41d3f64cac6891cfcedd19e7fb72abdcfd4dd446bbef3a0c0613da22"
+      },
+      {
+        "name": "candidate-84-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.12198967300355434,
+        "cpuSeconds": 0.06830100000000527,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-84-poll-negative-oracle.log",
+        "sha256": "a42361b7b1e45a14a59569caee2ccdb9c764902e47d50a90fa2d9efdef91b889"
+      },
+      {
+        "name": "candidate-85-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.4809776179026812,
+        "cpuSeconds": 3.4168750000000045,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-85-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.07755762687884271,
+        "cpuSeconds": 0.05651299999999537,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "candidate-85-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.488220661180094,
+        "cpuSeconds": 15.751635000000022,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-epoll-kernel.log",
+        "sha256": "7fe0a9582dbf0f943bffaca33b4b95fd3ac2e017d274e91a793b76e7df7bbe1d"
+      },
+      {
+        "name": "candidate-85-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.175022726180032,
+        "cpuSeconds": 2.0392670000000095,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-epoll-virtual_time.log",
+        "sha256": "ac6fd690dc919b575de947d2d3a9234ff56b354005f792b5f3655485290da855"
+      },
+      {
+        "name": "candidate-85-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.12446386995725334,
+        "cpuSeconds": 0.07251099999999155,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-epoll-negative-oracle.log",
+        "sha256": "f0172d764412d51c12f09ae72ce9c887946cb7d1d0fcdbaa82682eb8bdd9b72c"
+      },
+      {
+        "name": "candidate-85-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 13.237367552006617,
+        "cpuSeconds": 12.335800999999975,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-poll-kernel.log",
+        "sha256": "0d5b7e513885e84cdb2095296fe7bdd085813b961d3f08588e4bc5370a6a972f"
+      },
+      {
+        "name": "candidate-85-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.410720946965739,
+        "cpuSeconds": 2.3109690000000143,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-poll-virtual_time.log",
+        "sha256": "0efc5791f41e77ca40fbf3570962deafc2c1afca8548cb195a14e7dbc44680ca"
+      },
+      {
+        "name": "candidate-85-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.06576317711733282,
+        "cpuSeconds": 0.049487999999996646,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/candidate-85-poll-negative-oracle.log",
+        "sha256": "6b7e986005f4445d5181c4f4d4c4f7d82b9efaee4eb95aafac1f20105d33679b"
+      },
+      {
+        "name": "corrected-wait-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.0372981959953904,
+        "cpuSeconds": 1.9917499999999961,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-wait-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "corrected-wait-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.1887798390816897,
+        "cpuSeconds": 2.0309039999999925,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-wait-kernel.log",
+        "sha256": "cc9da5687ef8c4f5ce08e2a9b0b40094af0470c93c9bc63826fe0c6c8f70f8ae"
+      },
+      {
+        "name": "corrected-wait-wakeup",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.4005069811828434,
+        "cpuSeconds": 1.6671389999999917,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-wait-wakeup.log",
+        "sha256": "7b38faab9d9b56388427852201b4ab661bc3375e4cc6090fbf80ce4bc2b6fe6e"
+      },
+      {
+        "name": "corrected-close-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.3731762380339205,
+        "cpuSeconds": 2.2608410000000134,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-close-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "corrected-close-file",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.034515548031777143,
+        "cpuSeconds": 0.023617000000015764,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-close-file.log",
+        "sha256": "a9bd10a657ce98347e5794785357b0d949e24b256eb0e41e4bb567398a32cdb0"
+      },
+      {
+        "name": "corrected-close-sqlite",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.0349198579788208,
+        "cpuSeconds": 0.02973899999999219,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-close-sqlite.log",
+        "sha256": "533d01866e5c243df39c820029e8f839cf595e658a3742a3cbdc342cd1257259"
+      },
+      {
+        "name": "corrected-close-control",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.018023059936240315,
+        "cpuSeconds": 0.016268999999994094,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-close-control.log",
+        "sha256": "47c942802bbe45fea4f98ff7a1e4d0380c873b914c3a26791963e6860c715cfb"
+      },
+      {
+        "name": "corrected-83-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.9149229330942035,
+        "cpuSeconds": 2.849921000000009,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "corrected-83-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06557584088295698,
+        "cpuSeconds": 0.03691499999999337,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "corrected-83-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.08967923000455,
+        "cpuSeconds": 15.421962999999991,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-epoll-kernel.log",
+        "sha256": "6a67c04b57f131a9548fd83bf8d695631f9c239a70c41e8e51a11b94ea8f006b"
+      },
+      {
+        "name": "corrected-83-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.1400427960325032,
+        "cpuSeconds": 2.0466190000000353,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-epoll-virtual_time.log",
+        "sha256": "4240ef21f42d0f4e613575655ec0cddfcb92f725ebb58bd47c83e7bcee358958"
+      },
+      {
+        "name": "corrected-83-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.1213278560899198,
+        "cpuSeconds": 0.06149899999998354,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-epoll-negative-oracle.log",
+        "sha256": "e3aa1cc9ce67a46c578a98f99df7dfa418ef60ab334bbdb15f80cab8ca508369"
+      },
+      {
+        "name": "corrected-83-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 13.483729456085712,
+        "cpuSeconds": 13.034295999999998,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-poll-kernel.log",
+        "sha256": "8746abb0f8f298ff2a131f6ee0555fe0097734a86fad4804126f48b56c12a37a"
+      },
+      {
+        "name": "corrected-83-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.260996703058481,
+        "cpuSeconds": 2.179601000000048,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-poll-virtual_time.log",
+        "sha256": "650caf83173a3a6751450aebf781e6ec47cae37701a629ab10c678a5be5fefb7"
+      },
+      {
+        "name": "corrected-83-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.06683755503036082,
+        "cpuSeconds": 0.04474399999995171,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-83-poll-negative-oracle.log",
+        "sha256": "547b97a80d2bfb4d88dc5bdf0f97070c1cdc266661395593f25e578a5d4ea42b"
+      },
+      {
+        "name": "corrected-84-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.432141351979226,
+        "cpuSeconds": 3.381230000000045,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "corrected-84-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06844625994563103,
+        "cpuSeconds": 0.06093699999999558,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "corrected-84-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.941957772010937,
+        "cpuSeconds": 15.804573000000005,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-epoll-kernel.log",
+        "sha256": "90ab519d9428b786505e2b7fd9833ef3f1e8ff0f9aefd60fab2940437481996e"
+      },
+      {
+        "name": "corrected-84-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.519366880180314,
+        "cpuSeconds": 2.206481999999994,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-epoll-virtual_time.log",
+        "sha256": "7f05a402fcd4ae40ab203118fc7b7432587c52b60710dea881aab7dc1a94cc69"
+      },
+      {
+        "name": "corrected-84-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.14313840796239674,
+        "cpuSeconds": 0.0624000000000251,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-epoll-negative-oracle.log",
+        "sha256": "e4ab603146fb4aba0afb4518311002580ea98dba49ec6818c8af4750493c4644"
+      },
+      {
+        "name": "corrected-84-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 15.462931315880269,
+        "cpuSeconds": 12.939936999999986,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-poll-kernel.log",
+        "sha256": "332296280232119eb444ddc9669b316cad776e8d92193b405faecdd999d24454"
+      },
+      {
+        "name": "corrected-84-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.4684775511268526,
+        "cpuSeconds": 2.713786999999968,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-poll-virtual_time.log",
+        "sha256": "349c44f50ea2eb5f34dc3d83079dabf532f6d5b3148ae2ba6a22f81ff2c2ea3a"
+      },
+      {
+        "name": "corrected-84-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.23916637594811618,
+        "cpuSeconds": 0.08126300000000697,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-84-poll-negative-oracle.log",
+        "sha256": "5fbeb1d3d28deec16f9127c4e8521a41dda674eec472e7007e635276acbf7ebd"
+      },
+      {
+        "name": "corrected-85-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.7962638130411506,
+        "cpuSeconds": 3.070357999999999,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "corrected-85-info",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.12303201202303171,
+        "cpuSeconds": 0.04652499999997417,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-info.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "corrected-85-epoll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 20.469750083982944,
+        "cpuSeconds": 16.89468800000003,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-epoll-kernel.log",
+        "sha256": "53774360e607e6b672234f5c5413b25e0c3fa9e6423689a200d60f189e0f8744"
+      },
+      {
+        "name": "corrected-85-epoll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.613266090862453,
+        "cpuSeconds": 2.1979900000000043,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-epoll-virtual_time.log",
+        "sha256": "dc4e667bb39b370de02f58c421f267a73a9fdc4173b0df1465fa658a9fe58973"
+      },
+      {
+        "name": "corrected-85-epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.13639200385659933,
+        "cpuSeconds": 0.11889199999998823,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-epoll-negative-oracle.log",
+        "sha256": "0ca9d6a020524726961e06aaa84f62cc07d26c8ee8d74497ba8a0a481087c7ad"
+      },
+      {
+        "name": "corrected-85-poll-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 15.532336188014597,
+        "cpuSeconds": 14.683516000000026,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-poll-kernel.log",
+        "sha256": "a1fe78c0a93f1f7377088e7f88ceba8eb9c485636cbf73a2e9606c9d03faf36b"
+      },
+      {
+        "name": "corrected-85-poll-virtual_time",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.0274101491086185,
+        "cpuSeconds": 1.9217599999999777,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-poll-virtual_time.log",
+        "sha256": "462446d5a00b7719b9ae2af0a4bbfa57e4c9a68cab4accd0b8a771387d6435ee"
+      },
+      {
+        "name": "corrected-85-poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.12161557306535542,
+        "cpuSeconds": 0.06237499999994611,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/corrected-85-poll-negative-oracle.log",
+        "sha256": "3b077b575a90374cdb5827a9afd2beee811a56c21d8a77f4d13563bb2c3cfa50"
+      }
+    ],
+    "gateA": [
+      {
+        "name": "build-native-wait",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.5096631599590182,
+        "cpuSeconds": 2.5684309999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/build-native-wait.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "native-wait",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.354065194958821,
+        "cpuSeconds": 2.6965489999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/native-wait.log",
+        "sha256": "a5f7e00bd2c6b0dab7d20ae3331d89764762f01d323335a1888e31d28e31f845"
+      },
+      {
+        "name": "build-native-close",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.822815634077415,
+        "cpuSeconds": 2.283402,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/build-native-close.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "native-close",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.12079449091106653,
+        "cpuSeconds": 0.03508100000000036,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/native-close.log",
+        "sha256": "d2ef0a6087f5e21b0d7337a8f346f72313597313774b4f57ad31847ad25d0890"
+      },
+      {
+        "name": "php-identity",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.07087077503092587,
+        "cpuSeconds": 0.045515000000000416,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/php-identity.log",
+        "sha256": "2be2611a039f78dcd99741d26f34181e74a3a074a7c8385ccb2838c3bd5195fb"
+      },
+      {
+        "name": "extension-identity",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06601524399593472,
+        "cpuSeconds": 0.03654799999999936,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/extension-identity.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "epoll-kernel-17",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 19.642668131971732,
+        "cpuSeconds": 16.345166,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-kernel-17.log",
+        "sha256": "bdeeb5d408f97d267845a1f0be097af199c6c3f4c48be97b841de7ac2b1a0059"
+      },
+      {
+        "name": "epoll-virtual_time-17",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.9757683188654482,
+        "cpuSeconds": 2.294157000000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-virtual_time-17.log",
+        "sha256": "d4e9bbd26818d1df8c9032c8a89681021a8aae283170b027c817fbd68fc3ba57"
+      },
+      {
+        "name": "epoll-kernel-271828",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 24.227920392993838,
+        "cpuSeconds": 18.930293,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-kernel-271828.log",
+        "sha256": "28233c8b542aacee5cf27667d0b49c6a44b74bc39134fff5a58136e07c4b883d"
+      },
+      {
+        "name": "epoll-virtual_time-271828",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.487370362970978,
+        "cpuSeconds": 2.6647549999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-virtual_time-271828.log",
+        "sha256": "a1eaafdede6c6f26758f92fa5f6daf7062a7cf236e350db0f844d878d76165f2"
+      },
+      {
+        "name": "epoll-kernel-104729",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 23.901425670832396,
+        "cpuSeconds": 19.236177999999992,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-kernel-104729.log",
+        "sha256": "0cb8f0af1c303663a56d514cce113184b8bd94f083399360724ee6c3d78f0ae1"
+      },
+      {
+        "name": "epoll-virtual_time-104729",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.232858903007582,
+        "cpuSeconds": 2.5912460000000053,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-virtual_time-104729.log",
+        "sha256": "7b97fc1cce266a8fb9e5180df45770cd6292b19cd4d68ed148059afa645786ad"
+      },
+      {
+        "name": "epoll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.06710317195393145,
+        "cpuSeconds": 0.05043500000000023,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-negative-oracle.log",
+        "sha256": "311c8976e8d68385cf9b463b426e91d10de54685cb87d4482a744de36f062731"
+      },
+      {
+        "name": "epoll-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 4.040379487909377,
+        "cpuSeconds": 3.369841000000008,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-deadlines.log",
+        "sha256": "a2d38e6864895c254b0b0038f1367659a4562cdbf1c04c523b0b8d203665d237"
+      },
+      {
+        "name": "epoll-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 21.93482196307741,
+        "cpuSeconds": 15.828040999999992,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-resources.log",
+        "sha256": "d7022043f2139f4892a52265941abce20a99b2af95c3c13f15ff6e8d8ed0fe3b"
+      },
+      {
+        "name": "epoll-buffered-readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.07458081585355103,
+        "cpuSeconds": 0.05384199999999595,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/epoll-buffered-readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      },
+      {
+        "name": "poll-kernel-17",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.63919754792005,
+        "cpuSeconds": 13.700777000000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-kernel-17.log",
+        "sha256": "4813303e32e3e953c0b7e49c1ade632f71d04389983c6ec48caadeb884ebbcbd"
+      },
+      {
+        "name": "poll-virtual_time-17",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.616680324077606,
+        "cpuSeconds": 2.2210150000000084,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-virtual_time-17.log",
+        "sha256": "604f8e17b9e56f966eb743a5819f2369c8e70581940184e02b02edd4efca9d60"
+      },
+      {
+        "name": "poll-kernel-271828",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.951725885970518,
+        "cpuSeconds": 13.694127000000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-kernel-271828.log",
+        "sha256": "50ad0c5885e1c8e2715aa9ac01304b6fa772bd63733a9866aba48a5844db1725"
+      },
+      {
+        "name": "poll-virtual_time-271828",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.8639767752029,
+        "cpuSeconds": 2.254977000000011,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-virtual_time-271828.log",
+        "sha256": "4f0b4376c581b9efb55ca3d4db4720a55584cbbb6e058ba4f6f6a0cee4164a5b"
+      },
+      {
+        "name": "poll-kernel-104729",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 16.364746200852096,
+        "cpuSeconds": 13.46583200000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-kernel-104729.log",
+        "sha256": "489d065ad8eeb931a4d5892c0d04148d8bf6a81a037b6435430af2b49cc78586"
+      },
+      {
+        "name": "poll-virtual_time-104729",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.614214780041948,
+        "cpuSeconds": 2.2158359999999817,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-virtual_time-104729.log",
+        "sha256": "a1ff791d5122a7ce2f864729288ef96d604c989166e2225c4ab22a01aae015b1"
+      },
+      {
+        "name": "poll-negative-oracle",
+        "exit": 1,
+        "expectedExit": 1,
+        "wallSeconds": 0.12846096907742321,
+        "cpuSeconds": 0.06663799999999753,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-negative-oracle.log",
+        "sha256": "9b1cdcafd324c4869d15c1ce7d5aaa4d8abee0ccd0670bcddbade33c119a5b35"
+      },
+      {
+        "name": "poll-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.9967533501330763,
+        "cpuSeconds": 2.5622470000000135,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-deadlines.log",
+        "sha256": "c489e367f659307719f68be6ce2c2d9e6311734fc1c824a9fd8211adca1859f7"
+      },
+      {
+        "name": "poll-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 15.97004741197452,
+        "cpuSeconds": 12.513947999999985,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-resources.log",
+        "sha256": "5e62f4e23c828e4b3aea7a2a4647de10929d2a78888845316df96958d95bbd96"
+      },
+      {
+        "name": "poll-buffered-readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.12161781312897801,
+        "cpuSeconds": 0.07664000000001181,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/poll-buffered-readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      }
+    ],
+    "post": [
+      {
+        "name": "baseline-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.9584515129681677,
+        "cpuSeconds": 2.431451,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/baseline-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "baseline-wakeup-0",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.06704213097691536,
+        "cpuSeconds": 0.025528999999999913,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/baseline-wakeup-0.log",
+        "sha256": "e80165e213709d443966c0d066cbd6484377ddd902ad606da78b7efe0b925d68"
+      },
+      {
+        "name": "baseline-wakeup-1",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.07097068801522255,
+        "cpuSeconds": 0.021222000000000074,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/baseline-wakeup-1.log",
+        "sha256": "0a015f7e8224e267bd2a81cbfa701ce09185d934f9e74e6d04490a957990a499"
+      },
+      {
+        "name": "candidate-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.7638634541071951,
+        "cpuSeconds": 1.729962,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/candidate-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "candidate-wakeup-0",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.06609213585034013,
+        "cpuSeconds": 0.017832999999999544,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/candidate-wakeup-0.log",
+        "sha256": "e80165e213709d443966c0d066cbd6484377ddd902ad606da78b7efe0b925d68"
+      },
+      {
+        "name": "candidate-wakeup-1",
+        "exit": 2,
+        "expectedExit": 2,
+        "wallSeconds": 0.07201327499933541,
+        "cpuSeconds": 0.01832500000000037,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/candidate-wakeup-1.log",
+        "sha256": "0a015f7e8224e267bd2a81cbfa701ce09185d934f9e74e6d04490a957990a499"
+      },
+      {
+        "name": "asan-wait-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 4.2253535280469805,
+        "cpuSeconds": 4.061353,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/asan-wait-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "asan-wait",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 7.94620676105842,
+        "cpuSeconds": 6.53658,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/asan-wait.log",
+        "sha256": "a5f7e00bd2c6b0dab7d20ae3331d89764762f01d323335a1888e31d28e31f845"
+      },
+      {
+        "name": "asan-close-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.669353613862768,
+        "cpuSeconds": 3.6189390000000037,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/asan-close-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "asan-close",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.1703428670298308,
+        "cpuSeconds": 0.21586799999999862,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/asan-close.log",
+        "sha256": "d2ef0a6087f5e21b0d7337a8f346f72313597313774b4f57ad31847ad25d0890"
+      },
+      {
+        "name": "engine-cycles-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.878823495004326,
+        "cpuSeconds": 1.8439060000000005,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "engine-cycles",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 39.9108671748545,
+        "cpuSeconds": 50.777940000000015,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles.log",
+        "sha256": "e6eace363f238fac99621cc2276ced860324df37e231de555e9612408fdc8967"
+      },
+      {
+        "name": "engine-cycles-asan-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.739726234925911,
+        "cpuSeconds": 3.7080630000000028,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles-asan-build.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "engine-cycles-asan",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 21.80933876382187,
+        "cpuSeconds": 36.070903,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles-asan.log",
+        "sha256": "84ce596fcee66453fe237cd26d63a1e63e911326ff2a21b3267903f5e1455298"
+      },
+      {
+        "name": "certificates",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.3554518949240446,
+        "cpuSeconds": 0.299170999999987,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/certificates.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "full-epoll",
+        "exit": 1,
+        "expectedExit": 0,
+        "wallSeconds": 4.369257634971291,
+        "cpuSeconds": 3.0175160000000005,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/full-epoll.log",
+        "sha256": "9f83c1292f1bd433317e9aa7b4b401d7a0a5ed4ba122b6ee62f7510e4bb9e12d"
+      },
+      {
+        "name": "full-poll",
+        "exit": 1,
+        "expectedExit": 0,
+        "wallSeconds": 5.057266524061561,
+        "cpuSeconds": 3.2231490000000065,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/full-poll.log",
+        "sha256": "02ac4e0b95b9840fd9b2923e5153e26047e7b6fdb47b66516ebf5c39e161429a"
+      },
+      {
+        "name": "83-epoll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.322643268154934,
+        "cpuSeconds": 0.41241099999999165,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-epoll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "83-epoll-file_handles",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.6971975790802389,
+        "cpuSeconds": 0.4939250000000044,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-epoll-file_handles.log",
+        "sha256": "9414fa93ea6e746010d17ffb6979c59cec370a69053efa936c170f897d2945a2"
+      },
+      {
+        "name": "83-epoll-stream_readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.07354163797572255,
+        "cpuSeconds": 0.05618200000000684,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-epoll-stream_readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      },
+      {
+        "name": "83-epoll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.18045783089473844,
+        "cpuSeconds": 0.14210799999999324,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-epoll-fast-deadlines.log",
+        "sha256": "4595dd4fe2212d21619235a61d71e8603a1689335f17186f39ebe5d287457c04"
+      },
+      {
+        "name": "83-epoll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.2863665488548577,
+        "cpuSeconds": 0.3243750000000034,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-epoll-fast-resources.log",
+        "sha256": "3bf2ad6b8af6984e9875fb50f4d458a4f09f8a6df08e6ab28eb10e501ba1c023"
+      },
+      {
+        "name": "83-poll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.3785827758256346,
+        "cpuSeconds": 0.3952650000000091,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-poll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "83-poll-file_handles",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.9509591318201274,
+        "cpuSeconds": 0.692229999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-poll-file_handles.log",
+        "sha256": "9414fa93ea6e746010d17ffb6979c59cec370a69053efa936c170f897d2945a2"
+      },
+      {
+        "name": "83-poll-stream_readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.06832710583694279,
+        "cpuSeconds": 0.03738599999998371,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-poll-stream_readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      },
+      {
+        "name": "83-poll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.11756773409433663,
+        "cpuSeconds": 0.0847920000000073,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-poll-fast-deadlines.log",
+        "sha256": "e3a32b65b906035963a40286c4056654a6abc51550d015c68f2e903b6d162493"
+      },
+      {
+        "name": "83-poll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.3248863851185888,
+        "cpuSeconds": 0.3387379999999922,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/83-poll-fast-resources.log",
+        "sha256": "6ffc6b4d9f798b3695100059c9c3060730cb372b12ad57730b81f460ae660a01"
+      },
+      {
+        "name": "84-epoll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.4124557778704911,
+        "cpuSeconds": 0.34077299999999866,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-epoll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "84-epoll-file_handles",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.5971887209452689,
+        "cpuSeconds": 0.4543220000000048,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-epoll-file_handles.log",
+        "sha256": "9414fa93ea6e746010d17ffb6979c59cec370a69053efa936c170f897d2945a2"
+      },
+      {
+        "name": "84-epoll-stream_readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.09901049896143377,
+        "cpuSeconds": 0.06694799999998224,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-epoll-stream_readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      },
+      {
+        "name": "84-epoll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.12336179194971919,
+        "cpuSeconds": 0.09683500000001288,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-epoll-fast-deadlines.log",
+        "sha256": "2032bed019b2d7b5efba1f79da2b52991ba0072eab6aa1a3db9cb27b0abcc1b1"
+      },
+      {
+        "name": "84-epoll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.3249904189724475,
+        "cpuSeconds": 0.39254999999999995,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-epoll-fast-resources.log",
+        "sha256": "42b5644fcbd872a2823cf39d943fc7f0b0be5d1b44186272b49ebbe391a33103"
+      },
+      {
+        "name": "84-poll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.3587476289831102,
+        "cpuSeconds": 0.46523500000000695,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-poll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "84-poll-file_handles",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.4788361571263522,
+        "cpuSeconds": 0.3875399999999871,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-poll-file_handles.log",
+        "sha256": "9414fa93ea6e746010d17ffb6979c59cec370a69053efa936c170f897d2945a2"
+      },
+      {
+        "name": "84-poll-stream_readiness",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.04428756283596158,
+        "cpuSeconds": 0.037002999999998565,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-poll-stream_readiness.log",
+        "sha256": "62575d11a447a6b44cea63d41a6036765296ec8ca7753a079a2a78176ad40184"
+      },
+      {
+        "name": "84-poll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.12086593289859593,
+        "cpuSeconds": 0.08913499999998464,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-poll-fast-deadlines.log",
+        "sha256": "ab6345d4dfefc0b7b0ef8de8b002082a9182fc7abe5ce0374cb474811584cc04"
+      },
+      {
+        "name": "84-poll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.32367367180995643,
+        "cpuSeconds": 0.27225400000000377,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/84-poll-fast-resources.log",
+        "sha256": "054fed4e67b76b69a5f790dda29c3b79d21a9f271b08181a884fe10f94763b7a"
+      },
+      {
+        "name": "debug-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 5.0487086130306125,
+        "cpuSeconds": 4.72255100000001,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-build.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "debug-epoll-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.5438631430733949,
+        "cpuSeconds": 0.4561089999999979,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-epoll-fast-kernel.log",
+        "sha256": "9ae83b42fcfd7b365b9aaac12819088b7e4143567fec5f6cca30fde5f7684133"
+      },
+      {
+        "name": "debug-epoll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.19785162387415767,
+        "cpuSeconds": 0.15456000000000358,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-epoll-fast-deadlines.log",
+        "sha256": "37149763c8cbb03d1f1e6b0cf68f690dd243d55189a5fef8752c70d29a830102"
+      },
+      {
+        "name": "debug-epoll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.48096387507393956,
+        "cpuSeconds": 0.5030000000000001,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-epoll-fast-resources.log",
+        "sha256": "ddb050714224e55a13423edf00f43a4358672d7736c036931dcd0baf9e308474"
+      },
+      {
+        "name": "debug-epoll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.3202240408863872,
+        "cpuSeconds": 0.34209499999998627,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-epoll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "debug-poll-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.5286609011236578,
+        "cpuSeconds": 0.4856189999999998,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-poll-fast-kernel.log",
+        "sha256": "42d07dad31aca2151bf9bce3e259dc46992049c4fdaad3090db37e5c74bc81d1"
+      },
+      {
+        "name": "debug-poll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.1683816339354962,
+        "cpuSeconds": 0.13190599999998653,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-poll-fast-deadlines.log",
+        "sha256": "5ee1880b477d5170aa4671c43a4325bd6d9976b182a57636f309f89e4a947bf3"
+      },
+      {
+        "name": "debug-poll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.42509579681791365,
+        "cpuSeconds": 0.44012999999999636,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-poll-fast-resources.log",
+        "sha256": "4f3009bf2ef6a6bf92c169f45a5f4a44867dc635949fcc0c418e13d29f7376d5"
+      },
+      {
+        "name": "debug-poll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.2885935038793832,
+        "cpuSeconds": 0.3938039999999887,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/debug-poll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "sanitized-build",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 11.285885726800188,
+        "cpuSeconds": 10.383743999999993,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-build.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "sanitized-epoll-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.416576216928661,
+        "cpuSeconds": 3.3109159999999775,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-epoll-fast-kernel.log",
+        "sha256": "d76dd9d0230fa6404539633f26c9dc19c601a639a765f010484e4355cecd45ee"
+      },
+      {
+        "name": "sanitized-epoll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.8029646049253643,
+        "cpuSeconds": 1.7057010000000048,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-epoll-fast-deadlines.log",
+        "sha256": "e1fd90ddee02f92362ded1799a42978c5d9ffe59267f7f1d0392541bfed71a15"
+      },
+      {
+        "name": "sanitized-epoll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.661483169067651,
+        "cpuSeconds": 3.988748000000001,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-epoll-fast-resources.log",
+        "sha256": "f95370ef8c5295d3c3129c6e671fd5f30a78af8a5bd254ca3b2977182d460826"
+      },
+      {
+        "name": "sanitized-epoll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.6244475471321493,
+        "cpuSeconds": 0.9199520000000092,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-epoll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "sanitized-poll-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.0418749800883234,
+        "cpuSeconds": 3.0127960000000087,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-poll-fast-kernel.log",
+        "sha256": "d732707ff33fa517ac2d3fe7a60bfe2f7b5b2a8072867d0e7471e54a440fd519"
+      },
+      {
+        "name": "sanitized-poll-fast-deadlines",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.2712558219209313,
+        "cpuSeconds": 1.2063710000000043,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-poll-fast-deadlines.log",
+        "sha256": "e5c99733fe08738ffaf27bd435f6ca37b1827ea2f11c66814b4354a191f5715c"
+      },
+      {
+        "name": "sanitized-poll-fast-resources",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 2.4100397371221334,
+        "cpuSeconds": 2.3925549999999873,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-poll-fast-resources.log",
+        "sha256": "d04c2c964374d650aa7fb941cc45982c31d1af4aa093719e8ea12f198640ced3"
+      },
+      {
+        "name": "sanitized-poll-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.8380460888147354,
+        "cpuSeconds": 1.1315490000000068,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/sanitized-poll-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "valgrind-version",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 0.03618109296076,
+        "cpuSeconds": 0.009648999999996022,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-version.log",
+        "sha256": "06bd4b41e0b515a43bbb6fa5d24e6596c4604fbc070ea04aa1dd8d2ad3035a53"
+      },
+      {
+        "name": "valgrind-native-wait",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 3.3004225720651448,
+        "cpuSeconds": 2.8696609999999936,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-native-wait.log",
+        "sha256": "9a331f96f9ef6ae7b0ceaa3777ccd82e2c0f23ba6d097811a048a13ab9d68887"
+      },
+      {
+        "name": "valgrind-native-close",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 1.6443845480680466,
+        "cpuSeconds": 1.6677549999999997,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-native-close.log",
+        "sha256": "d2ef0a6087f5e21b0d7337a8f346f72313597313774b4f57ad31847ad25d0890"
+      },
+      {
+        "name": "valgrind-debug-io_lifecycle",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 8.730294906068593,
+        "cpuSeconds": 8.025017999999989,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-debug-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "valgrind-debug-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 8.1324185479898,
+        "cpuSeconds": 8.089101,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-debug-fast-kernel.log",
+        "sha256": "8d140e769d525987a501b51ade3a9e5bdd3f17a404da2b167ba07bd575a4aa40"
+      },
+      {
+        "name": "valgrind-distribution-io_lifecycle",
+        "exit": 99,
+        "expectedExit": 0,
+        "wallSeconds": 7.3526527769863605,
+        "cpuSeconds": 6.914642000000015,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-distribution-io_lifecycle.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "valgrind-distribution-fast-kernel",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 5.931990875862539,
+        "cpuSeconds": 5.893491000000012,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/valgrind-distribution-fast-kernel.log",
+        "sha256": "037af571d1957756a410edafddf1e7298da6f0283edc2ff68aed798bded3b3a8"
+      },
+      {
+        "name": "resources-30000-epoll",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 80.07068557199091,
+        "cpuSeconds": 78.13558,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/resources-30000-epoll.log",
+        "sha256": "4bb7e9bd4ed56f74bec81527c4257e3807ba6edad47504c5cf8822a22aaddbca"
+      },
+      {
+        "name": "resources-30000-poll",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 63.95321003301069,
+        "cpuSeconds": 67.21973,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/resources-30000-poll.log",
+        "sha256": "5656a543857b9627a2e952b2f1528d7d81ea5b2fe752c1ac34aa6573bc7bb7c9"
+      }
+    ],
+    "recheck": [
+      {
+        "name": "full-epoll",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 26.355135299032554,
+        "cpuSeconds": 17.951362,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/full-epoll.log",
+        "sha256": "4d4cf5452ebed4ef2dc80c43070501f26d593026f0baaaf0c6d76052b982920a"
+      },
+      {
+        "name": "full-poll",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 24.668592161964625,
+        "cpuSeconds": 16.081976000000004,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/full-poll.log",
+        "sha256": "7c55772015ef2073ad7ca54d9f720f8cae9afffdcf1d9d818ac08b23474f576e"
+      },
+      {
+        "name": "existing-native-sanitizer",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 7.01471051806584,
+        "cpuSeconds": 8.867009999999993,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/existing-native-sanitizer.log",
+        "sha256": "095d7f3c5af6648560ea2769a9ef7a7410579d5a8292d40704af5129af046c57"
+      },
+      {
+        "name": "valgrind-debug",
+        "exit": 0,
+        "expectedExit": 0,
+        "wallSeconds": 8.387356605147943,
+        "cpuSeconds": 7.797057000000002,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-debug.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "valgrind-distribution-1",
+        "exit": 99,
+        "expectedExit": 0,
+        "wallSeconds": 10.056168973911554,
+        "cpuSeconds": 8.935245999999996,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-distribution-1.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      },
+      {
+        "name": "valgrind-distribution-2",
+        "exit": 99,
+        "expectedExit": 0,
+        "wallSeconds": 8.800366051960737,
+        "cpuSeconds": 8.315306000000003,
+        "log": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/valgrind-distribution-2.log",
+        "sha256": "d949b22be3b969ce1d066b2e4b17e547afa65e5acd85d638b3cb9c5221e6c77d"
+      }
+    ]
+  },
+  "evidenceFiles": {
+    "matrix-r1/results.json": {
+      "sha256": "ba9ca1cc42e884a4a56e26866594df4a08d4a2a68ce0d033a35b050c9fa1f6bb",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/matrix-r1/results.json"
+    },
+    "gate-a-r1/report.json": {
+      "sha256": "88ecda64cc1d7d013fa39b4c03a71a3cf2e40126b0a3b6aad7a1b96e0db104a5",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-a-r1/report.json"
+    },
+    "post-gate/results.json": {
+      "sha256": "5b8d02f6fa9dd30214946beab21cb16746c5c7452d45694539691c52793cf919",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/results.json"
+    },
+    "post-gate-r2/results.json": {
+      "sha256": "ed3b814997194de190b135e14c82a746808275533847b76d2763dc2df722c6e9",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate-r2/results.json"
+    },
+    "gate-b-review-r1/report.json": {
+      "sha256": "8226e1455b21297d30f69d4cf55eec107d30d086763f186989417f7d4b47204b",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-b-review-r1/report.json"
+    },
+    "gate-b-exit.json": {
+      "sha256": "12a154e5d6d9a29ac0dd93f7bf36d7123e0952f8efbb324ce9b5822eeaa248ff",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/gate-b-exit.json"
+    },
+    "post-gate/engine-cycles.log": {
+      "sha256": "e6eace363f238fac99621cc2276ced860324df37e231de555e9612408fdc8967",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles.log"
+    },
+    "post-gate/engine-cycles-asan.log": {
+      "sha256": "84ce596fcee66453fe237cd26d63a1e63e911326ff2a21b3267903f5e1455298",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/post-gate/engine-cycles-asan.log"
+    },
+    "integrity-final.json": {
+      "sha256": "e899ba8661d58424d058bb9c7f531c3119d0cfa1ccff6747e285960241e116b9",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/integrity-final.json"
+    },
+    "source-checkpoint.json": {
+      "sha256": "59557b44c7c2d97f17c0433fa8d107133d0609854cd2a0c3b1fadca575ebbe05",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/source-checkpoint.json"
+    },
+    "run-post-gate.py": {
+      "sha256": "4dbf3f6210652ca9c79721c62d2311f4ededc754cd19c412c834fa8382553825",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/run-post-gate.py"
+    },
+    "run-recheck.py": {
+      "sha256": "12e519c377dd6a188e52d456b2bdd503fa81698786edb623e73aae98974c46bb",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/run-recheck.py"
+    },
+    "run-gate-b.py": {
+      "sha256": "0a44521b67a2a83f2230191369423ce788f97747d43156a38172d51d0518e638",
+      "path": "/home/coder/Asyncara-fast-evidence-20261107T155547Z/run-gate-b.py"
+    }
+  },
+  "integrity": {
+    "utc": "2026-11-07T16:48:19.511902+00:00",
+    "mainHead": "6a7e0f45cb64577b3ba0cf30e160bd98901e4d90",
+    "mainStatus": "?? tests/soak/campaign_review.py\n?? tests/soak/response_order.py\n?? tests/soak/test_campaign_review.py\n",
+    "protectedHashes": {
+      "/home/coder/Asyncara/tests/soak/campaign_review.py": {
+        "expected": "8b845f420dcfe540bcce1babec25ae260a74bb88885b42a1d9ea311ede714eba",
+        "actual": "8b845f420dcfe540bcce1babec25ae260a74bb88885b42a1d9ea311ede714eba"
+      },
+      "/home/coder/Asyncara/tests/soak/response_order.py": {
+        "expected": "5c672b274201f54b934985ce1dc278c21129fe818583173b3c25d8c13f20e7c5",
+        "actual": "5c672b274201f54b934985ce1dc278c21129fe818583173b3c25d8c13f20e7c5"
+      },
+      "/home/coder/Asyncara/tests/soak/test_campaign_review.py": {
+        "expected": "7c1eb82492d638d770a9a8d5befb807c616108884d53f8bb2e6d4ffb60f68105",
+        "actual": "7c1eb82492d638d770a9a8d5befb807c616108884d53f8bb2e6d4ffb60f68105"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-supervisor.py": {
+        "expected": "db977914ceb29d63076c62e5bc3dfb44a1dab93ef76cc29d8b0ce2e7617f4031",
+        "actual": "db977914ceb29d63076c62e5bc3dfb44a1dab93ef76cc29d8b0ce2e7617f4031"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/build/asyncara.so": {
+        "expected": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c",
+        "actual": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600/asyncara.so": {
+        "expected": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c",
+        "actual": "ed8a74a382094a210c14e2cffe60c51c0051d8b1b5a14a719fa3cceea221ae0c"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/fpm-uninstrumented-r1/fpm-21600/mixed-reload-kill/fpm.conf": {
+        "expected": "2abb897b9af7b93ff7895c875b66257cf18df970f47548bbe524be428ad784c6",
+        "actual": "2abb897b9af7b93ff7895c875b66257cf18df970f47548bbe524be428ad784c6"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/audit/fpm_request.php": {
+        "expected": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075",
+        "actual": "684096e19c859ed9c0fc3efb4f6c04d483681e5f1bafd253104236163d201075"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/fpm.py": {
+        "expected": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170",
+        "actual": "875f142084090f59575305cc358fe18d6c032adc52bce97b3d54c9a40a70f170"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/metrics.py": {
+        "expected": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7",
+        "actual": "150bdf8b25d9143c959a88bbdcb259fe25237d5f92e4cb81c0296e48c9fc2ad7"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/tests/soak/monitor.py": {
+        "expected": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6",
+        "actual": "5902d9c3154254c982c9d030b0a3f52e37996b6423fbd3331dfd098ac738e7c6"
+      },
+      "/tmp/asyncara-lifecycle-20261106T231254Z/frozen-d74f3b3/scripts/audit-fpm.py": {
+        "expected": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910",
+        "actual": "6c3847f4a4734b2d8df7c360e044ed37f90dab353c26822749f00842ad660910"
+      }
+    },
+    "originalArchiveSha256": "8586c278f0d29d6b89c6a1fc00722ceb1e53f9943be6737e7524662097f59369",
+    "newModuleSha256": "8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84",
+    "runtimeChangesFrom8263": ""
+  },
+  "os": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "cpuCount": 6,
+  "cpuAffinityCount": 6,
+  "cpuMax": "NOT_AVAILABLE",
+  "dependencies": "gcc\t4:13.2.0-7ubuntu1\nlibc6:amd64\t2.39-0ubuntu8.9\nlibcurl4t64:amd64\t8.5.0-2ubuntu10.16\nlibmariadb3:amd64\t1:11.8.9+maria~ubu2404\nlibpq5:amd64\t16.15-0ubuntu0.24.04.1\nlibsqlite3-0:amd64\t3.45.1-1ubuntu2.8\n",
+  "valgrind": {
+    "historicalDistribution": {
+      "directBytes": 904,
+      "indirectBytes": 120,
+      "status": "UNRESOLVED"
+    },
+    "initialDistribution": {
+      "directBytes": 1128,
+      "indirectBytes": 0,
+      "exit": 99
+    },
+    "stableDependencyRepeats": [
+      {
+        "directBytes": 904,
+        "indirectBytes": 120,
+        "exit": 99
+      },
+      {
+        "directBytes": 1888,
+        "indirectBytes": 120,
+        "exit": 99
+      }
+    ],
+    "nativeAndDebug": "zero lost bytes and zero errors in scoped executed tests; still-reachable allocations retained in logs",
+    "rootCause": "UNRESOLVED; allocation stacks include Zend object/closure allocation and Fiber context, insufficient to assign ownership or dismiss losses",
+    "customSuppressions": false
+  },
+  "limitations": [
+    "Historical FPM zero-tick cause is unresolved. EINTR injection does not attribute the historical failure.",
+    "Gate B completed 7980/200000 main responses. Workload assertions pass; volume gate remains INCOMPLETE.",
+    "Native notification injection is a POSIX failure-path test, not demonstration of EINTR on current Linux nonblocking one-byte writes.",
+    "Real-time tests do not enumerate all interleavings. Virtual time does not certify kernel waiting.",
+    "No new TSan run; no fresh remote database certification; no long-duration certification.",
+    "Matrix modules omit optional PG/MySQL; full-feature 8.5 regression and FPM runs are separate."
+  ],
+  "finalTestSourceManifest": {
+    "tests/fast/validate.py": "1e43a8da4a0a84a9a9a5040258bebafa02ab860013e5f8cd905f50c51d90d274",
+    "tests/fast/native_wait.c": "26e0b57b8aa4057bca0f92d00ef89683d5586c8d323dfe758698afb61b070c09",
+    "tests/fast/review_fpm.py": "f6aed1415604e31a59345aba6e06316ede2ab72ea9268c2f21629b8a96d0db4d",
+    "tests/fast/virtual_time.php": "6cdadb38b587b0a2c353871996c1ed3c3d5d17956896722f575695cbf530a72c",
+    "tests/fast/engine_cycles.c": "051b070783ea3cc1fa5bb67597f1d2955c2f3c6e81286ab2edbee88aeb0d6bcd",
+    "tests/fast/fpm_count.py": "c801b9637f203c70a3fc493c362204c48fe1721a33b6752558e7ad5811a2e0d3",
+    "tests/fast/resources.php": "47bdbbb49018e24d5c896df89b7bccc472bf16e39e5742723c87dd2596656fc4",
+    "tests/fast/kernel.php": "78f36e0893c6264340799986d20acd7736e6b3714942c227af7d5878e7d13c1e",
+    "tests/fast/deadlines.php": "3a7091019d00f26e2b8c2839d28dc5d99bcfd5922e80be246e3aeaf62d1af785",
+    "tests/fast/gate_a.py": "801235a9edb60671312d74d99a8513fd8d1614f7e91ef5fec2a0f1effd7fc86e"
+  },
+  "moduleHashes": {
+    "build/fast-full.so": "8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84",
+    "build/fast-debug.so": "1f7c4654ce06be7038089f11392fab8591093539e5dad67deef06ac67e188e4e",
+    "build/fast-sanitized.so": "5555b2afd999c99c79244e256c916623813049abbea1e4e8939b5e23f6c42bde"
+  }
+}

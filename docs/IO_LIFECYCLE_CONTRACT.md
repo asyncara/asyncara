@@ -2,7 +2,7 @@
 
 ## Isolated native development qualification (2026-11-07)
 
-The `phase5-native-core` worktree contains an **unbuilt, untested** correction in
+The original `phase5-native-core` checkpoint introduced a correction in
 `ext/workers.c`: after native acceptance, `file_close` and `sqlite_close` are
 mandatory cleanup operations. Their worker executes despite an operation
 cancellation request and reports the actual close outcome, including errors.
@@ -10,7 +10,10 @@ Cancellation before a PHP Task submits its close remains unchanged. This does
 not make an executing syscall forcibly interruptible or add a shutdown deadline.
 See [NATIVE_CORE_ENGINEERING.md](NATIVE_CORE_ENGINEERING.md) for the source
 analysis, preserved ownership invariants and prepared regression. This amendment
-is not behavior of the frozen Phase 4 campaign binary and is not yet certified.
+is not behavior of the frozen Phase 4 campaign binary. The subsequent isolated
+fast-reliability track compiled and verified the correction, including failing
+frozen-source controls and scoped memory tools; see [FAST_RELIABILITY.md](FAST_RELIABILITY.md).
+This is not production certification.
 
 This describes the implemented explicit APIs, including the Phase 4 buffered
 HTTP cancellation drain and SQLite identity guards. It is a behavioral contract

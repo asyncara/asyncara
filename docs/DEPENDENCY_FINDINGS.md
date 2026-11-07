@@ -92,3 +92,18 @@ and Asyncara builds isolate the observed call sites; all third-party libraries
 have not been rebuilt with identical Clang instrumentation, so that broader
 configuration remains unverified. Native Clang fuzzing and GCC instrumentation
 results are separate evidence, not substitutes for this unresolved run.
+
+
+## 2026-11-07 fast-reliability memory controls
+
+The distribution-PHP discrepancy remains separate from the libpq TLS finding.
+On source 8263fcd-equivalent runtime bytes, repeated lifecycle runs under
+Valgrind exit 99: initially 1,128 direct/0 indirect bytes; after locked dependencies
+were installed, 904/120 and 1,888/120 bytes on independent repetitions. DEBUG
+Valgrind-aware PHP passes with zero lost/errors in the same workload. New native
+wait/close checks also have zero lost/errors, with still-reachable allocations
+reported separately. Zend/Fiber allocation stacks and variable loss totals do not
+establish whether the cause is PHP, application-owned PHP objects, or tool/runtime
+interaction. No suppression or ownership attribution is justified yet.
+See [fast-reliability results](FAST_RELIABILITY.md) and the hashed command/log
+inventory in [phase5/fast-validation.json](phase5/fast-validation.json).

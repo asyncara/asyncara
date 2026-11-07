@@ -1,6 +1,6 @@
 # Fast reliability engineering
 
-Status: implementation/validation in progress on `phase5-fast-reliability`;
+Status: scoped implementation and validation completed on `phase5-fast-reliability`;
 release **EXPERIMENTAL**. This track starts at `6ee73d8563d6f7c5313eea47ceca2d4ba9fa55e4`
 and does not modify the Phase 4 checkout, installed module or historical fixtures.
 
@@ -76,7 +76,7 @@ failing-before controls. No suppression or acceptance threshold changed.
 
 ## Gates and coverage boundaries
 
-- Gate A: `tests/fast/validate.py --variants corrected`, production real-kernel
+- Gate A: `tests/fast/gate_a.py`, production real-kernel
   PHP/C transitions plus separate virtual-time scheduler tests. Initial target:
   10,000 transitions per named path, epoll/poll, PHP 8.3/8.4/8.5 matrix.
 - Gate B: `tests/fast/fpm_count.py --responses 200000 --seconds 600 --seed 17`.
@@ -108,10 +108,135 @@ watchers, descriptors and worker bounds. RSS is recorded, not treated as leak pr
 
 ## Validation record
 
-Pending final aggregation. Every command writes a unique log, exit status,
+[Machine-readable validation](phase5/fast-validation.json) records every result.
+Every command writes a unique log, exit status,
 wall/CPU time, file hashes and source manifest under the evidence directory.
 No new binary is installed into the Phase 4 checkout. Initial comparison modules
 omit optional PG/MySQL drivers; their results certify the exercised core/SQLite
 paths only. Full-feature and memory-tool runs must be listed separately.
 The earlier distribution-PHP Valgrind discrepancy (904 direct +120 indirect lost
 bytes) remains unresolved and is not erased by scoped new native tests.
+
+
+## Executed results and source identities
+
+- Native correction: `8263fcdca5c02a89555053553d6e760bb7792ee5`.
+- FPM runner/reviewer checkpoint: `cd91b4955e36f3f68246f96eb2c6e7ddf98c151d`.
+  Its `ext/` and `src/` bytes are identical to the native correction.
+- Main Phase 4 remains `6a7e0f45cb64577b3ba0cf30e160bd98901e4d90`; its three
+  untracked reviewer files and all 12 protected file fingerprints match.
+- Own full-feature binary: `build/fast-full.so`, SHA-256
+  `8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84`.
+  It was compiled before committing 8263fcd and its complete native source
+  manifest was subsequently verified against that checkpoint. DEBUG/sanitized
+  builds have separate filenames; none replaced a Phase 4 binary.
+- Linux x86_64, Ubuntu 24.04, GCC 13.2; PHP **8.3.36**, **8.4.27**, **8.5.12** NTS.
+  Dependency versions and every compiler command are in the evidence records.
+
+| Check | Actual result | Evidence beneath the external evidence root |
+|---|---|---|
+| Frozen/candidate/corrected × PHP 8.3/8.4/8.5 × epoll/poll | 18 kernel and 18 virtual-time runs pass, 10,000 iterations; negative oracle fails as intended. 93 commands total, 375.277s | `matrix-r1/results.json`, corresponding logs/source manifest |
+| Accepted close negative controls | Frozen file and SQLite checks abort; candidate and corrected pass; ordinary cancelled-write controls pass | `comparison-r2/`, `matrix-r1/` |
+| EINTR notification negative controls | Both old implementations fail on both backends; corrected passes 10,000 completions/backend | `post-gate/baseline-wakeup-{0,1}.log`, candidate equivalents; `gate-a-r1/native-wait.log` |
+| Gate A | PASS: 190.920s wall, 151.802s child CPU; seeds 17/271828/104729; 10,000 iterations per named path | `gate-a-r1/report.json` |
+| Gate B | **INCOMPLETE**: 7,980/200,000 main responses in 600.026590s mixed work (13.299/s), 612.987s wrapper wall | `gate-b-r1/gate.json`, `gate-b-exit.json` |
+| Independent Gate B workload/resource review | PASS within that partial count: 5,985 I/O responses, minimum 8 ticks; all A/B/C/D, recycling, reload, kill, fatal/pending and timeout checks pass | `gate-b-review-r1/report.json` |
+| Gate C | NOT_STARTED; volume gate did not pass | No extended campaign launched |
+| Full PHP 8.5 suite, epoll/poll | PASS after installing unchanged locked Composer dependencies: 44 core cases plus limits, fatal cleanup, lifecycle, streams, HTTP, protocol/IPC regressions | `post-gate-r2/full-{epoll,poll}.log` |
+| PHP 8.3/8.4 targeted lifecycle/handles/readiness/resources | PASS, both backends | `post-gate/results.json` |
+| Native and matching GCC ASan/UBSan PHP paths | PASS in the executed scope, plus existing native sanitizer | `post-gate/asan-*.log`, `sanitized-*.log`, `post-gate-r2/existing-native-sanitizer.log` |
+| Native and Valgrind-aware DEBUG controls | Zero lost bytes and zero errors; still-reachable allocations remain separately reported | `post-gate/valgrind-native-*-memory.log`, `post-gate-r2/valgrind-debug-memory.log` |
+| Distribution PHP lifecycle under Valgrind | **FAIL / UNRESOLVED**; no suppression | See next paragraph |
+
+The first full suites failed because this isolated worktree lacked the locked
+Nyholm PSR-7 dependency (43 pass, 1 fail). Those logs remain in `post-gate/`.
+Composer installed six existing locked packages into this worktree only; no
+manifest/lock/license changed. The complete suites were then rerun unchanged.
+
+The initial distribution-PHP Valgrind repeat reported 1,128 direct/0 indirect
+lost bytes. After dependency installation completed, two independent repeats
+reported **904 direct/120 indirect**, then **1,888 direct/120 indirect** lost
+bytes, exits 99. Corresponding DEBUG control has zero lost/errors. Traces include
+Zend object/closure allocation and Fiber context frames; this neither assigns
+ownership to upstream PHP nor absolves Asyncara's PHP classes. Fiber-stack
+warnings are separate diagnostics. No link to the upstream libpq TLS allocation
+has been demonstrated. No losses, warnings or old failures were suppressed.
+
+## Resource observations
+
+The independent FPM review recalculated all 7,972 steady samples. Four final
+workers each have 1,993 samples, **six descriptors and one thread** when idle.
+RSS growth beyond their warmup peaks is **2,836 / 468 / 2,312 / 556 KiB**, each
+strictly below the unchanged 8,192 KiB rejection threshold. The ranges excluding
+first three samples are 304/280/280/420 KiB. Short-run fitted slopes remain positive
+(approximately 279–1,135 KiB/hour); these are observations, not long-term leak
+predictions or evidence that all caches have reached their final size.
+
+`resources.php` additionally completed **30,000 cycles / 210,000 worker jobs per
+backend**. These are not FPM responses. Every checkpoint has zero native ledger,
+pending operations, open file/SQLite handles, active Tasks/Futures/timers/watchers;
+seven descriptors and five threads (four native workers plus interpreter).
+RSS: epoll 31,196–34,104 KiB, ending 33,224; poll 31,280–33,740, ending 32,936.
+Retained JSON samples deliberately contribute a small PHP-memory increase.
+Foreign allocators and kernel memory remain outside the ledger.
+
+`engine_cycles.c` exercised **20,000 complete native engine lifecycles and 80,000
+worker starts**, alternating collection with shutdown while work is pending,
+and cancelling every third read. It completed in 39.836s; descriptor count four
+(including the scanner), RSS 10,300–10,372 KiB. Task-directory observations were
+one or transiently two after pthread joins; they are not relabelled as always one.
+A separate 2,000-cycle /8,000-worker-start ASan/UBSan run passed. This tests native
+request-engine ownership, not Zend/FPM request count equivalence.
+
+## Reproduction
+
+Install the existing locked development dependencies and build an isolated
+module using [installation instructions](INSTALLATION.md). Choose fresh output
+paths; each runner refuses to overwrite an existing directory. For this host,
+exact interpreter/SDK paths, commands, environment and hashes are in
+`phase5/fast-validation.json` and the referenced raw command records.
+
+```sh
+composer install --no-interaction --ignore-platform-req=ext-asyncara
+./scripts/build-local.sh
+python3 -B tests/fast/gate_a.py --output build/fast-a-new
+python3 -B tests/fast/fpm_count.py --output build/fast-b-new   --responses 200000 --seconds 600 --seed 17
+# Run only after the FPM runner has exited. Exit 2 means count incomplete.
+python3 -B tests/fast/review_fpm.py build/fast-b-new --output build/fast-b-review-new
+```
+
+Set `PHP_BIN`, `PHP_INCLUDE_DIR`, `FPM_BIN` and `ASYNCARA_EXTENSION` for the chosen
+isolated build. For comparison, export `ext/` from d74f3b3 and 6ee73d8 into fresh
+`build/baseline` and `build/candidate` directories with `git archive`; verify their
+bytes against Git. `validate.py --variants baseline candidate corrected --php
+83 84 85 --output <new-directory>` uses matching SDKs, overridable through
+`PHP83_BIN`/`PHP83_INCLUDE_DIR` (and 84/85 equivalents). The comparison harness needs repository history; Gate A also currently requires
+a checkout for Git provenance. The production build and direct PHP test files
+can run from a source archive without Git history.
+Do not confuse the comparison harness's expected failures with passing baselines.
+
+Standalone engine-cycle and sanitizer commands are preserved in
+`run-post-gate.py` and its `post-gate/results.json`. CI now invokes Gate A on each
+PHP matrix entry; hosted CI was not executed by this local assignment.
+
+## Reliability conclusion and next priorities
+
+The process now provides a measured three-minute developer gate, real-kernel
+and virtual-time checks, deterministic syscall-boundary fault injection, and
+count-driven FPM evidence with explicit incomplete outcomes. It detects the
+injected lost-notification invariant and accepted-close regression rapidly.
+It has **not reproduced or fixed the exact historical zero-tick cause**. Tests
+that also pass on the frozen source are coverage, not proof of that repair.
+
+Next: reduce the distribution-PHP allocation discrepancy; retain the historical
+zero-tick failing request as a separate unresolved gate; develop additional
+causally controlled scheduling diagnostics if needed. Preserve the original
+200ms/four-worker/two-tick workload as its own criterion. A 200,000-response
+qualification cannot be called a 10–30-minute gate under those constraints.
+Native operation-volume tests and a short FPM sample complement it, not replace
+its request count. No six-hour or 24-hour campaign is scheduled automatically.
+
+No new hook, backend, protocol, framework feature, or scheduler rewrite was made.
+Filesystem/SQLite/DNS remain worker-backed; HTTP remains curl multi event-driven.
+No new TSan or remote database certification was performed. Release remains
+**EXPERIMENTAL**. No new GitHub release, force-push or history rewrite occurred.

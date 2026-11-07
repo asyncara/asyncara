@@ -13,8 +13,8 @@ remains unresolved. No 24-hour FPM result exists for that campaign.
 | Interrupted worker completion notification | IMPLEMENTED_AND_TESTED | Minimal C EINTR retry; 10,000 injected completion transitions/backend pass. Both prior sources fail. Not attribution of historical FPM zero ticks |
 | Deterministic kernel/virtual-time framework | IMPLEMENTED_AND_TESTED | PHP 8.3/8.4/8.5 × epoll/poll × three source variants, 10,000 iterations; separate real kernel and virtual scheduler scope |
 | Gate A expanded seed/resource suite | IMPLEMENTED_AND_TESTED | 190.920 seconds, 10,000 iterations/path, three seeds, epoll/poll; 140,000 total worker jobs and zero tracked owners at checkpoints |
-| Gate B 200,000 original FPM main responses | IMPLEMENTED_BUT_NOT_FULLY_TESTED | Count runner prepared; target cannot fit 30 minutes with unchanged four-worker/200ms workload. Partial execution must not become PASS |
-| Gate C / extended observation | NOT_IMPLEMENTED | Execution deferred until A/B gates justify it; no automatic six-hour/24-hour run |
+| Gate B 200,000 original FPM main responses | PARTIALLY_IMPLEMENTED | Count runner and independent review executed: 7,980 responses in 600.027s, original assertions pass; 200,000 target NOT met (INCOMPLETE) |
+| Gate C / extended observation | BLOCKED | Not run because B volume gate is incomplete; no automatic six-hour/24-hour run |
 | Original zero-tick attribution / distribution-PHP Valgrind discrepancy | BLOCKED | Unresolved evidence; no claim that new notification fault injection explains either |
 
 ## Isolated native track (2026-11-07)

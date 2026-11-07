@@ -1,5 +1,10 @@
 # Native core engineering: accepted-close ownership
 
+Historical snapshot at `6ee73d8`: 2026-11-07 UTC.
+Subsequent isolated build, baseline negative controls, PHP/backend matrix and
+memory checks are recorded in [FAST_RELIABILITY.md](FAST_RELIABILITY.md).
+The unbuilt statements below describe the original protected-campaign checkpoint.
+
 Snapshot: 2026-11-07 UTC. Release classification: **EXPERIMENTAL**.
 This is the isolated `phase5-native-core` development track. The C patch and
 new regression are **NOT_YET_BUILT / NOT_YET_TESTED**. Source inspection is not

@@ -1364,3 +1364,42 @@ Added read-only Gate B review tool to recalculate count/ticker/cleanup/RSS from
 raw observations without inferring chronology from batch emission order.
 Next: single 600-second count-target FPM execution, original four-worker fixture
 and two-tick/resource assertions. No competing heavy workload during it.
+
+### Count gate, memory controls and final scoped results
+
+Gate B at source `cd91b4955e36f3f68246f96eb2c6e7ddf98c151d` terminated normally
+with exit 2 / INCOMPLETE: 7,980 of 200,000 main responses, 600.026590 seconds
+mixed work, 612.987 seconds total wrapper time. All original assertions and
+fault/lifecycle cases pass within that count. Independent raw review confirms
+5,985 I/O responses, min eight ticks; 7,972 steady samples, four final workers,
+idle six descriptors/one thread; RSS growth beyond warmup 2,836/468/2,312/556 KiB.
+No count target or endurance pass is claimed. No Gate C or new multi-hour run.
+
+Added `tests/fast/engine_cycles.c`: 20,000 engine teardown cycles, 80,000 real
+worker starts, 39.836 seconds; four descriptors and 10,300–10,372 KiB RSS.
+Sampled Linux task directories sometimes remain transiently two after joins;
+raw observations retained. Scoped ASan/UBSan 2,000-cycle control passes.
+Separate PHP resource tests complete 210,000 worker jobs per backend with zero
+tracked owners at each checkpoint. Those are worker jobs, not FPM responses.
+
+Original full-suite attempts fail solely at missing locked Nyholm PSR-7 dependency
+(43 core cases pass, one fails). Logs preserved. Installed the six existing locked
+Composer packages in this worktree with independent Composer home/cache; no lock,
+manifest or LICENSE changes. Re-ran complete epoll and poll suites: 44 core cases
+and all subsequent suites pass. Matching PHP 8.3.36/8.4.27 lifecycle targets,
+DEBUG PHP, GCC ASan/UBSan native/PHP paths and existing native sanitizer pass.
+
+Valgrind native and Valgrind-aware DEBUG controls: zero lost/errors in scoped
+runs, still-reachable allocations separately retained. Distribution PHP lifecycle
+continues exit 99: 1,128 direct/0 indirect initially; after dependency installation,
+two repetitions give 904/120 and 1,888/120 lost bytes. Fiber-stack warnings remain.
+No attribution to upstream PHP, Asyncara or libpq is established. No suppressions.
+
+Evidence root: `/home/coder/Asyncara-fast-evidence-20261107T155547Z`.
+Commands/results: `matrix-r1`, `gate-a-r1`, `gate-b-r1`, `gate-b-review-r1`,
+`post-gate`, `post-gate-r2`. Aggregation in `docs/phase5/fast-validation.json`.
+`docs/FAST_RELIABILITY.md` covers architecture, invariants, comparison, counts,
+resources, limits and reproduction. Main/native-core worktrees remain unchanged;
+all 12 protected hashes and the historical tar comparison pass. Source package
+verification follows this checkpoint. Release stays EXPERIMENTAL; historical
+zero-tick root cause and distribution-PHP allocation discrepancy remain unresolved.
