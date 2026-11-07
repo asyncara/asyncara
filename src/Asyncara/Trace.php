@@ -49,6 +49,7 @@ final class Trace
             $offset += $written;
         }
         if (!@fflush($stream)) throw new \RuntimeException('Diagnostic output flush failed');
+        if (self::$mask & self::LIFECYCLE) \asyncara_trace_event(self::LIFECYCLE, 4, 0, $offset, 0, 0);
         return $offset;
     }
     public static function dump(string $path): int

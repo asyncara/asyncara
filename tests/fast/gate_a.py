@@ -26,6 +26,10 @@ run('build-native-close',cc+flags+['tests/audit/close_cancellation.c']+native+li
 run('native-close',[out/'native-close','all'])
 run('build-wait-budget',cc+flags+['tests/fast/wait_budget.c']+native+libs+['-Wl,--wrap=clock_gettime','-Wl,--wrap=calloc','-Wl,--wrap=epoll_ctl','-Wl,--wrap=epoll_wait','-Wl,--wrap=poll','-Wl,--wrap=__poll_chk','-o',out/'wait-budget'])
 run('wait-budget',[out/'wait-budget',a.iterations])
+run('build-watch-index',cc+flags+['tests/fast/watch_index.c']+native+libs+['-Wl,--wrap=calloc','-o',out/'watch-index'])
+run('watch-index-bounds',[out/'watch-index','--bounds'])
+run('watch-index-allocation',[out/'watch-index','--allocation'])
+for backend in [0,1]:run('watch-index-'+str(backend),[out/'watch-index',512,20,backend])
 run('build-sqlite-conversion',cc+flags+['tests/fast/sqlite_conversion.c']+native+libs+['-Wl,--wrap='+s for s in ['sqlite3_column_name','sqlite3_column_blob','sqlite3_column_text','sqlite3_column_bytes','sqlite3_errcode']]+['-o',out/'sqlite-conversion'])
 for mode in range(5):run('sqlite-conversion-'+str(mode),[out/'sqlite-conversion',mode])
 php=[a.php,'-n','-d','extension='+str(module)]
