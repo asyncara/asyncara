@@ -24,7 +24,7 @@ final class Task extends Future
         });
     }
     public function isRunning(): bool { return !$this->isCompleted(); }
-    public function cancel(): void { if (!$this->isCompleted()) $this->cancellation->cancel(); }
+    public function cancel(): void { if (!$this->isCompleted()) { if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,37,$this->id,0,0,0); $this->cancellation->cancel(); } }
     /** @internal */
     public function step(): void
     {

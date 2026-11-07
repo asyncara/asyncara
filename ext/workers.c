@@ -642,6 +642,8 @@ finish:
     sqlite3_progress_handler(db->handle, 0, NULL, NULL);
 }
 void ar_done(ar_engine *e, ar_job *j) {
+    long id = j->id;
+    ar_trace_emit(e, AR_TRACE_JOB, 22, id, j->op, j->error[0] != 0, atomic_load(&j->cancelled));
     pthread_mutex_lock(&e->mutex);
     j->done = 1;
     j->done_next = NULL;
@@ -659,6 +661,7 @@ void ar_done(ar_engine *e, ar_job *j) {
     ssize_t ignored;
     do {
         ignored = write(e->wake[1], &byte, 1);
+        ar_trace_emit(e, AR_TRACE_JOB, 23, id, ignored, ignored < 0 ? errno : 0, 0);
     } while (ignored < 0 && errno == EINTR);
     (void)ignored;
 }
@@ -681,6 +684,7 @@ static void *worker(void *arg) {
          * or scheduler drain must neither skip the close nor replace its real
          * outcome. The handle stays busy until ar_collect(), as for other jobs.
          * Cancellation before submission still belongs to the PHP Task. */
+        ar_trace_emit(e, AR_TRACE_JOB, 21, j->id, j->op, 0, 0);
         bool closing = j->op == OP_FILE_CLOSE || j->op == OP_DB_CLOSE;
         if (closing || !stopped(j)) {
             if (j->op >= OP_FILE_OPEN && j->op <= OP_FILE_CLOSE)
@@ -716,6 +720,7 @@ ar_engine *ar_engine_new(void) {
     ar_engine *e = calloc(1, sizeof(*e));
     if (!e)
         return NULL;
+    atomic_init(&e->trace, NULL);
     if (pipe2(e->wake, O_NONBLOCK | O_CLOEXEC)) {
         free(e);
         return NULL;
@@ -758,6 +763,7 @@ ar_job *ar_job_new(ar_engine *e, ar_op op) {
 void ar_job_free(ar_job *j) {
     if (!j)
         return;
+    ar_trace_emit(j->engine, AR_TRACE_JOB, 26, j->id, j->op, 0, 0);
     ar_job **entry = &j->engine->allocations;
     while (*entry && *entry != j)
         entry = &(*entry)->lifetime_next;
@@ -815,6 +821,7 @@ int ar_submit(ar_engine *e, ar_job *j) {
     j->next = e->jobs;
     e->jobs = j;
     e->pending++;
+    ar_trace_emit(e, AR_TRACE_JOB, 20, j->id, j->op, e->pending, 0);
     if (j->db)
         j->db->busy = 1;
     if (j->file)
@@ -836,6 +843,7 @@ int ar_submit(ar_engine *e, ar_job *j) {
 void ar_cancel(ar_engine *e, long id) {
     for (ar_job *j = e->jobs; j; j = j->next)
         if (j->id == id) {
+            ar_trace_emit(e, AR_TRACE_JOB, 25, id, j->op, 0, 0);
             atomic_store(&j->cancelled, 1);
             if (j->op == OP_HTTP && !j->done) {
                 if (j->curl)
@@ -861,6 +869,7 @@ ar_job *ar_collect(ar_engine *e) {
         if (*p)
             *p = j->next;
         e->pending--;
+        ar_trace_emit(e, AR_TRACE_JOB, 24, j->id, j->op, e->pending, 0);
         if (j->file) {
             j->file->busy = 0;
             if (j->file->fd < 0) {
@@ -891,6 +900,7 @@ ar_job *ar_collect(ar_engine *e) {
 void ar_engine_free(ar_engine *e) {
     if (!e)
         return;
+    ar_trace_emit(e, AR_TRACE_LIFE, 70, e->request_id, e->pending, e->thread_count, atomic_load(&e->memory_bytes));
     for (ar_job *j = e->jobs; j; j = j->next)
         atomic_store(&j->cancelled, 1);
     pthread_mutex_lock(&e->mutex);
@@ -933,5 +943,7 @@ void ar_engine_free(ar_engine *e) {
     pthread_cond_destroy(&e->condition);
     pthread_mutex_destroy(&e->mutex);
     assert(atomic_load(&e->memory_bytes) == 0);
+    /* No publisher survives the joins. No diagnostic file I/O at shutdown. */
+    free(atomic_load_explicit(&e->trace, memory_order_relaxed));
     free(e);
 }

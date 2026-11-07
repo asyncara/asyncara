@@ -5,6 +5,83 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <time.h>
+
+/* Diagnostic storage has a separate hard bound, like transient wait control
+ * buffers. It must not consume the payload reserve needed to drain operations.
+ * Publication is once per request; the pointer remains valid through worker
+ * joins. Disabling capture never frees memory underneath a publisher. */
+uint64_t ar_trace_clock(void) {
+    int saved = errno;
+    struct timespec now;
+    uint64_t value = 0;
+    if (!clock_gettime(CLOCK_MONOTONIC, &now) && now.tv_sec >= 0 &&
+        (uint64_t)now.tv_sec <= (uint64_t)(INT64_MAX - 999999999) / 1000000000)
+        value = (uint64_t)now.tv_sec * 1000000000 + now.tv_nsec;
+    errno = saved;
+    return value;
+}
+int ar_trace_configure(ar_engine *e, size_t capacity, unsigned mask) {
+    if (capacity < 16 || capacity > AR_TRACE_MAX || (mask & ~AR_TRACE_ALL)) { errno = EINVAL; return -1; }
+    ar_trace *t = atomic_load_explicit(&e->trace, memory_order_acquire);
+    if (t && capacity != t->capacity) { errno = EINVAL; return -1; }
+    if (!t) {
+        if (!mask) return 0;
+        t = calloc(1, sizeof(*t) + capacity * sizeof(ar_trace_event));
+        if (!t) return -1;
+        t->writer = (atomic_flag)ATOMIC_FLAG_INIT;
+        atomic_init(&t->mask, mask);
+        atomic_init(&t->sequence, 0); atomic_init(&t->dropped, 0);
+        atomic_init(&t->clock_failures, 0); atomic_init(&t->scope, 0);
+        t->capacity = capacity;
+        if (!atomic_is_lock_free(&e->trace) || !atomic_is_lock_free(&t->mask) ||
+            !atomic_is_lock_free(&t->sequence) || !atomic_is_lock_free(&t->scope)) {
+            free(t); errno = ENOTSUP; return -1;
+        }
+        atomic_store_explicit(&e->trace, t, memory_order_release);
+    } else atomic_store_explicit(&t->mask, mask, memory_order_relaxed);
+    ar_trace_emit(e, AR_TRACE_LIFE, 1, e->request_id, capacity, mask, 0);
+    return 0;
+}
+void ar_trace_emit(ar_engine *e, unsigned category, unsigned code, int64_t id, int64_t a, int64_t b, int64_t c) {
+    ar_trace *t = atomic_load_explicit(&e->trace, memory_order_acquire);
+    if (!t || !(atomic_load_explicit(&t->mask, memory_order_relaxed) & category)) return;
+    int saved = errno;
+    if (atomic_flag_test_and_set_explicit(&t->writer, memory_order_acquire)) {
+        atomic_fetch_add_explicit(&t->sequence, 1, memory_order_relaxed);
+        atomic_fetch_add_explicit(&t->dropped, 1, memory_order_relaxed);
+        return; /* No spinning and no blocking lock on any producer. */
+    }
+    uint64_t seq = atomic_fetch_add_explicit(&t->sequence, 1, memory_order_relaxed) + 1;
+    uint64_t ns = ar_trace_clock();
+    if (ns) {
+        t->events[t->next] = (ar_trace_event){seq, ns, atomic_load_explicit(&t->scope, memory_order_relaxed), id, a, b, c, category, code};
+        t->next = (t->next + 1) % t->capacity;
+        if (t->count < t->capacity) t->count++;
+        t->written++;
+    } else atomic_fetch_add_explicit(&t->clock_failures, 1, memory_order_relaxed);
+    atomic_flag_clear_explicit(&t->writer, memory_order_release);
+    errno = saved;
+}
+/* Caller supplies AR_TRACE_MAX event slots before admission. No Zend calls or
+ * allocation while the ring is held. A busy snapshot is explicitly retryable. */
+int ar_trace_read(ar_engine *e, ar_trace_event *events, ar_trace_status *status) {
+    memset(status, 0, sizeof(*status));
+    ar_trace *t = atomic_load_explicit(&e->trace, memory_order_acquire);
+    if (!t) return 0;
+    if (atomic_flag_test_and_set_explicit(&t->writer, memory_order_acquire)) { errno = EBUSY; return -1; }
+    status->capacity = t->capacity; status->count = t->count;
+    status->bytes = sizeof(*t) + t->capacity * sizeof(ar_trace_event);
+    status->attempted = atomic_load_explicit(&t->sequence, memory_order_relaxed);
+    status->dropped = atomic_load_explicit(&t->dropped, memory_order_relaxed);
+    status->clock_failures = atomic_load_explicit(&t->clock_failures, memory_order_relaxed);
+    status->mask = atomic_load_explicit(&t->mask, memory_order_relaxed);
+    status->overwritten = t->written - t->count;
+    size_t first = (t->next + t->capacity - t->count) % t->capacity;
+    for (size_t i = 0; i < t->count; i++) events[i] = t->events[(first + i) % t->capacity];
+    atomic_flag_clear_explicit(&t->writer, memory_order_release);
+    return 0;
+}
 #ifndef __has_feature
 #define __has_feature(x) 0
 #endif

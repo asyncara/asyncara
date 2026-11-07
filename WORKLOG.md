@@ -1510,3 +1510,7 @@ This final attestation changes documentation only. No push/release publication.
 ## Native ownership continuation 2026-11-07
 
 Preserved source 0a45ca5 and the historical campaign. Reproduced shallow-copy socket closure and Event double completion; added per-owner copy guards and safe reference-wrapper policies. Six targeted PHP/backend combinations pass. Gate A passed in 143.652s. Raw evidence: /home/coder/Asyncara-resource-provenance-20261107T212909Z. No native C change in this first checkpoint; bounded native provenance is the next stage.
+
+## Bounded native provenance checkpoint
+
+Implemented request-local numeric ring capture in ext/memory.c, native wait/worker/HTTP events and PHP scheduler/timer/watcher correlation. Disabled by default; maximum ring262216 bytes, visible contention/overwrite counters, deferred extraction with explicit EBUSY. No runtime logging or acceptance fixture changes. Gate A165.014s PASS, PHP85 full epoll/poll suites PASS, live PostgreSQL/MariaDB/Redis copy checks and integration PASS. Trace ring failure/concurrency/overflow tests PASS. Diagnostic FPM r3:136 records, original A/B/C/D PASS; diagnostic only. Earlier busy-snapshot FAIL retained. Measured overhead and controlled zero-tick attribution: /home/coder/Asyncara-resource-provenance-20261107T212909Z/diagnostic-overhead.json and trace-attribution.json. Historical root cause remains unresolved. PHP83/84 trace/native matrix and final sanitizers remain pending. Next: matched Valgrind controls and further source-backed native improvement.

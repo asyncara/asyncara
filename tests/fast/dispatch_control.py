@@ -1,6 +1,6 @@
 """Causal diagnostic, not acceptance: deliberate interpreter delay during I/O."""
 import argparse,http.server,threading,time,pathlib,json,subprocess,os,hashlib,socketserver
-p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--php',required=True);p.add_argument('--extension',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--php',required=True);p.add_argument('--extension',required=True);p.add_argument('--trace',action='store_true');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.output);out.mkdir(parents=True,exist_ok=False)
 barrier=threading.Barrier(4);gate=out/'peer-gate';rows=[];ready=threading.Event()
 class G(socketserver.BaseRequestHandler):
@@ -18,7 +18,9 @@ try:
   for mode in ['normal','delay','recovery']:
    gate.unlink(missing_ok=True);barrier=threading.Barrier(4);ready.clear()
    cmd=[a.php,'-n','-d','extension='+str(pathlib.Path(a.extension).resolve()),'tests/fast/dispatch_control.php',f'http://127.0.0.1:{s.server_port}/',str(gate),mode,str(gates.server_address[1])]
-   r=subprocess.run(cmd,cwd=root,env=os.environ|{'ASYNCARA_BACKEND':backend},capture_output=True,text=True,timeout=10)
+   env=os.environ|{'ASYNCARA_BACKEND':backend}
+   if a.trace:env['ASYNCARA_TRACE_OUTPUT']=str((out/f'{backend}-{mode}-trace.json').resolve())
+   r=subprocess.run(cmd,cwd=root,env=env,capture_output=True,text=True,timeout=10)
    (out/f'{backend}-{mode}.log').write_text(r.stdout+r.stderr)
    assert r.returncode==0,(backend,mode,r.stdout,r.stderr)
    result=json.loads(r.stdout);rows.append({'mode':mode,**result})

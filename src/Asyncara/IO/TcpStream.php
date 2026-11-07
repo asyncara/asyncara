@@ -56,6 +56,7 @@ final class TcpStream
                 $stream = $this->resource(); Scheduler::current()->currentCancellation()?->throwIfRequested();
                 $data = @fread($stream, $maxBytes);
                 if ($data === false) throw new OperationException('TCP read failed');
+                if (\Asyncara\Trace::$mask & \Asyncara\Trace::IO) \asyncara_trace_event(16,$data === '' ? 56 : 55,(int)$stream,$maxBytes,strlen($data),0);
                 if ($data !== '' || feof($stream)) return $data;
                 Scheduler::current()->readable($stream);
             }
@@ -78,6 +79,7 @@ final class TcpStream
                 $stream = $this->resource(); Scheduler::current()->currentCancellation()?->throwIfRequested();
                 $n = @fwrite($stream, substr($data, $offset, 65536));
                 if ($n === false || ($n === 0 && feof($stream))) throw new OperationException('TCP write failed');
+                if (\Asyncara\Trace::$mask & \Asyncara\Trace::IO) \asyncara_trace_event(16,55,(int)$stream,min(65536,strlen($data)-$offset),$n,1);
                 $offset += $n;
                 if ($offset < strlen($data)) Scheduler::current()->writable($stream);
             }

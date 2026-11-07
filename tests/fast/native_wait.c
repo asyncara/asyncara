@@ -93,10 +93,25 @@ int main(int argc,char **argv){
  for(int backend=0;backend<2;backend++){
   if(argc>3&&backend!=atoi(argv[3]))continue;
   kernel_calls=injected_waits=0;engine=ar_engine_new();assert(engine);engine->use_epoll=backend;stop=0;requested=finished=0;
+  const char *trace_dir=getenv("ASYNCARA_TRACE_TEST");
+  if(trace_dir)assert(!ar_trace_configure(engine,AR_TRACE_MAX,AR_TRACE_ALL));
   pthread_t thread;assert(!pthread_create(&thread,NULL,publisher,NULL));
   if(strcmp(selection,"kernel"))completion(n);
   if(strcmp(selection,"wakeup"))descriptors(n);
   assert(!pthread_mutex_lock(&mutex));stop=1;assert(!pthread_cond_broadcast(&condition));assert(!pthread_mutex_unlock(&mutex));assert(!pthread_join(thread,NULL));
+  if(trace_dir){
+   ar_trace_event *events=calloc(AR_TRACE_MAX,sizeof(*events));ar_trace_status status;assert(events&&!ar_trace_read(engine,events,&status));
+   char path[4096];assert(snprintf(path,sizeof(path),"%s/%s.jsonl",trace_dir,backend?"epoll":"poll")<(int)sizeof(path));FILE *f=fopen(path,"wx");assert(f);
+   int interrupted=0,full=0,wait_interrupt=0;
+   for(size_t i=0;i<status.count;i++){ar_trace_event *v=&events[i];
+    interrupted+=v->code==23&&v->b==EINTR;full+=v->code==23&&v->b==EAGAIN;wait_interrupt+=v->code==12&&v->b==EINTR;
+    fprintf(f,"[%llu,%llu,%u,%lld,%lld,%lld,%lld]\n",(unsigned long long)v->sequence,(unsigned long long)v->ns,v->code,(long long)v->id,(long long)v->a,(long long)v->b,(long long)v->c);
+   }
+   assert(!fclose(f));assert(!status.overwritten&&!status.dropped&&!status.clock_failures);
+   if(strcmp(selection,"kernel"))assert(interrupted&&full);
+   if(strcmp(selection,"wakeup"))assert(wait_interrupt);
+   free(events);
+  }
   assert(atomic_load(&engine->memory_bytes)==0);ar_engine_free(engine);engine=NULL;
   printf("{\"status\":\"PASS\",\"backend\":\"%s\",\"iterationsPerPath\":%d,\"selection\":\"%s\",\"actualKernelEINTR\":%d,\"realKernelWaitCalls\":%llu,\"injectedWaitEINTR\":%llu}\n",backend?"epoll":"poll",n,selection,actual_eintr,kernel_calls,injected_waits);
  }

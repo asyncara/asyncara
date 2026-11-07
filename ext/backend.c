@@ -46,6 +46,7 @@ static size_t receive_buffer(char *data, size_t size, size_t count, void *ctx, i
     if (!header && j->stream_response && n <= limit && n > limit - *len) {
         /* Consume nothing: curl redelivers this entire chunk after resume. */
         j->receive_paused = 1;
+        ar_trace_emit(j->engine, AR_TRACE_IO, 57, j->id, 0, *len, n);
         return CURL_WRITEFUNC_PAUSE;
     }
     if (n > limit - *len) {
@@ -93,6 +94,7 @@ static size_t send_body(char *buffer, size_t size, size_t count, void *ctx) {
     if (!available) {
         if (j->upload_eof) return 0;
         j->send_paused = 1;
+        ar_trace_emit(j->engine, AR_TRACE_IO, 57, j->id, 1, 0, 0);
         return CURL_READFUNC_PAUSE;
     }
     size_t n = size * count;
@@ -291,6 +293,11 @@ static int remaining_ms(int64_t deadline) {
     int64_t millis = difference / 1000000 + (difference % 1000000 != 0);
     return millis > INT_MAX ? INT_MAX : (int)millis;
 }
+static int64_t trace_elapsed(uint64_t began) {
+    if (!began) return -1;
+    uint64_t end = ar_trace_clock();
+    return end >= began ? (int64_t)(end - began) : -1;
+}
 static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline) {
 #ifdef __linux__
     if (e->use_epoll) {
@@ -316,7 +323,10 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline
             }
         }
         int timeout = remaining_ms(deadline);
+        ar_trace_emit(e, AR_TRACE_WAIT, 11, e->wait_id, timeout, n, 1);
+        uint64_t began = ar_trace_enabled(e, AR_TRACE_WAIT) ? ar_trace_clock() : 0;
         int rc = timeout == -2 ? -1 : epoll_wait(ep, events, (int)n, timeout);
+        ar_trace_emit(e, AR_TRACE_WAIT, 12, e->wait_id, rc, rc < 0 ? errno : 0, trace_elapsed(began));
         if (rc >= 0)
             for (int i = 0; i < rc; i++) {
                 uint32_t ev = events[i].events;
@@ -332,11 +342,16 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline
     }
 #endif
     int timeout = remaining_ms(deadline);
-    return timeout == -2 ? -1 : poll(fds, n, timeout);
+    ar_trace_emit(e, AR_TRACE_WAIT, 11, e->wait_id, timeout, n, 0);
+    uint64_t began = ar_trace_enabled(e, AR_TRACE_WAIT) ? ar_trace_clock() : 0;
+    int rc = timeout == -2 ? -1 : poll(fds, n, timeout);
+    ar_trace_emit(e, AR_TRACE_WAIT, 12, e->wait_id, rc, rc < 0 ? errno : 0, trace_elapsed(began));
+    return rc;
 }
-int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
+static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     int64_t deadline;
     if (deadline_for(timeout, &deadline)) return -1;
+    ar_trace_emit(e, AR_TRACE_WAIT, 10, e->wait_id, timeout, n, deadline);
     if (e->http_wakeup) {
         e->http_wakeup = 0;
         if (e->multi) curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
@@ -390,6 +405,7 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
             count++;
         }
         fds[k].events |= w[i].events;
+        ar_trace_emit(e, AR_TRACE_IO, 58, w[i].key, w[i].fd, w[i].events, w[i].buffered);
         indices[i] = k;
     }
     size_t curl_start = count;
@@ -416,6 +432,8 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         for (size_t i = 0; i < n; i++)
             w[i].ready = w[i].buffered ||
                          (fds[indices[i]].revents & (w[i].events | POLLERR | POLLHUP | POLLNVAL));
+        for (size_t i = 0; i < n; i++) if (w[i].ready)
+            ar_trace_emit(e, AR_TRACE_IO, 52, w[i].key, w[i].fd, fds[indices[i]].revents, w[i].buffered);
         if (e->multi) {
             for (size_t i = curl_start; i < count; i++)
                 if (fds[i].revents) {
@@ -433,4 +451,11 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     free(indices);
     errno = saved;
     return rc < 0 && errno == EINTR ? 0 : rc;
+}
+
+int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
+    e->wait_id++;
+    int result = wait_impl(e, w, n, timeout);
+    ar_trace_emit(e, AR_TRACE_WAIT, 13, e->wait_id, result, result < 0 ? errno : 0, e->pending);
+    return result;
 }

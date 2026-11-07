@@ -6,8 +6,10 @@ namespace Asyncara {
     function asyncara_poll(array $read,array $write,int $timeout):array {
         if(($GLOBALS['injectDelay']??false) && $timeout>0 && is_file($GLOBALS['controlGate'])) {
             $GLOBALS['injectDelay']=false;$GLOBALS['delayAtNs']=\hrtime(true);
+            Trace::mark(201);
             \time_nanosleep(0,300000000);
             $GLOBALS['resumeAtNs']=\hrtime(true);
+            Trace::mark(202);
         }
         return \asyncara_poll($read,$write,$timeout);
     }
@@ -15,6 +17,7 @@ namespace Asyncara {
 namespace {
  require dirname(__DIR__,2).'/autoload.php';
  use Asyncara\{Async,Runtime};use Asyncara\HTTP\HttpClient;
+ if(getenv('ASYNCARA_TRACE_OUTPUT'))\Asyncara\Trace::enable(4096);
  $GLOBALS['controlGate']=$argv[2];$GLOBALS['injectDelay']=false;
  $ticks=0;$times=[];
  $responses=Async::run(function()use($argv,&$ticks,&$times):array {
@@ -34,6 +37,7 @@ namespace {
  $intervals=array_map(fn($r)=>$r->json(),$responses);
  $overlap=max(array_column($intervals,'start'))<min(array_column($intervals,'end'));
  $injected=isset($GLOBALS['delayAtNs']);
+ if(getenv('ASYNCARA_TRACE_OUTPUT'))\Asyncara\Trace::dump(getenv('ASYNCARA_TRACE_OUTPUT'));
  echo json_encode(['diagnostic'=>true,'backend'=>Runtime::information()->eventLoopBackend,'ticks'=>$ticks,'originalAcceptanceSatisfied'=>$ticks>=2&&$overlap,'intervals'=>$intervals,'overlap'=>$overlap,'delayAtNs'=>$GLOBALS['delayAtNs']??null,'resumeAtNs'=>$GLOBALS['resumeAtNs']??null,'tickTimesNs'=>$times,'scheduler'=>Runtime::diagnostics(),'native'=>Runtime::information()])."\n";
  if(!$overlap || (!$injected && $ticks<2))exit(1);
 }

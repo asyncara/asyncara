@@ -33,11 +33,12 @@ final class Scheduler
     }
     /** @internal */ public function enqueue(Task $task): void
     {
-        if (!$task->queued && !$task->isCompleted()) { $task->queued = true; $task->state = 'ready'; $this->ready->enqueue($task); }
+        if (!$task->queued && !$task->isCompleted()) { $task->queued = true; $task->state = 'ready'; $this->ready->enqueue($task); if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,32,$task->id,$this->ready->count(),count($this->tasks),0); }
     }
     /** @internal */ public function completed(Task $task): void
     {
         unset($this->tasks[$task->id]);
+        if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,36,$task->id,count($this->tasks),0,0);
         $observed = $task->observed; $error = $task->exception(); $task->observed = $observed;
         if ($error && !$observed && !$error instanceof CancelledException) $this->failures[] = $task;
     }
@@ -50,12 +51,18 @@ final class Scheduler
         $resume = function (mixed $v = null, ?\Throwable $e = null) use (&$settled, &$suspended, &$value, &$error, $task): void {
             if ($settled) return;
             $settled = true; $value = $v; $error = $e;
+            if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,38,$task->id,(int)$suspended,(int)($e !== null),0);
             if ($suspended) $this->enqueue($task);
         };
         $remove = $register($resume);
         $unsubscribe = $token?->subscribe(static fn(CancelledException $e) => $resume(null, $e));
         try {
-            if (!$settled) { $suspended = true; \Fiber::suspend(); }
+            if (!$settled) {
+                $suspended = true;
+                if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,34,$task->id,$this->ready->count(),0,0);
+                \Fiber::suspend();
+                if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,35,$task->id,$this->ready->count(),0,0);
+            }
             if ($error) throw $error;
             return $value;
         } finally { $remove(); if ($unsubscribe) $unsubscribe(); }
@@ -65,8 +72,10 @@ final class Scheduler
         if (!is_finite($seconds) || $seconds < 0 || $seconds > 31536000) throw new \ValueError('Delay must be finite and between 0 and one year');
         if (count($this->timers) >= 100000) throw new \OverflowException('Timer limit reached');
         $id = ++$this->nextTimer; $at = self::now() + $seconds;
-        $timer = new Timer(function () use ($id): void { unset($this->timers[$id]); });
-        $this->timers[$id] = [$at, $callback, $timer, $waitTimer]; $this->heap->insert($id, [-$at, -$id]); return $timer;
+        $timer = new Timer(function () use ($id): void { unset($this->timers[$id]); if (Trace::$mask & Trace::TIMER) \asyncara_trace_event(8,41,$id,count($this->timers),0,0); });
+        $this->timers[$id] = [$at, $callback, $timer, $waitTimer]; $this->heap->insert($id, [-$at, -$id]);
+        if (Trace::$mask & Trace::TIMER) \asyncara_trace_event(8,40,$id,(int)($at*1e9),(int)$waitTimer,$this->task?->id ?? 0);
+        return $timer;
     }
     private function timers(): void
     {
@@ -76,9 +85,12 @@ final class Scheduler
             if (!isset($this->timers[$id])) { $this->heap->extract(); continue; }
             [$at, $callback, $timer] = $this->timers[$id];
             if ($at > $now) break;
+            if (Trace::$mask & Trace::TIMER) \asyncara_trace_event(8,42,$id,(int)($at*1e9),(int)(($now-$at)*1e9),count($this->timers));
             $this->heap->extract(); $timer->cancel();
             $this->metrics['maxTimerLagSeconds'] = max($this->metrics['maxTimerLagSeconds'], $now - $at);
+            if (Trace::$mask & Trace::TIMER) \asyncara_trace_event(8,43,$id,0,0,0);
             $callback();
+            if (Trace::$mask & Trace::TIMER) \asyncara_trace_event(8,44,$id,0,0,0);
         }
         if ($this->heap->count() > 2 * count($this->timers) + 1024) {
             $this->heap = new \SplPriorityQueue(); $this->heap->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
@@ -95,7 +107,8 @@ final class Scheduler
         $this->suspend(function (\Closure $resume) use ($stream, $write): \Closure {
             $id = ++$this->nextWatch;
             if ($write) $this->writers[$id] = [$stream, $resume]; else $this->readers[$id] = [$stream, $resume];
-            return function () use ($id, $write): void { if ($write) unset($this->writers[$id]); else unset($this->readers[$id]); };
+            if (Trace::$mask & Trace::IO) \asyncara_trace_event(16,50,$id,(int)$stream,(int)$write,(int)is_resource($stream));
+            return function () use ($id, $write): void { if ($write) unset($this->writers[$id]); else unset($this->readers[$id]); if (Trace::$mask & Trace::IO) \asyncara_trace_event(16,51,$id,(int)$write,0,0); };
         }, $this->currentCancellation());
     }
     /** Native connector readiness: 1=read, 2=write, 8=timeout. */
@@ -106,13 +119,24 @@ final class Scheduler
             $read = $write = null; $timer = null;
             if ($events & 1) { $read = ++$this->nextWatch; $this->readers[$read] = [$fd, static fn() => $resume(1)]; }
             if ($events & 2) { $write = ++$this->nextWatch; $this->writers[$write] = [$fd, static fn() => $resume(2)]; }
+            if (Trace::$mask & Trace::IO) {
+                if ($read !== null) \asyncara_trace_event(16,50,$read,$fd,0,0);
+                if ($write !== null) \asyncara_trace_event(16,50,$write,$fd,1,0);
+            }
             if ($timeout !== null) $timer = $this->delay($timeout, static fn() => $resume(8), true);
-            return function () use ($read, $write, $timer): void { unset($this->readers[$read], $this->writers[$write]); $timer?->cancel(); };
+            return function () use ($read, $write, $timer): void {
+                unset($this->readers[$read], $this->writers[$write]); $timer?->cancel();
+                if (Trace::$mask & Trace::IO) {
+                    if ($read !== null) \asyncara_trace_event(16,51,$read,0,0,0);
+                    if ($write !== null) \asyncara_trace_event(16,51,$write,1,0,0);
+                }
+            };
         }, $this->currentCancellation());
     }
     /** @internal Wake waiters before closing a stream. */
     public function closed(mixed $stream): void
     {
+        if (Trace::$mask & Trace::IO) \asyncara_trace_event(16,53,(int)$stream,(int)is_resource($stream),0,0);
         foreach ([$this->readers, $this->writers] as $watchers) foreach ($watchers as [$s, $resume]) if ($s === $stream) $resume(null, new OperationException('Stream closed while waiting'));
         foreach ($this->readers as $id => [$s]) if ($s === $stream) unset($this->readers[$id]);
         foreach ($this->writers as $id => [$s]) if ($s === $stream) unset($this->writers[$id]);
@@ -161,7 +185,9 @@ final class Scheduler
         $read = $write = [];
         foreach ($this->readers as $id => [$stream]) $read[$id] = $stream;
         foreach ($this->writers as $id => [$stream]) $write[$id] = $stream;
+        if (Trace::$mask & Trace::WAIT) \asyncara_trace_event(1,60,0,$this->heap->isEmpty() ? -1 : (int)(-$this->heap->top()['priority'][0]*1e9),$timeout,$this->ready->count());
         $result = asyncara_poll($read, $write, $timeout);
+        if (Trace::$mask & Trace::WAIT) \asyncara_trace_event(1,61,0,count($result['read']),count($result['write']),count($result['results']));
         foreach ($result['read'] as $id) { $callback = $this->readers[$id][1] ?? null; unset($this->readers[$id]); if ($callback) $callback(); }
         foreach ($result['write'] as $id) { $callback = $this->writers[$id][1] ?? null; unset($this->writers[$id]); if ($callback) $callback(); }
         foreach ($result['results'] as $item) {
@@ -183,6 +209,7 @@ final class Scheduler
         $count = min(256, $this->ready->count());
         for ($i = 0; $i < $count; $i++) {
             $task = $this->ready->dequeue(); $this->task = $task; $start = self::now();
+            if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,33,$task->id,$this->ready->count(),count($this->tasks),0);
             try { $task->step(); } finally { $this->task = null; }
             $duration = self::now() - $start; $this->metrics['taskSteps']++;
             $this->metrics['maxStepSeconds'] = max($this->metrics['maxStepSeconds'], $duration);
@@ -198,6 +225,7 @@ final class Scheduler
     public function run(callable $body): mixed
     {
         if (self::$active) throw new \LogicException('Nested Async::run() is not supported');
+        if (Trace::$mask) Trace::begin();
         $root = $this->spawn($body); $root->observed = true; self::$active = $this;
         $oldHooks = asyncara_hooks(Runtime::timeHooksEnabled());
         try {
@@ -216,7 +244,7 @@ final class Scheduler
                 foreach ($this->tasks as $task) $task->cancel();
                 foreach ($this->native as $future) $future->cancel();
                 while ($this->tasks || $this->native) $this->turn();
-            } finally { foreach ($this->timers as [, , $timer]) $timer->cancel(); $this->failures = []; Runtime::recordMetrics($this->statistics()); asyncara_hooks($oldHooks); self::$active = null; }
+            } finally { foreach ($this->timers as [, , $timer]) $timer->cancel(); $this->failures = []; Runtime::recordMetrics($this->statistics()); asyncara_hooks($oldHooks); self::$active = null; if (Trace::$mask & Trace::LIFECYCLE) \asyncara_trace_event(32,31,0,count($this->tasks),count($this->timers),count($this->readers)+count($this->writers)); }
         }
     }
     public function statistics(): array

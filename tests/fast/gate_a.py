@@ -29,6 +29,7 @@ run('wait-budget',[out/'wait-budget',a.iterations])
 run('build-sqlite-conversion',cc+flags+['tests/fast/sqlite_conversion.c']+native+libs+['-Wl,--wrap='+s for s in ['sqlite3_column_name','sqlite3_column_blob','sqlite3_column_text','sqlite3_column_bytes','sqlite3_errcode']]+['-o',out/'sqlite-conversion'])
 for mode in range(5):run('sqlite-conversion-'+str(mode),[out/'sqlite-conversion',mode])
 php=[a.php,'-n','-d','extension='+str(module)]
+run('diagnostics',['python3','tests/diagnostics/run.py','--php',a.php,'--extension',module,'--output',out/'diagnostics'])
 run('php-identity',php+['-v'])
 run('extension-identity',php+['--ri','asyncara'])
 for backend in ['epoll','poll']:
