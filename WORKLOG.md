@@ -1514,3 +1514,35 @@ Preserved source 0a45ca5 and the historical campaign. Reproduced shallow-copy so
 ## Bounded native provenance checkpoint
 
 Implemented request-local numeric ring capture in ext/memory.c, native wait/worker/HTTP events and PHP scheduler/timer/watcher correlation. Disabled by default; maximum ring262216 bytes, visible contention/overwrite counters, deferred extraction with explicit EBUSY. No runtime logging or acceptance fixture changes. Gate A165.014s PASS, PHP85 full epoll/poll suites PASS, live PostgreSQL/MariaDB/Redis copy checks and integration PASS. Trace ring failure/concurrency/overflow tests PASS. Diagnostic FPM r3:136 records, original A/B/C/D PASS; diagnostic only. Earlier busy-snapshot FAIL retained. Measured overhead and controlled zero-tick attribution: /home/coder/Asyncara-resource-provenance-20261107T212909Z/diagnostic-overhead.json and trace-attribution.json. Historical root cause remains unresolved. PHP83/84 trace/native matrix and final sanitizers remain pending. Next: matched Valgrind controls and further source-backed native improvement.
+
+## Native ownership/provenance continuation — 2026-11-07
+
+Starting checkpoint 0a45ca5, verified old package 7ffeaf8 (416 files, SHA
+7eed7583e77165fcd7e0e554e4d067d61a70fbffdfbd590355b47106308bc26a).
+Durable commands, failures, state and journal:
+`/home/coder/Asyncara-resource-provenance-20261107T212909Z`.
+
+5198f38 rejects shallow copies of canonical owners; 9c8c369 implements optional
+bounded numeric native/PHP trace; 18da2e3 prevents duplicate TcpStream wrappers
+from independently closing one resource. The original clone and duplicate-owner
+negative controls are preserved. Diagnostic ring tests and diagnostic FPM A/B/C/D
+passed; the first diagnostic extraction encountered EBUSY and remains preserved.
+A bounded retry in the diagnostic fixture handles that admission failure without
+changing the original workload. Final-source gates are still pending.
+
+A measured native follow-up replaces the quadratic watcher merge scan for large
+sets with a bounded temporary index; small sets, dispatch order and absolute wait
+deadlines remain unchanged. Five samples of 20 real waits with 4,096 descriptors
+show 9.63x poll / 1.54x epoll median improvement in that specific setup/readiness
+workload. This is not an application throughput claim. Native oversized-count
+negative control segfaulted before validation; corrected code rejects before
+dereference. PHP already validated this bound. Allocation failure and recovery
+are tested for both new control allocations. The initial regression accidentally
+used the internal wake descriptor as a user watcher; its failed result is retained
+and the fixture now owns an independent pipe.
+
+Matched Valgrind results demonstrate PHP cyclic-object shutdown differences, not
+a universal clean Asyncara heap. See DEPENDENCY_FINDINGS.md. Distribution PHP
+losses remain explicit; no production GC workaround or suppression was added.
+Historical Phase4 one-hour PASS, six-hour FAIL and unresolved zero-tick cause
+remain unchanged.

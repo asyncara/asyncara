@@ -156,3 +156,46 @@ Raw commands, environment, binary hashes, full allocation stacks and exit codes:
 `distribution-gc-*`, `cycles-*`, and their `*-memory.log` files. Final-source
 instrumentation is indexed in [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md).
 No production GC calls, weakened assertions, or suppressions were introduced.
+
+## Resource-provenance continuation: matched controls
+
+At native trace checkpoint `9c8c369`, Valgrind3.22.0 / PHP8.5.12 NTS /
+USE_ZEND_ALLOC=0 / full unsuppressed definite+indirect checking was repeated.
+All original no-collection failures remain FAIL (exit99).
+
+| Matched workload | Direct / indirect lost bytes |
+|---|---|
+| Current PHP source, new module (two repetitions) |1784 /648 each|
+| Same PHP source, prior program-r2 module (two repetitions) |1888 /120 each|
+| Old packaged PHP source, prior module |1128 /0|
+| Same old PHP source, new module |752 /120|
+| Current workload, explicit GC in separate diagnostic copy, either module |0 /0|
+| PHP-only plain object cycles, extension absent or loaded idle |8480 /0 in both|
+| PHP-only Fiber-created cycles, extension absent or loaded idle |8480 /0 in both|
+| Those cycles explicitly collected, or matching DEBUG PHP |0 /0|
+| Plain Fibers without cycles |0 /0|
+| Raw native worker submit/collect, prior/new module or new enabled trace |0 /0|
+| DEBUG lifecycle, resource-copy, trace controls; epoll and poll |0 /0|
+| Native concurrent ring under Valgrind |0 /0|
+
+Lost-allocation stacks in the rich workload originate in Zend object, Fiber and
+closure allocation. None of those lost records identifies an Asyncara native
+payload/ring allocation. Matching PHP source confirms the DEBUG-only shutdown
+collection and object-store behavior described above. The independent plain
+cycle control has exactly the same losses with Asyncara absent and loaded.
+
+The rich workload totals do differ between module/source combinations. This
+experiment does **not** prove that Asyncara adds no PHP cyclic retention or
+explain every object's identity and classification. Explicit collection removes
+the observed losses, but was not added to production. The defensible conclusion
+is reproducible PHP shutdown-cycle behavior, with unresolved per-workload
+retention/classification differences; scoped native/DEBUG results remain clean.
+The distribution workload remains FAIL, not a universal memory-safety pass.
+Fiber-stack warnings and still-reachable memory are retained separately. No
+connection to the earlier libpq TLS unload allocation was observed.
+
+Evidence: `/home/coder/Asyncara-resource-provenance-20261107T212909Z/` contains
+`memory-identities.json`, `memory-complete-results.json` (full loss stacks and
+hashes), all `memory-*-memory.log`, launch/results and the exact differential
+scripts. Independent sources are `tests/dependencies/php_cycle_shutdown.php`,
+`native-memory-control.php`, and `plain-fiber.php`.

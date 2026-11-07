@@ -349,6 +349,9 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline
     return rc;
 }
 static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
+    /* Validate before watcher dereferences or sizing arithmetic. The PHP entry
+     * point has the same bound; native callers must obey it too. */
+    if (n >= AR_MAX_WATCHERS) { errno = EOVERFLOW; return -1; }
     int64_t deadline;
     if (deadline_for(timeout, &deadline)) return -1;
     ar_trace_emit(e, AR_TRACE_WAIT, 10, e->wait_id, timeout, n, deadline);
@@ -386,7 +389,14 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         return -1;
     }
     struct pollfd *fds = calloc(n + ns + 1, sizeof(*fds));
-    size_t *indices = calloc(n ? n : 1, sizeof(*indices));
+    /* Preserve the small-set path. Larger sets previously compared every new
+     * descriptor with every existing descriptor (quadratic setup each wait).
+     * A <= half-full index merges interests without changing input/dispatch
+     * order. Its strict extra bound is 2*AR_MAX_WATCHERS uint32_t slots. */
+    size_t slots = 0;
+    if (n >= 32) { slots = 1; while (slots < n * 2) slots *= 2; }
+    size_t index_bytes = (n ? n : 1) * sizeof(size_t);
+    size_t *indices = calloc(1, index_bytes + slots * sizeof(uint32_t));
     if (!fds || !indices) {
         free(fds);
         free(indices);
@@ -396,10 +406,19 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     size_t count = 1;
     fds[0].fd = e->wake[0];
     fds[0].events = POLLIN;
+    uint32_t *lookup = (uint32_t *)((char *)indices + index_bytes);
     for (size_t i = 0; i < n; i++) {
         size_t k = 1;
-        while (k < count && fds[k].fd != w[i].fd)
-            k++;
+        if (slots) {
+            uint32_t hash = (uint32_t)w[i].fd;
+            hash ^= hash >> 16; hash *= 0x7feb352du; hash ^= hash >> 15;
+            size_t at = hash & (slots - 1);
+            while (lookup[at] && fds[lookup[at]].fd != w[i].fd) at = (at + 1) & (slots - 1);
+            k = lookup[at];
+            if (!k) { k = count; lookup[at] = (uint32_t)count; }
+        } else {
+            while (k < count && fds[k].fd != w[i].fd) k++;
+        }
         if (k == count) {
             fds[k].fd = w[i].fd;
             count++;

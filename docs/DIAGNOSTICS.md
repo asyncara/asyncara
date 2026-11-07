@@ -71,7 +71,7 @@ request-start time indicates a failed clock observation, not a valid timestamp.
 | Scheduler / 4 | 32 enqueue; 33 dequeue; 34 Fiber suspension; 35 resumption; 36 completion; 37 cancellation; 38 waiter wake | task ID, queue/task counts, suspended/error flags; no callbacks or PHP values |
 | Timer / 8 | 40 registration; 41 removal; 42 due; 43 dispatch; 44 callback return | timer ID, monotonic deadline, wait-timer flag, owning task, measured lateness, active timer count |
 | I/O / 16 | 50 watcher add; 51 remove; 52 native readiness; 53 wrapper close; 55 byte progress; 56 empty read; 57 HTTP pause; 58 native watcher arm | watcher/job/resource ID, fd where available, masks, buffered readiness, lengths; no bytes or URLs |
-| Lifecycle / 32 | 1 enable; 3 extraction; 30 Scheduler scope; 31 Scheduler drain end; 70 native shutdown entry | request/scope and bounded counters |
+| Lifecycle / 32 | 1 enable; 3 extraction; 4 deferred output flushed; 30 Scheduler scope; 31 Scheduler drain end; 70 native shutdown entry | request/scope and bounded counters; 4 records bytes after successful PHP flush, not filesystem durability |
 | Mark / 64 | 80 caller anomaly marker | numeric reason only |
 
 All timestamps use CLOCK_MONOTONIC. Syscall duration -1 means measurement was

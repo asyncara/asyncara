@@ -51,7 +51,8 @@ account for the remote server queue. Pipeline limits cover all replies together.
 `Queue::statistics()`, PostgreSQL connection statistics and
 `Runtime::diagnostics()` expose admission counts. Slot and byte counts describe
 the named resource, not a complete heap profiler. No diagnostic history queue is
-retained. ProcessPool `queueBytes` covers encoded request retention; active frame
+retained by these metric APIs. The separate opt-in Trace ring has the hard
+bounds documented in DIAGNOSTICS.md. ProcessPool `queueBytes` covers encoded request retention; active frame
 copies, decoded results and JSON escaping require additional PHP memory. At most
 one response is read per worker at a time, and its frame is bounded independently.
 
@@ -153,3 +154,9 @@ limited to256MiB, one million lines and64KiB per line. It rejects instrumentatio
 failure markers even when the workload deliberately expects a fatal PHP request.
 PHP profiler writes now require the complete record length; write failure is a
 failed diagnostic, not silently missing evidence. Old raw reports remain intact.
+
+Native wait setup retains the small descriptor-set scan. At 32 or more input
+watchers it adds a temporary, at-most 131,072-byte descriptor index to the
+existing mapping allocation. It is freed on every return, including allocation
+and wait errors. This control buffer, like the existing poll/epoll arrays, is
+outside the payload memory ledger and bounded by AR_MAX_WATCHERS.

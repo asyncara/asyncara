@@ -49,6 +49,7 @@ if ($mode==='disabled') {
     $full=fopen('/dev/full','wb');try{fails(static fn()=>Trace::writeTo($full));}finally{fclose($full);}
     $path=tempnam(sys_get_temp_dir(),'asyncara-trace-');
     try {fails(static fn()=>Trace::dump($path));unlink($path);Trace::dump($path);$decoded=json_decode(file_get_contents($path),true,512,JSON_THROW_ON_ERROR);check($decoded['schema']===1 && count($decoded['events'])>0,'Deferred output');} finally {if(file_exists($path))unlink($path);}
+    check(in_array(4,array_column(Trace::snapshot()['events'],4),true),'Deferred flush completion missing');
     Trace::mark(99,true);$snapshot=Trace::snapshot();
     check($snapshot['mask']===0 && end($snapshot['events'])[5]===99,'Anomaly freeze');
     check(Runtime::information()->pendingOperations===0 && Runtime::information()->nativeMemoryBytes===0,'Diagnostics altered operation ownership');

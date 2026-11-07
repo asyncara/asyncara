@@ -100,8 +100,8 @@ statement aliases, pool/stream owners and zero retained native handles/payloads.
 Evidence: `/home/coder/Asyncara-resource-provenance-20261107T212909Z/`: retained
 `copy-before`, `copy-negative`, six `copy-r3-*` PHP83/84/85 epoll/poll results and
 `p0-gate-a-results/report.json`. Gate A passed; database-specific live connection
-copy checks are added to `tests/databases.php` and await execution in this
-continuation. This closes the ordinary shallow-copy gap identified above; it
+copy checks in `tests/databases.php` also passed against local PostgreSQL,
+MariaDB and Redis on epoll/poll (`p1-database-*`). This closes the ordinary shallow-copy gap identified above; it
 does not authorize manipulating raw descriptors or native IDs independently.
 
 An abandoned eager operation remains owned by the scheduler/request until
@@ -109,3 +109,53 @@ collection. Dropping the last *user* reference therefore does not cancel it.
 File/SQLite handle wrappers require explicit close; otherwise the native request
 engine retains bounded handles until request shutdown. No last-reference
 destructor rollback or hard shutdown deadline is promised.
+
+## Current per-object identity and lifetime matrix
+
+Policies are about ordinary public API use. `NON_COPYABLE` rejects clone and
+(un)serialization while allowing assignment of the same object reference.
+`SAFE_CLONE` below means an alias of a canonical owner, not an independent
+native handle. It forbids serialization. Tests exercise both rejection and
+continued operation/cleanup, not only exception type.
+
+| Object/resource | Copy policy / sharing | Lifetime owner | Cancellation authority | Release / shutdown | Executable coverage and remaining risk |
+|---|---|---|---|---|---|
+| Scheduler | NON_COPYABLE; one active run | run scope, Task references | run cleanup cancels/drains children | PHP GC; native engine independently request-owned | resource_copy, kernel, virtual_time; arbitrary callbacks can block |
+| Task / Fiber | NON_COPYABLE; multiple references/waiters | Scheduler until terminal; Task owns Fiber | own token; waiter token removes that waiter | completed removes scheduler entry; PHP cycles use GC | resource_copy, io_lifecycle, kernel; no preemption |
+| Future / Awaitable | Future NON_COPYABLE; external Awaitable implementors define their own identity | producer/Scheduler/result holders | cancel delegates to producer; await(token) only cancels wait | collection settles once; result cached; request drains native ownership | resource_copy, io_lifecycle; no per-consumer operation authority |
+| Timer | NON_COPYABLE | Scheduler heap and callback | explicit cancel/removal; repeated removal idempotent | remove or expiry; run drain cancels remaining callbacks | virtual_time, resource_copy; no C timer heap |
+| TaskGroup | NON_COPYABLE; child references shared | group scope | group cancels siblings then joins | finish/drain, PHP GC | resource_copy, core TaskGroup tests; no separate native group object |
+| CancellationToken / Source | Token NON_COPYABLE; Source SAFE_CLONE shares readonly token | token/source/task references | all Source aliases request the same cancellation | listener cleanup; PHP GC | resource_copy shared-token and cancelled/surviving waiter |
+| Queue / Event | NON_COPYABLE | canonical primitive plus waiters | cancellation removes its pending get/put/wait | close/release waiters, PHP GC | resource_copy, synchronization tests; capacity0 explicitly unbounded |
+| Lock / Semaphore | NON_COPYABLE | canonical counters and waiter list | token while acquiring; owner releases permit | finally releases; PHP GC | resource_copy, core synchronization; do not externally falsify permits |
+| Context | static facade; values are ordinary shallow PHP values | Task context array | none | Task/GC/request teardown | existing context tests; globals/statics are not task-isolated |
+| TcpStream | NON_COPYABLE; duplicate constructor rejected; weak registration | canonical wrapper/active method Task owns PHP stream | Task wait token; close invalidates all users | explicit close/destructor, wake waiters; PHP resource teardown | resource_copy, kernel, stream_readiness; raw resource escape can bypass ownership |
+| TcpServer / UdpSocket | NON_COPYABLE | wrapper owns listening/datagram stream | wait cancellation; canonical close | repeated close/destructor/request resource teardown | resource_copy, UDP ownership, FPM; no cross-request object sharing |
+| DNS | no separate resource object; Future identity policy | worker job + Scheduler | operation flag; resolver call may finish | collect/result free, request joins | native tests, slow DNS; not forcibly interruptible |
+| WebSocket Connection | NON_COPYABLE; TcpStream is canonical transport | connection/parser and active operations | explicit close/Task cancellation | underlying stream closes; pending methods retain connection | resource_copy, protocol/interop suites; callers must not independently operate an attached transport |
+| FrameCodec / Message | VALUE_COPY | independent string/scalar state | none | PHP GC | resource_copy and protocol tests; cloned parser does not clone a connection |
+| HttpClient / permit | NON_COPYABLE; concurrent Tasks share one client | client Semaphore; request Task retains permit | owned Task cancellation drains native job | permit finally released; request-local curl multi freed by engine | resource_copy, HTTP lifecycle; no curl hook dependency |
+| Response / ResponseHead | VALUE_COPY | PHP values | none | PHP GC | resource_copy, HTTP tests; header arrays contain values |
+| ResponseStream / AsyncStream | NON_COPYABLE; one iterator | producer Task, queue, completion/head Future | explicit stream close cancels and joins producer | bounded queue + producer cleanup; request owns pending jobs | resource_copy, io_lifecycle/stream tests; dropping a consumer is not a universal join |
+| Emitter | SAFE_CLONE shares canonical Queue | producer and queue | queue close/producer cancellation | producer finally closes; PHP GC | resource_copy cloned emission + serialization rejection |
+| PSR client adapter | SAFE_CLONE shares HttpClient/factories | adapter + canonical client | underlying request ownership | normal response/exception cleanup | resource_copy when Composer dependencies installed; core PSR HTTP tests |
+| SQLite Connection / native ar_db | NON_COPYABLE | request engine owns handle; PHP gate owns operation ordering | owned query Task cancellation; progress callback | explicit queued close; collect frees closed entry; shutdown joins then closes | live resource_copy, io_lifecycle, close_cancellation, sqlite conversion; executing transaction effects not undone by dropping references |
+| PostgreSQL / MySQL Connection | NON_COPYABLE | PHP wrapper/gates; Zend resource owns library handle/results | local operation cancellation closes active connection | native resource destructor/request teardown | databases epoll/poll copy/bind/query/transaction tests; remote cancellation acknowledgement not provided |
+| SQL Statement descriptors (all three) | SAFE_CLONE shares canonical Connection, copies SQL value | connection references | execute's operation owner | connection close affects every descriptor; PHP GC | SQLite resource_copy + live PG/MariaDB databases; no independent statement handle ownership |
+| Redis Connection | NON_COPYABLE | canonical TcpStream/parser/response queues | in-flight cancellation may close shared transport | close/request resource teardown | databases RESP2/RESP3 copy/pipeline/PubSub/cancellation; no isolated remote command rollback |
+| ConnectionPool | NON_COPYABLE | idle Queue and leased/queued count | borrower token; close refuses leases | closer finally restores capacity, pool close drains | resource_copy, queued-lease regression; caller must join borrowers |
+| IO File | NON_COPYABLE | request ar_file; PHP operations retain wrapper/gate | accepted worker cancellation, mandatory close | explicit close/collect or request teardown after joins | resource_copy pending write/drop/close; file handle tests; no automatic last-user-reference close |
+| ProcessPool / jobs | NON_COPYABLE | pool owns proc resources, pipes and queued Tasks | job/pool may terminate owned child | close/reap; destructor/request process resources | resource_copy checks child count; existing crash/IPC tests; shutdown can wait on OS behavior |
+| Watcher / pending network operation | no copyable native object; keyed registration | PHP scheduler retains resource until removal | wait/token/close; completion removes registration | temporary C arrays freed each wait; request clears PHP state | kernel, native_wait, readiness tests; raw close bypass remains outside contract |
+| Native worker job / completion | no PHP object copy; request operation ID | allocation list until result conversion/release | explicit atomic flag; one publication/collection owner | join before engine destruction; conversion bailout retains allocation list | allocation/close/fatal/injection tests; internal callers must not republish a job |
+| Diagnostic ring | no PHP resource owner to clone; bounded snapshots are value arrays | request engine, published pointer retained through worker joins | capture mask; extraction does not cancel operations | native free after joins; export before RSHUTDOWN only | ring concurrent/overflow/allocation tests, diagnostic FPM; loss and EBUSY are explicit |
+| TaskResult / WaitResult / HookReport | VALUE_COPY containers; object members remain shared | ordinary PHP references | none added by copying | PHP GC; nested owner serialization remains rejected | existing aggregate/report tests; no deep-copy promise |
+
+`tests/resource_copy.php` also measures descriptor and child counts and verifies
+zero native pending operations, file/SQLite handles and payload bytes after
+cleanup. Raw native IDs, Reflection-created invalid state and independent fclose
+of escaped resources are not granted additional ownership by these policies.
+Native request shutdown joins worker publishers; no worker accesses Zend values.
+Soft PHP allocation bailout is cleanup-only, not safe application recovery.
+The earlier matrix remains historical scope; the copy-policy gaps described
+there are addressed by this continuation, not retroactively by old archives.

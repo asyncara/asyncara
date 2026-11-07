@@ -55,6 +55,19 @@ one completion owner; HTTP cancellation checks `done` before queuing completion.
 
 ## Waiting, abandonment and result ownership
 
+Identity-bearing owners reject cloning and serialization. Assignment shares
+the canonical owner; it does not duplicate its native handle, admission count
+or close authority. SQL Statement descriptors, Emitter, CancellationSource and
+the PSR adapter may be cloned as aliases to their existing canonical owners;
+they also reject serialization. Value-only responses/messages remain copyable.
+The complete policy matrix and tests are in
+[NATIVE_OWNERSHIP_AUDIT.md](NATIVE_OWNERSHIP_AUDIT.md).
+
+`TcpStream` also rejects constructing a second wrapper around an already-owned
+PHP stream. Its weak registration does not retain an abandoned owner. The raw
+`resource()` escape hatch does not authorize independent ownership or external
+`fclose`; application code bypassing the wrapper can invalidate its resource.
+
 * `Future::await()` can be called repeatedly and by multiple Tasks. It returns
   the stored PHP value or throws the stored exception; it does not repeat I/O.
   Object results retain object identity rather than being deep-copied.
@@ -68,6 +81,10 @@ one completion owner; HTTP cancellation checks `done` before queuing completion.
   Future's unobserved rejection is not automatically rethrown by the scheduler;
   applications must await operations whose errors matter. Unobserved Task
   failures have separate scheduler failure reporting.
+* Last user-reference loss is not last native-owner loss. File/SQLite handles
+  remain request-owned until explicit close or request teardown. A stream's
+  producer can retain its stream through the scheduler; call `close()` to join
+  early abandonment. No universal reference-counted cancellation is provided.
 * Native strings/rows/buffers belong to the native job until PHP conversion and
   job release. PHP values then belong to the Future/consumer and normal PHP GC.
   PGresult and notification ownership remains recorded in the native resource
