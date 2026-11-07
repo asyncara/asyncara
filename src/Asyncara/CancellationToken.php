@@ -4,6 +4,8 @@ namespace Asyncara;
 use Asyncara\Exception\CancelledException;
 final class CancellationToken
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private ?CancelledException $reason = null;
     private array $listeners = [];
     private int $next = 0;

@@ -5,6 +5,8 @@ use Asyncara\Future;
 use Asyncara\Stream\{AsyncStream,ReadableStream};
 final class ResponseStream implements ReadableStream
 {
+    use \Asyncara\Internal\NonCopyable;
+
     /** @internal */
     public function __construct(private AsyncStream $body, private Future $head)
     {

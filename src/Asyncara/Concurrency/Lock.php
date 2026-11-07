@@ -4,6 +4,8 @@ namespace Asyncara\Concurrency;
 use Asyncara\Scheduler;
 final class Lock
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private Semaphore $semaphore;
     private ?int $owner = null;
     public function __construct() { $this->semaphore = new Semaphore(1); }

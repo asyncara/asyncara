@@ -4,6 +4,8 @@ namespace Asyncara\Concurrency;
 use Asyncara\{Future,Scheduler};
 class Semaphore
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private int $available, $held = 0, $next = 0;
     private array $waiters = [];
     public function __construct(private int $permits)

@@ -40,5 +40,6 @@ for backend in ['epoll','poll']:
  for test in ['deadlines','resources','sqlite_encoding']:
   run(f'{backend}-{test}',php+[f'tests/fast/{test}.php',a.iterations],env)
  run(f'{backend}-buffered-readiness',php+['tests/stream_readiness.php'],env)
+ run(f'{backend}-resource-copy',php+['tests/resource_copy.php'],env)
 report={'status':'PASS','wallSeconds':time.monotonic()-start,'cpuSeconds':sum(r['cpuSeconds']for r in rows),'iterationsPerPath':a.iterations,'seeds':a.seeds,'commands':rows}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items()if k!='commands'}),flush=True)

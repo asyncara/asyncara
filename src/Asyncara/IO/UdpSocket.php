@@ -5,6 +5,8 @@ use Asyncara\Scheduler;
 use Asyncara\Exception\OperationException;
 final class UdpSocket
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private mixed $stream;
     public function __construct(string $address = '127.0.0.1', int $port = 0)
     {

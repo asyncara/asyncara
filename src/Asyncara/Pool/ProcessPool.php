@@ -7,6 +7,8 @@ use Asyncara\Exception\{WorkerException,CapacityException};
 use Asyncara\Internal\IpcFrame;
 final class ProcessPool
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private array $workers = [], $jobs = [];
     private Queue $available;
     private int $next = 0;

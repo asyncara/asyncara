@@ -7,6 +7,8 @@ use Asyncara\Exception\{CancelledException,OperationException,QueueClosedExcepti
 use Asyncara\IO\TcpStream;
 final class Connection
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private FrameCodec $codec;
     private Queue $messages;
     private Lock $writer;

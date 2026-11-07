@@ -7,6 +7,8 @@ use Asyncara\Exception\CapacityException;
 /** Explicit scoped leases; factory and closer execute on the borrowing task. */
 final class ConnectionPool
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private Queue $idle;
     private int $leased = 0;
     private bool $closed = false;

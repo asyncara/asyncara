@@ -7,6 +7,8 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\{RequestInterface,ResponseInterface,ResponseFactoryInterface,StreamFactoryInterface};
 final class Client implements ClientInterface
 {
+    use \Asyncara\Internal\NotSerializable;
+
     public function __construct(private ResponseFactoryInterface $responses,private StreamFactoryInterface $streams,private HttpClient $http=new HttpClient()){}
     public function sendRequest(RequestInterface $request):ResponseInterface
     {

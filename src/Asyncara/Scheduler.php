@@ -4,6 +4,8 @@ namespace Asyncara;
 use Asyncara\Exception\{CancelledException,CapacityException,DeadlockException,OperationException};
 final class Scheduler
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private static ?self $active = null;
     private \SplQueue $ready;
     private \SplPriorityQueue $heap;

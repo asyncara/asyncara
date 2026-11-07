@@ -7,6 +7,8 @@ use Asyncara\IO\Dns;
 use Asyncara\Exception\OperationException;
 final class Connection
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private Semaphore $gate;
     private Semaphore $operations;
     private bool $closed=false;
