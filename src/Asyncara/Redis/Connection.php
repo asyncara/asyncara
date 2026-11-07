@@ -7,6 +7,8 @@ use Asyncara\Concurrency\Semaphore;
 use Asyncara\Exception\OperationException;
 final class Connection
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private string $buffer = '';
     private int $bytes = 0, $elements = 0;
     private Semaphore $gate;

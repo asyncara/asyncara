@@ -15,6 +15,9 @@ $redisPort=(int)getenv('ASYNCARA_REDIS_PORT');
 Async::run(function()use($pg,$my,$redisPort):void{
  foreach(['PostgreSQL'=>fn()=>Pg::connect($pg),'MariaDB'=>fn()=>MySQL::connect($my)]as$name=>$factory){
   $db=$factory()->await();
+  expect(Error::class,fn()=>clone $db);expect(LogicException::class,fn()=>serialize($db));
+  $copy=clone $db->prepare('select 42 as n');expect(LogicException::class,fn()=>serialize($copy));
+  verify($copy->execute()->await()[0]['n']==='42',"$name statement clone retained canonical connection");
   if($name==='MariaDB'){ $tls=$db->query("show session status like 'Ssl_cipher'")->await();verify(($tls[0]['Value']??null)==='', 'Plain Unix-socket fixture unexpectedly negotiated TLS'); }
   $placeholder=$name==='PostgreSQL'?'$1':'?';
   verify($db->prepare("select $placeholder as value")->execute(['bound'])->await()[0]['value']==='bound',"$name parameter binding");
@@ -47,6 +50,7 @@ Async::run(function()use($pg,$my,$redisPort):void{
  echo "PASS PostgreSQL asynchronous notifications\n";
  foreach([false,true]as$resp3){
   $r=Redis::connect('127.0.0.1',$redisPort,resp3:$resp3)->await();
+  expect(Error::class,fn()=>clone $r);expect(LogicException::class,fn()=>serialize($r));
   verify($r->command(['PING'])->await()==='PONG','Redis ping');
   $values=$r->pipeline([['SET','asyncara:binary',"a\0b"],['GET','asyncara:binary'],['ASYNCARA_INVALID'],['GET','asyncara:absent']])->await();
   verify($values[0]==='OK'&&$values[1]==="a\0b"&&$values[2]instanceof Asyncara\Redis\ServerException&&$values[3]===null,'Redis pipeline framing');

@@ -1506,3 +1506,7 @@ all six combinations plus full PHP 8.5 suites on both backends. Every packaged
 source file still matches Git. Composer validation passes with root-version
 fallback notice outside Git. Attestation: `docs/phase5/native-program-package.json`.
 This final attestation changes documentation only. No push/release publication.
+
+## Native ownership continuation 2026-11-07
+
+Preserved source 0a45ca5 and the historical campaign. Reproduced shallow-copy socket closure and Event double completion; added per-owner copy guards and safe reference-wrapper policies. Six targeted PHP/backend combinations pass. Gate A passed in 143.652s. Raw evidence: /home/coder/Asyncara-resource-provenance-20261107T212909Z. No native C change in this first checkpoint; bounded native provenance is the next stage.

@@ -5,6 +5,8 @@ use Asyncara\{Async,Future,Scheduler};
 use Asyncara\Exception\OperationException;
 final class TcpStream
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private bool $reading = false, $writing = false;
     /** @param resource $stream */
     public function __construct(private mixed $stream)

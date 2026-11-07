@@ -5,6 +5,8 @@ use Asyncara\{Future,Scheduler};
 use Asyncara\Exception\QueueClosedException;
 final class Queue
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private \SplQueue $buffer;
     private array $readers = [], $writers = [];
     private int $next = 0, $unfinished = 0;

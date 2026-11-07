@@ -71,3 +71,41 @@ before reading fd/SQLite state; collection's mutex acquire establishes completio
 before clearing `busy`. Curl buffer fields are interpreter-owned. These are
 source invariants, with scoped race tests; they do not instrument every external
 library or make arbitrary simultaneous raw-native API access supported.
+
+## Resource copy policy continuation (2026-11-07)
+
+`tests/resource_copy.php` now rejects cloning and (un)serialization for mutable
+identity owners: Scheduler, Future/Task, Timer, TaskGroup, CancellationToken,
+Queue/Event/Lock/Semaphore, TCP stream/server, UDP, File, AsyncStream, HTTP client
+and response stream, SQL/Redis connections, WebSocket connection, connection
+pool and ProcessPool. Existing File/SQLite guards are retained. Assignment
+shares the canonical object; it does not create a second owner.
+
+Statement descriptors (SQLite/PostgreSQL/MySQL), Emitter, CancellationSource and
+the PSR HTTP adapter permit shallow cloning: they retain the same canonical
+connection/queue/token/client. They reject serialization. Responses, response
+heads and WebSocket messages retain value-copy behavior. Context and the API
+facades have static behavior, not owned native instance handles. TaskResult and
+WaitResult are value containers whose object members remain shared references;
+serialization of resource-bearing members is rejected transitively. FrameCodec
+copies its value-only parser state; that does not clone a connection.
+
+Negative controls on the unchanged source showed a cloned TcpStream destructor
+closing the original descriptor and a cloned Event settling the same Future
+twice. `Internal/NonCopyable` rejects cloning before a clone destructor can run.
+The regression also checks forged unserialization, shared waiter cancellation,
+pending file writes followed by ordered close, repeated close, canonical SQL
+statement aliases, pool/stream owners and zero retained native handles/payloads.
+
+Evidence: `/home/coder/Asyncara-resource-provenance-20261107T212909Z/`: retained
+`copy-before`, `copy-negative`, six `copy-r3-*` PHP83/84/85 epoll/poll results and
+`p0-gate-a-results/report.json`. Gate A passed; database-specific live connection
+copy checks are added to `tests/databases.php` and await execution in this
+continuation. This closes the ordinary shallow-copy gap identified above; it
+does not authorize manipulating raw descriptors or native IDs independently.
+
+An abandoned eager operation remains owned by the scheduler/request until
+collection. Dropping the last *user* reference therefore does not cancel it.
+File/SQLite handle wrappers require explicit close; otherwise the native request
+engine retains bounded handles until request shutdown. No last-reference
+destructor rollback or hard shutdown deadline is promised.

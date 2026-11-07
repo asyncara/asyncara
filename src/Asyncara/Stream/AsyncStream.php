@@ -6,6 +6,8 @@ use Asyncara\Concurrency\Queue;
 use Asyncara\Exception\QueueClosedException;
 final class AsyncStream implements ReadableStream
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private Queue $queue;
     private Task $producer;
     private bool $iterated = false;

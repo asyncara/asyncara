@@ -8,6 +8,8 @@ use Asyncara\Stream\AsyncStream;
 use Asyncara\Stream\ReadableStream;
 final class HttpClient
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private Semaphore $slots;
     public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null)
     {

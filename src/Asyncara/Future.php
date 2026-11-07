@@ -5,6 +5,8 @@ use Asyncara\Exception\CancelledException;
 use Asyncara\Exception\CapacityException;
 class Future implements Awaitable
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private static ?\WeakMap $pending = null;
     private bool $complete = false;
     private mixed $value = null;

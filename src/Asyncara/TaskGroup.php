@@ -3,6 +3,8 @@ declare(strict_types=1);
 namespace Asyncara;
 final class TaskGroup
 {
+    use \Asyncara\Internal\NonCopyable;
+
     private array $tasks = [];
     private ?\Throwable $failure = null;
     private bool $closed = false;
