@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__).'/autoload.php';
+if (is_file(dirname(__DIR__).'/vendor/autoload.php')) require dirname(__DIR__).'/vendor/autoload.php';
 use Asyncara\{Async,Future,Runtime,CancellationSource};
 use Asyncara\IO\{TcpStream,Files};
 use Asyncara\Concurrency\{Event,Queue};
@@ -21,6 +22,9 @@ $owners = ['Scheduler','Future','Task','Timer','TaskGroup','CancellationToken',
     'IO\\TcpStream','IO\\TcpServer','IO\\UdpSocket','IO\\File','Stream\\AsyncStream',
     'HTTP\\HttpClient','HTTP\\ResponseStream','SQLite\\Connection','PostgreSQL\\Connection',
     'MySQL\\Connection','Redis\\Connection','WebSocket\\Connection','Pool\\ConnectionPool','Pool\\ProcessPool'];
+Runtime::information();
+$initialFds=count(scandir('/proc/self/fd'));
+$initialChildren=trim(file_get_contents('/proc/self/task/'.getmypid().'/children'));
 foreach ($owners as $name) {
     $class = 'Asyncara\\'.$name; $reflection = new ReflectionClass($class);
     check(!$reflection->isCloneable(), "$class permits duplicate owner identity");
@@ -41,8 +45,10 @@ Async::run(static function (): void {
     owner($producer); $head = new Future(); $head->resolve(new Asyncara\HTTP\ResponseHead(200,''));
     $response = new Asyncara\HTTP\ResponseStream($producer, $head); owner($response);
     check(iterator_to_array($response) === ['value'], 'Shared emitter canonical queue'); $response->close();
+    $emitter=new Asyncara\Stream\Emitter(new Queue()); rejects(LogicException::class,static fn()=>serialize($emitter));
     $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
     $stream = new TcpStream($pair[0]); $alias = $stream;
+    rejects(LogicException::class, static fn() => new TcpStream($pair[0]));
     $websocket = new Asyncara\WebSocket\Connection($stream, true); owner($websocket);
     rejects(Error::class, static fn() => clone $stream);
     rejects(LogicException::class, static fn() => serialize($stream));
@@ -51,6 +57,12 @@ Async::run(static function (): void {
     Async::sleep(0); $stream->close(); $alias->close();
     rejects(Asyncara\Exception\OperationException::class, $pending->await(...));
     fclose($pair[1]);
+    // Weak registration must not retain an otherwise unreferenced owner.
+    for($i=0;$i<100;$i++){
+        $raw=stream_socket_pair(STREAM_PF_UNIX,STREAM_SOCK_STREAM,STREAM_IPPROTO_IP);
+        $owner=new TcpStream($raw[0]);$weak=WeakReference::create($owner);unset($owner);
+        check($weak->get()===null && !is_resource($raw[0]),'Registry retained an unreferenced owner');fclose($raw[1]);
+    }
 
     $event = new Event(); $alias = $event;
     rejects(Error::class, static fn() => clone $event);
@@ -91,4 +103,13 @@ try {
 foreach ([new Asyncara\HTTP\Response(200,'value',''),new Asyncara\HTTP\ResponseHead(200,''),new Asyncara\WebSocket\Message('value')] as $value) {
     check(clone $value == $value && unserialize(serialize($value)) == $value, 'Value-copy semantics changed');
 }
+$codec=new Asyncara\WebSocket\FrameCodec(false);$codec->push("\x81\x01x");$copy=clone $codec;
+check($copy->next()['data']==='x' && $copy->next()===null && $codec->next()['data']==='x','Parser value copy must be independent');
+if (class_exists(Nyholm\Psr7\Factory\Psr17Factory::class)) {
+    $factory=new Nyholm\Psr7\Factory\Psr17Factory();$adapter=new Asyncara\HTTP\Psr\Client($factory,$factory);
+    $copy=clone $adapter;rejects(LogicException::class,static fn()=>serialize($copy));
+    check($copy==$adapter && $copy!==$adapter,'PSR adapter clones share canonical client/factories');
+} else echo "SKIP PSR adapter copy (Composer dev dependencies absent)\n";
+check(count(scandir('/proc/self/fd'))===$initialFds,'Descriptor count changed across copy/lifetime cases');
+check(trim(file_get_contents('/proc/self/task/'.getmypid().'/children'))===$initialChildren,'ProcessPool child escaped close');
 echo "PASS resource owner copy policies, reference sharing, waiter isolation, pending close and native cleanup\n";
