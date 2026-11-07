@@ -1416,3 +1416,17 @@ close controls pass. Header dependencies only were copied, no build outputs.
 `docs/phase5/fast-package.json` retains all commands and archive-module identity.
 This attestation update changes documentation only; source/binary/endurance
 identities remain distinct. No push, release publication or history rewrite.
+
+## 2026-11-07 native reliability continuation — wait budget
+
+Verified f2c0b83, 399-file fast-r1 archive and all protected Phase 4 fingerprints.
+No old campaigns active. Evidence: `/home/coder/Asyncara-native-program-20261107T173550Z`.
+Confirmed native relative wait budget restarted after watcher preparation;
+`budget-before` exits 2 with an extra 5ms, `budget-after` passes 10,000 cases per
+backend. Changed ext/backend.c to retain a monotonic deadline through native
+preparation. Existing Gate A passes 169.777s, both backends, three seeds.
+Diagnostic peer-gated interpreter-delay control reproduces zero ticks on both
+backends; it does not attribute the historical failure. No timer priority change.
+Revised B1/B2/C runners are being validated; the original response-count gate
+remains INCOMPLETE. See docs/NATIVE_RELIABILITY_PROGRAM.md. Next: compatibility
+validation, frozen checkpoint, B1/B2/C, differential Valgrind and ownership audit.

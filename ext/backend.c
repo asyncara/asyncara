@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #ifdef __linux__
 #include <sys/epoll.h>
@@ -259,7 +260,38 @@ void ar_http_progress(ar_engine *e) {
 }
 /* Bounded transient control buffers deliberately bypass the payload budget so
  * an exhausted budget cannot prevent completion draining or cancellation. */
-static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int timeout) {
+/* The caller supplies a relative timer budget. Preserve its absolute monotonic
+ * deadline through curl progress, allocations and epoll registration instead of
+ * restarting that budget at the kernel boundary. -1 is infinite, 0 is immediate. */
+static int monotonic_ns(int64_t *value) {
+    struct timespec now;
+    if (clock_gettime(CLOCK_MONOTONIC, &now)) return -1;
+    if (now.tv_sec < 0 || (uint64_t)now.tv_sec > (uint64_t)(INT64_MAX - 999999999) / 1000000000) {
+        errno = EOVERFLOW;
+        return -1;
+    }
+    *value = (int64_t)now.tv_sec * 1000000000 + now.tv_nsec;
+    return 0;
+}
+static int deadline_for(int timeout, int64_t *deadline) {
+    if (timeout <= 0) { *deadline = timeout < 0 ? -1 : 0; return 0; }
+    int64_t now, duration = (int64_t)timeout * 1000000;
+    if (monotonic_ns(&now)) return -1;
+    if (now > INT64_MAX - duration) { errno = EOVERFLOW; return -1; }
+    *deadline = now + duration;
+    return 0;
+}
+/* -2 reports a clock failure, distinct from an infinite wait. */
+static int remaining_ms(int64_t deadline) {
+    if (deadline <= 0) return (int)deadline;
+    int64_t now;
+    if (monotonic_ns(&now)) return -2;
+    if (now >= deadline) return 0;
+    int64_t difference = deadline - now;
+    int64_t millis = difference / 1000000 + (difference % 1000000 != 0);
+    return millis > INT_MAX ? INT_MAX : (int)millis;
+}
+static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline) {
 #ifdef __linux__
     if (e->use_epoll) {
         int ep = epoll_create1(EPOLL_CLOEXEC);
@@ -283,7 +315,8 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int timeout) {
                 return -1;
             }
         }
-        int rc = epoll_wait(ep, events, (int)n, timeout);
+        int timeout = remaining_ms(deadline);
+        int rc = timeout == -2 ? -1 : epoll_wait(ep, events, (int)n, timeout);
         if (rc >= 0)
             for (int i = 0; i < rc; i++) {
                 uint32_t ev = events[i].events;
@@ -298,31 +331,37 @@ static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int timeout) {
         return rc;
     }
 #endif
-    return poll(fds, n, timeout);
+    int timeout = remaining_ms(deadline);
+    return timeout == -2 ? -1 : poll(fds, n, timeout);
 }
 int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
+    int64_t deadline;
+    if (deadline_for(timeout, &deadline)) return -1;
     if (e->http_wakeup) {
         e->http_wakeup = 0;
         if (e->multi) curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
         /* New application data can consume an upload buffer immediately, or
          * resume can redeliver response bytes. Dispatch those state changes to
          * Fibers before blocking on another network event. */
-        timeout = 0;
+        deadline = 0;
     }
     ar_http_progress(e);
     pthread_mutex_lock(&e->mutex);
     int done = e->done_head != NULL;
     pthread_mutex_unlock(&e->mutex);
     if (done)
-        timeout = 0;
+        deadline = 0;
     for (size_t i = 0; i < n; i++)
         if (w[i].buffered)
-            timeout = 0;
+            deadline = 0;
     long curl_timeout = -1;
     if (e->multi) {
         curl_multi_timeout(e->multi, &curl_timeout);
-        if (curl_timeout >= 0 && (timeout < 0 || curl_timeout < timeout))
-            timeout = (int)curl_timeout;
+        if (curl_timeout >= 0 && deadline != 0) {
+            int64_t curl_deadline;
+            if (deadline_for(curl_timeout > INT_MAX ? INT_MAX : (int)curl_timeout, &curl_deadline)) return -1;
+            if (deadline < 0 || curl_deadline < deadline) deadline = curl_deadline;
+        }
     }
     size_t ns = 0;
     for (ar_socket *s = e->sockets; s; s = s->next)
@@ -372,7 +411,7 @@ int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         fds[count].fd = s->fd;
         fds[count++].events = events;
     }
-    int rc = wait_fds(e, fds, count, timeout);
+    int rc = wait_fds(e, fds, count, deadline);
     if (rc >= 0) {
         for (size_t i = 0; i < n; i++)
             w[i].ready = w[i].buffered ||

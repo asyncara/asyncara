@@ -24,6 +24,8 @@ run('build-native-wait',cc+flags+['tests/fast/native_wait.c']+native+libs+['-Wl,
 run('native-wait',[out/'native-wait',a.iterations,'all'])
 run('build-native-close',cc+flags+['tests/audit/close_cancellation.c']+native+libs+['-Wl,--wrap=pthread_create','-o',out/'native-close'])
 run('native-close',[out/'native-close','all'])
+run('build-wait-budget',cc+flags+['tests/fast/wait_budget.c']+native+libs+['-Wl,--wrap=clock_gettime','-Wl,--wrap=calloc','-Wl,--wrap=epoll_ctl','-Wl,--wrap=epoll_wait','-Wl,--wrap=poll','-Wl,--wrap=__poll_chk','-o',out/'wait-budget'])
+run('wait-budget',[out/'wait-budget',a.iterations])
 php=[a.php,'-n','-d','extension='+str(module)]
 run('php-identity',php+['-v'])
 run('extension-identity',php+['--ri','asyncara'])
