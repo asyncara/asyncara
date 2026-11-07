@@ -11,6 +11,34 @@
 #define AR_MAX_WATCHERS 16384
 #define AR_MEMORY_LIMIT (256u * 1024u * 1024u)
 #define AR_HTTP_STREAM_LIMIT 65536u
+#define AR_TRACE_MAX 4096u
+#define AR_TRACE_WAIT 1u
+#define AR_TRACE_JOB 2u
+#define AR_TRACE_SCHED 4u
+#define AR_TRACE_TIMER 8u
+#define AR_TRACE_IO 16u
+#define AR_TRACE_LIFE 32u
+#define AR_TRACE_MARK 64u
+#define AR_TRACE_ALL 127u
+/* Version 1: fixed numeric metadata only, no pointers or application data. */
+typedef struct {
+    uint64_t sequence, ns, scope;
+    int64_t id, a, b, c;
+    uint32_t category, code;
+} ar_trace_event;
+typedef struct {
+    atomic_flag writer;
+    atomic_uint mask;
+    atomic_uint_fast64_t sequence, dropped, clock_failures, scope;
+    size_t capacity, count, next;
+    uint64_t written;
+    ar_trace_event events[];
+} ar_trace;
+typedef struct {
+    size_t capacity, count, bytes;
+    uint64_t attempted, overwritten, dropped, clock_failures;
+    unsigned mask;
+} ar_trace_status;
 
 typedef enum { V_NULL, V_BOOL, V_INT, V_DOUBLE, V_STRING, V_ARRAY } ar_type;
 typedef struct ar_value {
@@ -96,6 +124,8 @@ typedef struct ar_socket {
     struct ar_socket *next;
 } ar_socket;
 typedef struct ar_engine {
+    _Atomic(ar_trace *) trace;
+    uint64_t request_id, request_started_ns, wait_id;
     atomic_size_t memory_bytes, memory_peak, memory_rejections;
     size_t memory_limit;
     pthread_t threads[4];
@@ -137,4 +167,12 @@ ar_file *ar_file_find(ar_engine *e, long id);
 void ar_http_start(ar_engine *e, ar_job *j);
 void ar_http_progress(ar_engine *e);
 void ar_done(ar_engine *e, ar_job *j);
+int ar_trace_configure(ar_engine *e, size_t capacity, unsigned mask);
+void ar_trace_emit(ar_engine *e, unsigned category, unsigned code, int64_t id, int64_t a, int64_t b, int64_t c);
+int ar_trace_read(ar_engine *e, ar_trace_event *events, ar_trace_status *status);
+uint64_t ar_trace_clock(void);
+static inline int ar_trace_enabled(ar_engine *e, unsigned category) {
+    ar_trace *t = atomic_load_explicit(&e->trace, memory_order_acquire);
+    return t && (atomic_load_explicit(&t->mask, memory_order_relaxed) & category);
+}
 #endif

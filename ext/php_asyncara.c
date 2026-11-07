@@ -21,10 +21,15 @@
 #endif
 ZEND_TLS ar_engine *engine;
 ZEND_TLS bool hooks_enabled;
+ZEND_TLS uint64_t request_id;
+ZEND_TLS uint64_t request_started_ns;
+static atomic_uint_fast64_t next_request_id;
 static void (*previous_execute_internal)(zend_execute_data *, zval *);
 static ar_engine *get_engine(void) {
-    if (!engine)
+    if (!engine) {
         engine = ar_engine_new();
+        if (engine) { engine->request_id = request_id; engine->request_started_ns = request_started_ns; }
+    }
     if (!engine)
         zend_throw_exception(zend_ce_exception, "Cannot initialize native runtime", 0);
     return engine;
@@ -368,6 +373,8 @@ PHP_FUNCTION(asyncara_info) {
     add_assoc_long(return_value, "nativeMemoryPeak", atomic_load(&e->memory_peak));
     add_assoc_long(return_value, "nativeMemoryRejections", atomic_load(&e->memory_rejections));
     add_assoc_long(return_value, "nativeMemoryLimit", e->memory_limit);
+    ar_trace *trace = atomic_load_explicit(&e->trace, memory_order_acquire);
+    add_assoc_long(return_value, "nativeDiagnosticBytes", trace ? sizeof(*trace) + trace->capacity * sizeof(ar_trace_event) : 0);
     size_t file_count = 0;
     for (ar_file *file = e->files; file; file = file->next)
         file_count++;
@@ -398,6 +405,78 @@ PHP_FUNCTION(asyncara_info) {
     add_assoc_long(return_value, "httpStreamingUploads", uploads);
     add_assoc_long(return_value, "httpUploadBufferedBytes", upload_buffered);
     add_assoc_long(return_value, "httpUploadPaused", upload_paused);
+}
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_trace_configure, 0, 2, IS_VOID, 0)
+    ZEND_ARG_TYPE_INFO(0, capacity, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, mask, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_trace_event, 0, 6, IS_VOID, 0)
+    ZEND_ARG_TYPE_INFO(0, category, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, code, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, a, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, b, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, c, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_trace_configure) {
+    zend_long capacity, mask;
+    ZEND_PARSE_PARAMETERS_START(2, 2) Z_PARAM_LONG(capacity) Z_PARAM_LONG(mask) ZEND_PARSE_PARAMETERS_END();
+    if (capacity < 16 || capacity > AR_TRACE_MAX || mask < 0 || mask > AR_TRACE_ALL) {
+        zend_value_error("Trace capacity must be 16..4096 and mask 0..127"); RETURN_THROWS();
+    }
+    ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
+    if (ar_trace_configure(e, capacity, mask)) {
+        zend_throw_exception_ex(zend_ce_exception, errno, "Trace configuration failed (capacity is fixed per request): %s", strerror(errno)); RETURN_THROWS();
+    }
+}
+PHP_FUNCTION(asyncara_trace_event) {
+    zend_long category, code, id, a, b, c;
+    ZEND_PARSE_PARAMETERS_START(6, 6)
+    Z_PARAM_LONG(category) Z_PARAM_LONG(code) Z_PARAM_LONG(id) Z_PARAM_LONG(a) Z_PARAM_LONG(b) Z_PARAM_LONG(c)
+    ZEND_PARSE_PARAMETERS_END();
+    if (!engine) return;
+    if (category < 1 || category > AR_TRACE_ALL || code < 1 || code > 255) {
+        zend_value_error("Invalid diagnostic event"); RETURN_THROWS();
+    }
+    ar_trace *t = atomic_load_explicit(&engine->trace, memory_order_acquire);
+    if (t && code == 30) atomic_store_explicit(&t->scope, id, memory_order_relaxed);
+    ar_trace_emit(engine, category, code, id, a, b, c);
+}
+PHP_FUNCTION(asyncara_trace_snapshot) {
+    ZEND_PARSE_PARAMETERS_NONE();
+    ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
+    ar_trace_emit(e, AR_TRACE_LIFE, 3, e->request_id, e->pending, 0, 0);
+    ar_trace_event *events = safe_emalloc(AR_TRACE_MAX, sizeof(*events), 0);
+    ar_trace_status status;
+    if (ar_trace_read(e, events, &status)) {
+        efree(events); zend_throw_exception(zend_ce_exception, "Diagnostic snapshot busy; retry after operations finish", EBUSY); RETURN_THROWS();
+    }
+    /* No native lock remains held while Zend allocates/converts. emalloc is
+     * request-owned even if conversion ends in an unrecoverable PHP bailout. */
+    array_init(return_value);
+    add_assoc_long(return_value, "schema", 1);
+    add_assoc_long(return_value, "pid", getpid());
+    add_assoc_long(return_value, "request", e->request_id);
+    add_assoc_long(return_value, "requestStartedNs", e->request_started_ns);
+    add_assoc_string(return_value, "backend", e->use_epoll ? "epoll" : "poll");
+    add_assoc_long(return_value, "capacity", status.capacity);
+    add_assoc_long(return_value, "nativeBytes", status.bytes);
+    add_assoc_long(return_value, "mask", status.mask);
+    add_assoc_long(return_value, "attempted", status.attempted);
+    add_assoc_long(return_value, "overwritten", status.overwritten);
+    add_assoc_long(return_value, "contentionDropped", status.dropped);
+    add_assoc_long(return_value, "clockFailures", status.clock_failures);
+    add_assoc_bool(return_value, "complete", !status.overwritten && !status.dropped && !status.clock_failures);
+    zval rows; array_init(&rows);
+    for (size_t i = 0; i < status.count; i++) {
+        ar_trace_event *v = &events[i]; zval row; array_init(&row);
+        add_next_index_long(&row, v->sequence); add_next_index_long(&row, v->ns);
+        add_next_index_long(&row, v->scope); add_next_index_long(&row, v->category); add_next_index_long(&row, v->code);
+        add_next_index_long(&row, v->id); add_next_index_long(&row, v->a); add_next_index_long(&row, v->b); add_next_index_long(&row, v->c);
+        add_next_index_zval(&rows, &row);
+    }
+    efree(events);
+    add_assoc_zval(return_value, "events", &rows);
 }
 PHP_FUNCTION(asyncara_submit) {
     char *name;
@@ -925,6 +1004,9 @@ static const zend_function_entry functions[] = {
     PHP_FE(asyncara_http_head, arginfo_http_head)
     PHP_FE(asyncara_http_write, arginfo_http_write)
     PHP_FE(asyncara_memory_limit, arginfo_memory_limit)
+    PHP_FE(asyncara_trace_configure, arginfo_trace_configure)
+    PHP_FE(asyncara_trace_event, arginfo_trace_event)
+    PHP_FE(asyncara_trace_snapshot, arginfo_info)
 #ifdef HAVE_ASYNCARA_MYSQL
         PHP_FE(asyncara_mysql_open, arginfo_pg_open) PHP_FE(asyncara_mysql_query, arginfo_pg_query)
             PHP_FE(asyncara_mysql_step, arginfo_mysql_step) PHP_FE(asyncara_mysql_close, arginfo_pg_conn)
@@ -963,6 +1045,8 @@ PHP_MSHUTDOWN_FUNCTION(asyncara) {
 }
 PHP_RINIT_FUNCTION(asyncara) {
     engine = NULL;
+    request_id = atomic_fetch_add_explicit(&next_request_id, 1, memory_order_relaxed) + 1;
+    request_started_ns = ar_trace_clock();
     hooks_enabled = false;
     return SUCCESS;
 }
