@@ -1,5 +1,42 @@
 # Measured performance
 
+## Native reliability feedback measurements (November 7, 2026)
+
+Final native source `9bee5c3`, Ubuntu 24.04.5 / Linux 6.8.0-147, six available
+EPYC virtual CPUs, GCC 13.3, PHP 8.5.12 NTS. The module and complete environment
+are identified in [the program report](NATIVE_RELIABILITY_PROGRAM.md). These are
+validation-workload measurements, not application throughput benchmarks.
+
+| Completed workload | Wall seconds | Child CPU seconds | Explicit work |
+|---|---:|---:|---|
+| Gate A | 200.729 | 191.967 | Three seeds, epoll/poll; real kernel, virtual scheduler, native allocation/notification/close/budget regressions |
+| Gate B native wait driver | 14.659 | 11.197 | 350,004 actual kernel waits, about 23,876 waits/s; 50,000 injected failures excluded |
+| Complete Gate B | 822.312 | 705.672 | Native waits, seeded kernel/worker checks, short FPM integration, independent review |
+| B2 mixed FPM interval | 600.019 | See scope below | 8,240 main responses, 13.733 responses/s; 395,520 extra pending reads, 49,440 extra timer firings |
+
+A+B takes 1,023.041 seconds (17.051 minutes) on this host. B1's native and worker
+portion takes approximately 208.1 seconds including compilation; the entire B
+scope includes fixture startup, fault checks, shutdown and independent analysis.
+The FPM command CPU total includes the child process tree; the runner's own
+`gate.json` CPU figure uses its narrower scope and must not be interchanged with
+it. Child CPU can exceed wall time in parallel workloads. Shared-host scheduling
+and per-command process accounting limit comparisons.
+
+The old 7,980-response/600.027s result remains INCOMPLETE for its original
+200,000-main-response target. The revised gate changes the coverage target to
+measured native operations plus separate real FPM integration. It does not claim
+a 25-fold HTTP speedup or rename native transitions as HTTP requests. Dense FPM
+adds work and interleavings while retaining all original progress assertions;
+raw throughput is not an equivalent-workload performance comparison.
+
+The native correction has a deterministic before/after *semantic* comparison:
+the old wait restarted a 5ms budget after 20ms of controlled setup time; the new
+wait requests 0ms when that budget is exhausted. This is not a measured general
+latency speedup. No production sleep, spinning or weaker limit was introduced.
+The separately justified Gate C observes residual scheduling and resource trends
+and is not part of every edit's fast feedback loop. No short gate certifies
+six-hour or twenty-four-hour endurance.
+
 ## Lifecycle continuation regression probe (November 7, 2026)
 
 The new lifecycle checkpoint reran `scripts/audit.py` on PHP8.5.12 with epoll.
@@ -84,3 +121,30 @@ The repeated networking Valgrind workload originally requested about 25.7 GB of 
 The 100-cycle mixed file/SQLite/queue stress run retained seven descriptors after lazy initialization (five beforehand), and PHP live memory samples remained within about 4 KiB, including the sample array itself. The 100-request single-worker FPM test retained six idle descriptors and one idle thread, with an RSS plateau. These bounded tests support lifecycle correctness; they are not a long-duration leak or production-readiness proof.
 
 Later Phase 3 results are recorded separately in [PERFORMANCE_PHASE3.md](PERFORMANCE_PHASE3.md); the historical measurements above are preserved.
+
+## Completed extended candidate observation
+
+Final-source Gate C takes 2136.317s wall / 1549.862s
+child CPU, including its larger kernel/worker prelude and independent review.
+Its 1800.190s mixed FPM interval yields 24,740 main
+responses (13.743/s). No comparative throughput claim is
+made from this shared-host validation workload. The raw-derived latency and
+resource distributions are in `phase5/native-program-validation.json`; timer lag
+includes host and application scheduling. The extended gate remains separate
+from the approximately 17-minute normal A+B feedback cycle.
+
+Raw-response distributions use floor((n−1)×p) order statistics, without
+interpolation. Milliseconds:
+
+| Measurement | B median | B p95 | B p99 | B max | C median | C p95 | C p99 | C max |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Main request wall interval |229.335|297.081|404.269|945.297|233.251|299.914|380.778|1012.330|
+| I/O work monotonic interval |228.738|290.987|381.945|926.105|233.122|291.585|369.054|768.411|
+| Per-request maximum timer lag |6.712|42.651|99.701|493.844|7.629|37.159|83.935|420.771|
+| Per-request maximum Task step |3.046|19.423|51.253|469.953|4.483|22.187|49.565|284.740|
+
+Main intervals include pending-shutdown requests; monotonic I/O intervals and
+scheduler statistics cover only the 6,180/18,555 I/O requests. These are
+distributions of each request's maximum lag/step, not individual timer latencies.
+Wall timestamps alone cannot prove independent worker chronology. Passing runs
+still show substantial scheduling delays; there is no real-time guarantee.

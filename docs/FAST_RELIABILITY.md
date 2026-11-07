@@ -267,3 +267,14 @@ Phase 4 or published as a GitHub release.
 Metrics report live owner counts and explicit loop counts. They do not expose a
 universal cumulative Task/Future/watcher creation counter, nor account for all
 third-party or kernel allocations. No missing metric is inferred from RSS.
+
+## Continuous native-program follow-up
+
+The results above are historical evidence for fast-reliability-r1. In particular,
+7,980/200,000 FPM responses remains INCOMPLETE. The owner's subsequent program
+separates native operation volume (B1) from short real four-worker integration
+(B2); it does not relabel those responses or certify 24-hour stability.
+See [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md) for the two
+additional C corrections, final-source gates, PHP shutdown controls, ownership
+audit and new package identity. The original zero-tick cause remains distinct
+from the proven injected EINTR notification defect.

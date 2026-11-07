@@ -4,6 +4,8 @@
 
 **Phase 4 continuation:** [verified source, endurance results and remaining gates](docs/PHASE4_DELIVERY.md). Corrected-source mixed 1h/6h/24h and hosted FPM 1h passed; longer FPM and broader compatibility remain incomplete.
 
+**Native reliability continuation:** [native fixes, fast gates and ownership evidence](docs/NATIVE_RELIABILITY_PROGRAM.md). The historical local FPM one-hour stage passed; the six-hour stage failed and its zero-tick cause remains unresolved. New short gates do not certify long-duration stability.
+
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
@@ -74,6 +76,6 @@ cleanup, destination-port wrap and implicit blocking resolver fallback. The
 corrected r4 package is independently tested on all three PHP branches. Linux
 PHP8.5.12 passed mixed1h/6h/24h and hosted FPM1h workloads. Both local FPM
 attempts failed responsiveness; diagnosis and observer regression tests preserve
-those failures. Six-/24-hour FPM remains untested. Release stays **EXPERIMENTAL**;
+those failures. That r4 snapshot did not test six-/24-hour FPM. The later d74 lifecycle campaign passed one hour, failed its six-hour stage, and never started 24 hours. Release stays **EXPERIMENTAL**;
 see [release readiness](docs/RELEASE_READINESS.md) for tested scopes, preserved
 failures and remaining certification work.

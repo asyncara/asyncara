@@ -1442,3 +1442,52 @@ The distribution-PHP Valgrind discrepancy is separately reproducible without Asy
 Independent UTF-16 SQLite control found that f470ea9's blob-before-length repair changed text bytes. A native SQLite-only control and public PHP `tests/fast/sqlite_encoding.php` reproduce the regression (UTF-16le returned `630061006600e900` rather than UTF-8). Preserved under the program evidence root, `encoding-before`. The correction selects SQLite's UTF-8 text accessor for TEXT and blob accessor for BLOB, checking allocation failure immediately. Embedded NUL, empty values, UTF-16le/be databases, multibyte characters and binary bytes are now explicit regressions. Added text-accessor OOM control. No historical artifact is changed.
 
 The owned f470ea9 sequencer had already launched B1 while this was diagnosed; it was stopped before any FPM launch, and its running kernel child was allowed to finish. `final-b-interruption.json` records INTERRUPTED, not PASS/FAIL. Original child/gate state files remain unchanged. Completed f470ea9 validation stays scoped to that superseded candidate. Fresh source/build/output names are required for final acceptance.
+
+## 2026-11-07 — Final native source validation (`9bee5c3`)
+
+Fresh private build `build/program-r2.so` SHA-256
+`ed61af9fcb8e871f6e9cbdd929697d66080aa2310f5d207629738e433abe08c1`.
+The `r2-program.py` supervisor and each command PID/exit/hash are recorded under
+`/home/coder/Asyncara-native-program-20261107T173550Z`; no output directory from a
+previous candidate was reused. Final source passed Gate A (200.729s), targeted
+PHP 8.3.36/8.4.27/8.5.12 × epoll/poll, complete PHP 8.5 suites on both backends,
+8.3/8.4 lifecycle/resource suites, native GCC ASan/UBSan and TSan, matching DEBUG
+and GCC-instrumented PHP lifecycle/resource/kernel/UTF-16 tests, native and DEBUG
+Valgrind, and original local PostgreSQL/MariaDB/Redis integration on both backends.
+No new Oracle MySQL or remote TLS certification is claimed.
+
+Original distribution Valgrind still exits 99: final and frozen-native controls
+both show 1,128 direct/0 indirect bytes in this repetition. Independent ordinary
+PHP cycles reproduce the shutdown difference without Asyncara or Fibers;
+explicit collection clears it, and matching DEBUG PHP source performs extra
+shutdown collection. Full stacks are preserved; no suppression or production GC
+workaround was added. See `docs/DEPENDENCY_FINDINGS.md` for exact scope.
+
+Gate B passed in 822.312s. B1 records 350,004 actual kernel waits, excluding
+50,000 injected EINTR results, plus 210,000 worker jobs. B2 records 8,240 main
+responses over 600.019s, 6,180 I/O responses, minimum eight ticks, original HTTP
+overlap/progress and lifecycle assertions. Independent review recomputes RSS
+and idle resources: maximum growth 3,100 KiB versus original 8,192 KiB limit;
+all four workers retain six idle descriptors and one idle thread. Added density
+records 395,520 pending reads, 296,640 completions, 49,440 timer firings, 98,880
+cancellations and 791,040 endpoint closes. These are not HTTP response counts.
+
+Gate C began only after matching A/B source and binary PASS. Its extended
+kernel/resource commands have completed; 1,800-second FPM is in progress. No
+build, benchmark, fuzz or competing test runs during FPM. Documentation-only
+work continues; runtime/test/fixture bytes remain frozen. Next: terminal C and
+independent review, final evidence index, source package and clean extraction
+build validation. Historical Phase 4 one-hour PASS and six-hour FAIL remain
+unchanged; original zero-tick root cause remains unresolved.
+
+## Completed extended gate
+
+`r2-c` exits 0: 2136.317306s total, 1800.189838s mixed FPM,
+24,740 main responses, minimum 4 ticks. Independent
+review PASS with recalculated RSS and original idle/threshold checks. Extended
+kernel and 420,000-worker-job cleanup coverage pass. Source and module stayed
+frozen; no concurrent heavy validation ran. `summarize.py` and
+`export_evidence.py` preserve the consolidated raw-derived evidence. Next: clean
+source checkpoint, distinct archive and independent extraction/build validation.
+
+Final preservation: all 1,347 archived regular Phase 4 evidence files match their originals; historical tar checksum, fast-r1 archive, twelve protected file hashes, main HEAD/untracked status and LICENSE are unchanged. Fixture fidelity tests (two cases) and diff whitespace check pass. Final proof is in `final-preservation.json`, `historical-files-comparison.json` and the durable evidence index. The terminal observer corrections are documented; original observations are retained.

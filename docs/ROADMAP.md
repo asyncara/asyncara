@@ -1,6 +1,26 @@
 # Implementation status
 
-## Fast reliability track (2026-11-07)
+## Native reliability continuation (2026-11-07)
+
+Current native checkpoint: `9bee5c3eeb1ba89124bb35251d679bbda0b8b7f8`.
+The [program report](NATIVE_RELIABILITY_PROGRAM.md) and
+[ownership audit](NATIVE_OWNERSHIP_AUDIT.md) supersede the older engineering
+status tables below for this isolated branch. Historical results retain their
+original identities. Release remains **EXPERIMENTAL**.
+
+| Item | Status | Executed evidence / limits |
+|---|---|---|
+| Native wait budget through setup | IMPLEMENTED_AND_TESTED | `ext/backend.c`; original extra 5ms reproduced, corrected absolute deadline covers preparation, rounding and failure cleanup; epoll/poll |
+| SQLite result allocation failures | IMPLEMENTED_AND_TESTED | `ext/workers.c`; two original crashes and one incorrect success reproduced. Corrected TEXT/BLOB conversion retains UTF-8 and binary semantics; five native controls, UTF-16 regression |
+| Deterministic production-path framework / Gate A | IMPLEMENTED_AND_TESTED | Final source PASS 200.729s; three seeds, both backends; real kernel waits separate from virtual PHP scheduler time |
+| Gate B1 native volume | IMPLEMENTED_AND_TESTED | 350,004 real kernel wait calls plus 210,000 worker jobs; injected syscall failures excluded from wait count |
+| Gate B2 four-worker FPM | IMPLEMENTED_AND_TESTED | 8,240 main responses over 600.019s; 6,180 I/O responses, minimum eight ticks; independent resource/lifecycle review PASS. This is the redesigned short gate, not completion of the old 200,000-response gate |
+| Gate C extended candidate observation | IMPLEMENTED_AND_TESTED | PASS 2136.317s total, 1800.190s mixed FPM / 24,740 main responses; independent review PASS, original limits; not six-/24-hour endurance |
+| Distribution-PHP shutdown allocation discrepancy | IMPLEMENTED_AND_TESTED | Independent PHP-only cyclic-object reproducer and PHP source explain DEBUG/non-DEBUG shutdown differences. Original raw Valgrind runs remain FAIL; separate explicit-GC controls pass. No runtime workaround or suppression |
+| Focused ownership audit | PARTIALLY_IMPLEMENTED | Scoped native/PHP ownership matrix completed; remaining copying-policy, hard-shutdown and external allocator limits documented. Not universal certification |
+| Historical zero-tick cause | BLOCKED | Original request lacks per-wait/dispatch provenance needed for attribution. Controlled interpreter-delay reproduces zero ticks; does not establish the original cause. Historical six-hour FAIL remains |
+
+## Historical fast-r1 track (2026-11-07)
 
 Native API First remains unchanged. [Fast reliability](FAST_RELIABILITY.md)
 supersedes repeated multi-hour campaigns as the developer feedback strategy.

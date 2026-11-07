@@ -622,3 +622,30 @@ Its artifact ZIP SHA-256 matches the official GitHub digest. See
 [hosted FPM attestation](phase4/hosted-fpm-1h.json). This certifies that workload
 on the pre-repair source only. Its parallel mixed job failed, so the workflow
 as a whole did not pass. No six-/24-hour evidence or release promotion follows.
+
+## Separate native-program continuation
+
+This document's earlier source/package and campaign results remain historical.
+The d74 lifecycle campaign's final outcomes are1h supervisor PASS,6h FAIL at
+196,536 persisted main responses,24h NOT_STARTED. Its zero-tick cause remains
+unattributed. The independent hour review's missing-clock-order limitation is
+not silently converted into an unconditional independent PASS.
+
+The isolated `phase5-fast-reliability` track adds native wait-budget and SQLite
+conversion safety corrections plus deterministic and bounded FPM validation.
+See [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md) for the new
+source/package identity and results. No Phase4 archive is relabeled as containing
+these changes, and no new stable release or historical endurance claim is made.
+
+### Final isolated native-program evidence
+
+Source `9bee5c3` (separate from frozen Phase 4): A PASS 200.729s; B PASS
+822.312s with 8,240 main responses over 600.019s; C PASS 2136.317s
+with 24,740 main responses over 1800.190s. Both FPM
+independent workload/resource reviews pass under original thresholds. C minimum
+ticks: 4; all four steady workers retain six idle descriptors and one
+thread. Full raw trends, limits, identities and chronology caveats are in
+[NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md). These new short
+results do not supersede the original one-hour supervisor PASS, six-hour FAIL,
+24-hour NOT_STARTED or original independent review's chronology uncertainty.
+Release remains EXPERIMENTAL.

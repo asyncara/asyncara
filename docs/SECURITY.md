@@ -137,3 +137,20 @@ expect fatal memory exhaustion, so a failed measurement cannot silently count as
 a clean diagnostic. Negative controls reproduced the previous acceptance paths.
 These changes concern test evidence, not PHP memory-exhaustion recovery or the
 application runtime; the frozen running campaign retains its original tools.
+
+## Native reliability continuation (2026-11-07)
+
+`9bee5c3` (following intermediate `f470ea9`) repairs unchecked SQLite column-name and value-conversion allocation
+failures in the native worker. Link-boundary fault injection into production
+query execution reproduced two invalid-memory crashes and one wrong-success
+result before repair. The correction preserves empty-value semantics and
+statement/connection cleanup. `27d9a65` independently prevents native wait
+preparation from restarting the caller's relative timeout budget. Neither is
+claimed to explain the historical FPM zero-tick failure.
+
+The distribution-PHP/Valgrind difference now has an independent PHP-only cycle
+shutdown reproducer. Original failures remain failures; separate explicit-GC
+controls and DEBUG's additional shutdown collection explain the build
+comparison. This is not an unconditional leak-free claim, nor a suppression of
+Fiber warnings. See DEPENDENCY_FINDINGS.md and NATIVE_OWNERSHIP_AUDIT.md. Exact
+final-source instrumentation/gate coverage is in NATIVE_RELIABILITY_PROGRAM.md.

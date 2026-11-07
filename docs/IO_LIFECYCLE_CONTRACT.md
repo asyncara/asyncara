@@ -253,3 +253,19 @@ Actual executions, binary identities and remaining certification limits are
 recorded in [PHASE4_DELIVERY.md](PHASE4_DELIVERY.md) and
 [FPM_LIFECYCLE.md](FPM_LIFECYCLE.md). No new HTTP/2/3, hook, io_uring, remote TLS,
 framework or userland ThreadPool support is implied by this contract.
+
+## Native reliability continuation
+
+The isolated native track now preserves the requested `ar_wait` timeout budget
+through readiness preparation using a monotonic absolute deadline. This bounds
+additional *requested kernel sleep*, not PHP execution, host scheduling delay,
+foreign-library computation or a hard end-to-end latency guarantee. Integer
+rounding is upward to milliseconds; expired budgets request an immediate poll.
+
+SQLite result conversion can allocate inside SQLite itself. Column-name and
+value conversion failures now reject the operation and finalize the statement
+instead of dereferencing NULL or returning false empty data. SQL NULL and valid
+empty values retain their existing meaning. This changes error handling, not
+the worker-backed model, transaction ordering or cancellation authority.
+See [the scoped ownership matrix](NATIVE_OWNERSHIP_AUDIT.md) and
+[executed native reliability evidence](NATIVE_RELIABILITY_PROGRAM.md).

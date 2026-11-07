@@ -484,3 +484,35 @@ logging warnings, and preserves the hardened analysis separately. On a passing
 hour only, it runs one60s full lifecycle smoke in `fpm-full-wait-probe-r3` using
 the corrected profiler at a3d6f7d. It is currently waiting, so neither follow-up
 completion nor longer uninstrumented endurance is claimed.
+
+## Current native development track (2026-11-07)
+
+Historical launch-state prose above is retained as checkpoint evidence, not a
+live process report. The d74 lifecycle campaign subsequently completed its
+one-hour supervisor stage with PASS (48,124 main responses), then failed its
+six-hour stage after13,501.387 seconds and196,536 recorded main responses with
+zero ticks. Its24-hour stage did not start. The repaired independent hour
+review passed acceptance/resource checks but retained INDETERMINATE for missing
+independent per-worker clock ordering. No earlier failure is erased.
+
+The separate native branch now uses a bounded developer pipeline. B2 and C
+retain the original A/B/C/D fixture and original mixed progress/resource
+assertions, adding socket/timer/cancellation density to the mixed fixture.
+Counts distinguish FPM requests from native operations. These new scoped
+checks are neither continuation of the old campaign nor24-hour certification.
+See [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md) for exact final
+source/binary, terminal results, independent reviews and limitations. No
+instrumentation preload or altered production clock is used in B2/C.
+
+### Final isolated native-program evidence
+
+Source `9bee5c3` (separate from frozen Phase 4): A PASS 200.729s; B PASS
+822.312s with 8,240 main responses over 600.019s; C PASS 2136.317s
+with 24,740 main responses over 1800.190s. Both FPM
+independent workload/resource reviews pass under original thresholds. C minimum
+ticks: 4; all four steady workers retain six idle descriptors and one
+thread. Full raw trends, limits, identities and chronology caveats are in
+[NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md). These new short
+results do not supersede the original one-hour supervisor PASS, six-hour FAIL,
+24-hour NOT_STARTED or original independent review's chronology uncertainty.
+Release remains EXPERIMENTAL.

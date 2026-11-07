@@ -72,3 +72,13 @@ The immediate gate is the unresolved local uninstrumented FPM responsiveness
 failure and request-safe I/O ownership. Diagnostic passes, hosted results and
 mixed CLI endurance cannot substitute for local FPM acceptance. Preserve the
 existing APIs, limits, historical failures and acceptance thresholds.
+
+## Native development continuation
+
+The isolated Phase5 track retains this architecture. Native wait-budget and
+SQLite conversion error repairs are documented in
+[NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md). Developer feedback
+now uses deterministic real-kernel tests plus operation-volume and short FPM
+gates; the original local FPM failures remain unresolved historical evidence.
+No public API, optional timer hook policy, filesystem backend or driver strategy
+is replaced by this work.

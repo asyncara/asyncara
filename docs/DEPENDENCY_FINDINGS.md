@@ -107,3 +107,52 @@ establish whether the cause is PHP, application-owned PHP objects, or tool/runti
 interaction. No suppression or ownership attribution is justified yet.
 See [fast-reliability results](FAST_RELIABILITY.md) and the hashed command/log
 inventory in [phase5/fast-validation.json](phase5/fast-validation.json).
+
+## 2026-11-07 native-program follow-up: distribution PHP cycle shutdown
+
+This supersedes the *attribution uncertainty* in the preceding historical
+entry, not its failing results. Valgrind 3.22.0, distribution PHP8.5.12 NTS,
+`USE_ZEND_ALLOC=0`, `--leak-check=full --show-leak-kinds=all
+--errors-for-leak-kinds=definite,indirect --error-exitcode=99`, no suppressions:
+
+| Independent control | Distribution result | Matching DEBUG result |
+|---|---|---|
+| Original six-case lifecycle, old `fast-full.so`, two repetitions | exit99; 1128/0 and 1224/0 direct/indirect bytes | zero lost/errors |
+| Same workload, wait-budget native candidate | exit99; 1888/120 bytes | Separate final-source validation indexed below |
+| Isolated file producer early-close case | exit99; 712/120 bytes | Not substituted for full workload |
+| Separate full-workload copy adding explicit collection before process exit | two repetitions: zero lost/errors; 117 and105 cyclic PHP values collected | No production change |
+| PHP-only20 ordinary object/closure cycles, no extension or Fibers | exit99; 8480 direct bytes /40 blocks | zero lost/errors |
+| Same PHP-only cycles created inside completed Fibers | same8480 bytes /40 blocks | zero lost/errors |
+| Both PHP-only variants with explicit collection | zero lost/errors; zero live weak references | zero lost/errors |
+
+`tests/dependencies/php_cycle_shutdown.php plain shutdown` is the independent
+reproducer; `plain collect`, `fiber shutdown`, and `fiber collect` are controls.
+The plain case proves that unregistered Fiber-stack warnings are not necessary
+for these losses. Fiber warnings remain separately recorded in Fiber workloads.
+
+Exact matching PHP8.5.12 source in
+`/tmp/asyncara-phase3-cQBA3H/php-8.5.12-source/php-8.5.12` explains the build
+difference: `Zend/zend_execute_API.c:zend_shutdown_executor_values` calls
+`gc_collect_cycles()` under `#if ZEND_DEBUG` when shutdown is not unclean.
+`Zend/zend_objects_API.c:zend_objects_store_free_object_storage` intentionally
+releases object contents without freeing surviving object allocations, so they
+are visible as leaks. The uncollected cyclic objects and closures appear in
+Zend allocation stacks; DEBUG's additional collection eliminates them.
+[Matching PHP source](https://github.com/php/php-src/blob/php-8.5.12/Zend/zend_execute_API.c).
+
+Conclusion: the reported distribution/DEBUG discrepancy is reproducible PHP
+cyclic-object shutdown behavior, demonstrated independently of Asyncara and
+without Fibers. It is not evidence of an Asyncara C payload leak, nor merely a
+Valgrind stack-warning artifact. The original no-explicit-GC runs remain FAIL;
+the underlying cyclic allocations exist and must not be called harmless or
+universally bounded. Normal cycle collection during long-running execution is
+a separate question covered only by the explicit operation-count checkpoints.
+No claim of an upstream fix or accepted bug report is made. The libpq TLS
+library-unload allocation is unrelated to these stacks.
+
+Raw commands, environment, binary hashes, full allocation stacks and exit codes:
+`/home/coder/Asyncara-native-program-20261107T173550Z/memory-identities.json`,
+`memory-summary.json`, `original-distribution-*`, `distribution-case-6`,
+`distribution-gc-*`, `cycles-*`, and their `*-memory.log` files. Final-source
+instrumentation is indexed in [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md).
+No production GC calls, weakened assertions, or suppressions were introduced.
