@@ -1,0 +1,78 @@
+<?php
+declare(strict_types=1);
+require dirname(__DIR__,2).'/autoload.php';
+require __DIR__.'/fpm_density.inc.php';
+use Asyncara\{Async,Context,Runtime,Hook,Future};
+use Asyncara\HTTP\HttpClient;
+use Asyncara\IO\{Files,UdpSocket};
+use Asyncara\SQLite\Connection;
+function requestCpuSample():array {
+ $usage=getrusage();$scheduling=explode(' ',trim(file_get_contents('/proc/self/schedstat')));
+ return ['monotonicNs'=>hrtime(true),'userUs'=>$usage['ru_utime.tv_sec']*1000000+$usage['ru_utime.tv_usec'],
+  'systemUs'=>$usage['ru_stime.tv_sec']*1000000+$usage['ru_stime.tv_usec'],
+  'scheduledNs'=>(int)$scheduling[0],'runnableWaitNs'=>(int)$scheduling[1],
+  'slices'=>(int)$scheduling[2]];
+}
+$before=Runtime::information();
+if($before->pendingOperations||$before->nativeMemoryBytes||$before->openFileHandles||Runtime::timeHooksEnabled()||Runtime::diagnostics()!==[]||Runtime::configuration()['taskLimit']!==20000||Runtime::configuration()['futureLimit']!==40000||Future::pendingCount()!==0)throw new RuntimeException('Cross-request runtime state');
+final class RequestStateProbe { public static ?string $id=null; }
+if(isset($GLOBALS['asyncara_request_probe'])||RequestStateProbe::$id!==null)throw new RuntimeException('Cross-request PHP state');
+$GLOBALS['asyncara_request_probe']=RequestStateProbe::$id=$_SERVER['AUDIT_ID'];
+// Keep an exclusive UDP descriptor live through ordinary, fatal, timeout and
+// pending-work request teardown. Existing idle fd/thread checks must still pass.
+$requestUdp = new UdpSocket('127.0.0.1');
+$mode=$_GET['mode']??'lifecycle';$start=microtime(true);
+if($mode==='fatal'||$mode==='fatal-burst'){
+ usleep(25000); // Give concurrent fatal requests time to occupy distinct workers.
+ ini_set('memory_limit','8M');
+ for($i=0;$i<($mode==='fatal-burst'?4:1);$i++)asyncara_submit('read',[$_SERVER['AUDIT_LARGE_FILE']]);
+ if($mode==='fatal-burst')usleep(100000); // Deliberate fault fixture: populate all worker allocator arenas before conversion.
+ while(true)asyncara_poll([],[],1000);
+}
+if($mode==='allocator'||$mode==='allocator-trim'){
+ if(!function_exists('asyncara_test_allocator'))throw new RuntimeException('Test allocator module absent');
+ usleep(25000); // Test-only occupancy barrier for independent worker observations.
+ header('Content-Type: application/json');
+ echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'allocator'=>asyncara_test_allocator($mode==='allocator-trim'),'before'=>$before]);exit;
+}
+Runtime::configure(['taskLimit'=>1234,'futureLimit'=>4321]);Runtime::enableHooks(Hook::TIME);
+if($mode==='timeout')Async::run(function():void{
+    for($i=0;$i<8;$i++)asyncara_submit('file_open',[__FILE__,'r']);
+    Async::sleep(30);
+});
+if($mode==='pending'){
+    for($i=0;$i<8;$i++)asyncara_submit('file_open',[__FILE__,'r']);
+    $unsettled=new Future();
+    asyncara_submit('http',[$_SERVER['AUDIT_URL'],null,[],10000]);
+    header('Content-Type: application/json');
+    echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'start'=>$start,'end'=>microtime(true),'before'=>$before,'pending'=>Runtime::information()]);
+    exit;
+}
+$result=Async::run(function()use($mode):array{
+ if(Context::get('request')!==null)throw new RuntimeException('Cross-request context');
+ Context::set('request',$_SERVER['AUDIT_ID']);
+ $db=Connection::open(':memory:')->await();
+ try{
+  if($db->query('select 42 as n')->await()[0]['n']!==42)throw new RuntimeException('SQL result');
+  if(Files::read(__FILE__)->await()==='')throw new RuntimeException('File result');
+  if($mode==='lifecycle'){usleep(1000);return ['ticks'=>0,'http'=>[]];}
+  $client=new HttpClient(4);$jobs=[];$cpuBefore=requestCpuSample();
+  for($i=0;$i<4;$i++)$jobs[]=$mode==='stream'?Async::spawn(function()use($client):\Asyncara\HTTP\Response{
+   $stream=$client->getStream($_SERVER['AUDIT_URL']);
+   try{$head=$stream->headers()->await();$body='';foreach($stream as$chunk)$body.=$chunk;return new \Asyncara\HTTP\Response($head->status,$body,'');}
+   finally{$stream->close();}
+  }):$client->get($_SERVER['AUDIT_URL']);
+  $ticks=0;$lastTicks=[];$ticker=Async::spawn(function()use($jobs,&$ticks,&$lastTicks):void{while(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){Async::sleep(.005);if(count(array_filter($jobs,fn($j)=>!$j->isCompleted()))){$ticks++;$lastTicks[]=hrtime(true);if(count($lastTicks)>4)array_shift($lastTicks);}}});
+  $density=Async::spawn(static fn()=>densityWork((int)$_SERVER['AUDIT_ID']));
+  $responses=Async::gather($jobs);$ticker->await();$densityCounts=$density->await();
+  $cpuAfter=requestCpuSample();$cpuDelta=[];foreach($cpuAfter as$key=>$value)$cpuDelta[$key]=$value-$cpuBefore[$key];
+  $intervals=array_map(fn($r)=>$r->json(),$responses);
+  if($ticks<2||max(array_column($intervals,'start'))>=min(array_column($intervals,'end')))throw new RuntimeException('I/O did not overlap or blocked loop: '.json_encode(['ticks'=>$ticks,'intervals'=>$intervals,'cpuDelta'=>$cpuDelta,'lastTicksNs'=>$lastTicks,'scheduler'=>Runtime::diagnostics()]));
+  return ['ticks'=>$ticks,'http'=>$intervals,'cpuDelta'=>$cpuDelta,'density'=>$densityCounts];
+ }finally{$db->close()->await();}
+});
+$after=Runtime::information();
+$afterState=['phpBytes'=>memory_get_usage(),'phpAllocatedBytes'=>memory_get_usage(true),'phpPeakBytes'=>memory_get_peak_usage(true),'scheduler'=>Runtime::diagnostics(),'pendingFutures'=>Future::pendingCount()];
+for($i=0;$i<8;$i++)asyncara_submit('file_open',[__FILE__,'r']);
+header('Content-Type: application/json');
+echo json_encode(['pid'=>getmypid(),'id'=>$_SERVER['AUDIT_ID'],'start'=>$start,'end'=>microtime(true),'before'=>$before,'after'=>$after,'afterState'=>$afterState,'result'=>$result],JSON_THROW_ON_ERROR);
