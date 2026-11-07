@@ -626,7 +626,14 @@ void ar_done(ar_engine *e, ar_job *j) {
     e->done_tail = j;
     pthread_mutex_unlock(&e->mutex);
     char byte = 1;
-    ssize_t ignored = write(e->wake[1], &byte, 1);
+    /* Publication can race the interpreter's last done-queue check before
+     * entering poll/epoll. An interrupted notification must be retried: the
+     * published job alone cannot wake that wait. EAGAIN needs no retry because
+     * the nonblocking pipe already contains a readable notification. */
+    ssize_t ignored;
+    do {
+        ignored = write(e->wake[1], &byte, 1);
+    } while (ignored < 0 && errno == EINTR);
     (void)ignored;
 }
 static void *worker(void *arg) {
