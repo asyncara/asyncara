@@ -1346,3 +1346,21 @@ separate virtual-time tests of the unchanged Scheduler, native wait controls,
 operation-count resource tests and a count-based FPM runner preserving original
 fixture/thresholds. Full 10,000-transition baseline/candidate/corrected PHP/backend
 comparison is running. No new FPM campaign started yet. Release EXPERIMENTAL.
+
+### Fast Gate A checkpoint
+
+Native/source checkpoint `8263fcdca5c02a89555053553d6e760bb7792ee5`.
+Full matrix (`matrix-r1/results.json`): 93 commands, all expected outcomes;
+PHP 8.3/8.4/8.5 × epoll/poll × frozen/candidate/corrected, 10,000 iterations.
+Historical close/wakeup failures remain explicit negative results.
+Full-feature binary `build/fast-full.so` SHA-256
+`8c4dc86b5188dc46cf08eda3cfd2f78f4225c352a636eeebf500f4956f463b84`.
+Gate A (`gate-a-r1/report.json`): PASS, 190.920397 seconds wall, 151.801517
+seconds child CPU; seeds 17/271828/104729, both backends. 70,000 worker jobs
+per backend; ledger/pending/handles/Tasks/Futures/timers/watchers return to zero.
+RSS observations retained; no general leak-free claim.
+
+Added read-only Gate B review tool to recalculate count/ticker/cleanup/RSS from
+raw observations without inferring chronology from batch emission order.
+Next: single 600-second count-target FPM execution, original four-worker fixture
+and two-tick/resource assertions. No competing heavy workload during it.
