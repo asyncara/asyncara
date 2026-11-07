@@ -22,6 +22,7 @@ run('wait-build',flags+['tests/fast/native_wait.c']+native+libs+['-Wl,--wrap='+w
 (out/'native-traces').mkdir()
 run('wait',[out/'wait-bin','8','all'],{'ASYNCARA_TRACE_TEST':str(out/'native-traces')})
 for backend in ['epoll','poll']:
+ run(backend+'-output',[a.php,'-n','-d','extension='+str(module),'tests/diagnostics/output.php'],{'ASYNCARA_BACKEND':backend})
  for mode in ['disabled','normal','wrap','maximum']:
   run(backend+'-'+mode,[a.php,'-n','-d','extension='+str(module),'tests/diagnostics/trace.php',mode],{'ASYNCARA_BACKEND':backend})
 (out/'report.json').write_text(json.dumps({'status':'PASS','seconds':time.monotonic()-start,'commands':rows},indent=2)+'\n')
