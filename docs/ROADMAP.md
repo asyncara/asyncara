@@ -1,5 +1,22 @@
 # Implementation status
 
+## Fast reliability track (2026-11-07)
+
+Native API First remains unchanged. [Fast reliability](FAST_RELIABILITY.md)
+supersedes repeated multi-hour campaigns as the developer feedback strategy.
+Original hour PASS and six-hour FAIL are preserved; historical zero-tick cause
+remains unresolved. No 24-hour FPM result exists for that campaign.
+
+| Item | Status | Evidence / limits |
+|---|---|---|
+| Accepted close cleanup (`6ee73d8`) | IMPLEMENTED_AND_TESTED | Native file/SQLite controls fail on `d74f3b3`, pass on candidate; ordinary cancellation retained. This supersedes the historical unbuilt entry below for this isolated branch only |
+| Interrupted worker completion notification | IMPLEMENTED_AND_TESTED | Minimal C EINTR retry; 10,000 injected completion transitions/backend pass. Both prior sources fail. Not attribution of historical FPM zero ticks |
+| Deterministic kernel/virtual-time framework | IMPLEMENTED_AND_TESTED | PHP 8.3/8.4/8.5 × epoll/poll × three source variants, 10,000 iterations; separate real kernel and virtual scheduler scope |
+| Gate A expanded seed/resource suite | IMPLEMENTED_BUT_NOT_FULLY_TESTED | 32-iteration smoke passed; final full gate pending |
+| Gate B 200,000 original FPM main responses | IMPLEMENTED_BUT_NOT_FULLY_TESTED | Count runner prepared; target cannot fit 30 minutes with unchanged four-worker/200ms workload. Partial execution must not become PASS |
+| Gate C / extended observation | NOT_IMPLEMENTED | Execution deferred until A/B gates justify it; no automatic six-hour/24-hour run |
+| Original zero-tick attribution / distribution-PHP Valgrind discrepancy | BLOCKED | Unresolved evidence; no claim that new notification fault injection explains either |
+
 ## Isolated native track (2026-11-07)
 
 This branch starts from frozen `d74f3b3`; the Phase 4 tables below are inherited

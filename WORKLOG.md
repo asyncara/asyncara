@@ -1324,3 +1324,25 @@ this worktree's own SDK, run baseline negative controls and patched native tests
 then matching PHP 8.3/8.4/8.5 epoll/poll lifecycle suites and memory tools. Preserve
 all failures. Do not merge, install, publish or attribute endurance to this patch
 before actual validation. Release remains EXPERIMENTAL.
+
+## 2026-11-07 — fast reliability track, historical evidence preserved
+
+Created isolated `phase5-fast-reliability` worktree at
+`/home/coder/Asyncara-fast-reliability-20261107T155547Z`, based on `6ee73d8`.
+Verified old campaign terminal FAIL, no original supervisor/FPM processes alive.
+Preserved entire original campaign/reviewer artifacts in a verified 660MiB tar
+outside Git; identities in `docs/FAST_RELIABILITY.md`. Hour PASS, six-hour FAIL
+and unstarted 24-hour remain historical facts.
+
+Initial 32-iteration controls reproduce cancelled-close failure on frozen
+`d74f3b3` and pass on `6ee73d8`. Initial native wait harness missed fortified
+`__poll_chk`; those failures are preserved as harness failures. Corrected
+boundary controls establish an EINTR-notification defect on both old sources.
+Added the minimal `ar_done` EINTR retry in this isolated worktree; validation is
+in progress. No claim that this explains the historical zero-tick failure.
+
+Added real socket/Fiber two-tick, cancellation/readiness/descriptor tests,
+separate virtual-time tests of the unchanged Scheduler, native wait controls,
+operation-count resource tests and a count-based FPM runner preserving original
+fixture/thresholds. Full 10,000-transition baseline/candidate/corrected PHP/backend
+comparison is running. No new FPM campaign started yet. Release EXPERIMENTAL.
