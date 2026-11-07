@@ -386,6 +386,44 @@ remains `ecff33b16db232ffd81e9f219f2cac87d3aef71bbb74a8ad1abdccaf573919b4`.
 LICENSE and Composer metadata/lock remain unchanged from the starting source.
 This verification does not claim all unrelated user files were audited.
 
-The implementation and tests are complete to the scoped matrix above. A new
-source distribution and clean extracted build are the remaining delivery check;
-the package attestation will identify their separate source and binary hashes.
+The implementation, scoped validation and independent package checks below are
+complete. Unresolved findings remain explicit and the release is EXPERIMENTAL.
+
+
+## Reproducible package and independent builds
+
+Packaged clean source: `63a3a496b7892a7d0e699517a05fa394ae6ebbc9`. Runtime remains `b7ea081`, tests
+remain `ce9b977`; this packaged commit adds documentation/evidence only.
+Archive: `build/asyncara-0.1.0-dev-resource-provenance-r1.tar.gz`, **435 files**.
+SHA-256:
+
+`d3cf2f58cebfcef6e4a0148d0c2b7a6f9dc5d20a6d0819a44b197ff16ea2f176`
+
+Repeated generation is byte-identical. Every member matches the packaged Git
+commit, including LICENSE and Composer lock. A clean extraction built independent
+PHP 8.3.36/8.4.27/8.5.12 modules from public SDK headers and system libraries,
+without reusing any generated module, vendor tree or build output. Composer
+installed six locked dependencies using an independent cache/home. Validation
+passed; its only warning is root-version fallback outside Git.
+
+All six PHP/backend combinations pass real-kernel, SQLite encoding, lifecycle,
+copy/alias, bounded trace and output-failure regressions. Full PHP 8.5 suites pass
+on epoll and poll. All 45 independent build/test/setup commands exited zero and
+every packaged source file is unchanged after execution. The package report is
+`/home/coder/Asyncara-resource-provenance-20261107T212909Z/package-r1/report.json`.
+
+| Independently compiled module | SHA-256 |
+|---|---|
+| PHP 8.3 | `6967d19bb0899732911ce17900283e06d3ac4962781aff79ccdfb3a772ab91db` |
+| PHP 8.4 | `c186dd26560b7ff736f337aa8e19520779bd1b6d546d5c868eb7eccca62914e0` |
+| PHP 8.5 | `6eebc1e9ab0c849856f1e08bc56e953f9fa1f21f0350c9740e4610bbdf6554c4` |
+
+The [package attestation](phase5/resource-provenance-package.json) records exact
+commands, module identities, log hashes and preserved artifact checks. Its SHA-256
+is `5301b6b9b9310ebaeb2910d50bf39d4b83f36ce4904d3f17a158eac6080a544d`. Native build paths/debug information differ from the gate binary;
+these independent builds do not claim another Gate A/B/C execution.
+
+Final attestation commits follow the packaged source and change documentation
+only. No archive was overwritten; no Phase4 file, historical result, license,
+Composer dependency or remote history was changed. No GitHub push/release was
+performed. **EXPERIMENTAL** remains the final release assessment.

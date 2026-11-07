@@ -1572,3 +1572,17 @@ metadata measured32engine+24identity bytes in addition to bounded ring.
 Distribution Valgrind remains FAIL1784direct/648indirect; historical zero-tick
 cause unresolved. Next: new source archive, clean independent build/test and
 package attestation. Release EXPERIMENTAL.
+
+## Resource-provenance distribution independently verified
+
+Clean package source `63a3a496b7892a7d0e699517a05fa394ae6ebbc9`,435 files,
+`build/asyncara-0.1.0-dev-resource-provenance-r1.tar.gz`, SHA-256
+`d3cf2f58cebfcef6e4a0148d0c2b7a6f9dc5d20a6d0819a44b197ff16ea2f176`. Repeated generation byte-identical;
+all members match Git. Fresh extracted PHP83/84/85 builds and six backend/version
+kernel/encoding/lifecycle/copy/trace/output combinations pass; full85 epoll/poll
+pass. All45 commands exit0. Composer validation passes with root-version fallback;
+locked dependencies installed independently. Source unchanged after tests.
+Attestation: docs/phase5/resource-provenance-package.json. Later documentation
+commits do not change tested/packaged runtime. Historical Phase4 evidence and
+prior archive verified unchanged. Distribution Valgrind loss and historical
+zero-tick uncertainty remain. No push or release; EXPERIMENTAL.

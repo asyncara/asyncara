@@ -28,3 +28,10 @@ Historical hour PASS / six-hour FAIL /24-hour NOT_STARTED remain tied to their
 original source. The zero-tick cause remains unresolved. Distribution PHP still
 reports shutdown-cycle-related losses; clean scoped native/DEBUG runs do not
 prove universal memory safety. Release: **EXPERIMENTAL**.
+
+Package source `63a3a496b7892a7d0e699517a05fa394ae6ebbc9` contains435 tracked files; archive
+`build/asyncara-0.1.0-dev-resource-provenance-r1.tar.gz`, SHA-256
+`d3cf2f58cebfcef6e4a0148d0c2b7a6f9dc5d20a6d0819a44b197ff16ea2f176`. Independent PHP83/84/85 builds,
+six-combination critical tests and full85 epoll/poll pass. See the
+[package attestation](phase5/resource-provenance-package.json). Final Git
+attestation commits are separate from this archive source; no release was published.
