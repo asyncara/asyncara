@@ -644,7 +644,12 @@ static void *worker(void *arg) {
         if (!e->queue_head)
             e->queue_tail = NULL;
         pthread_mutex_unlock(&e->mutex);
-        if (!stopped(j)) {
+        /* An accepted close owns mandatory cleanup. Cancellation of a waiter
+         * or scheduler drain must neither skip the close nor replace its real
+         * outcome. The handle stays busy until ar_collect(), as for other jobs.
+         * Cancellation before submission still belongs to the PHP Task. */
+        bool closing = j->op == OP_FILE_CLOSE || j->op == OP_DB_CLOSE;
+        if (closing || !stopped(j)) {
             if (j->op >= OP_FILE_OPEN && j->op <= OP_FILE_CLOSE)
                 do_handle(j);
             else if (j->op == OP_DNS)
@@ -654,7 +659,7 @@ static void *worker(void *arg) {
             else
                 do_file(j);
         }
-        if (atomic_load(&j->cancelled)) {
+        if (!closing && atomic_load(&j->cancelled)) {
             /* Atomic replacement must not hide a failed temp cleanup or a
              * durability error behind concurrent cancellation. */
             if (j->op != OP_ATOMIC_WRITE || !j->error[0])

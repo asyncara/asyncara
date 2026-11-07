@@ -57,6 +57,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-11.log bash -c 'make audit'
       - run: ./scripts/ci-run.sh build/ci-step-12.log bash -c './scripts/audit-allocations.sh'
       - run: ./scripts/ci-run.sh build/ci-native-mappings.log ./scripts/test-native-mappings.sh
+      - run: ./scripts/ci-run.sh build/ci-native-close.log bash scripts/test-native-close.sh
       - run: ./scripts/ci-run.sh build/ci-step-13.log bash -c './scripts/test-worker-signals.sh'
       - run: ./scripts/ci-run.sh build/ci-step-14.log bash -c './scripts/test-atomic-failures.sh'
       - run: ./scripts/ci-run.sh build/ci-step-15.log bash -c 'python3 tests/audit/package_repro.py --output build/package-repro'
