@@ -1643,3 +1643,20 @@ real-clock regression unchanged and add a separate test-only clock wrapper for
 its admission/stream-dispatch invariant under instrumentation. Actual kernel
 readiness remains real; expired-real-budget behavior is covered independently by
 the existing wait-budget tests. This changes test control, not runtime deadlines.
+
+## Atomic download acquisition ownership repair
+
+Final DEBUG Valgrind workload exposed a live native owner at the end of the HTTP
+completion test, despite zero lost allocations after process shutdown. Diagnostic
+repetition alone passed and was not accepted as a repair. A deterministic real-worker
+completion subscriber now reproduces cancellation between stage completion and
+parent ownership transfer: pending0, openFileHandles1, nativeMemoryBytes175, private
+staging entry retained until request shutdown. Evidence `acquire-cancel-before`.
+
+`HttpClient::download()` now shields acquisition through assignment to its owned
+File, then observes cancellation and closes in its existing finally. No network
+operation starts after the cancelled acquisition. `tests/http/acquire_cancel.php`
+executes20 controlled boundaries without mock I/O; old source fails, corrected
+source passes. Native module/source are unchanged from92d0ba0. Rerun the affected
+PHP/backend matrix, DEBUG/ASan/Valgrind workloads and gates before packaging.
+The earlier Valgrind fail remains intact; no memory warning or assertion suppressed.
