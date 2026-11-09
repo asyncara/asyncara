@@ -56,7 +56,13 @@ final class HttpClient
         return Async::spawn(function () use ($url, $path, $headers, $followRedirects, $atomic, $durable, $failOnHttpError): int {
             $file = null; $stream = null;
             try {
-                if ($atomic) $file = Async::await(\Asyncara\IO\File::stage($path));
+                if ($atomic) {
+                    // A completed acquisition owns a resource, not just a value.
+                    // Take ownership before observing waiter cancellation; it
+                    // can race the stage Task's completion notification.
+                    $file = Async::shield(static fn() => \Asyncara\IO\File::stage($path)->await());
+                    Scheduler::current()->currentCancellation()?->throwIfRequested();
+                }
                 $stream = $this->getStream($url, $headers, $followRedirects);
                 if ($failOnHttpError) {
                     $status = $stream->headers()->await()->status;

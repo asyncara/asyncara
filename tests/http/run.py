@@ -72,7 +72,7 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
-    for test in ['completion', 'proxy', 'pooling', 'buffer_budget']:
+    for test in ['completion', 'acquire_cancel', 'proxy', 'pooling', 'buffer_budget']:
         run(backend + '-' + test, php + ['tests/http/' + test + '.php'], env)
     for limit in [8, 16, 32]:
         run(backend + '-connections-' + str(limit), php + ['tests/http/connections.php', limit], env)
