@@ -2011,3 +2011,23 @@ These controls do not explain or erase the original failure. The test now record
 ticks, native counters and scheduler metrics *only after its existing assertion
 has failed*, so a recurrence can be distinguished. No tracing or extra sampling
 is introduced into successful execution. Native source remains b1cfd18.
+
+### Confirmed streaming-test release race, separate from ticker failure
+
+The next PHP8.5/poll Hyper `buffered_owner` execution failed with `Hyper partial
+transfer` after15.850s. Its raw report remains `http-85-r2-data`. The local streaming
+fixture cleared HEADER_GATE when `/headers-first` arrived, losing an earlier
+`/release-body` request on another connection. `gate_protocol.php` deliberately
+orders release first and reproduced the same exception after16.126s on the original
+fixture and unchanged native binary. The original failed run did not log peer
+ordering, so it is consistent with this confirmed defect, not a recorded causal
+trace of that particular run.
+
+The fixture now consumes one semaphore permit per body, retaining early release
+and preserving the original15s guard. No runtime source, two-tick assertion,
+response size or timeout was changed. Early-release plus three later pending-body
+cycles pass on curl/Hyper and epoll/poll; ten repetitions of the formerly failed
+Hyper ownership test pass. The test is wired into the HTTP gate/full suite.
+This does not explain the separate PHP8.3 connection-progress failure or historical
+Phase4/B2 failures. Native source remains b1cfd18; final validation restarts with
+new artifact paths and the corrected peer protocol.

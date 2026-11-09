@@ -3,7 +3,10 @@
 import email.parser, email.policy, gzip, hashlib, http.server, json, socket, ssl, sys, threading, time, urllib.parse
 
 BLOCK = bytes(range(256)) * 256
-HEADER_GATE = threading.Event()
+# One release per body, including a control handled before its body request.
+# Clearing an Event on request arrival lost an earlier release on another
+# connection and produced a spurious truncated response after the 15s guard.
+HEADER_GATE = threading.Semaphore(0)
 
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
@@ -77,12 +80,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 data = gzip.compress(BLOCK, mtime=0)
                 self.send_response(200); self.send_header('Content-Encoding', 'gzip'); self.send_header('Content-Length', str(len(data))); self.end_headers(); self.wfile.write(data); return
             if path == '/headers-first':
-                HEADER_GATE.clear()
                 self.send_response(200);self.send_header('Content-Length','1');self.end_headers();self.wfile.flush()
-                if not HEADER_GATE.wait(15):self.close_connection=True;return
+                if not HEADER_GATE.acquire(timeout=15):self.close_connection=True;return
                 self.wfile.write(b'x');return
             if path == '/release-body':
-                HEADER_GATE.set();self.send_response(200);self.send_header('Content-Length','0');self.end_headers();return
+                HEADER_GATE.release();self.send_response(200);self.send_header('Content-Length','0');self.end_headers();return
             if path == '/empty':
                 self.send_response(204);self.send_header('Content-Length','0');self.end_headers();return
             if path == '/chunks':
