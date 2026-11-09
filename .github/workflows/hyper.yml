@@ -1,0 +1,52 @@
+name: Optional Hyper backend verification
+on:
+  workflow_dispatch:
+  push:
+    paths: ['ext/**', 'src/**', 'tests/http/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
+  pull_request:
+    paths: ['ext/**', 'src/**', 'tests/http/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
+permissions:
+  contents: read
+jobs:
+  hyper:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo add-apt-repository -y ppa:ondrej/php
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Prepare disposable runner dependencies
+        env:
+          PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5
+          ./scripts/bootstrap-local.sh
+          echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
+          rustc --version
+          cargo --version
+      - name: Isolated Rust and native fail-stop regressions
+        run: python3 tests/http/hyper_ffi.py --output build/hyper-ffi
+      - name: Build ordinary module without test fault controls
+        run: |
+          CARGO_TARGET_DIR="$PWD/build/hyper-production" ASYNCARA_OUTPUT=build/hyper.so bash scripts/build-hyper-local.sh
+          nm -D build/hyper.so > build/hyper-symbols.txt
+          if grep -q ar_hyper_test_fault build/hyper-symbols.txt; then exit 1; fi
+          ./scripts/prepare-test-certs.sh
+      - name: HTTP gate on epoll and poll
+        run: python3 tests/http/run.py --php php --extension build/hyper.so --output build/hyper-http --hyper
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hyper-php-${{ matrix.php }}
+          path: |
+            build/hyper-ffi/*.json
+            build/hyper-ffi/*.log
+            build/hyper-http/
