@@ -253,6 +253,13 @@ static bool valid_http_options(ar_value *v) {
                 return false;
         } else if (!strcmp(key, "connectTimeoutMs")) {
             if (x->type != V_INT || x->integer < 1 || x->integer > 3600000) return false;
+        } else if (!strcmp(key, "resolvedAddresses")) {
+            if (x->type != V_ARRAY || !x->count || x->count > 16) return false;
+            for (size_t n = 0; n < x->count; n++) {
+                ar_value *ip = x->items[n];
+                if (x->keys[n] || ip->type != V_STRING || !ip->length || ip->length > 45 ||
+                    memchr(ip->string, 0, ip->length)) return false;
+            }
         } else if (!strcmp(key, "uploadSize")) {
             if (x->type != V_INT || x->integer < -1) return false;
             upload = true; upload_size = x->integer;
@@ -863,7 +870,10 @@ PHP_FUNCTION(asyncara_submit) {
             j->length = Z_LVAL_P(timeout);
             bool head_request = false;
             for (size_t i = 0; i < options->count; i++)
-                if (!strcmp(options->keys[i], "streamResponse"))
+                if (!strcmp(options->keys[i], "resolvedAddresses") && !e->hyper_requested) {
+                    zend_value_error("Resolved addresses are internal to the Hyper transport");
+                    goto error;
+                } else if (!strcmp(options->keys[i], "streamResponse"))
                     j->stream_response = (int)options->items[i]->integer;
                 else if (!strcmp(options->keys[i], "uploadSize")) {
                     j->stream_upload = 1;

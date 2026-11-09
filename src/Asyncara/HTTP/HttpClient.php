@@ -11,6 +11,7 @@ final class HttpClient
     use \Asyncara\Internal\NonCopyable;
 
     private Semaphore $slots;
+    private ?bool $hyper = null;
     public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10)
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
@@ -163,6 +164,12 @@ final class HttpClient
     public function request(string $method, string $url, ?string $body = null, array $headers = [], bool $followRedirects = false): Future
     {
         $options = $this->options($method, $url, $headers, $followRedirects);
+        if ($this->hyper ??= asyncara_info()['httpBackend'] === 'hyper-prototype') {
+            $host = parse_url($url, PHP_URL_HOST);
+            if (is_string($host) && inet_pton(trim($host, '[]')) === false) {
+                return $this->resolvedRequest($url, $body, $options, $host);
+            }
+        }
         $scheduler = Scheduler::current();
         if ($this->slots->tryAcquire()) {
             try { $completion = new BufferedRequest($this->slots, $scheduler); }
@@ -186,6 +193,37 @@ final class HttpClient
                     });
                 }
             }
+        }));
+    }
+    /** Hyper uses the existing bounded native resolver workers, never blocking DNS on the loop. */
+    private function resolvedRequest(string $url, ?string $body, array $options, string $host): Future
+    {
+        return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options, $host): Response {
+            if ($body !== null || $options['method'] !== 'GET' || $options['headers'] || $options['followRedirects'] ||
+                isset($options['proxy']) || isset($options['caFile']) ||
+                parse_url($url, PHP_URL_SCHEME) !== 'http' || parse_url($url, PHP_URL_USER) !== null ||
+                strlen($host) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $host)) {
+                throw new \Asyncara\Exception\OperationException('Invalid or unsupported Hyper origin');
+            }
+            foreach (['http_proxy', 'HTTP_PROXY', 'all_proxy', 'ALL_PROXY'] as $name) {
+                if (($proxy = getenv($name)) !== false && $proxy !== '') throw new \Asyncara\Exception\OperationException('Hyper proxy is unsupported');
+            }
+            $start = Scheduler::now();
+            // Owned DNS cancellation drains the existing worker completion. A
+            // running getaddrinfo cannot be forcibly stopped; timers still run.
+            $addresses = Async::timeout(min($this->timeout, $this->connectTimeout),
+                static fn() => Async::await(\Asyncara\IO\Dns::resolve($host)));
+            Scheduler::current()->currentCancellation()?->throwIfRequested();
+            $addresses = array_values(array_unique($addresses));
+            if (!$addresses || count($addresses) > 16) throw new \Asyncara\Exception\OperationException('Hyper DNS address limit (1..16)');
+            $elapsed = Scheduler::now() - $start;
+            $remaining = $this->timeout - $elapsed;
+            $connect = $this->connectTimeout - $elapsed;
+            if ($remaining <= 0 || $connect <= 0) throw new \Asyncara\Exception\TimeoutException('HTTP DNS deadline exceeded');
+            $options['resolvedAddresses'] = $addresses;
+            $options['connectTimeoutMs'] = (int)ceil($connect * 1000);
+            $result = Async::await(Scheduler::current()->native('http', [$url, $body, $options, (int)ceil($remaining * 1000)]));
+            return new Response($result['status'], $result['body'], $result['headers']);
         }));
     }
     private function options(string $method, string $url, array $headers, bool $followRedirects): array

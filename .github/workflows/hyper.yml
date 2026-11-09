@@ -42,6 +42,11 @@ jobs:
           ./scripts/prepare-test-certs.sh
       - name: HTTP gate on epoll and poll
         run: python3 tests/http/run.py --php php --extension build/hyper.so --output build/hyper-http --hyper
+      - name: Controlled resolver ownership (separate test-only module)
+        run: |
+          CARGO_TARGET_DIR="$PWD/build/hyper-production" ASYNCARA_OUTPUT=build/hyper-dns-gated.so EXTRA_LDFLAGS='tests/http/dns_gate.c -Wl,--wrap=getaddrinfo' bash scripts/build-hyper-local.sh
+          ASYNCARA_HTTP_BACKEND=hyper-prototype ASYNCARA_BACKEND=epoll php -n -d extension="$PWD/build/hyper-dns-gated.so" tests/http/hyper_dns_lifecycle.php
+          ASYNCARA_HTTP_BACKEND=hyper-prototype ASYNCARA_BACKEND=poll php -n -d extension="$PWD/build/hyper-dns-gated.so" tests/http/hyper_dns_lifecycle.php
       - uses: actions/upload-artifact@v4
         if: always()
         with:
