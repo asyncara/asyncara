@@ -10,6 +10,16 @@ function reference(string $raw): array {
     return $headers;
 }
 $cases = ['', "HTTP/1.1 100 Continue\r\nA: discard\r\n\r\nHTTP/1.1 200 OK\r\nA: yes\r\na: again\r\n", ": zero\r\n0001: padded\r\n1: number\r\n-1: negative\r\n", " A\0 :\0v\v\t\r\n", "a:b:c\r\nx:"];
+// Delimiter boundaries and binary values must retain the existing PHP parser
+// semantics even when the native line search skips whole spans at once.
+foreach (["\n", "\r", "\r\r", "\0", "x", "\n\r", "\r\n"] as $fill) {
+    foreach ([1, 31, 32, 33, 4096, 65530] as $length) {
+        $value = substr(str_repeat($fill, $length), 0, $length);
+        $cases[] = "X: ".$value;
+        $cases[] = "X: ".$value."\r\nY: end\r\n";
+    }
+}
+$cases[] = "\n\r\n\r\nX:value\r";
 mt_srand(20261109);
 for ($i=0; $i<10000; $i++) {
     $raw='';
