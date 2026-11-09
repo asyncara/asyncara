@@ -1,0 +1,86 @@
+{
+  "source": "f26ad6b71a20c55bc452e80d77672d37499f3c82",
+  "nativeSource": "b1cfd18a97eb9962761ba1c4c2fad0bad3ef25bb",
+  "status": "PASS_SCOPED_TEST_FIXTURE_CORRECTION",
+  "nativeAndPhpRuntimeUnchanged": true,
+  "moduleSha256": "435da35dd414bfd2e756006b02e6ee142586037e02c7a0975fa0a1367ae67bb5",
+  "changedEarlierManifestPaths": [
+    "scripts/test.sh",
+    "tests/http/capacity_server.py",
+    "tests/http/run.py"
+  ],
+  "newTest": "tests/http/peer_shutdown.py",
+  "reports": {
+    "peer-shutdown-corrected": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/peer-shutdown-corrected/result.json",
+      "sha256": "899be3746352b63b7ff4ffa92ee9385b7b1712b95e58297bd0dc3814eaafd8ea",
+      "wallSeconds": 0.30950249917805195
+    },
+    "capacity-peer-r4-83-epoll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-83-epoll-curl/result.json",
+      "sha256": "a22855e797375cfbbd56246e4bf5ef7228770b271eaf372674848a4f282b81db",
+      "wallSeconds": 0.3600819718558341
+    },
+    "capacity-peer-r4-83-epoll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-83-epoll-hyper-prototype/result.json",
+      "sha256": "009eb46594312215dd4a75d087cec2715df5f28d07e6e1b87cf1826314812f1d",
+      "wallSeconds": 0.3087222259491682
+    },
+    "capacity-peer-r4-83-poll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-83-poll-curl/result.json",
+      "sha256": "f20d99d9281198eeb86a21dfb423d1555e5a5851f380e02d84bc0008697db558",
+      "wallSeconds": 0.29204916302114725
+    },
+    "capacity-peer-r4-83-poll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-83-poll-hyper-prototype/result.json",
+      "sha256": "1ad31b84e6aaa92b7203a0da373d79224eac600ca2ab5baa6fc450f7ab46cdf0",
+      "wallSeconds": 0.2563355958554894
+    },
+    "capacity-peer-r4-84-epoll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-84-epoll-curl/result.json",
+      "sha256": "86406fc4df8991d5e827cdf2712ef44bd76d10e0c8c9f33c4e46ba13d01fb809",
+      "wallSeconds": 0.2811807959806174
+    },
+    "capacity-peer-r4-84-epoll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-84-epoll-hyper-prototype/result.json",
+      "sha256": "e65ecdb14811b427346d706e1a9c2c1b03af1c9872229c721f1792a659da4f39",
+      "wallSeconds": 0.4526990579906851
+    },
+    "capacity-peer-r4-84-poll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-84-poll-curl/result.json",
+      "sha256": "9a173820f8eafddc70609e4924b097862cce78f41e61dc2a2ed345c5d3d63a03",
+      "wallSeconds": 0.434578187065199
+    },
+    "capacity-peer-r4-84-poll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-84-poll-hyper-prototype/result.json",
+      "sha256": "42a41a7674c625c5c364dadbdafbcac408abf20c54e4fefe5c66ef5efe68a31f",
+      "wallSeconds": 0.479939186014235
+    },
+    "capacity-peer-r4-85-epoll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-85-epoll-curl/result.json",
+      "sha256": "27b1dc93975712265f1b7b9fc7ddfa8050fd77668e63aa77ff62b9fe262009af",
+      "wallSeconds": 0.4430707430001348
+    },
+    "capacity-peer-r4-85-epoll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-85-epoll-hyper-prototype/result.json",
+      "sha256": "92aed52077d330627a16ecf43b7bd5fe5118db5cfa0d26bc4f5a8ed9ebc287f6",
+      "wallSeconds": 0.2924739259760827
+    },
+    "capacity-peer-r4-85-poll-curl": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-85-poll-curl/result.json",
+      "sha256": "5488dfa101479fbb07c52621090acb8af780238a29630fcb8d2b64f1006f7b95",
+      "wallSeconds": 0.28376639587804675
+    },
+    "capacity-peer-r4-85-poll-hyper-prototype": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-peer-r4-85-poll-hyper-prototype/result.json",
+      "sha256": "ba61a028c5f41e9ae756306006aae070e3a50d986227e5e8d38768792164f8a6",
+      "wallSeconds": 0.29170330218039453
+    }
+  },
+  "negativeControl": {
+    "path": "/home/coder/Asyncara-http-small-buffer-evidence-20261109T194455Z/peer-before-large/stdout.log",
+    "sha256": "e667df87cbe900520a1d94c9acf4147aa9dc65788e3260d332d494325be3b346",
+    "status": "FAIL_AS_EXPECTED"
+  },
+  "boundaries": "Only fixture/control changes; previous native matrix remains attached to test9a59bef. New package gets independent final-source validation."
+}

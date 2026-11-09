@@ -1,5 +1,10 @@
 # Current isolated HTTP development state
 
+Test-only follow-up `f26ad6b` adds safe peer EOF teardown and a regression; native
+source remains b1cfd18. All12 capacity controls pass again. The smaller-initial-
+buffer experiment9eea780 is retained but not merged. See
+[capacity follow-up](HTTP_BUFFER_CAPACITY.md#later-test-fixture-cleanup-and-rejected-c-experiment).
+
 ## HTTP capacity continuation (2026-11-09)
 
 Native `b1cfd18`, tests `9a59bef`: buffer growth now reserves the terminator

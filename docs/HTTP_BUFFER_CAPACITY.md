@@ -146,3 +146,21 @@ validation does not retroactively certify an older archive. Remaining priorities
 explain any recurrence of connection progress with the recorded counters, retain
 B2 failure attribution work, and profile public-path cost before another native
 performance experiment. Neither thresholds nor resource limits may be relaxed.
+
+## Later test-fixture cleanup and rejected C experiment
+
+Test checkpoint `f26ad6b71a20c55bc452e80d77672d37499f3c82` repairs capacity_server.py EOF cleanup only.
+The peer now unblocks held handlers after the test owner closes stdin, so Python
+Server.wait_closed can join them. Normal body release/progress assertions remain
+unchanged. An independent no-PHP partial-connection regression fails before the
+repair and passes after; public capacity controls pass on all12 PHP/backend/HTTP
+transport combinations. [Exact review](phase6/http-peer-eof-evidence.json).
+Native source remains b1cfd18 and all existing module hashes are unchanged.
+
+The isolated smaller-initial-buffer experiment9eea780 is DO_NOT_ADOPT. It reduces
+1KiB tracked peak294656→73472 bytes but measured Hyper median8826.87/s versus
+8783.95/s baseline;64KiB4519.07/s versus4990.34/s, CPU201.199 versus181.212us.
+No useful overall speed improvement is established. Source, full measurements
+and failed fixture/build controls remain at
+`/home/coder/Asyncara-http-small-buffer-20261109T194455Z` and its separate evidence
+directory. The C tier change is absent from this capacity source.
