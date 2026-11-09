@@ -431,46 +431,129 @@ static int64_t trace_elapsed(uint64_t began) {
     uint64_t end = ar_trace_clock();
     return end >= began ? (int64_t)(end - began) : -1;
 }
-static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline) {
 #ifdef __linux__
-    if (e->use_epoll) {
-        int ep = epoll_create1(EPOLL_CLOEXEC);
-        if (ep < 0)
-            return -1;
-        struct epoll_event *events = calloc(n, sizeof(*events));
-        if (!events) {
-            close(ep);
-            errno = ENOMEM;
-            return -1;
+struct ar_wait_cache {
+    int ep, *fds;
+    size_t count, capacity;
+    struct epoll_event *events;
+};
+static void wait_invalidate(struct ar_wait_cache *c) {
+    if (c->ep >= 0) close(c->ep);
+    c->ep = -1; c->count = 0;
+}
+#endif
+void ar_wait_cleanup(ar_engine *e) {
+#ifdef __linux__
+    struct ar_wait_cache *c = e->wait_cache;
+    if (c) {
+        wait_invalidate(c);
+        free(c->fds); free(c->events); free(c);
+        e->wait_cache = NULL;
+    }
+#endif
+    e->wait_control_bytes = 0;
+}
+int ar_wait_initialize(ar_engine *e) {
+#ifdef __linux__
+    /* The epoll descriptor belongs to the engine from initialization through
+     * shutdown, just like its wake pipe. Lazy first-wait ownership would add
+     * a descriptor after a caller's initialized-runtime lifecycle baseline. */
+    if (e->use_epoll && !e->wait_cache) {
+        struct ar_wait_cache *c = calloc(1, sizeof(*c));
+        if (!c) { errno = ENOMEM; return -1; }
+        c->ep = epoll_create1(EPOLL_CLOEXEC);
+        if (c->ep < 0) { int saved = errno; free(c); errno = saved; return -1; }
+        e->wait_cache = c; e->wait_control_bytes = sizeof(*c); e->epoll_created++;
+    }
+#else
+    (void)e;
+#endif
+    return 0;
+}
+#ifdef __linux__
+static struct ar_wait_cache *wait_prepare(ar_engine *e, struct pollfd *fds, size_t n) {
+    if (!n || n > AR_MAX_WATCHERS) { errno = EOVERFLOW; return NULL; }
+    struct ar_wait_cache *c = e->wait_cache;
+    if (!c) {
+        c = calloc(1, sizeof(*c));
+        if (!c) { errno = ENOMEM; return NULL; }
+        c->ep = -1; e->wait_cache = c;
+        e->wait_control_bytes = sizeof(*c);
+    }
+    if (n > c->capacity) {
+        /* Free before growing: even transient retained storage is bounded by
+         * sizeof(cache)+AR_MAX_WATCHERS*(sizeof(int)+sizeof(epoll_event)).
+         * Like existing wait scratch, control storage is outside the payload
+         * ledger so draining a full payload budget remains possible. */
+        if (c->count) wait_invalidate(c);
+        free(c->fds); free(c->events); c->fds = NULL; c->events = NULL;
+        size_t capacity = c->capacity ? c->capacity : 8;
+        while (capacity < n) capacity *= 2;
+        if (capacity > AR_MAX_WATCHERS) capacity = AR_MAX_WATCHERS;
+        c->capacity = 0;
+        c->fds = calloc(capacity, sizeof(*c->fds));
+        c->events = calloc(capacity, sizeof(*c->events));
+        if (!c->fds || !c->events) {
+            ar_wait_cleanup(e); errno = ENOMEM; return NULL;
         }
+        c->capacity = capacity;
+        e->wait_control_bytes = sizeof(*c) + capacity * (sizeof(*c->fds) + sizeof(*c->events));
+    }
+    int reuse = c->ep >= 0 && c->count == n;
+    for (size_t i = 0; reuse && i < n; i++) reuse = c->fds[i] == fds[i].fd;
+    if (reuse) {
+        /* Always MOD: numeric fd equality does not establish open-file-
+         * description identity. Closing/reusing fd while a dup retains its
+         * old OFD leaves an old registration alive. ENOENT must rebuild the
+         * entire instance, never ADD alongside that orphan registration. */
         for (size_t i = 0; i < n; i++) {
             struct epoll_event ev = {.events = (fds[i].events & POLLIN ? EPOLLIN : 0) |
                                                (fds[i].events & POLLOUT ? EPOLLOUT : 0),
                                      .data.u64 = i};
-            if (epoll_ctl(ep, EPOLL_CTL_ADD, fds[i].fd, &ev)) {
-                int saved = errno;
-                free(events);
-                close(ep);
-                errno = saved;
-                return -1;
+            if (epoll_ctl(c->ep, EPOLL_CTL_MOD, fds[i].fd, &ev)) {
+                if (errno == ENOENT) { reuse = 0; break; }
+                goto error;
             }
         }
+        if (reuse) { e->epoll_reused++; return c; }
+    }
+    if (c->count) wait_invalidate(c);
+    if (c->ep < 0) {
+        c->ep = epoll_create1(EPOLL_CLOEXEC);
+        if (c->ep < 0) return NULL;
+        e->epoll_created++;
+    }
+    for (size_t i = 0; i < n; i++) {
+        struct epoll_event ev = {.events = (fds[i].events & POLLIN ? EPOLLIN : 0) |
+                                           (fds[i].events & POLLOUT ? EPOLLOUT : 0), .data.u64 = i};
+        if (epoll_ctl(c->ep, EPOLL_CTL_ADD, fds[i].fd, &ev)) goto error;
+        c->fds[i] = fds[i].fd;
+    }
+    c->count = n;
+    return c;
+error:;
+    int saved = errno;
+    wait_invalidate(c); errno = saved;
+    return NULL;
+}
+#endif
+static int wait_fds(ar_engine *e, struct pollfd *fds, size_t n, int64_t deadline) {
+#ifdef __linux__
+    if (e->use_epoll) {
+        struct ar_wait_cache *c = wait_prepare(e, fds, n);
+        if (!c) return -1;
         int timeout = remaining_ms(deadline);
         ar_trace_emit(e, AR_TRACE_WAIT, 11, e->wait_id, timeout, n, 1);
         uint64_t began = ar_trace_enabled(e, AR_TRACE_WAIT) ? ar_trace_clock() : 0;
-        int rc = timeout == -2 ? -1 : epoll_wait(ep, events, (int)n, timeout);
+        int rc = timeout == -2 ? -1 : epoll_wait(c->ep, c->events, (int)n, timeout);
         ar_trace_emit(e, AR_TRACE_WAIT, 12, e->wait_id, rc, rc < 0 ? errno : 0, trace_elapsed(began));
         if (rc >= 0)
             for (int i = 0; i < rc; i++) {
-                uint32_t ev = events[i].events;
-                fds[events[i].data.u64].revents =
+                uint32_t ev = c->events[i].events;
+                fds[c->events[i].data.u64].revents =
                     (ev & EPOLLIN ? POLLIN : 0) | (ev & EPOLLOUT ? POLLOUT : 0) |
                     (ev & EPOLLHUP ? POLLHUP : 0) | (ev & EPOLLERR ? POLLERR : 0);
             }
-        int saved = errno;
-        free(events);
-        close(ep);
-        errno = saved;
         return rc;
     }
 #endif

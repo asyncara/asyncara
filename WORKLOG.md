@@ -1843,3 +1843,20 @@ on85. All tracked extracted bytes remain unchanged; LICENSE exact. Full
 attestation is docs/phase6/http-r2-package.json. No publication or push occurred.
 Performance remains NOT_MET, including the longer matching-reference comparison.
 The historical http-r1 archive and protected Phase4 checkout remain unchanged.
+
+## 2026-11-09 — HTTP epoll reuse candidate
+
+Continued from bc15648 on phase6-http. Preserved HTTP r2 archive and protected
+Phase4 checkout. Added production wait-cache reuse with mandatory descriptor
+identity revalidation through EPOLL_CTL_MOD and complete rebuild on ENOENT or
+vector changes. Real dup-held fd reuse and failure controls pass; baseline uses
+20000 epoll instances versus one for 20000 stable waits. Initial lazy cache
+lifetime failed the unchanged resource-copy fd assertion; moved the descriptor
+into engine initialization and preserved the failed run. Corrected copy test
+passes. Gate A passed in212.141s on epoll/poll with three seeds. Matched public
+HTTP performance still fails all requested targets; no small-response speedup
+is established. Wait-only epoll CPU falls from3.508225s to0.532759s across three
+rotated samples. PHP83/84/DEBUG HTTP matrices and scoped GCC ASan/UBSan HTTP
+checks pass; full85 suites and FPM/memory validation continue. Details and paths:
+docs/HTTP_EPOLL_REUSE.md. HTTP performance targets remain NOT_MET. No new
+performance, universal reliability or historical zero-tick repair claim.

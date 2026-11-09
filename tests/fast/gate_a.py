@@ -20,6 +20,9 @@ def run(name,cmd,env=None,expected=0):
  (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(name,code,flush=True)
  if code!=expected:raise SystemExit(1)
 cc=shlex.split(os.environ.get('CC','cc'));flags=['-std=c11','-D_GNU_SOURCE','-g','-O2','-Wall','-Wextra','-Werror','-Wno-unused-parameter','-I.local/sysroot/usr/include','-I.local/sysroot/usr/include/x86_64-linux-gnu'];native=['ext/workers.c','ext/backend.c','ext/memory.c'];libs=['-pthread','-l:libsqlite3.so.0','-l:libcurl.so.4']
+run('build-epoll-cache',cc+flags+['-Iext','tests/fast/epoll_cache.c']+native+libs+['-Wl,--wrap='+s for s in ['epoll_create1','epoll_ctl','epoll_wait','calloc']]+['-o',out/'epoll-cache'])
+run('epoll-cache',[out/'epoll-cache',a.iterations])
+run('epoll-cache-initialization',[out/'epoll-cache','--initialization'])
 run('build-native-wait',cc+flags+['tests/fast/native_wait.c']+native+libs+['-Wl,--wrap=write','-Wl,--wrap=poll','-Wl,--wrap=__poll_chk','-Wl,--wrap=epoll_wait','-o',out/'native-wait'])
 run('native-wait',[out/'native-wait',a.iterations,'all'])
 run('build-native-close',cc+flags+['tests/audit/close_cancellation.c']+native+libs+['-Wl,--wrap=pthread_create','-o',out/'native-close'])
