@@ -1,0 +1,1362 @@
+{
+  "runtimeSource": "dd633969e75b9a908f466daf64f0c711f13950e9",
+  "reviewSource": "bb962a1d6cc6480a4ba7a7749ef681a6e78171dc",
+  "branch": "phase6-http-transfer-20261109T211228Z",
+  "runtimeManifest": {
+    "ext/backend.c": "1198ec208fa2ad95e677d2c9b76dbb29012cc73833b083c39e8a55850e2d309f",
+    "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+    "ext/native.h": "c8464c37a5fa401ff04aece9247147e6dbf2aaafa2dd8adb4392de2a0d1cb9a7",
+    "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+    "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+    "ext/workers.c": "45dab2e55a3e3793e581e3032cbbf3f951923277c57dfca38ba29a7e8ebcd638",
+    "ext/php_asyncara.c": "e138f65fb5febbb14c2f8cc29022ade888229eceb00eb9cfb5b8cfb8c02b5096",
+    "ext/hyper/Cargo.toml": "103567745fc54a47669e080d85c46d78baba7cf145073c700cd826d10ada3943",
+    "ext/hyper/Cargo.lock": "88a684f1885fe6b499a33270c535e4f2a32eba1d020a1ba4934a8f8f4a7415c4",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/tests.rs": "e75e40a81c302fafefb8a0cf651a996d2c7301e9f28d0cdc600823c69c0245f4",
+    "ext/hyper/src/lib.rs": "8cb6ecc3510be6737cb7944c81d69b0e47c70d1cd14f8d761ce50a10faa42621"
+  },
+  "modules": {
+    "hyper-safety-r2-84.so": "bbb1808018b33645e10376a16da4e7fe79582339ae826e98bc48a8a496f9f0b4",
+    "hyper-safety-r2-83.so": "e97a2d331b6c90d76ad30b2f86489d2f2e22b8636d32f4c0b427cb7b15ee3fab",
+    "hyper-safety-r2-gcc.so": "4248c0bd33470a340072cb7c51ce6710d0e7299f14f8ab592b4c01927848ca8e",
+    "hyper-safety-r2-85.so": "a566a3e97c86f1f8ef7de7faf79295fd6f98296c204cc5fcac97f8e3aa9af602",
+    "hyper-safety-r2-debug.so": "bce91b5682bf8fcb33475cce035144fdf1391d7244a18d587cb58d20a2721afe"
+  },
+  "reports": {
+    "http-safety-r2-83-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/http-safety-r2-83-data/report.json",
+      "sha256": "a7613a6f34ab40e53f21317cf03d9bb06121a7fea59b8249a4a4f3978563a404",
+      "status": "PASS",
+      "seconds": 113.03331913100556,
+      "commands": 72
+    },
+    "http-safety-r2-84-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/http-safety-r2-84-data/report.json",
+      "sha256": "6278364b5a641ad1dc6d211b2eacf2b41c1bad54326d9d92cb236fdf3516e1e4",
+      "status": "PASS",
+      "seconds": 106.37948549701832,
+      "commands": 72
+    },
+    "http-safety-r2-85-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/http-safety-r2-85-data/report.json",
+      "sha256": "ead781edc69b3023cd62312d3fa093983f04da3446e7fea9c5edcdba6749b00e",
+      "status": "PASS",
+      "seconds": 119.52273682807572,
+      "commands": 72
+    },
+    "ffi-safety-r2-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/ffi-safety-r2-data/report.json",
+      "sha256": "ad9e6d92d486a0cb260f34ab38f0d22a02abebb073d1a3c6db01d89fc20bf924",
+      "status": "PASS",
+      "seconds": 42.68961037509143,
+      "commands": 19
+    },
+    "gate-a-safety-r2-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gate-a-safety-r2-data/report.json",
+      "sha256": "25a6f21718e743f12e4eab49a316b5afd2d0009bbeb9667b5a69fee8b41778b6",
+      "status": "PASS",
+      "seconds": 211.94934099703096,
+      "commands": 47
+    },
+    "fpm-safety-r2-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fpm-safety-r2-data/report.json",
+      "sha256": "e03f31dded4dec0694b3b44b7353f861ee21d7263e1d0c97cf28899ee5b255c7",
+      "status": "PASS",
+      "seconds": 8.11914589186199,
+      "commands": null
+    },
+    "hyper_fpm-safety-r2-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/hyper_fpm-safety-r2-data/report.json",
+      "sha256": "228a1baf99f08d9816c1d8b0e515d7a2d623bf513f441a7db67aed3aa952af60",
+      "status": "PASS",
+      "seconds": 8.544207299826667,
+      "commands": null
+    },
+    "curl-trailer-runner-data": {
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/curl-trailer-runner-data/report.json",
+      "sha256": "b09135ec8eb96591d3c7dde2e8f472bf4f65f2cbf9da986bfe9cb22df5ccc57c",
+      "status": "FAIL",
+      "seconds": null,
+      "commands": 3
+    }
+  },
+  "executions": [
+    {
+      "name": "allocation-safety-r2",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/allocation-safety-r2/result.json",
+      "sha256": "97ed2c6213f5d40ab938068a31b0355ee13a48a36f0c697c75b7951a58b748ab",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 7.631765331141651,
+      "logSha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+    },
+    {
+      "name": "debug-epoll-curl-multi-cancelled_upload_reuse",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-curl-multi-cancelled_upload_reuse/result.json",
+      "sha256": "6fe7d99f2f2af4226f0874dffa2dc71db3a27ac2386368238a1daee354db45e6",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3795646759681404,
+      "logSha256": "ff607f6489a9fe4ab1d07eceb5148a8ca73a1f6658ebc96a966ade41d2397fbd"
+    },
+    {
+      "name": "debug-epoll-curl-multi-completion",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-curl-multi-completion/result.json",
+      "sha256": "2d2d77adb3a371189995d8e7ca27a5c581141ae1db057c4505676f0fdcb4d11e",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 4.864006095100194,
+      "logSha256": "6221342490fbb3b30ab055d20359af378f66ea061b2316b5df4e1a98438f6580"
+    },
+    {
+      "name": "debug-epoll-curl-multi-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-curl-multi-hyper_wakeups/result.json",
+      "sha256": "635dfe78d25792d0f54bb85c32dcfb0dbb8bfcce2733ac8feaf4d64f57ba7a50",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3354913459625095,
+      "logSha256": "53d77c0a0ab33a5d94dd2d5b5c860b23764444b76a4a8397c4bc0a3c9c058c9a"
+    },
+    {
+      "name": "debug-epoll-curl-multi-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-curl-multi-transfer_geometry/result.json",
+      "sha256": "f00965a3ccc3d82a23c6dab15fe6c15f9ceda05411db2eeddac4e243734503b4",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.560104972915724,
+      "logSha256": "792586869e73d92eea16dcd357b3873ab068124bb6ffc3a6c99a252965c2a96d"
+    },
+    {
+      "name": "debug-epoll-hyper-prototype-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-hyper-prototype-buffered_owner/result.json",
+      "sha256": "c642c75b6347ffea6e76be7d77c2452b44e677b157f2ce2eaf7167f2e337852f",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3688044410664588,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    {
+      "name": "debug-epoll-hyper-prototype-hyper",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-hyper-prototype-hyper/result.json",
+      "sha256": "f456435f35fd0faa4255f8ebb15c656406bd7880c29b09f544ccebf6218b2049",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.9681042048614472,
+      "logSha256": "a8261d325862625208a32989d52428acb18e6ad9bb2470b370f8a38e78d91e08"
+    },
+    {
+      "name": "debug-epoll-hyper-prototype-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-hyper-prototype-hyper_encoding/result.json",
+      "sha256": "81e4adee392a59a6fb381c349e4a1276a5343d0d80b2418e88bdff06ee658593",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.3528259319718927,
+      "logSha256": "e804faafcf8d0d9c3dea5bfb0449f13707a6b18661517eb9dcb47380bf19582f"
+    },
+    {
+      "name": "debug-epoll-hyper-prototype-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-hyper-prototype-hyper_wakeups/result.json",
+      "sha256": "0893d441ecb3622a2366b867381225df510991096c20449277ccb241c65554ee",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.38809084496460855,
+      "logSha256": "afbb863a630fd3d5d4fac85c9db98375b0aa5d1836057fe0eb2edfcda539e80f"
+    },
+    {
+      "name": "debug-epoll-hyper-prototype-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-epoll-hyper-prototype-transfer_geometry/result.json",
+      "sha256": "32d4ffa6a0d1ba7db618a3c4318abc6979d2a4923d5e9541ce8224f477778457",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.9062149180099368,
+      "logSha256": "56f03e96e4f3abb6dbb7bada8d3b3bd7e193c51e7c0e4b9603c007071fc32441"
+    },
+    {
+      "name": "debug-poll-curl-multi-cancelled_upload_reuse",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-curl-multi-cancelled_upload_reuse/result.json",
+      "sha256": "4fab0872319e8a8c08471590b8f88b7576c14c71beea675adaecb5e29d58e0df",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.8183656509499997,
+      "logSha256": "ff607f6489a9fe4ab1d07eceb5148a8ca73a1f6658ebc96a966ade41d2397fbd"
+    },
+    {
+      "name": "debug-poll-curl-multi-completion",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-curl-multi-completion/result.json",
+      "sha256": "b6c77d66f313426bebb6d47a2af1786ba70a33b70c6c5b1bc17da071dcdf5dec",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.7370668740477413,
+      "logSha256": "81b5d6311b98cdd8eab352fa10b3db64bf69ded3b99fc7cd0232c89529f9229d"
+    },
+    {
+      "name": "debug-poll-curl-multi-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-curl-multi-hyper_wakeups/result.json",
+      "sha256": "de62cb95819dc7dcac21f0eb8930d39a6872deaf0d59aaae91c850dd1acba0f0",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.45708461198955774,
+      "logSha256": "771608366581a4c1986a42070632c03d9f45797e3358630198b1aac257aed5f2"
+    },
+    {
+      "name": "debug-poll-curl-multi-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-curl-multi-transfer_geometry/result.json",
+      "sha256": "9df6f8f811f8051b0cced9a87653291ae1252f7d5fe07e3918a11ccb21fad543",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6541287649888545,
+      "logSha256": "df6fbb559cc9f9b11cc50d179be758e354805d3fa89a7663664ff26c88d3e122"
+    },
+    {
+      "name": "debug-poll-hyper-prototype-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-hyper-prototype-buffered_owner/result.json",
+      "sha256": "6ab52998dcef47c7eae2e89eb28d8791071063e0cac9f124f26dc0f23ed6a689",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.473457070067525,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    {
+      "name": "debug-poll-hyper-prototype-hyper",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-hyper-prototype-hyper/result.json",
+      "sha256": "ef4a739eadc85c126262d34ecb86e22d6a9738ef902a31eca30511cce01f687b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.954295553965494,
+      "logSha256": "c33abe66933ecca6ca9388b8e0cdc172512f3b7584c9bc32bfa45d6d2256e63c"
+    },
+    {
+      "name": "debug-poll-hyper-prototype-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-hyper-prototype-hyper_encoding/result.json",
+      "sha256": "e88fefb41b96f1f08609ddbeff47814c0275e8c8b83aa082fbc15ae0f77a9f6e",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6927079120650887,
+      "logSha256": "1881891f60e42faf2473fc30d6bfeffec7e0e121f7b5075dfb37bd220e4f04e7"
+    },
+    {
+      "name": "debug-poll-hyper-prototype-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-hyper-prototype-hyper_wakeups/result.json",
+      "sha256": "91aa18782756c1181cb0add2a2252a0f9e84d97e50dfaa30e6e1e147da228072",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6587387591134757,
+      "logSha256": "b4b60523505c03efbb227b630454f6aaf822d1f3e05623caeb5f3c1bb4c50697"
+    },
+    {
+      "name": "debug-poll-hyper-prototype-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-poll-hyper-prototype-transfer_geometry/result.json",
+      "sha256": "152e106da9fb4afeb81fe3a044595b4994073f7762d61ce46a6af8d7a272c0db",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.00163753493689,
+      "logSha256": "32d26f2e114ab61f4610c534bf6d96b52269f4a4527e195461dcb29e05126887"
+    },
+    {
+      "name": "debug-valgrind-epoll-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-epoll-buffered_owner/result.json",
+      "sha256": "95a12374ce58272f12674b00a426453a8f39f2e328bd30e3ab65b785ecc3f64e",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 9.643614184809849,
+      "logSha256": "f04b1d405fa00112abfc79553f4f67b2997517e5c771f1f8db02f4e6db80dede"
+    },
+    {
+      "name": "debug-valgrind-epoll-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-epoll-hyper_encoding/result.json",
+      "sha256": "c12ff13fb91af9e8a744e3a9bd0b13477c939566dd168f9450fb62146978bcba",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 10.912257536081597,
+      "logSha256": "cdea9aa1abcd5c22edf6e8209233e96530df5951363ca9bd21dfec18cac8d28a"
+    },
+    {
+      "name": "debug-valgrind-epoll-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-epoll-hyper_wakeups/result.json",
+      "sha256": "2b02cf037cefb1118a644bb485953c6e8cb8524de8ce6c0dd1b2b9bb22ef6904",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 10.37450992804952,
+      "logSha256": "e84754d0829e2d96d8bd21899c422f9a4b775a8d19a8d138368b028809263686"
+    },
+    {
+      "name": "debug-valgrind-poll-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-poll-buffered_owner/result.json",
+      "sha256": "d5b85b95b320716967754d5370d6609f89c74e496f43960c99ff58c99d0cdad2",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 9.666112866951153,
+      "logSha256": "bc0e5acfae48c4de78751d092363ecb138fdce97633398cb158c21646475e01a"
+    },
+    {
+      "name": "debug-valgrind-poll-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-poll-hyper_encoding/result.json",
+      "sha256": "5f97dddeaf05e4ec307f1b7435cd29b0870db224c0278c2114960cf24040d30b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 7.978116703918204,
+      "logSha256": "a16b3752d22619dbdbf212ece08c30fafe23d090b64348cb93ee2036fb06976a"
+    },
+    {
+      "name": "debug-valgrind-poll-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/debug-valgrind-poll-hyper_wakeups/result.json",
+      "sha256": "a7b8f0e77c7f0c19f3c779884457c1a09808830bf1ebcf26a88d121d9048af0a",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 8.86174718895927,
+      "logSha256": "9cbc479974fd829518f222143ff5bf53af898bd0d2937503b44b6528bbc9b3b7"
+    },
+    {
+      "name": "encoding-before",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/encoding-before/result.json",
+      "sha256": "3a300a66516f8d5ca1322777c33bd1bee234ed561c7c2e5c6fe6d327ff66267f",
+      "exit": 42,
+      "logs": {
+        "stderr.log": "645c4624da7c5095044527105159c4edc1c8481984a56e94bec3ebf6285934b8",
+        "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "scope": "Standalone negative control; no runner-status interpretation"
+    },
+    {
+      "name": "encoding-regression-after-epoll",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/encoding-regression-after-epoll/result.json",
+      "sha256": "bbb627bd3d7fddfde9c77d057b2c3f91ae38cba0bcc70fadb26e8419fe44ce8c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.43237968906760216,
+      "logSha256": "3c1280c75c8f07a1f447da2f20be5babf482edd1064cdf9ca300159f86b601b4"
+    },
+    {
+      "name": "encoding-regression-after-poll",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/encoding-regression-after-poll/result.json",
+      "sha256": "990f983e1628ed0716e139487e5d3148fa151cbb7731d682e95950761571020b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.3721693279221654,
+      "logSha256": "1881891f60e42faf2473fc30d6bfeffec7e0e121f7b5075dfb37bd220e4f04e7"
+    },
+    {
+      "name": "encoding-regression-before",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/encoding-regression-before/result.json",
+      "sha256": "84f7f65cbb6bd3415db9f4b0781b47160f5b91b219761430f194c252e16583cb",
+      "source": "2678bd2f26a83b8e1eefafa109221bad8ee9e397",
+      "exit": 255,
+      "expectedExit": 255,
+      "runnerStatus": "PASS",
+      "seconds": 0.4825741029344499,
+      "logSha256": "7ac7dc3a935d767a83541c715986644eea036027185f274a3d072e3b9bcd405d"
+    },
+    {
+      "name": "fault-before-11",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-11/result.json",
+      "sha256": "a5dcc8b4d965c9ff008124e635dee5e4482a4a7c93f604a50007b13cad88f9b5",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.7625468061305583,
+      "logSha256": "379225f759a9bc0fff8124e2e31b7c81ee98b2569f291903cfe5d1501f769c8a"
+    },
+    {
+      "name": "fault-before-12",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-12/result.json",
+      "sha256": "56408b1f427dc80aedbb743de2fd859df99a4af151d7e6e6a0f0e400924ef443",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.4729775779414922,
+      "logSha256": "f9a747b3187cd5591984ec8f5ea26069373d153e960dc0511e9d3f64f5ae02b0"
+    },
+    {
+      "name": "fault-before-13",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-13/result.json",
+      "sha256": "bd1da69a84ba782106fa60b94450abca77bbc26a8fa664b29e94e127f8136638",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.599416168872267,
+      "logSha256": "9ad84d180f5aeeacc2e157f9b37c03ca7c329132dbc0f1ab827d6de90b93ea78"
+    },
+    {
+      "name": "fault-before-14",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-14/result.json",
+      "sha256": "9b50531965ccc23df1c19ee9a339a833850f8a184a3a9e959eea9f74b0a063ff",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.7117123969364911,
+      "logSha256": "e564e548012f0906e360d7551793fe71a8d7287eba7ee8b1cb75c3db07bfe168"
+    },
+    {
+      "name": "fault-before-15",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-15/result.json",
+      "sha256": "86b39d058dbe3da00bab1bffee40bfca9bdf6242d531cb20cb832b2129faceff",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.6703634730074555,
+      "logSha256": "901742900a0e85a9b1d4df190e85b2fa7f970cc4f5676def215e4fff91105b78"
+    },
+    {
+      "name": "fault-before-16",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-16/result.json",
+      "sha256": "8efade993cd8a1822841435ae5d98d91a529eefea86ea703392c95ec616b32ec",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.546159072080627,
+      "logSha256": "500958b33164ea0105891cf3afcc8372aa54887fd7400e6aaf44699c8c68eb1c"
+    },
+    {
+      "name": "fault-before-17",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-17/result.json",
+      "sha256": "360ee6bda5057e12ba8500530a595fb57d0b89a5ac72e584e38ae6e7d0dffde2",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": -6,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.9141441739629954,
+      "logSha256": "5f47c32ebfa5c5d2485322265294c1e38d7765d2ba79132498256a6419b22180"
+    },
+    {
+      "name": "fault-before-build",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-build/result.json",
+      "sha256": "fcd38bb9299f5639972b6ecb8e4c39048ea4b589ce02d665c8bfffca493e043a",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 27.91014174814336,
+      "logSha256": "f1ed6687cf78b0fd918bc5322d7df21e032893098b6baf1f2f1eeec776027aa8"
+    },
+    {
+      "name": "fault-before-c",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/fault-before-c/result.json",
+      "sha256": "f548c4b24826291ac757ef2daf97e830cbcafd753d28f498b3ae53afe64f762a",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 3.952894886955619,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "faults-gcc-11-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-11-0/result.json",
+      "sha256": "bac36095c0d7f993dbd0ffe02bc9368fe791f659a861994f2dc7f4225da0f695",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.12932773912325501,
+      "logSha256": "775ec60e0942fa7b9362ce7d61d9aad208ee6fa157b67577f429376e6f2c92d5"
+    },
+    {
+      "name": "faults-gcc-11-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-11-1/result.json",
+      "sha256": "13206fd3306790b211920914f1ce6274c38dd7a0897c6d74e329d3677c8b3926",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.12624892289750278,
+      "logSha256": "684fc222c32875b3d78bf96ce4dd434d7a0ae3a8f6d9d109e6ecb2f9f7062bae"
+    },
+    {
+      "name": "faults-gcc-12-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-12-0/result.json",
+      "sha256": "f85e18a4d961fd5911a8f77b77f9615703b9df7f3a236104d95e71937a59d64a",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.30538690695539117,
+      "logSha256": "743158e49cb9312ba2028c0a0228b7f28705bf4555581a0125dc1766753182a8"
+    },
+    {
+      "name": "faults-gcc-12-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-12-1/result.json",
+      "sha256": "74ccfdbb6d7f16d59b3638a8ce2c027d9d01d5e8cc053e59326deac6b64eae5c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.10980456392280757,
+      "logSha256": "c233e8b72e984c58a85ab716d4802f2238b819203300098b9ab47668752fc1c6"
+    },
+    {
+      "name": "faults-gcc-13-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-13-0/result.json",
+      "sha256": "69ad2b2f793ecadadcf0b6d91b4012a980a1494e43acb299936719f02d332a78",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.33081322885118425,
+      "logSha256": "5f0b5c58e6f5ebfa2cdc8ba74a98ba60408ecc7ebb1860e65ce44ac0b7e3dc07"
+    },
+    {
+      "name": "faults-gcc-13-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-13-1/result.json",
+      "sha256": "122ac8a8b89e59a1721a7b01f7eff577d4eac9e88e1e874c9f071e78a27955a4",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.09273870103061199,
+      "logSha256": "c2d11a3fde9d48ebe61f065056c114163bd926db0ab4235e5e08ca1e7f4fe9a6"
+    },
+    {
+      "name": "faults-gcc-14-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-14-0/result.json",
+      "sha256": "70128b8e21e973be92ba76f247c9cbeaaf522a84f37c8aca3f23d506763e54fd",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.32668542489409447,
+      "logSha256": "6db37a57fe5bfdc8434fca20872d03515cb84339aba99a0661c8618a42fe5b09"
+    },
+    {
+      "name": "faults-gcc-14-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-14-1/result.json",
+      "sha256": "9b872b12b2f7ba9f248776ac105e8c948efbf234fc742c119310f89913869343",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.15068560908548534,
+      "logSha256": "88c946b080f9a66947d7967d0f7d4af93bfb54ec49a1eea0795ceeddca704938"
+    },
+    {
+      "name": "faults-gcc-15-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-15-0/result.json",
+      "sha256": "e21b869506c944fd86f4f39660ba3bda6aa45c8124f32bb2d26f0a32aceb230a",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.42498601507395506,
+      "logSha256": "df0396154245e155dc138a934cde7cd2c19db5712c94a031f5234ddf02c1ff36"
+    },
+    {
+      "name": "faults-gcc-15-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-15-1/result.json",
+      "sha256": "d61f47042384380c2029e77f6e2666576b28163a78cb9ef723f46e1bf2b5369e",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.15111205982975662,
+      "logSha256": "3eb59d068569bc5ece9a5f725abb80a26a8683ba6529f50a08bc87c7b52d1ea4"
+    },
+    {
+      "name": "faults-gcc-16-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-16-0/result.json",
+      "sha256": "2367255b77f0d9d6615f984231d5b4a394ae0ce16702d0324e93149ea5f5eb3e",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.5388746801763773,
+      "logSha256": "f42a690b98749107cec9b5e52a7579a1786ca66f33c1868dcff58531d03cd88a"
+    },
+    {
+      "name": "faults-gcc-16-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-16-1/result.json",
+      "sha256": "d03ebdec1fbd5a420cdf66aff9c5d7fe623e9338954b41e168d1142520a6a168",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.11141840508207679,
+      "logSha256": "de4296d175a3b0af18debb61f7b19929d50c1996ce29e869d8448a46d6abf9b6"
+    },
+    {
+      "name": "faults-gcc-17-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-17-0/result.json",
+      "sha256": "bf2aae38daafb8cf40473ed4b2350642788094fde9e89a83d56046d646b83f83",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.4510612371377647,
+      "logSha256": "ef2724dbf9aca32eba0d2a72f18e4b806be1b3f291e2ecfacbc354f74307be22"
+    },
+    {
+      "name": "faults-gcc-17-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-17-1/result.json",
+      "sha256": "a67d37d341184d5e347dd0f96beb9c5f6595d610fa936e9b8766472e309f9d89",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.11097580310888588,
+      "logSha256": "c2fbdf8c2cbeef6b0aabe9209084ba32b3ece9c0aa941fdf9676c428128b3239"
+    },
+    {
+      "name": "faults-gcc-18-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-18-0/result.json",
+      "sha256": "2c3cc3526f9ba64eae88a83ebba0de23edda8eca0fe37bd836540fe319b28655",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.1177539920900017,
+      "logSha256": "e0e69f05627a7a7d4b235ad080af149d72aeead366d40c7ab2ae56d690ae256a"
+    },
+    {
+      "name": "faults-gcc-18-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-18-1/result.json",
+      "sha256": "a452c865c21a5aa8c9bb583b05642a40a29473c320968219e9e53cb1f152f5dc",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.14452588697895408,
+      "logSha256": "57570c1c67c52ad603af6a8ec2ecfdc0e2a9f27b895b8b110426e0572211259c"
+    },
+    {
+      "name": "faults-gcc-build",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-gcc-build/result.json",
+      "sha256": "268ea402ee8e39c4cfed1f6f5833885572f06ebffc420590662f10b7d6d25d3d",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 7.492690762039274,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "faults-valgrind-11-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-11-0/result.json",
+      "sha256": "2bb72456ca626af2791bb68ca3e856c7129f32ade45c39b45f7f5130c72908e0",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.252233006991446,
+      "logSha256": "0ed512bd3aa251abc87a12f8177dbdd050f5fe399336d3376473e275904856d2"
+    },
+    {
+      "name": "faults-valgrind-11-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-11-1/result.json",
+      "sha256": "c3914c22a2fe4f90e120b11b39883c0033647c74528480b8b933a90525f5f18f",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.5315922459121794,
+      "logSha256": "6eadfed216f78b9dec4d97d6f27ef2f958b6b79ca8c177b4e7bc4a33a17f59a7"
+    },
+    {
+      "name": "faults-valgrind-12-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-12-0/result.json",
+      "sha256": "acbc1f7b5b4801b56d00693b956977d3c449ad4565a8cd6dc32fd38880870b82",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.567598464898765,
+      "logSha256": "1172994409703a90759719463d7d97e9e9f645671261b2508c63863635edfd96"
+    },
+    {
+      "name": "faults-valgrind-12-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-12-1/result.json",
+      "sha256": "589ede6a13e873c7f21302df796b4409586d22f8656cd0c5c35305bffba963ed",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.6320029019843787,
+      "logSha256": "ec2630e870d543956de6262b228e16ab204441ec90ba2d726b7ea33bab0106d7"
+    },
+    {
+      "name": "faults-valgrind-13-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-13-0/result.json",
+      "sha256": "c78764fcaaa1118a321b5420fe73f707ae9f145b6faa9e2efd9d874ec9438a49",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.7247654320672154,
+      "logSha256": "d947dd7f5a853e17f415c2014ce04a7c2c76ee2bb01ad2f51c94881f0e5e4a81"
+    },
+    {
+      "name": "faults-valgrind-13-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-13-1/result.json",
+      "sha256": "639bcd089bf5113e5fa35fee2a6821a3ad8ee7c3cf5154cc2d2bcb68747d010b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.4726892090402544,
+      "logSha256": "75e9f1a92140530f7900687e64553eaab0acdc27e71af605996ed8d933241cae"
+    },
+    {
+      "name": "faults-valgrind-14-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-14-0/result.json",
+      "sha256": "bb8501109f3475862ffd154a915ccb8b205ac69e944ebd4002a76903311da188",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3061840739101171,
+      "logSha256": "637fb15c6a5ba7ecee9aa0a5d204102a51bba623cd28a4f2792935df48c06cc3"
+    },
+    {
+      "name": "faults-valgrind-14-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-14-1/result.json",
+      "sha256": "6c67a17826369e85dceac50a2baa72378a9d215eeb3f21b2d05fd33f8d98b350",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.946563573088497,
+      "logSha256": "a593588fc3a1ef413171b7a7df30d6fb8f7b1c06a8c5d159c402206f74b791da"
+    },
+    {
+      "name": "faults-valgrind-15-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-15-0/result.json",
+      "sha256": "2b6ae2241ad062af8a5157394c20fe6863b4db3eb93878f414e9d541d432ac3a",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.023404670879245,
+      "logSha256": "08df806f754bcba6433948944dc41a022cba3de882884e8069036b09f4f153b7"
+    },
+    {
+      "name": "faults-valgrind-15-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-15-1/result.json",
+      "sha256": "312e945fc77f5ba3536d92c12a97114605dff5370f3075e1680e5ce66e5c3d31",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.8313457160256803,
+      "logSha256": "668f88849dd24e26d0e078b9e258dd101608f7d3cf9d80504509198deddf49e9"
+    },
+    {
+      "name": "faults-valgrind-16-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-16-0/result.json",
+      "sha256": "9a328397e4a27115314f622f1a041ec71241617a43563b18ce85620c494a174b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.833879450103268,
+      "logSha256": "31b283e7a282ec334180e0d735e9993a47664a8b7463263da0f50920aa841cbf"
+    },
+    {
+      "name": "faults-valgrind-16-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-16-1/result.json",
+      "sha256": "bf499ab70a3c1799143c63b6d05d38b94612c16df68081db7a3b0b601017f906",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.695581604959443,
+      "logSha256": "a867c7f36d0fb2520d7c95fce0dd7a37ea12dfbd6f124a213eea7546a1676096"
+    },
+    {
+      "name": "faults-valgrind-17-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-17-0/result.json",
+      "sha256": "0429019d57599772a715c76a6977bf7bda533fe763877bea304979090517eac4",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.5963224270381033,
+      "logSha256": "d00ba56b036f32bebdfd4aa63c26622afe3832211daae114d1ee2a4705a7242e"
+    },
+    {
+      "name": "faults-valgrind-17-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-17-1/result.json",
+      "sha256": "b1d06308ad0e830a6000d8cc498717d35dd069e04c3d590f57de1dc239ce7b55",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 3.57142953411676,
+      "logSha256": "3e007e55a5e2fb623d2e5d4f6c0cab5479cd5a24758b82186c556760c201da0d"
+    },
+    {
+      "name": "faults-valgrind-18-0",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-18-0/result.json",
+      "sha256": "bc83336b3bcfb7d17b11bf0868167e3f40e2fbb32df44f9b5a24962d260579eb",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.6034601971041411,
+      "logSha256": "1e8433a160dc0e0fa408dfd049207c9a1852bbc7386de69676c920792021b2d5"
+    },
+    {
+      "name": "faults-valgrind-18-1",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/faults-valgrind-18-1/result.json",
+      "sha256": "77091e7630235d5b85274d975d02f8c5d3654d69759ac6ee51714a2e55379758",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.7863081058021635,
+      "logSha256": "a882dc0aaef2ee866013255199ca199a85a8568f023ab04a10af6426383e2008"
+    },
+    {
+      "name": "gcc-epoll-curl-multi-cancelled_upload_reuse",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-curl-multi-cancelled_upload_reuse/result.json",
+      "sha256": "b56392695f9577e6ae9dbdbacd7a8e3b134cde8b34767c4cfdac16eea9e20616",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.5984308440238237,
+      "logSha256": "ff607f6489a9fe4ab1d07eceb5148a8ca73a1f6658ebc96a966ade41d2397fbd"
+    },
+    {
+      "name": "gcc-epoll-curl-multi-completion",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-curl-multi-completion/result.json",
+      "sha256": "42d047867765d4eca3675c666fca18d312c29e85aa8fb832d0b3d2178ed9e54b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 7.013730506878346,
+      "logSha256": "553fc93385f700d1f6310be5e9e0afdd0e794aacb0d465a66da2ee125081ac4c"
+    },
+    {
+      "name": "gcc-epoll-curl-multi-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-curl-multi-hyper_wakeups/result.json",
+      "sha256": "62a55fe827b0d5477233ad109e89f888c3bff8d74e745230a8a81205c46fb4db",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.9508241990115494,
+      "logSha256": "f226a4e2d691594b5af7d99ccae98277761aa7cc8eab170ea5c05bca6848578e"
+    },
+    {
+      "name": "gcc-epoll-curl-multi-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-curl-multi-transfer_geometry/result.json",
+      "sha256": "207dd2e90b54a6ac17e10c5e9c12a11c9dbb3eb1cd92c6d4277e859625aac4ca",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 1,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 4.0395963720511645,
+      "logSha256": "1163c6e36a0ad1ca5b4af1beff513fb339d991b8703593683d2d504ba705a9dc"
+    },
+    {
+      "name": "gcc-epoll-hyper-prototype-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-hyper-prototype-buffered_owner/result.json",
+      "sha256": "2e5db0120b51fc696b65bad4e378f6a89013f7684f3269f42368b22248110987",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.5166298451367766,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    {
+      "name": "gcc-epoll-hyper-prototype-hyper",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-hyper-prototype-hyper/result.json",
+      "sha256": "4329b240480ea0d4ede540b114ffb7ca2d571147ba10f5bae8b3534107de539b",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.2159390789456666,
+      "logSha256": "43cd33547fe66d139db3590536a682e8a2ca8d4a0c1588c83db983cfc4463ef3"
+    },
+    {
+      "name": "gcc-epoll-hyper-prototype-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-hyper-prototype-hyper_encoding/result.json",
+      "sha256": "48e58b0a4c58ec8f788dda7a7b31980cfa74d6a7b7fd5b05f99c8bf4c9141cdf",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.1642228299751878,
+      "logSha256": "e804faafcf8d0d9c3dea5bfb0449f13707a6b18661517eb9dcb47380bf19582f"
+    },
+    {
+      "name": "gcc-epoll-hyper-prototype-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-hyper-prototype-hyper_wakeups/result.json",
+      "sha256": "3783467b2c7ffdc5d1d89abb90f869c0ce4162c640d925a4d41d231abc0f6f7c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.2084799711592495,
+      "logSha256": "70d4d21f1e0d689d0d31154e53792426939a8d6b5fb3cc8633f3893684ab0367"
+    },
+    {
+      "name": "gcc-epoll-hyper-prototype-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-epoll-hyper-prototype-transfer_geometry/result.json",
+      "sha256": "8aaedf7d45d716d65a711d1fa3d5c0ccaf10e85ba736b63b7d4ebe63bfb7c65f",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3249832759611309,
+      "logSha256": "2259203688f9d55f8260bedeb9116ab9714685676d55e634cd8ac475b4cbfa3c"
+    },
+    {
+      "name": "gcc-poll-curl-multi-cancelled_upload_reuse",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-curl-multi-cancelled_upload_reuse/result.json",
+      "sha256": "ebf80effceeb88f599289ebeac7be903a4616362894fa2a4973958f3908b1017",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.5144444599281996,
+      "logSha256": "ff607f6489a9fe4ab1d07eceb5148a8ca73a1f6658ebc96a966ade41d2397fbd"
+    },
+    {
+      "name": "gcc-poll-curl-multi-completion",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-curl-multi-completion/result.json",
+      "sha256": "cd39c58406e0c0f6a232d1747eeb0ea492a2dcfef6189ebec5d55d3abcbd9f4c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 6.067407363792881,
+      "logSha256": "a66b1e1d807bda97be6334e20a73e4f6f5386df1beb0ab8b0da87db3bc634d80"
+    },
+    {
+      "name": "gcc-poll-curl-multi-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-curl-multi-hyper_wakeups/result.json",
+      "sha256": "1b77680c19b9a1c34954eb29e4eff72697ceca822ce296b431dc07a1176bcbb5",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.9659828841686249,
+      "logSha256": "54009fdb0218224abdca47d3ddabf83ba7a547e7068c6d31b9e6a5cd1a34b757"
+    },
+    {
+      "name": "gcc-poll-curl-multi-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-curl-multi-transfer_geometry/result.json",
+      "sha256": "ac94a16efb2015f1d28f651e6032625351f27928afffc9b7f8591ae4694117bd",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 1,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.7135338941588998,
+      "logSha256": "5b7be82ed1d817cc73a17475e36e3f3efdd83cfd794078f57a85e6135a3a7b82"
+    },
+    {
+      "name": "gcc-poll-hyper-prototype-buffered_owner",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-hyper-prototype-buffered_owner/result.json",
+      "sha256": "2d568e61d7abff4fc81a3416449f6165eb5c699d602ccfa7c1c35f964fd1c157",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.539815093157813,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    {
+      "name": "gcc-poll-hyper-prototype-hyper",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-hyper-prototype-hyper/result.json",
+      "sha256": "41721c5c892ef4db4a0c0a7e73f521b6ace2839c1756e7ecdf7412af6c322550",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 3.3622549469582736,
+      "logSha256": "c33abe66933ecca6ca9388b8e0cdc172512f3b7584c9bc32bfa45d6d2256e63c"
+    },
+    {
+      "name": "gcc-poll-hyper-prototype-hyper_encoding",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-hyper-prototype-hyper_encoding/result.json",
+      "sha256": "88168534e832d90fd28dbed63f951260d309deed07183d893c75ae1dec2f3437",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.8773223969619721,
+      "logSha256": "340837a23c3f7485b88dbb0a7f12faad9ab5a44261930e7197f02704aaad3b90"
+    },
+    {
+      "name": "gcc-poll-hyper-prototype-hyper_wakeups",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-hyper-prototype-hyper_wakeups/result.json",
+      "sha256": "e39a8438599af36eae33b58a783594b75483357ed0918375e1c2dd0a2c0c05da",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.4341567379888147,
+      "logSha256": "c65641d7deddcbfba995c11db308cba502b96a48825ce43e1acb8ecba922b6f9"
+    },
+    {
+      "name": "gcc-poll-hyper-prototype-transfer_geometry",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/gcc-poll-hyper-prototype-transfer_geometry/result.json",
+      "sha256": "46263257836d6e2736b49188ecf1e7d331471ed64519d099f2e4f930a11c053c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 2.4243958690203726,
+      "logSha256": "ed72d1e331050e228dba6c7fc39d110c2ab4f3e05285212002ca8d243c9f814f"
+    },
+    {
+      "name": "geometry-asan-symbols",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-asan-symbols/result.json",
+      "sha256": "d3336de6f116a16809307b8f69401e62deed9b68245737d0833dd346af08314c",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 1,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 1.9096737529616803,
+      "logSha256": "97ecf05848da501e187c8b6174ecf5e3460220ba9eca929558881dd1b82bd7c0"
+    },
+    {
+      "name": "geometry-baseline-epoll-curl",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-baseline-epoll-curl/result.json",
+      "sha256": "3130313c6ef51c8a6c2bd1ed9d64f7d4d6d0a521d95efa94fc75a9779b4ac6b4",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.46155747002922,
+      "logSha256": "19a6945a7c4a18863dde963765ceb9be5aa500f423a0e6ea1d2f9440f39bae2c"
+    },
+    {
+      "name": "geometry-baseline-epoll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-baseline-epoll-hyper-prototype/result.json",
+      "sha256": "d48b447344f2a110acef114bcafa3e745a29ffa289cfa2f1c77013358d25f2fd",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.5037255680654198,
+      "logSha256": "1fd349dee82f9164ed5718bdcf424fe079c5a48accb1db46ab3df480c341563d"
+    },
+    {
+      "name": "geometry-baseline-gcc",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-baseline-gcc/result.json",
+      "sha256": "13a745a239da2805f1dcbe6b5f75985a70a6f8672ece322593e57fe4d972edae",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 1,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 2.042328423121944,
+      "logSha256": "faa1f057d461338a09a6ed419c9b3ad9c70430a3210f1c9ca5732106236a794e"
+    },
+    {
+      "name": "geometry-baseline-poll-curl",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-baseline-poll-curl/result.json",
+      "sha256": "46ab7b6b5123b0affc618ab746a5b1e0b5c6b771c25aa1ec0ff052d5be58ef50",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.44695310783572495,
+      "logSha256": "d8ea40d7ff83d638e47ee8a1fec7c6fb3078b3f75721a4310891309a92f7bf00"
+    },
+    {
+      "name": "geometry-baseline-poll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-baseline-poll-hyper-prototype/result.json",
+      "sha256": "416d90dbf1fea231b23fc57f359ad34bea9df72f76505c1fdf30a869c1647aa5",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.35284862597472966,
+      "logSha256": "b99e33049c3895e17164cdc3e55314523962308386f795dc588e8272ba54c5f5"
+    },
+    {
+      "name": "geometry-candidate-epoll-curl",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-candidate-epoll-curl/result.json",
+      "sha256": "b3e6a8f1f48d16f0b914c745d278f41bd556d59e77ec840e0f7b4367842f19f8",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.7168367689009756,
+      "logSha256": "fcb5f813bc3c1b1f2fb567ec1104c4cec764b1e518da4fb4f87b709886160905"
+    },
+    {
+      "name": "geometry-candidate-epoll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-candidate-epoll-hyper-prototype/result.json",
+      "sha256": "f8efc3a703c4fb4de4cd2802b74ff64d0ae605a0d7c087e5893c74837cf3c1a5",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6348682239186019,
+      "logSha256": "4293e29de3ef7955b2ac4ceaba05a11963d8dbac09ef9ed6878c9ee93bf84f13"
+    },
+    {
+      "name": "geometry-candidate-poll-curl",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-candidate-poll-curl/result.json",
+      "sha256": "dcd1d8b0b228b292f2f39afc0a516ff7ddd97a3da7fcaf65140069563ffa2720",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6644441210664809,
+      "logSha256": "bd695de0f53038e694d3d84d2dc4cf86723d9834eac9d670e275b009bb72d7d9"
+    },
+    {
+      "name": "geometry-candidate-poll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-candidate-poll-hyper-prototype/result.json",
+      "sha256": "887b8e36e7b17fbfa144b5b674c22b9287b62297ac5ab72aa8a5f8ae5c01f544",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.1871925760060549,
+      "logSha256": "9d6ba4257be307b3aee103b1355ddb38aaf08633e5d66c91db9e32549321d24e"
+    },
+    {
+      "name": "geometry-debug-valgrind",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-debug-valgrind/result.json",
+      "sha256": "f223c624f571a45f716150da13493b71402d1879e990216f619d476e078e660a",
+      "source": "dd633969e75b9a908f466daf64f0c711f13950e9",
+      "exit": 99,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 12.343224568059668,
+      "logSha256": "f8f2ed4fd8d6d64f6f0eafa5adb687def61a612322cf054cec328f5d14386edb"
+    },
+    {
+      "name": "geometry-r2-negative",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/geometry-r2-negative/result.json",
+      "sha256": "16cfa954cd565de61fe86b98217604e845aee225b33133398b155cfdec049335",
+      "source": "9de4b2dc15c75c2d46d1cc24bd763f99f1194261",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.6578988719265908,
+      "logSha256": "36e1b5667ea58e28c51d94bf9497d773d42a55c8b86f62684dc60c534db1084f"
+    },
+    {
+      "name": "http-safety-85",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/http-safety-85/result.json",
+      "sha256": "f50257d487c782a8a8d9d50993df4009f882e74003137bea5fcc987a398b6dd5",
+      "source": "2678bd2f26a83b8e1eefafa109221bad8ee9e397",
+      "exit": 1,
+      "expectedExit": 0,
+      "runnerStatus": "FAIL",
+      "seconds": 91.45496191293932,
+      "logSha256": "0f38b0f4f4d2f4fe7599bb62179c79e26872700d7b17d9e50d62bbf58d2dd64e"
+    },
+    {
+      "name": "wakeups-epoll-curl-multi",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/wakeups-epoll-curl-multi/result.json",
+      "sha256": "e12bff41724d908f1c23efb9fab9554f34cfffa82a30c7accb785701cd1c6269",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.6377419410273433,
+      "logSha256": "a0a8bd2df2cb7cafe5533d40acb6b67aa8ee405fab4b79b95bc11cd053ec4d61"
+    },
+    {
+      "name": "wakeups-epoll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/wakeups-epoll-hyper-prototype/result.json",
+      "sha256": "7be760cb4c23c120775e8b8af634c7efa9fac6b69fbab20d5a23f0e33db6ad22",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 1.3512920539360493,
+      "logSha256": "c5e9e4ac4aceafb12e380b4222fa9dac41399279705b53f67e043fde708387b9"
+    },
+    {
+      "name": "wakeups-poll-curl-multi",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/wakeups-poll-curl-multi/result.json",
+      "sha256": "68af0fdb135de0ac656e98bef89ca39609ded086cd1db220c19311e3cefded68",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.8080087208654732,
+      "logSha256": "3afe33a12d68febaea2c1b788a3c1609cd2e393ff42db10a0fd6eb8afa9d1843"
+    },
+    {
+      "name": "wakeups-poll-hyper-prototype",
+      "path": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/wakeups-poll-hyper-prototype/result.json",
+      "sha256": "df0d04c0f6897169c35fa36596d28c738efadb53be9a8d7748dab95541cea232",
+      "source": "72fc710e8d1eec112b1e3b1f3208edb86febf728",
+      "exit": 0,
+      "expectedExit": 0,
+      "runnerStatus": "PASS",
+      "seconds": 0.8015528270043433,
+      "logSha256": "40a120c5e6453f4782ffb655b919bf1dbf1ff5e1a8ca24633c1741b889c925d3"
+    }
+  ],
+  "fpmIndependentSummaries": {
+    "fpm": {
+      "status": "PASS",
+      "seconds": 8.11914589186199,
+      "cases": [
+        {
+          "case": "A-lifecycle",
+          "requests": 20,
+          "workers": 1,
+          "pids": [
+            4166948
+          ],
+          "minTicks": 26,
+          "idleFDs": [
+            6
+          ],
+          "idleThreads": [
+            1
+          ],
+          "rssKiB": [
+            20876,
+            21184
+          ]
+        },
+        {
+          "case": "HTTP-four-workers",
+          "requests": 40,
+          "workers": 4,
+          "pids": [
+            4167186,
+            4167187,
+            4167188,
+            4167189
+          ],
+          "minTicks": 25,
+          "idleFDs": [
+            6
+          ],
+          "idleThreads": [
+            1
+          ],
+          "rssKiB": [
+            20652,
+            20820
+          ]
+        }
+      ]
+    },
+    "hyper_fpm": {
+      "status": "PASS",
+      "seconds": 8.544207299826667,
+      "cases": [
+        {
+          "case": "A-lifecycle",
+          "requests": 20,
+          "workers": 1,
+          "pids": [
+            4167604
+          ],
+          "minTicks": 22,
+          "idleFDs": [
+            6
+          ],
+          "idleThreads": [
+            1
+          ],
+          "rssKiB": [
+            17484,
+            17916
+          ]
+        },
+        {
+          "case": "Hyper-four-workers",
+          "requests": 40,
+          "workers": 4,
+          "pids": [
+            4167697,
+            4167698,
+            4167699,
+            4167700
+          ],
+          "minTicks": 19,
+          "idleFDs": [
+            6
+          ],
+          "idleThreads": [
+            1
+          ],
+          "rssKiB": [
+            15556,
+            17528
+          ]
+        }
+      ]
+    }
+  },
+  "scope": {
+    "release": "EXPERIMENTAL",
+    "speedTargets": "NOT_MET",
+    "completeHyperHTTP": "NOT_IMPLEMENTED",
+    "curlTrailerMemoryGate": "FAIL",
+    "historicalZeroTickCause": "UNRESOLVED",
+    "hostedHyperCI": "NOT_EXECUTED",
+    "RustMachineCodeASan": "NOT_INSTRUMENTED",
+    "nativeFFIFaultASan": "PASS",
+    "sourceChanges": "Rust/C fail-stop, repeated coding rejection; receive geometry is a separate unaccepted candidate"
+  }
+}
