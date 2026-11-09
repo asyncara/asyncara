@@ -61,6 +61,16 @@ File uploads obtain chunks from the existing worker-backed `Files::readStream`.
 An application iterable can itself perform blocking work; Asyncara cannot make
 arbitrary producer code nonblocking.
 
+`HEAD` supports `request('HEAD', $url)` with a null or empty buffered body.
+Nonempty HEAD content and every HEAD streaming/file upload are rejected with
+`ValueError` before native submission or starting the upload producer. Use the
+bodyless request API for HEAD metadata. This explicit boundary avoids libcurl's
+upload mode changing response framing while the custom wire method remains HEAD.
+The regression checks the subsequent GET on the reused connection and two timer
+ticks while a bodyless HEAD is genuinely pending (`tests/http/methods.php`).
+This is a client capability boundary, not a claim that all private HTTP protocols
+forbid HEAD request content; see [RFC9110 section9.3.2](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.2).
+
 Multipart uses curl MIME callbacks. `multipart()` retains the single-file API;
 `multipartFiles()` accepts 1..16 file descriptors, including repeated field names,
 empty files and different content types. Only the active file is opened and all

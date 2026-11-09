@@ -854,13 +854,22 @@ PHP_FUNCTION(asyncara_submit) {
                 goto error;
             }
             j->length = Z_LVAL_P(timeout);
+            bool head_request = false;
             for (size_t i = 0; i < options->count; i++)
                 if (!strcmp(options->keys[i], "streamResponse"))
                     j->stream_response = (int)options->items[i]->integer;
                 else if (!strcmp(options->keys[i], "uploadSize")) {
                     j->stream_upload = 1;
                     j->upload_size = options->items[i]->integer;
-                }
+                } else if (!strcmp(options->keys[i], "method"))
+                    head_request = !strcmp(options->items[i]->string, "HEAD");
+            /* HEAD describes a bodyless response. CURLOPT_UPLOAD changes curl's
+             * response framing even when CUSTOMREQUEST still says HEAD. Reject
+             * unsupported content before submission or starting its producer. */
+            if (head_request && (j->stream_upload || j->b_len)) {
+                zend_value_error("HEAD does not support buffered request content or streaming uploads");
+                goto error;
+            }
             if (j->stream_upload && j->b) {
                 zend_value_error("Streaming upload cannot also have a buffered body");
                 goto error;

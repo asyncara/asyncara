@@ -1874,3 +1874,14 @@ the request. Later syscall and baseline controls remain diagnostic-only, with
 inconclusive attribution; see `fpm-diagnostic-findings-r1.json` and
 `docs/HTTP_EPOLL_REUSE.md`. No new archive, Gate C, release or speed acceptance.
 Historical Phase4 failures and the protected worktree remain untouched.
+
+## 2026-11-09 — native HEAD content and upload boundary
+
+Reproduced HEAD streamed-upload timeouts and invalid body framing on the old
+binary. Reject unsupported HEAD upload/content at native submission; preserve
+null/empty bodyless HEAD, and enforce the same boundary for native C callers.
+`ext/php_asyncara.c` and `ext/backend.c`; no scheduler or acceptance changes.
+C baseline negative control fails, corrected1000-cycle owner/registration test
+passes, and PHP8.5 epoll/poll regressions pass including pending-I/O timer progress.
+See `docs/HTTP_HEAD_SAFETY.md` for exact raw evidence and scope. Broader matrix,
+Gate A and memory validation are pending at this checkpoint. No performance claim.
