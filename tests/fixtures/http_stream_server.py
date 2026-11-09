@@ -8,6 +8,12 @@ HEADER_GATE = threading.Event()
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
     def log_message(self, *args): pass
+    def do_HEAD(self):
+        # Metadata describes the corresponding body; HEAD sends none.
+        self.send_response(200)
+        self.send_header('Content-Length', str(len(BLOCK)))
+        self.send_header('X-Method', 'HEAD')
+        self.end_headers()
     def do_PUT(self): self.do_POST()
     def do_POST(self):
         try:

@@ -2,6 +2,14 @@
 
 ## Latest HTTP continuation (2026-11-09)
 
+`84e49f1` corrects HEAD upload framing by rejecting unsupported content before
+submission while preserving ordinary bodyless HEAD. This boundary is
+IMPLEMENTED_AND_TESTED in PHP8.3/8.4/8.5, DEBUG/GCC HTTP matrices, Gate A and
+scoped native/DEBUG Valgrind. The original negative regression fails before the
+fix. Later HEAD-specific feature FPM validation passes60 main requests, including
+producer rejection and bodyless framing. These short passes are separate from
+the still-failed B2 campaign. See [HTTP_HEAD_SAFETY.md](HTTP_HEAD_SAFETY.md).
+
 `09b4767` adds bounded request-local epoll reuse with descriptor revalidation,
 unchanged deadlines and exact teardown. Gate A and the PHP83/84/85 targeted
 checks pass, alongside full85 suites, scoped ASan/UBSan, native TSan/Valgrind and

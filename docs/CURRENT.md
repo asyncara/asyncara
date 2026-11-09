@@ -1,6 +1,23 @@
 # Current isolated HTTP development state
 
-Latest native checkpoint: `09b47672644daeae8157b90a47116c0b92776b57` on
+Latest native checkpoint: `84e49f137396c58e0954f2ba90dc8dd61df2615e`, branch
+`phase6-http`. HEAD uploads and nonempty HEAD content now fail before transport
+or producer execution; null/empty HEAD remains bodyless and reusable. The
+old binary fails the new regression. PHP8.3/8.4/8.5, DEBUG and GCC HTTP suites
+pass on both backends, alongside full8.5 suites, Gate A and scoped Valgrind.
+Short curl/Hyper FPM fixtures pass. A later HEAD-specific feature FPM repetition
+also passes60 main requests with rejection, bodyless framing and request reset;
+neither replaces B2. [HTTP_HEAD_SAFETY.md](HTTP_HEAD_SAFETY.md) records exact
+identities, test evidence and retained harness failures. No speed or release
+promotion follows from this framing correction.
+
+Latest five-sample public Hyper medians are4997.13/s (1KiB) and3550.73/s (64KiB)
+using poll/four nginx workers. Minimum rates and4x/3x comparisons all fail the
+requested targets; [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) records
+both client backends and matching reference builds. Historical numbers below
+are not results of this newer configuration.
+
+Previous native checkpoint: `09b47672644daeae8157b90a47116c0b92776b57` on
 `phase6-http`. Request-local epoll reuse validates every descriptor through
 MOD and rebuilds on identity/vector changes. Exact fd cleanup, failure recovery,
 Gate A, PHP83/84/85 HTTP checks, full85 epoll/poll suites, scoped GCC/DEBUG/native

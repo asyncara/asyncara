@@ -1,6 +1,36 @@
 # HTTP public-path performance investigation
 
-## Latest checkpoint: 09b47672644daeae8157b90a47116c0b92776b57
+## Latest native checkpoint: 84e49f137396c58e0954f2ba90dc8dd61df2615e
+
+HEAD framing is repaired; see [HTTP_HEAD_SAFETY.md](HTTP_HEAD_SAFETY.md).
+The GET measurements below do not measure a speed improvement from that fix.
+`head-public-measure-data/report.json` under
+`/home/coder/Asyncara-http-epoll-20261109T164557Z` records640000 checked responses
+plus12800 warmups. Five rotated samples per client/body use PHP8.5.12, matching
+curl/Swoole6.2.3 builds, tracing JIT, poll,32 rolling connections and four nginx
+workers. Native source/binary and reference identities are recorded in
+[http-head-performance.json](phase6/http-head-performance.json).
+
+| Body | Public Hyper median/s (minimum) | Public curl median/s | curl_multi median/s | Swoole median/s |
+|---|---:|---:|---:|---:|
+| 1KiB | 4997.13 (4325.28) | 5215.69 | 5862.70 | 7283.65 |
+| 64KiB | 3550.73 (2632.31) | 2736.50 | 4279.35 | 5206.15 |
+
+Public Hyper's median CPU/request is160.38µs for1KiB and250.09µs for64KiB;
+curl_multi is129.27/205.42µs, Swoole106.74/167.25µs. The requested minimum13000/s,
+4x curl_multi and3x Swoole targets all remain **NOT_MET**. Hyper remains a
+restricted optional numeric-GET prototype; default curl supplies the wider HTTP
+feature set. No server configuration change is presented as a native code gain.
+
+The separate DEBUG Callgrind control (`profile-diagnostic-analysis-r2.json`)
+records446968984 instructions for curl and368837259 for Hyper, including startup,
+320 warmups and1024 responses. Displayed PHP-symbol attribution is283275046 and
+285022175 respectively. Unresolved module symbols cannot all be attributed to
+Rust. These instrumented counts identify interpreter/allocation work for further
+profiling, not production CPU cost, throughput or proof that a rewrite helps.
+The prior native-Future and hook-removal experiments remain rejected below.
+
+## Previous checkpoint: 09b47672644daeae8157b90a47116c0b92776b57
 
 Bounded epoll reuse reduces the measured stable-wait CPU cost by6.58x while
 checking descriptor identity and retaining original deadlines. The public

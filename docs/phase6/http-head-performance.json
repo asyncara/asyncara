@@ -1,0 +1,106 @@
+{
+  "nativeSource": "84e49f137396c58e0954f2ba90dc8dd61df2615e",
+  "status": "NOT_MET",
+  "scope": "PHP8.5.12 NTS, matching SDK curl/Swoole6.2.3, tracing JIT, poll, four nginx workers, HTTP1.1 loopback keepalive,32 rolling public workers,16000 checked responses/sample plus320 warmups,5 rotated samples/mode/body",
+  "modes": {
+    "asyncara": "public HttpClient, optional numeric GET Hyper prototype",
+    "asyncara_curl": "same public API, default curl network backend",
+    "curl_multi": "ext-curl multi, reused easy handles",
+    "swoole": "Coroutine Http Client, reused connections"
+  },
+  "measuredResponses": 640000,
+  "warmupResponses": 12800,
+  "report": "/home/coder/Asyncara-http-epoll-20261109T164557Z/head-public-measure-data/report.json",
+  "reportSha256": "fc149f31c5e3ea1af2f35768368b6db468db5a96c05865829ee35a158e71d845",
+  "moduleSha256": "0feff803646dca9afa566e59ed99c652c985807a391acbb937e3fd5b87d011de",
+  "referenceBuildVerified": true,
+  "performanceAcceptance": {
+    "1024": {
+      "publicMedianRps": 4997.13042596175,
+      "publicMinimumRps": 4325.27838604776,
+      "curlMultiMedianRatio": 0.8523604018337743,
+      "swooleMedianRatio": 0.6860751958029832,
+      "minimum13000Passed": false,
+      "median4xCurlPassed": false,
+      "median3xSwoolePassed": false
+    },
+    "65536": {
+      "publicMedianRps": 3550.7294356686343,
+      "publicMinimumRps": 2632.3055000538147,
+      "curlMultiMedianRatio": 0.8297358481883499,
+      "swooleMedianRatio": 0.6820255540405087,
+      "minimum13000Passed": false,
+      "median4xCurlPassed": false,
+      "median3xSwoolePassed": false
+    }
+  },
+  "summary": {
+    "1024": {
+      "asyncara": {
+        "medianRps": 4997.13042596175,
+        "minRps": 4325.27838604776,
+        "maxRps": 9401.588454191267,
+        "medianCpuMicrosecondsPerRequest": 160.37662500000002,
+        "samples": 5
+      },
+      "asyncara_curl": {
+        "medianRps": 5215.689316074822,
+        "minRps": 4139.6403712161855,
+        "maxRps": 6416.931147268469,
+        "medianCpuMicrosecondsPerRequest": 172.449625,
+        "samples": 5
+      },
+      "curl_multi": {
+        "medianRps": 5862.696595490462,
+        "minRps": 3683.9725445978083,
+        "maxRps": 8052.2482609395865,
+        "medianCpuMicrosecondsPerRequest": 129.2700625,
+        "samples": 5
+      },
+      "swoole": {
+        "medianRps": 7283.648288892157,
+        "minRps": 5880.571179996325,
+        "maxRps": 9051.64186504161,
+        "medianCpuMicrosecondsPerRequest": 106.73549999999999,
+        "samples": 5
+      }
+    },
+    "65536": {
+      "asyncara": {
+        "medianRps": 3550.7294356686343,
+        "minRps": 2632.3055000538147,
+        "maxRps": 3854.1632996435123,
+        "medianCpuMicrosecondsPerRequest": 250.0920625,
+        "samples": 5
+      },
+      "asyncara_curl": {
+        "medianRps": 2736.5008704098636,
+        "minRps": 2556.141189957165,
+        "maxRps": 2921.4440936179412,
+        "medianCpuMicrosecondsPerRequest": 346.58075,
+        "samples": 5
+      },
+      "curl_multi": {
+        "medianRps": 4279.349197002055,
+        "minRps": 4146.535945179034,
+        "maxRps": 4667.062032937569,
+        "medianCpuMicrosecondsPerRequest": 205.4238125,
+        "samples": 5
+      },
+      "swoole": {
+        "medianRps": 5206.153075398902,
+        "minRps": 4757.461352469822,
+        "maxRps": 5778.149677306971,
+        "medianCpuMicrosecondsPerRequest": 167.253875,
+        "samples": 5
+      }
+    }
+  },
+  "limitations": [
+    "No13k minimum or4x/3x target established.",
+    "HEAD correction is correctness work; GET benchmark does not demonstrate a speed gain from it.",
+    "Different server/backend configuration from earlier epoll comparison; no direct before/after claim.",
+    "Diagnostic Callgrind counts used DEBUG PHP and included startup; not production throughput.",
+    "No universal fastest-PHP ranking, WAN, TLS, HTTP2/3 or endurance claim."
+  ]
+}

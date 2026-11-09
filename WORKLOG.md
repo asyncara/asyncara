@@ -1885,3 +1885,36 @@ C baseline negative control fails, corrected1000-cycle owner/registration test
 passes, and PHP8.5 epoll/poll regressions pass including pending-I/O timer progress.
 See `docs/HTTP_HEAD_SAFETY.md` for exact raw evidence and scope. Broader matrix,
 Gate A and memory validation are pending at this checkpoint. No performance claim.
+
+## 2026-11-09 — HEAD matrix and memory validation completed
+
+Source84e49f1: PHP8.3.36/8.4.27/8.5.12, DEBUG8.5.12 and GCC ASan/UBSan HTTP
+checks pass on epoll/poll. Full8.5 suites pass. Gate A passes in215.997s inner
+wall time, three seeds/10000 iterations per path. Native HEAD and allocation
+injection sanitizer checks pass. Native and DEBUG HEAD Valgrind report no errors
+or lost bytes;56 and3888 bytes respectively remain reachable, no suppressions.
+Short curl/Hyper FPM runs each pass60 main requests plus fatal/reset checks;
+independent recalculation preserves the original >=2 ticks and idle6fd/1thread
+checks. These are not HEAD-specific FPM or long-duration acceptance.
+
+The first full-suite orchestration passed an absolute module path to a script
+which prefixes its working directory. No extension loaded; the failure is
+retained. Repeated invocation uses the expected relative path, without changing
+test assertions or source. Evidence root remains
+`/home/coder/Asyncara-http-epoll-20261109T164557Z`, reports
+`head-validation-terminal.json`, `head-memory-terminal.json`,
+`head-short-fpm-independent.json`. Original B2 FAIL and distribution-PHP
+allocation discrepancy remain unresolved. Current performance targets remain
+NOT_MET. The rotated public comparison subsequently completed separately from
+validation:640000 checked responses plus12800 warmups, five samples per client
+and body, matching PHP8.5.12 references, poll/four nginx workers. Public Hyper
+medians4997.13/s (1KiB) and3550.73/s (64KiB), below curl_multi and Swoole; every
+requested performance target remains NOT_MET. `docs/phase6/http-head-performance.json`
+records raw report hashes and exact scope. No speed gain is attributed to HEAD.
+
+The dedicated HTTP FPM feature fixture now also checks rejected HEAD producers,
+bodyless metadata and reuse alongside existing multipart/download work. Its
+one/four-worker repetition passes20/40 main requests, minimum21/16 ticks, and
+fatal/reset cleanup with the original assertions. The independent raw response
+review is `head-fpm-methods-independent.json`. These are test-only additions;
+native source remains84e49f1. Historical campaign files remain untouched.
