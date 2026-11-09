@@ -11,9 +11,10 @@ final class HttpClient
     use \Asyncara\Internal\NonCopyable;
 
     private Semaphore $slots;
-    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null)
+    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10)
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
+        if ($connectTimeout <= 0 || $connectTimeout > 3600 || !is_finite($connectTimeout)) throw new \ValueError('Invalid HTTP connect timeout');
         $this->slots = new Semaphore($concurrency);
     }
     public function get(string $url, array $headers = [], bool $followRedirects = false): Future { return $this->request('GET', $url, null, $headers, $followRedirects); }
@@ -47,13 +48,30 @@ final class HttpClient
         }, 2);
         return new ResponseStream($stream, $head);
     }
-    /** Stream to worker-backed file writes; failure can leave a partial file. */
-    public function download(string $url, string $path, array $headers = [], bool $followRedirects = false): Future
+    /** Worker-backed writes. Atomic mode publishes only a complete body. */
+    public function download(string $url, string $path, array $headers = [], bool $followRedirects = false,
+        bool $atomic = false, bool $durable = false, bool $failOnHttpError = false): Future
     {
-        return Async::spawn(function () use ($url, $path, $headers, $followRedirects): int {
-            $stream = $this->getStream($url, $headers, $followRedirects);
-            try { return Async::await(Files::writeStream($path, $stream)); }
-            finally { $stream->close(); }
+        if ($durable && !$atomic) throw new \ValueError('Durability requires atomic download');
+        return Async::spawn(function () use ($url, $path, $headers, $followRedirects, $atomic, $durable, $failOnHttpError): int {
+            $file = null; $stream = null;
+            try {
+                if ($atomic) $file = Async::await(\Asyncara\IO\File::stage($path));
+                $stream = $this->getStream($url, $headers, $followRedirects);
+                if ($failOnHttpError) {
+                    $status = $stream->headers()->await()->status;
+                    if ($status < 200 || $status >= 300) throw new \Asyncara\Exception\OperationException('HTTP download status '.$status);
+                }
+                if (!$atomic) return Async::await(Files::writeStream($path, $stream));
+                $bytes = 0;
+                foreach ($stream as $chunk) $bytes += Async::await($file->write($chunk));
+                $stream->close();
+                Async::await($file->publish($durable));
+                return $bytes;
+            } finally {
+                try { $stream?->close(); }
+                finally { if ($file) Async::shield(static fn() => $file->close()->await()); }
+            }
         });
     }
     /** Worker-backed file input; unknown length is sent using chunked transfer. */
@@ -77,24 +95,43 @@ final class HttpClient
         ];
         return $this->uploadRequest($url, static fn() => Files::readStream($path), null, $options);
     }
-    private function uploadRequest(string $url, \Closure $source, ?int $length, array $options): Future
+    /** 1..16 sequential worker-streamed files; duplicate field names are allowed. */
+    public function multipartFiles(string $url, array $fields, array $files, array $headers = []): Future
+    {
+        if (!$files || count($files) > 16 || !array_is_list($files)) throw new \ValueError('Expected 1..16 multipart file descriptors');
+        $metadata = []; $sources = [];
+        foreach ($files as $file) {
+            if (!is_array($file) || array_diff(array_keys($file), ['field', 'path', 'filename', 'contentType']) ||
+                !isset($file['field'], $file['path']) || !is_string($file['field']) || !is_string($file['path']) ||
+                $file['path'] === '' || str_contains($file['path'], "\0")) throw new \ValueError('Invalid multipart file descriptor');
+            $part = ['field' => $file['field'], 'name' => $file['filename'] ?? basename($file['path']), 'type' => $file['contentType'] ?? 'application/octet-stream'];
+            foreach ($part as $value) if (!is_string($value) || $value === '' || strlen($value) > 256 || strpbrk($value, "\0\r\n") !== false) throw new \ValueError('Invalid multipart metadata');
+            $metadata[] = $part; $path = $file['path']; $sources[] = static fn() => Files::readStream($path);
+        }
+        $options = $this->options('POST', $url, $headers, false) + ['multipart' => $fields, 'files' => $metadata];
+        return $this->uploadRequest($url, $sources[0], null, $options, $sources);
+    }
+    private function uploadRequest(string $url, \Closure $source, ?int $length, array $options, ?array $sources = null): Future
     {
         $options['uploadSize'] = $length ?? -1;
-        return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $source, $options): Response {
+        return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $source, $options, $sources): Response {
             $scheduler = Scheduler::current();
             [$id, $completion] = $scheduler->nativeOperation('http', [$url, null, $options, (int)ceil($this->timeout * 1000)]);
             $pump = null; $unsubscribe = null;
             try {
-                $pump = Async::spawn(function () use ($source, $scheduler, $id, $completion): void {
-                    $body = $source();
+                $pump = Async::spawn(function () use ($source, $sources, $scheduler, $id, $completion): void {
+                  foreach ($sources ?? [$source] as $part => $factory) {
+                    if ($completion->isCompleted()) return;
+                    $body = $factory();
                     try {
                         foreach ($body as $chunk) {
                             if (!is_string($chunk) || strlen($chunk) > 65536) throw new \ValueError('Upload chunks must be strings of at most 65536 bytes');
-                            while (!$completion->isCompleted() && !asyncara_http_write($id, $chunk, false)) $scheduler->httpWritable($id, $completion);
+                            while (!$completion->isCompleted() && !asyncara_http_write($id, $chunk, false, $part)) $scheduler->httpWritable($id, $completion);
                             if ($completion->isCompleted()) return;
                         }
-                        while (!$completion->isCompleted() && !asyncara_http_write($id, '', true)) $scheduler->httpWritable($id, $completion);
+                        while (!$completion->isCompleted() && !asyncara_http_write($id, '', true, $part)) $scheduler->httpWritable($id, $completion);
                     } finally { if ($body instanceof ReadableStream) $body->close(); }
+                  }
                 });
                 $unsubscribe = $pump->subscribe(static function (Future $done) use ($completion): void { if ($done->exception()) $completion->cancel(); });
                 try { $result = $completion->await(); }
@@ -141,7 +178,7 @@ final class HttpClient
         if (!preg_match('/^[A-Z]+$/D', $method)) throw new \ValueError('Invalid HTTP method');
         $scheme = parse_url($url, PHP_URL_SCHEME);
         if (!in_array($scheme, ['http', 'https'], true)) throw new \ValueError('Only HTTP(S) URLs are allowed');
-        $options = ['method' => $method, 'headers' => $headers, 'followRedirects' => $followRedirects];
+        $options = ['method' => $method, 'headers' => $headers, 'followRedirects' => $followRedirects, 'connectTimeoutMs' => (int)ceil($this->connectTimeout * 1000)];
         if ($this->proxy !== null) $options['proxy'] = $this->proxy;
         if ($this->caFile !== null) $options['caFile'] = $this->caFile;
         return $options;

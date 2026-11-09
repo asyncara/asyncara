@@ -19,6 +19,10 @@ python3 scripts/test-udp-limits.py
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/filesystem_atomic.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/filesystem_buffer_ownership.php
 "${PHP_BIN:-php}" -n -d memory_limit=64M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http_streaming.php
+"${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/completion.php
+"${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/proxy.php
+"${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/pooling.php
+"${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/buffer_budget.php
 "${PHP_BIN:-php}" -n tests/websocket_protocol.php
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/fuzz/resp_regressions.php
 "${PHP_BIN:-php}" -n -d memory_limit=256M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/fuzz/ipc_regressions.php

@@ -30,6 +30,23 @@ final class File
         });
     }
 
+    /** Private 0600 file in a pinned destination directory; close discards until publish. */
+    public static function stage(string $destination): Future
+    {
+        return Async::spawn(static function () use ($destination): self {
+            $id = Async::shield(static fn() => Scheduler::current()->native('file_stage', [$destination])->await());
+            try {
+                Scheduler::current()->currentCancellation()?->throwIfRequested();
+                return new self($id);
+            } catch (\Throwable $error) {
+                Async::shield(static fn() => Scheduler::current()->native('file_close', [$id])->await());
+                throw $error;
+            }
+        });
+    }
+    /** Atomic visibility; durable also syncs the file and destination directory. */
+    public function publish(bool $durable = false): Future { return $this->operation('file_publish', [$durable]); }
+
     private function operation(string $operation, array $arguments = []): Future
     {
         return Async::spawn(fn() => $this->gate->withPermit(function () use ($operation, $arguments): mixed {

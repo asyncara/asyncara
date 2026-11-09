@@ -118,9 +118,61 @@ static int write_all(ar_job *j, int fd, const char *p, size_t n) {
     }
     return 0;
 }
+/* Staged streams retain the directory descriptor through rename/cleanup.
+ * No path reopening and no cross-filesystem fallback during publication. */
+static int close_file(ar_file *file) {
+    int error = 0;
+    if (file->fd >= 0 && close(file->fd)) error = errno;
+    file->fd = -1;
+    if (file->staging && file->directory_fd >= 0) {
+        if (file->stage_name[0] && unlinkat(file->directory_fd, file->stage_name, 0) && !error) error = errno;
+        file->stage_name[0] = 0;
+        if (close(file->directory_fd) && !error) error = errno;
+        file->directory_fd = -1;
+    }
+    if (error) { errno = error; return -1; }
+    return 0;
+}
+static void stage_file(ar_job *j) {
+    ar_file *file = j->file;
+    file->staging = 1; file->directory_fd = -1;
+    char *directory = ar_strdup(j->engine, j->a);
+    if (!directory) { failure(j, "Native memory limit or allocation failure"); return; }
+    char *slash = strrchr(directory, '/');
+    if (!slash || !slash[1] || !strcmp(slash + 1, ".") || !strcmp(slash + 1, "..")) { errno = EINVAL; goto error; }
+    file->stage_target = ar_strdup(j->engine, slash + 1);
+    if (!file->stage_target) { failure(j, "Native memory limit or allocation failure"); goto finish; }
+    if (slash == directory) slash[1] = 0; else *slash = 0;
+    file->directory_fd = open(directory, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+    if (file->directory_fd < 0) goto error;
+    for (int attempt = 0; attempt < 16; attempt++) {
+        unsigned char random[16]; size_t offset = 0;
+        while (offset < sizeof(random)) {
+            ssize_t n = getrandom(random + offset, sizeof(random) - offset, 0);
+            if (n < 0 && errno == EINTR) continue;
+            if (n <= 0) { if (!n) errno = EIO; goto error; }
+            offset += (size_t)n;
+        }
+        char name[64] = ".asyncara-";
+        for (size_t i = 0; i < sizeof(random); i++) snprintf(name + 9 + 2*i, 3, "%02x", random[i]);
+        file->fd = openat(file->directory_fd, name, O_RDWR | O_CREAT | O_EXCL | O_CLOEXEC | O_NOFOLLOW, 0600);
+        if (file->fd >= 0) { memcpy(file->stage_name, name, strlen(name)+1); break; }
+        if (errno != EEXIST) goto error;
+    }
+    if (file->fd < 0) goto error;
+    j->result = integer(j->engine, file->id);
+    if (!j->result) { failure(j, "Native memory limit or allocation failure"); goto finish; }
+    ar_free(directory); return;
+error:
+    system_failure(j);
+finish:
+    if (close_file(file) && !j->error[0]) system_failure(j);
+    ar_free(directory);
+}
 static void do_handle(ar_job *j) {
     ar_file *file = j->file;
     struct stat st;
+    if (j->op == OP_FILE_STAGE) { stage_file(j); return; }
     if (j->op == OP_FILE_OPEN) {
         int flags = O_CLOEXEC | O_NONBLOCK;
         flags |= strchr(j->b, '+') ? O_RDWR : (j->b[0] == 'r' ? O_RDONLY : O_WRONLY);
@@ -188,11 +240,17 @@ static void do_handle(ar_job *j) {
         if (fsync(file->fd))
             goto system_error;
         j->result = ar_value_new(j->engine, V_NULL);
+    } else if (j->op == OP_FILE_PUBLISH) {
+        if (!file->staging || !file->stage_name[0] || file->directory_fd < 0) { errno = EINVAL; goto system_error; }
+        j->result = ar_value_new(j->engine, V_NULL);
+        if (!j->result) { failure(j, "Native memory limit or allocation failure"); return; }
+        if (j->offset && fsync(file->fd)) goto system_error;
+        if (stopped(j)) return;
+        if (renameat(file->directory_fd, file->stage_name, file->directory_fd, file->stage_target)) goto system_error;
+        file->stage_name[0] = 0; j->committed = 1;
+        if (j->offset && fsync(file->directory_fd)) goto system_error;
     } else {
-        int rc = close(file->fd);
-        file->fd = -1; /* Linux close releases the fd even on late I/O errors. */
-        if (rc)
-            goto system_error;
+        if (close_file(file)) goto system_error;
         j->result = ar_value_new(j->engine, V_NULL);
     }
     return;
@@ -687,7 +745,7 @@ static void *worker(void *arg) {
         ar_trace_emit(e, AR_TRACE_JOB, 21, j->id, j->op, 0, 0);
         bool closing = j->op == OP_FILE_CLOSE || j->op == OP_DB_CLOSE;
         if (closing || !stopped(j)) {
-            if (j->op >= OP_FILE_OPEN && j->op <= OP_FILE_CLOSE)
+            if ((j->op >= OP_FILE_OPEN && j->op <= OP_FILE_CLOSE) || j->op == OP_FILE_STAGE || j->op == OP_FILE_PUBLISH)
                 do_handle(j);
             else if (j->op == OP_DNS)
                 do_dns(j);
@@ -699,11 +757,10 @@ static void *worker(void *arg) {
         if (!closing && atomic_load(&j->cancelled)) {
             /* Atomic replacement must not hide a failed temp cleanup or a
              * durability error behind concurrent cancellation. */
-            if (j->op != OP_ATOMIC_WRITE || !j->error[0])
+            if ((j->op != OP_ATOMIC_WRITE && j->op != OP_FILE_PUBLISH) || !j->error[0])
                 failure(j, "Operation cancelled");
-            if (j->op == OP_FILE_OPEN && j->file->fd >= 0) {
-                close(j->file->fd);
-                j->file->fd = -1;
+            if ((j->op == OP_FILE_OPEN || j->op == OP_FILE_STAGE) && j->file->fd >= 0) {
+                if (close_file(j->file)) system_failure(j);
             }
             if (j->op == OP_DB_OPEN && j->db->handle) {
                 sqlite3_close(j->db->handle);
@@ -742,6 +799,7 @@ ar_engine *ar_engine_new(void) {
     atomic_init(&e->memory_peak, 0);
     atomic_init(&e->memory_rejections, 0);
     e->memory_limit = AR_MEMORY_LIMIT;
+    e->http_max_connections = 64; e->http_max_host_connections = 8;
     e->use_epoll = 1;
     const char *backend = getenv("ASYNCARA_BACKEND");
     if (backend && !strcmp(backend, "poll"))
@@ -770,8 +828,18 @@ void ar_job_free(ar_job *j) {
     if (*entry)
         *entry = j->lifetime_next;
     curl_mime_free(j->mime);
-    if (j->curl)
-        curl_easy_cleanup(j->curl);
+    ar_free(j->upload_parts);
+    if (j->curl) {
+        /* Only detached handles reach collection. Reset all callbacks/options
+         * before job-owned strings and buffers disappear. Cache is request-local. */
+        curl_easy_reset(j->curl);
+#if AR_HTTP_EASY_CACHE > 0
+        if (!j->engine->stopping && j->engine->http_idle_count < AR_HTTP_EASY_CACHE && j->engine->http_idle_count < 64)
+            j->engine->http_idle[j->engine->http_idle_count++] = j->curl;
+        else
+#endif
+            curl_easy_cleanup(j->curl);
+    }
     curl_slist_free_all(j->headers);
     ar_free(j->a);
     ar_free(j->b);
@@ -878,6 +946,7 @@ ar_job *ar_collect(ar_engine *e) {
                     entry = &(*entry)->next;
                 if (*entry)
                     *entry = j->file->next;
+                ar_free(j->file->stage_target);
                 ar_free(j->file);
                 j->file = NULL;
             }
@@ -917,6 +986,7 @@ void ar_engine_free(ar_engine *e) {
             curl_multi_remove_handle(e->multi, j->curl);
         ar_job_free(j);
     }
+    while (e->http_idle_count) curl_easy_cleanup(e->http_idle[--e->http_idle_count]);
     if (e->multi)
         curl_multi_cleanup(e->multi);
     while (e->sockets) {
@@ -934,8 +1004,8 @@ void ar_engine_free(ar_engine *e) {
     while (e->files) {
         ar_file *file = e->files;
         e->files = file->next;
-        if (file->fd >= 0)
-            close(file->fd);
+        (void)close_file(file);
+        ar_free(file->stage_target);
         ar_free(file);
     }
     close(e->wake[0]);
