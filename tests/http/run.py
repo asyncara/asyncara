@@ -60,6 +60,7 @@ if not a.php_only:
              '-I.local/sysroot/usr/include', '-I.local/sysroot/usr/include/x86_64-linux-gnu']
     flags += shlex.split(os.environ.get('EXTRA_CFLAGS', ''))
     for name, files, wraps in [
+        ('capacity', ['tests/http/buffer_capacity.c'], []),
         ('method', ['tests/http/method_native.c', 'ext/backend.c'], ['curl_multi_add_handle']),
         ('dispatch', ['tests/http/dispatch_native.c', 'ext/backend.c'], ['curl_multi_timeout', 'curl_multi_socket_action', 'write']),
         ('stage', ['tests/http/stage_native.c', 'ext/backend.c'], ['fsync', 'renameat']),
@@ -67,7 +68,7 @@ if not a.php_only:
         ('start-wait', ['tests/http/start_wait.c', 'ext/backend.c'], ['epoll_wait', 'poll', '__poll_chk', 'clock_gettime'])]:
         run(name + '-build', cc + flags + files + ['ext/workers.c', 'ext/memory.c', '-pthread',
             '-l:libsqlite3.so.0', '-l:libcurl.so.4'] + ['-Wl,--wrap=' + w for w in wraps] + ['-o', out / name])
-        run(name, [out / name])
+        run(name, [out / name] + (['--compact'] if name == 'capacity' else []))
         if name == 'start-wait':
             run(name + '-logical-clock', [out / name, '--logical-clock'])
 php = [a.php, '-n', '-d', 'memory_limit=128M', '-d', 'extension=' + str(module)]
@@ -75,7 +76,7 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
-    for test in ['completion', 'methods', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
+    for test in ['capacity', 'completion', 'methods', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
         run(backend + '-' + test, php + ['tests/http/' + test + '.php'], env)
     for limit in [8, 16, 32]:
         run(backend + '-connections-' + str(limit), php + ['tests/http/connections.php', limit], env)
@@ -83,7 +84,7 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
-        for test in ['hyper_uri', 'hyper', 'buffered_owner']:
+        for test in ['capacity', 'hyper_uri', 'hyper', 'buffered_owner']:
             run(backend + '-prototype-' + test, php + ['tests/http/' + test + '.php'],
                 env | {'ASYNCARA_HTTP_BACKEND': 'hyper-prototype'})
 assert sha(module) == identity['moduleSha256']

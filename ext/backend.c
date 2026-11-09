@@ -80,9 +80,13 @@ static size_t receive_buffer(char *data, size_t size, size_t count, void *ctx, i
         return 0;
     size_t required = *len + n + 1;
     if (required > *capacity) {
-        size_t next_capacity = *capacity ? *capacity : 4096;
+        /* Grow payload space geometrically, reserving its trailing NUL
+         * separately. Counting that byte as payload doubled storage for an
+         * exact 4KiB/16KiB/64KiB/... body and could exhaust the aggregate ledger
+         * on its final byte. Keep the same hard payload and pause bounds. */
+        size_t next_capacity = *capacity > 1 ? *capacity : 4097;
         while (next_capacity < required)
-            next_capacity = next_capacity > (limit + 1) / 2 ? limit + 1 : next_capacity * 2;
+            next_capacity = next_capacity - 1 > limit / 2 ? limit + 1 : (next_capacity - 1) * 2 + 1;
         char *next = ar_realloc(j->engine, *buf, next_capacity);
         if (!next) {
             snprintf(j->error, sizeof(j->error), "Native memory limit or allocation failure");
