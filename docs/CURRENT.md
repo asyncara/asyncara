@@ -10,7 +10,13 @@ See [Hyper safety review](HYPER_SAFETY_REVIEW.md) and
 [dependency findings](DEPENDENCY_FINDINGS.md). Hyper remains PARTIALLY_IMPLEMENTED:
 numeric plaintext buffered GET, no DNS/TLS/decompression. Receive-geometry speed
 experiment remains unaccepted;13k/4x/3x targets NOT_MET. Release EXPERIMENTAL.
-The package below predates these source changes; it does not contain them.
+New local candidate package: **hyper-safety-r1**,521files, source3317084,
+runtime dd63396. SHA256
+`a29eab103da8f5fb4df78314a50afe670a483c7ace46ab743c91c9bd144db78b`.
+Byte-reproducible, Git-tree matched, independently built; six focused Hyper
+controls pass. [Attestation](phase6/hyper-safety-package.json). Not published;
+known dependency-memory and timing failures prevent general acceptance.
+The historical http-r5 package below predates these changes.
 
 Previous local source archive: **http-r5-capacity**,506 files, packaged f12146a,
 native b1cfd18. Independent PHP83/84/85 HTTP builds/tests, optional Hyper85 and

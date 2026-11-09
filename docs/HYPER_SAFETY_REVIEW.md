@@ -154,3 +154,22 @@ The original Phase4 timing failure, this continuation's connections32 zero-tick
 failure, and its first proxy timing failure are preserved and remain unexplained.
 No assertion, timer threshold, proxy timeout or original workload was weakened.
 No DNS, TLS, compression or cross-platform support was added to Hyper.
+
+
+## Local source distribution and reproducibility
+
+`build/asyncara-0.1.0-dev-hyper-safety-r1.tar.gz`,521files, packaged source
+`3317084eb834e2ac14b80dc8d0211318bdb0d888`, native/tested runtime dd63396.
+SHA256:`a29eab103da8f5fb4df78314a50afe670a483c7ace46ab743c91c9bd144db78b`.
+Two independently generated archives are byte-identical; each member matches
+its committed Git blob. A fresh extraction and independent Cargo/C build pass
+six focused Hyper regressions on epoll/poll. Independent module SHA256:
+`c2cc81d42364d5d81dd7f11e44ee179599986612de2c87e74b406f689065afde`.
+[Build attestation](phase6/hyper-safety-package.json). This is a local experimental
+candidate, not a published release or a full independent package/endurance gate.
+The later attestation commit changes documentation/evidence only.
+
+Next priorities are a vetted curl dependency fix with the same unsuppressed
+trailer regression, the still-unexplained progress failures, and verified DNS/TLS/
+decompression before considering Hyper feature parity. No universal benchmark
+lead or production-readiness claim is justified by this work.

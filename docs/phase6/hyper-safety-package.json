@@ -1,0 +1,14 @@
+{
+  "packagedSource": "3317084eb834e2ac14b80dc8d0211318bdb0d888",
+  "runtimeSource": "dd633969e75b9a908f466daf64f0c711f13950e9",
+  "archive": "/home/coder/Asyncara-http-transfer-20261109T211228Z/build/asyncara-0.1.0-dev-hyper-safety-r1.tar.gz",
+  "archiveSha256": "a29eab103da8f5fb4df78314a50afe670a483c7ace46ab743c91c9bd144db78b",
+  "files": 521,
+  "reproducibleArchive": true,
+  "gitTreeMatched": true,
+  "independentBuild": "PASS",
+  "independentModule": "/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/package-hyper-safety-source/asyncara-0.1.0-dev/build/hyper-independent.so",
+  "independentModuleSha256": "c2cc81d42364d5d81dd7f11e44ee179599986612de2c87e74b406f689065afde",
+  "regressions": "PASS six focused Hyper controls (epoll/poll)",
+  "limitations": "Not a full package/endurance certification; known system curl trailer leak and missing Hyper features retained; not published"
+}

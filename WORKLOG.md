@@ -2148,3 +2148,13 @@ minimum curl25/Hyper19ticks; idle6FD/1thread. No long endurance claim. Detailed
 identities/hashes:docs/phase6/hyper-safety.json and HYPER_SAFETY_REVIEW.md.
 The host/Phase4 source and historical reports were not modified. Hosted CI is
 configured but NOT_EXECUTED. Performance requirements remain NOT_MET.
+
+
+Local hyper-safety-r1 distribution:3317084 source, dd63396 native runtime,
+521files, SHA256 a29eab103da8f5fb4df78314a50afe670a483c7ace46ab743c91c9bd144db78b.
+Two identical archives and exact Git-tree match; fresh isolated Cargo/C build
+and six focused Hyper epoll/poll tests PASS. Independent module SHA256
+c2cc81d42364d5d81dd7f11e44ee179599986612de2c87e74b406f689065afde.
+No publication, no new GitHub push, no performance/production promotion.
+All test processes are terminal. Unresolved dependency memory and timing findings
+remain explicit next work; no global system or protected Phase4 files changed.

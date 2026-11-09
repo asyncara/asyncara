@@ -1,5 +1,15 @@
 # Release readiness
 
+Current isolated review: [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md).
+Native dd63396 fixes Hyper FFI panic containment and repeated content codings;
+ordinary PHP83/84/85 HTTP gates, scoped Hyper memory checks, Gate A and short FPM
+pass. **System libcurl8.5.0 trailer memory gate remains FAIL**, independently
+reproduced without Asyncara. Timing failures remain unresolved. Hyper has no
+DNS/TLS/decompression; speed targets remain NOT_MET. The521-file hyper-safety-r1
+candidate is reproducible and independently builds, but is not a release promotion
+or general memory/endurance certification. Historical package records follow.
+
+
 Latest native source `84e49f1` repairs unsupported HEAD upload framing. Its
 PHP83/84/85, DEBUG/GCC, Gate A and scoped memory checks pass; a dedicated short
 HEAD FPM run also passes. Archive `http-r4-head`, source `b04aa98`, independently
