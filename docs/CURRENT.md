@@ -47,3 +47,13 @@ Package source `63a3a496b7892a7d0e699517a05fa394ae6ebbc9` contains435 tracked fi
 six-combination critical tests and full85 epoll/poll pass. See the
 [package attestation](phase5/resource-provenance-package.json). Final Git
 attestation commits are separate from this archive source; no release was published.
+
+## HTTP package identity
+
+Source `f818d2975ef80d8188f751d07eb4243e5395263c`,463 files,
+`build/asyncara-0.1.0-dev-http-r1.tar.gz`, SHA-256
+`d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0`.
+Reproducible and independently built/tested on PHP83/84/85, epoll/poll.
+[HTTP package attestation](phase6/http-package.json) distinguishes native source92d0ba0,
+tested runtime6b9da6b, packaged sourcef818d29 and later documentation. No GitHub
+release publication; measured performance target remains unmet.

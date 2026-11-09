@@ -1,0 +1,317 @@
+{
+  "createdUtc": "2026-11-09T07:06:17.207068+00:00",
+  "release": "EXPERIMENTAL",
+  "startingCommit": "79d142f900a6324051484b921be23c9c81c92bd4",
+  "testedRuntime": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+  "testedNative": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+  "packagedSource": "f818d2975ef80d8188f751d07eb4243e5395263c",
+  "archive": "/home/coder/Asyncara-http-20261109T050419Z/build/asyncara-0.1.0-dev-http-r1.tar.gz",
+  "archiveSha256": "d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0",
+  "fileCount": 463,
+  "reproducible": true,
+  "independentValidation": {
+    "status": "PASS",
+    "identity": {
+      "source": "f818d2975ef80d8188f751d07eb4243e5395263c",
+      "archive": "/home/coder/Asyncara-http-20261109T050419Z/build/asyncara-0.1.0-dev-http-r1.tar.gz",
+      "archiveSha256": "d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0",
+      "repeat": "/home/coder/Asyncara-http-evidence-20261109T050419Z/http-r1-reproducible.tar.gz",
+      "repeatSha256": "d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0",
+      "fileCount": 463,
+      "gitContentMatch": true,
+      "tree": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev",
+      "dependencies": "Public SDK/library headers only; system shared libraries. Composer installs shipped lock into new vendor. Certificates generated independently. No previous modules/generated project files used.",
+      "moduleHashes": {
+        "85": "81533365412b28a9cadd54702c91c876b2529835132165e33806d041106de798",
+        "83": "78af8fe82fcab6ed88e9cafb9f1d6ea4b29ec00cc35dc15761e4ccdb8102ae02",
+        "84": "3c7cd75f50cb9b66d6506c2797ec04b0ed965baba78a90f91f99a8b55b0c4230"
+      }
+    },
+    "trackedFilesUnchanged": true,
+    "commands": [
+      {
+        "name": "composer-version",
+        "command": [
+          "/usr/local/bin/composer",
+          "--version"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 0.5232000751420856,
+        "cpuSeconds": 0.45323400000000014,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-version.log",
+        "sha256": "2bd4492e6ef0c1d0d45a693fdb50738c444464b6eb18ef2e03d49538d2745812"
+      },
+      {
+        "name": "composer-validate",
+        "command": [
+          "/usr/local/bin/composer",
+          "validate",
+          "--no-check-publish"
+        ],
+        "environment": {
+          "COMPOSER_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-home",
+          "COMPOSER_CACHE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-cache"
+        },
+        "exit": 0,
+        "wallSeconds": 0.5248173589352518,
+        "cpuSeconds": 0.4926980000000003,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-validate.log",
+        "sha256": "20147e0124102a9a43fd893c4110125e9ab15c72726217865b2e71aa98f3cdb2"
+      },
+      {
+        "name": "composer-install",
+        "command": [
+          "/usr/local/bin/composer",
+          "install",
+          "--no-interaction",
+          "--prefer-dist",
+          "--no-progress",
+          "--no-scripts",
+          "--ignore-platform-req=ext-asyncara"
+        ],
+        "environment": {
+          "COMPOSER_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-home",
+          "COMPOSER_CACHE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-cache"
+        },
+        "exit": 0,
+        "wallSeconds": 1.3287205900996923,
+        "cpuSeconds": 1.1552980000000002,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/composer-install.log",
+        "sha256": "8a5f37f50ea8fe75e0c5c3a4f4f6220be8721fcd40df2672fce4f9ce25b6d561"
+      },
+      {
+        "name": "certificates",
+        "command": [
+          "bash",
+          "scripts/prepare-test-certs.sh"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 0.2691315240226686,
+        "cpuSeconds": 0.2556589999999992,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/certificates.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "build-85",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925",
+          "ASYNCARA_OUTPUT": "build/package-85.so",
+          "ASYNCARA_EXTENSION": "build/package-85.so"
+        },
+        "exit": 0,
+        "wallSeconds": 4.458357639145106,
+        "cpuSeconds": 4.4302269999999995,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/build-85.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "http-85",
+        "command": [
+          "python3",
+          "tests/http/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--extension",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/build/package-85.so",
+          "--output",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-85"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925",
+          "ASYNCARA_OUTPUT": "build/package-85.so",
+          "ASYNCARA_EXTENSION": "build/package-85.so"
+        },
+        "exit": 0,
+        "wallSeconds": 29.291658255038783,
+        "cpuSeconds": 21.106454,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-85.log",
+        "sha256": "341c78322c904d37f5e20a5bfbfc94b4ccf43800cf2680a88e9b627b69c062be"
+      },
+      {
+        "name": "full-epoll",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925",
+          "ASYNCARA_OUTPUT": "build/package-85.so",
+          "ASYNCARA_EXTENSION": "build/package-85.so",
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 20.778513241093606,
+        "cpuSeconds": 13.135765000000001,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/full-epoll.log",
+        "sha256": "e467d65f799b0d8ad3c8b03dff82f33a3cb48a356c6473ecc6eb78103370aabb"
+      },
+      {
+        "name": "full-poll",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925",
+          "ASYNCARA_OUTPUT": "build/package-85.so",
+          "ASYNCARA_EXTENSION": "build/package-85.so",
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 26.285285240970552,
+        "cpuSeconds": 16.268429,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/full-poll.log",
+        "sha256": "55f7c0d9de0e1f3a2a0188e2c48cb81640d68006d17ace95b1ca09bbbb16dc27"
+      },
+      {
+        "name": "build-83",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sdk83",
+          "ASYNCARA_OUTPUT": "build/package-83.so",
+          "ASYNCARA_EXTENSION": "build/package-83.so"
+        },
+        "exit": 0,
+        "wallSeconds": 4.310900453943759,
+        "cpuSeconds": 4.300362999999987,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/build-83.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "http-83",
+        "command": [
+          "python3",
+          "tests/http/run.py",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--extension",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/build/package-83.so",
+          "--output",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-83",
+          "--php-only"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sdk83",
+          "ASYNCARA_OUTPUT": "build/package-83.so",
+          "ASYNCARA_EXTENSION": "build/package-83.so"
+        },
+        "exit": 0,
+        "wallSeconds": 25.12178602302447,
+        "cpuSeconds": 16.755186000000002,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-83.log",
+        "sha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+      },
+      {
+        "name": "build-84",
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sdk84",
+          "ASYNCARA_OUTPUT": "build/package-84.so",
+          "ASYNCARA_EXTENSION": "build/package-84.so"
+        },
+        "exit": 0,
+        "wallSeconds": 4.221507776062936,
+        "cpuSeconds": 4.185434000000001,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/build-84.log",
+        "sha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+      },
+      {
+        "name": "http-84",
+        "command": [
+          "python3",
+          "tests/http/run.py",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--extension",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/build/package-84.so",
+          "--output",
+          "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-84",
+          "--php-only"
+        ],
+        "environment": {
+          "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/asyncara-0.1.0-dev/.local/sdk84",
+          "ASYNCARA_OUTPUT": "build/package-84.so",
+          "ASYNCARA_EXTENSION": "build/package-84.so"
+        },
+        "exit": 0,
+        "wallSeconds": 22.539268445922062,
+        "cpuSeconds": 14.687315999999996,
+        "log": "/home/coder/Asyncara-http-evidence-20261109T050419Z/package-http-r1/http-84.log",
+        "sha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+      }
+    ]
+  },
+  "benchmarkEngineArtifacts": {
+    "rustVersionLog": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-version/stdout.log",
+    "rustVersionLogSha256": "f22d5e4e9ced367e774ce5bc140d9e6b1235c1882fec80d011044851f3ae6369",
+    "hyperBuildLogSha256": "aab9db32e8696a34c9c77b091abd0a252290ecdf9fb4b7f13318f13ddb2d6fdd",
+    "hyperExecutableSha256": "1911bd070a58b6b8ee71c4384c4061b789f935a17adb33e867fd5866e2862a40"
+  },
+  "historicalArchives": [
+    {
+      "path": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase3-r5.tar.gz",
+      "sha256": "b0f544b3da61789a9cc649a8bc24869308787c9c63ca37358afd69e39ef1ec38",
+      "match": true
+    },
+    {
+      "path": "/home/coder/Asyncara/build/asyncara-0.1.0-dev-phase4-lifecycle-r1.tar.gz",
+      "sha256": "8586c278f0d29d6b89c6a1fc00722ceb1e53f9943be6737e7524662097f59369",
+      "match": true
+    },
+    {
+      "path": "/home/coder/Asyncara-fast-reliability-20261107T155547Z/build/asyncara-0.1.0-dev-resource-provenance-r1.tar.gz",
+      "sha256": "d3cf2f58cebfcef6e4a0148d0c2b7a6f9dc5d20a6d0819a44b197ff16ea2f176",
+      "match": true
+    }
+  ],
+  "protectedCheckouts": {
+    "/home/coder/Asyncara": {
+      "head": "6a7e0f45cb64577b3ba0cf30e160bd98901e4d90",
+      "branch": "phase4-endurance",
+      "status": "?? tests/soak/campaign_review.py\n?? tests/soak/response_order.py\n?? tests/soak/test_campaign_review.py\n",
+      "trackedDiff": "",
+      "untrackedHashes": {
+        "tests/soak/campaign_review.py": "8b845f420dcfe540bcce1babec25ae260a74bb88885b42a1d9ea311ede714eba",
+        "tests/soak/response_order.py": "5c672b274201f54b934985ce1dc278c21129fe818583173b3c25d8c13f20e7c5",
+        "tests/soak/test_campaign_review.py": "7c1eb82492d638d770a9a8d5befb807c616108884d53f8bb2e6d4ffb60f68105"
+      }
+    },
+    "/home/coder/Asyncara-fast-reliability-20261107T155547Z": {
+      "head": "79d142f900a6324051484b921be23c9c81c92bd4",
+      "branch": "phase5-fast-reliability",
+      "status": "",
+      "trackedDiff": "",
+      "untrackedHashes": {}
+    }
+  },
+  "warnings": [
+    "Composer root version defaults to1.0.0 outside Git; metadata validates. No composer.lock/LICENSE change."
+  ],
+  "remaining": [
+    "Requested4x curl_multi/3x Swoole target not met",
+    "HTTP/2/3 and broad remote/proxy-auth matrices not certified",
+    "Historical zero-tick and richer distribution-PHP allocation discrepancy unresolved",
+    "New Gate C/long-duration tests not run"
+  ],
+  "published": false
+}

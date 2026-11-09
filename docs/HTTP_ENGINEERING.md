@@ -225,9 +225,18 @@ not claimed by this revised native-operation-plus-FPM gate.
 
 ## Packaging and next engineering boundary
 
-After this validation, source packaging and clean PHP83/84/85 extraction/build
-checks issue a separate `docs/phase6/http-package.json` attestation. Documentation
-commits do not alter the runtime tested above. No old archive is overwritten.
+Package source `f818d2975ef80d8188f751d07eb4243e5395263c`,463 tracked files,
+`build/asyncara-0.1.0-dev-http-r1.tar.gz`, SHA-256
+`d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0`.
+Repeated generation is byte-identical; every archive member matches Git. Fresh
+extraction, independent locked Composer install, PHP83/84/85 builds and HTTP
+epoll/poll tests pass, plus full85 suites on both backends. All12 validation
+commands exit0 in147.177s including packaging. Public SDK/library headers are
+external dependencies; no previous generated module/vendor/build outputs were
+reused. Composer reports only root-version fallback; LICENSE/composer.lock are
+unchanged. [Package attestation](phase6/http-package.json) records independent
+module hashes and exact commands. It is a later documentation artifact, not part
+of its own archive. No old archive is overwritten; no release is published.
 
 The next measured performance target is the per-request Fiber/Task lifecycle and
 completion conversion cost, with the same admission/cancellation/result-ownership

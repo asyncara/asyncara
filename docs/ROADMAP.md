@@ -11,6 +11,7 @@ scoped instrumentation and Gates A/B (9236 FPM responses/600.253s). Historical e
 | Multiple-file MIME | IMPLEMENTED_AND_TESTED | 1..16 sequential worker sources, shared64 KiB native slot; empty/duplicate/missing files, cancellation, TLS and FPM |
 | Atomic streamed download | IMPLEMENTED_AND_TESTED | Pinned directory staging, optional file+directory fsync, prepublication failure preserves destination; committed-after-rename errors explicit |
 | Curl lifecycle and configurable admission | IMPLEMENTED_AND_TESTED | Native completion avoids second body copy; bounded easy-handle cache; CURLM failure collection;8/16/32 limits; buffered wait correction |
+| Reproducible HTTP source distribution | IMPLEMENTED_AND_TESTED | f818d29 /463 files; clean PHP83/84/85 builds and six backend combinations; phase6/http-package.json |
 | Performance target4x curl_multi/3x Swoole | NOT_IMPLEMENTED | Matched repeated benchmarks are slower than both; no global ranking claim |
 | Rust Hyper backend | NOT_IMPLEMENTED | Standalone experiment built/measured only; no PHP/FFI integration or production Rust dependency |
 | Broad HTTP protocol/proxy certification | PARTIALLY_IMPLEMENTED | HTTP/1.1 streaming and local HTTP/HTTPS CONNECT tested; HTTP/2/3, streaming redirect replay, resumable/nested MIME and broad proxy-auth remain unverified/unavailable |

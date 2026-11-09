@@ -1685,3 +1685,28 @@ standalone experiment is preserved, not integrated. Full report and exact
 commands/hashes: docs/HTTP_ENGINEERING.md and docs/phase6/http-validation.json.
 Next: new reproducible source package and independent extraction/build on all
 three PHP versions. Historical failures and Phase4/native worktrees intact.
+
+
+## HTTP source package independently verified
+
+Packaged sourcef818d2975ef80d8188f751d07eb4243e5395263c,463 files,
+build/asyncara-0.1.0-dev-http-r1.tar.gz, SHA-256
+d811baa43e71ca62df128c0626d9e115341b041191c64cd4011e088787cd20f0.
+Two generations byte-identical; complete archive/Git tree comparison passes.
+Fresh locked dependency installation, independent PHP83/84/85 native builds,
+six HTTP backend/version combinations and full85 epoll/poll suites pass. All12
+validation commands exit0; total packaging/validation147.177s. Composer warning:
+root-version fallback only. No LICENSE/composer.lock changes. The separate
+attestation docs/phase6/http-package.json records module hashes and commands.
+
+Phase3r5, Phase4lifecycle-r1 and prior native resource-provenance archive hashes
+still match their recorded values. Protected Phase4 tree retains its three
+original untracked files; prior native tree remains clean at79d142f. No GitHub
+push/release, global configuration change or historical artifact overwrite.
+
+Speed target NOT_MET: public HttpClient remains slower than curl_multi/Swoole in
+matched tests; standalone Hyper experiment does not justify a production swap.
+Next measured work: request completion/Fiber lifecycle overhead while preserving
+cancellation/admission/owner guarantees; broader protocol and endurance coverage
+remain separate. Release EXPERIMENTAL; historical zero-tick/memory uncertainty
+not erased by this checkpoint.
