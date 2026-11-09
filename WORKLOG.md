@@ -2042,3 +2042,18 @@ erase it. The separate test-peer early-release regression is corrected without
 changing runtime/thresholds. Public comparison status remains NOT_MET;
 no microbenchmark or native capacity claim is substituted for public throughput.
 New source archive/independent extraction validation is the next step.
+
+### Independent peer EOF cleanup regression
+
+The isolated small-buffer experiment exposed a test-peer shutdown hang when its
+owner failed before releasing held bodies. Python3.12 Server.wait_closed waits
+for active handlers, which were waiting on gates. A no-PHP socket control also
+reproduces this in capacity_server.py. EOF now releases teardown gates before
+joining handlers; normal release and two-tick assertions are unchanged.
+peer_shutdown.py fails the old peer in about2s and passes the corrected peer.
+The original4x512KiB public test passes again on PHP83/84/85, curl/Hyper, epoll/poll.
+Native source and all module binaries remain b1cfd18; no runtime patch is attributed
+to the peer fault. Tests are wired into HTTP/full runners.
+The separate smaller-initial-buffer C experiment remains DO_NOT_ADOPT (9eea780):
+small-body memory improves, but no material public throughput gain is established
+and64KiB median/CPU are slower. All its raw failures and comparisons are retained.
