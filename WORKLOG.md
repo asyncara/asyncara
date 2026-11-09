@@ -1633,3 +1633,13 @@ before PHP integration costs. Public Asyncara remains slower than both controls.
 The benchmark is retained under `benchmarks/http/hyper/`, with locked dependencies;
 it adds no production build dependency. Detailed repeated results and syscall
 counts are in the evidence root. No fastest-PHP claim or release promotion.
+
+Final Valgrind startup initially omitted the already available local glibc debug
+symbols; corrected command uses `--extra-debuginfo-path`, no suppressions. Native
+stage and completion checks pass. The new real-clock start-wait assertion then
+failed under Valgrind because preparation consumed its50ms budget: a zero timeout
+is legitimate in that case. Its original failed report is preserved. Keep the
+real-clock regression unchanged and add a separate test-only clock wrapper for
+its admission/stream-dispatch invariant under instrumentation. Actual kernel
+readiness remains real; expired-real-budget behavior is covered independently by
+the existing wait-budget tests. This changes test control, not runtime deadlines.
