@@ -1,5 +1,5 @@
-//! Experimental HTTP/1.1 bridge. Numeric plain-HTTP GET only; no threads,
-//! Tokio executor, hidden resolver or blocking socket calls. Asyncara owns readiness,
+//! Experimental HTTP/1.1 bridge. Plain-HTTP GET; DNS supplied by Asyncara's
+//! existing resolver workers. No Tokio executor or blocking socket calls. Asyncara owns readiness,
 //! request deadlines and response buffers. No Zend API crosses this boundary.
 #[cfg(not(target_os = "linux"))]
 compile_error!("The Asyncara Hyper prototype currently supports Linux only");
@@ -191,8 +191,28 @@ impl hyper::rt::Write for Io {
         Poll::Ready(self.0.borrow().stream.shutdown(std::net::Shutdown::Write))
     }
 }
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum Origin {
+    Numeric(SocketAddr),
+    Name(String),
+}
+// Preserve the existing allocation-free numeric endpoint path. DNS owns a
+// bounded address vector; numeric benchmark traffic does not allocate one.
+enum Addresses {
+    One(SocketAddr),
+    Many(Vec<SocketAddr>),
+}
+impl Addresses {
+    fn as_slice(&self) -> &[SocketAddr] {
+        match self {
+            Self::One(addr) => std::slice::from_ref(addr),
+            Self::Many(addresses) => addresses,
+        }
+    }
+}
 struct Conn {
     addr: SocketAddr,
+    origin: Origin,
     io: Io,
     connecting: bool,
     connect_deadline: Instant,
@@ -204,7 +224,7 @@ struct Conn {
     closed: bool,
 }
 impl Conn {
-    fn new(addr: SocketAddr, ms: u64) -> io::Result<Self> {
+    fn new(addr: SocketAddr, origin: Origin, deadline: Instant) -> io::Result<Self> {
         let fd = unsafe {
             libc::socket(
                 if addr.is_ipv4() {
@@ -278,9 +298,10 @@ impl Conn {
         })));
         Ok(Self {
             addr,
+            origin,
             io,
             connecting: rc < 0,
-            connect_deadline: Instant::now() + Duration::from_millis(ms),
+            connect_deadline: deadline,
             setup: None,
             sender: None,
             driver: None,
@@ -336,9 +357,12 @@ impl Conn {
 struct Op {
     job: usize,
     uri: Uri,
-    addr: SocketAddr,
+    origin: Origin,
+    addresses: Addresses,
+    address_index: usize,
     deadline: Instant,
     connect_ms: u64,
+    connect_deadline: Option<Instant>,
     conn: Option<usize>,
     future: Option<Transfer>,
     wake: Arc<Flag>,
@@ -426,6 +450,19 @@ async fn transfer(mut sender: Sender, uri: Uri, job: usize) -> (Sender, Result<(
     (sender, outcome)
 }
 impl Engine {
+    // Retry only before a request future is created, so no bytes are replayed.
+    // The same connect budget covers every candidate address.
+    fn next_address(&mut self, i: usize) -> bool {
+        let op = &mut self.ops[i];
+        if op.future.is_some() || op.address_index + 1 >= op.addresses.as_slice().len() {
+            return false;
+        }
+        if let Some(c) = op.conn.take() {
+            self.conns[c] = None;
+        }
+        op.address_index += 1;
+        true
+    }
     fn finish(&mut self, i: usize, error: Option<&str>) {
         let op = self.ops.swap_remove(i);
         fault(13);
@@ -463,20 +500,25 @@ impl Engine {
                 if self.ops[i].conn.is_some() {
                     continue;
                 }
-                let addr = self.ops[i].addr;
+                let addr = self.ops[i].addresses.as_slice()[self.ops[i].address_index];
+                let origin = &self.ops[i].origin;
                 if self
                     .conns
                     .iter()
                     .flatten()
-                    .filter(|c| c.busy && c.addr == addr)
+                    .filter(|c| c.busy && &c.origin == origin)
                     .count()
                     >= self.host
                 {
                     continue;
                 }
                 let idle = self.conns.iter().position(|c| {
-                    c.as_ref()
-                        .is_some_and(|c| !c.busy && !c.closed && c.addr == addr)
+                    c.as_ref().is_some_and(|c| {
+                        !c.busy
+                            && !c.closed
+                            && &c.origin == origin
+                            && self.ops[i].addresses.as_slice().contains(&c.addr)
+                    })
                 });
                 let at = if let Some(at) = idle {
                     at
@@ -497,13 +539,23 @@ impl Engine {
                     } else {
                         continue;
                     };
-                    match Conn::new(addr, self.ops[i].connect_ms) {
+                    let op = &mut self.ops[i];
+                    let deadline = *op.connect_deadline.get_or_insert_with(|| {
+                        Instant::now() + Duration::from_millis(op.connect_ms)
+                    });
+                    if deadline <= Instant::now() {
+                        self.finish(i, Some("HTTP operation timed out"));
+                        return 1;
+                    }
+                    match Conn::new(addr, op.origin.clone(), deadline) {
                         Ok(conn) => {
                             self.conns[slot] = Some(conn);
                             slot
                         }
                         Err(_) => {
-                            self.finish(i, Some("HTTP connect failed"));
+                            if !self.next_address(i) {
+                                self.finish(i, Some("HTTP connect failed"));
+                            }
                             return 1;
                         }
                     }
@@ -536,7 +588,11 @@ impl Engine {
                 if self.ops[i].future.is_none() {
                     let conn = self.conns[at].as_mut().unwrap();
                     if conn.closed {
-                        self.finish(i, Some("HTTP connection closed"));
+                        if self.next_address(i) {
+                            i += 1;
+                        } else {
+                            self.finish(i, Some("HTTP connection closed"));
+                        }
                         progress = true;
                         continue;
                     }
@@ -624,6 +680,27 @@ pub unsafe extern "C" fn ar_hyper_free(ptr: *mut c_void) {
         drop(Box::from_raw(ptr.cast::<Engine>()))
     }
 }
+#[repr(C)]
+pub struct Address {
+    bytes: *const u8,
+    length: usize,
+}
+fn valid_dns_name(host: &str) -> bool {
+    host.len() <= 253
+        && host
+            .strip_suffix('.')
+            .unwrap_or(host)
+            .split('.')
+            .all(|label| {
+                !label.is_empty()
+                    && label.len() <= 63
+                    && label.as_bytes()[0].is_ascii_alphanumeric()
+                    && label.as_bytes()[label.len() - 1].is_ascii_alphanumeric()
+                    && label
+                        .bytes()
+                        .all(|c| c.is_ascii_alphanumeric() || c == b'-')
+            })
+}
 #[no_mangle]
 pub unsafe extern "C" fn ar_hyper_submit(
     ptr: *mut c_void,
@@ -632,6 +709,8 @@ pub unsafe extern "C" fn ar_hyper_submit(
     len: usize,
     timeout: u64,
     connect: u64,
+    addresses: *const Address,
+    count: usize,
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ptr.is_null()
@@ -642,6 +721,8 @@ pub unsafe extern "C" fn ar_hyper_submit(
             || timeout > 3600000
             || connect == 0
             || connect > 3600000
+            || count > 16
+            || (count != 0 && addresses.is_null())
         {
             return -1;
         }
@@ -685,14 +766,48 @@ pub unsafe extern "C" fn ar_hyper_submit(
             None => return -1,
         };
         let host = raw_host.trim_matches(['[', ']']);
-        let Ok(ip) = host.parse() else { return -1 };
-        let addr = SocketAddr::new(ip, port);
+        let (candidates, origin) = if let Ok(ip) = host.parse() {
+            if count != 0 {
+                return -1;
+            } // Numeric origins cannot be redirected.
+            let addr = SocketAddr::new(ip, port);
+            (Addresses::One(addr), Origin::Numeric(addr))
+        } else {
+            if count == 0 || !valid_dns_name(raw_host) {
+                return -1;
+            }
+            let mut candidates = Vec::with_capacity(count);
+            for address in std::slice::from_raw_parts(addresses, count) {
+                if address.bytes.is_null() || address.length == 0 || address.length > 45 {
+                    return -1;
+                }
+                let Ok(text) =
+                    std::str::from_utf8(std::slice::from_raw_parts(address.bytes, address.length))
+                else {
+                    return -1;
+                };
+                let Ok(ip) = text.parse() else {
+                    return -1;
+                };
+                let address = SocketAddr::new(ip, port);
+                if !candidates.contains(&address) {
+                    candidates.push(address);
+                }
+            }
+            (
+                Addresses::Many(candidates),
+                Origin::Name(authority.as_str().to_ascii_lowercase()),
+            )
+        };
         engine.ops.push(Op {
             job: job as usize,
             uri,
-            addr,
+            origin,
+            addresses: candidates,
+            address_index: 0,
             deadline: Instant::now() + Duration::from_millis(timeout),
             connect_ms: connect,
+            connect_deadline: None,
             conn: None,
             future: None,
             wake: Flag::new(),

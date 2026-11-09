@@ -198,7 +198,9 @@ void ar_http_progress(ar_engine *e);
 struct pollfd;
 void *ar_hyper_new(size_t total, size_t host);
 void ar_hyper_free(void *engine);
-int ar_hyper_submit(void *engine, void *job, const unsigned char *url, size_t len, uint64_t timeout, uint64_t connect);
+typedef struct { const unsigned char *bytes; size_t length; } ar_hyper_address;
+int ar_hyper_submit(void *engine, void *job, const unsigned char *url, size_t len, uint64_t timeout, uint64_t connect,
+                    const ar_hyper_address *addresses, size_t count);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);
 int ar_hyper_timeout(void *engine);

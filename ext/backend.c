@@ -207,6 +207,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
         const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
     }
     uint64_t connect = 10000;
+    ar_hyper_address addresses[16]; size_t count = 0;
     if (j->params) for (size_t i = 0; i < j->params->count; i++) {
         const char *key = j->params->keys[i]; ar_value *v = j->params->items[i];
         if (!key) goto unsupported;
@@ -214,11 +215,22 @@ static void hyper_start(ar_engine *e, ar_job *j) {
         else if (!strcmp(key, "headers")) { if (v->count) goto unsupported; }
         else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
         else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
+        else if (!strcmp(key, "resolvedAddresses")) {
+            if (v->type != V_ARRAY || !v->count || v->count > 16) goto unsupported;
+            count = v->count;
+            for (size_t k = 0; k < count; k++) {
+                ar_value *ip = v->items[k];
+                if (ip->type != V_STRING || !ip->length || ip->length > 45) goto unsupported;
+                addresses[k] = (ar_hyper_address){(const unsigned char *)ip->string, ip->length};
+            }
+        }
         else goto unsupported;
     }
     if (!e->hyper) e->hyper = ar_hyper_new(e->http_max_connections, e->http_max_host_connections);
     if (!e->hyper) goto unsupported;
-    int submitted = ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect);
+    /* Rust copies validated addresses synchronously; no borrowed PHP options
+     * or resolver buffers survive this call. */
+    int submitted = ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */
@@ -230,7 +242,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     j->http_hyper = 1; e->hyper_submitted++;
     return;
 unsupported:
-    snprintf(j->error, sizeof(j->error), "Hyper prototype supports numeric-address plain HTTP GET only, without proxies, redirects, custom headers or streaming");
+    snprintf(j->error, sizeof(j->error), "Hyper prototype requires plain HTTP GET and numeric or resolved addresses, without proxies, redirects, custom headers or streaming");
     ar_done(e, j);
 }
 #endif

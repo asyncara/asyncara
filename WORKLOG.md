@@ -2158,3 +2158,36 @@ c2cc81d42364d5d81dd7f11e44ee179599986612de2c87e74b406f689065afde.
 No publication, no new GitHub push, no performance/production promotion.
 All test processes are terminal. Unresolved dependency memory and timing findings
 remain explicit next work; no global system or protected Phase4 files changed.
+
+## 2026-11-10 — Hyper DNS and isolated dependency continuation
+
+Started from6818dd6 in the existing isolated phase6-http-transfer worktree.
+Preserved Phase4 files, prior packages/failures and the host libcurl binary.
+Evidence root: `/home/coder/Asyncara-http-continuation-20261109T224615Z`.
+Matched official curl8.5.0 builds establish the upstream trailer repair: reuse
+control288 definite bytes before, zero lost after. Actual Asyncara trailer
+workload passes scoped GCC/DEBUG memory controls with the isolated patched
+library. System-library FAIL is unchanged; the old source build is a diagnostic
+control, not a newly recommended production dependency. See dependency findings.
+
+Hyper now receives bounded resolved endpoints from the existing native DNS
+workers through an owned HttpClient Task. C validates/copies options; Rust copies
+addresses before submission returns, keeps Host/origin identity, separates pools
+by origin and tries another address only before any request future starts.
+Connect budget is retained across fallback. Numeric origins retain inline endpoint
+and origin storage; no new resolver threads, Tokio executor or blocking network
+wait is introduced. DNS is worker-backed and may need to drain getaddrinfo after
+logical cancellation/deadline. HTTPS/decompression/streaming remain unsupported
+on this prototype. No speed or release promotion.
+
+New localhost test fails on the old binary. Real pending-body/two-tick tests,
+shared-waiter cancellation, origin/pool checks, IPv6-refusal/IPv4 fallback and
+native option validation pass on both backends. Separately linked controlled DNS
+barrier proves timer progress, cancellation/deadline drain and no late HTTP
+submission. Initial fixture EOF hang reproduced without PHP; fixed by closing
+active clients before waiting for server closure; original timeout logs retained.
+PHP83/84/85, DEBUG and GCC focused Hyper matrix (70 commands) passed before the
+final PHP cancellation checkpoint guard. Original and DNS-specific short FPM
+runs passed20+40 main requests each on the earlier DNS candidate. Full final
+acceptance, final memory/FPM repeats and comparative performance are RUNNING or
+NOT_STARTED at this source checkpoint; later evidence must qualify them.

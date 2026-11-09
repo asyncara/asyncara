@@ -101,7 +101,9 @@ fn single_driver_waker_survives_many_senders_and_real_readiness() {
                     url.as_ptr(),
                     url.len(),
                     5000,
-                    1000
+                    1000,
+                    std::ptr::null(),
+                    0
                 ),
                 0
             );
@@ -156,7 +158,9 @@ fn poisoned_engine_never_accepts_work_or_reports_idle_success() {
                 url.as_ptr(),
                 url.len(),
                 1000,
-                1000
+                1000,
+                std::ptr::null(),
+                0
             ),
             -2
         );
@@ -166,6 +170,79 @@ fn poisoned_engine_never_accepts_work_or_reports_idle_success() {
         assert_eq!(ar_hyper_ready(engine, -1, 0), -2);
         assert_eq!(ar_hyper_fds(engine, std::ptr::null_mut(), 0), usize::MAX);
         assert_eq!(ar_hyper_connections(engine), usize::MAX);
+        ar_hyper_free(engine);
+    }
+}
+
+#[test]
+fn resolved_addresses_are_copied_bounded_and_keep_origin_identity() {
+    unsafe {
+        let engine = ar_hyper_new(4, 2);
+        let url = b"http://Example.test:8080/path?q=value";
+        let mut bytes = b"127.0.0.1".to_vec();
+        let address = Address {
+            bytes: bytes.as_ptr(),
+            length: bytes.len(),
+        };
+        assert_eq!(
+            ar_hyper_submit(
+                engine,
+                1usize as *mut c_void,
+                url.as_ptr(),
+                url.len(),
+                1000,
+                500,
+                &address,
+                1
+            ),
+            0
+        );
+        bytes.fill(b'x');
+        drop(bytes);
+        {
+            let e = &*engine.cast::<Engine>();
+            assert_eq!(
+                e.ops[0].addresses.as_slice(),
+                ["127.0.0.1:8080".parse::<SocketAddr>().unwrap()]
+            );
+            assert_eq!(e.ops[0].origin, Origin::Name("example.test:8080".into()));
+            assert_eq!(
+                e.ops[0].uri.authority().unwrap().as_str(),
+                "Example.test:8080"
+            );
+        }
+        let ip = b"::1";
+        let second = Address {
+            bytes: ip.as_ptr(),
+            length: ip.len(),
+        };
+        for (u, pointer, count) in [
+            ("http://example.test/", std::ptr::null(), 0),
+            ("http://example.test/", std::ptr::null(), 1),
+            ("http://example.test/", &second as *const Address, 17),
+            ("http://127.0.0.1/", &second as *const Address, 1),
+            ("http://[example.test]/", &second as *const Address, 1),
+            ("http://-bad.test/", &second as *const Address, 1),
+            ("http://bad..test/", &second as *const Address, 1),
+            ("http://bad.test:65536/", &second as *const Address, 1),
+            ("https://example.test/", &second as *const Address, 1),
+        ] {
+            assert_eq!(
+                ar_hyper_submit(
+                    engine,
+                    2usize as *mut c_void,
+                    u.as_ptr(),
+                    u.len(),
+                    1000,
+                    500,
+                    pointer,
+                    count
+                ),
+                -1
+            );
+        }
+        assert_eq!((*engine.cast::<Engine>()).ops.len(), 1);
+        assert_eq!(ar_hyper_connections(engine), 0);
         ar_hyper_free(engine);
     }
 }
