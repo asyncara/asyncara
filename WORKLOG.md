@@ -2191,3 +2191,14 @@ final PHP cancellation checkpoint guard. Original and DNS-specific short FPM
 runs passed20+40 main requests each on the earlier DNS candidate. Full final
 acceptance, final memory/FPM repeats and comparative performance are RUNNING or
 NOT_STARTED at this source checkpoint; later evidence must qualify them.
+
+Final acceptance first stopped at the DEBUG/poll DNS lifecycle fixture: its
+post-timeout recovery reused the intentionally30ms DNS budget and asserted a
+fresh localhost lookup would succeed. Preserved original FAIL. A test-only80ms
+resolver control reproduces the failure on the original fixture and passes the
+correction: warm a real numeric connection, then require a successful real HTTP
+request through the SAME client/permit. The30ms deadline, two-tick requirement,
+DNS barrier, cancelled-worker drain and late-submission assertions are unchanged.
+This removes an unintended DNS latency SLA; it is not a runtime correction or a
+relaxation of the historical FPM acceptance workload. Evidence:
+`recovery-control-{before,after}`. Rerun final acceptance with unique output paths.
