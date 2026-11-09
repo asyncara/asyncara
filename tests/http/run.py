@@ -76,7 +76,7 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
-    for test in ['capacity', 'completion', 'methods', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
+    for test in ['capacity', 'gate_protocol', 'completion', 'methods', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
         run(backend + '-' + test, php + ['tests/http/' + test + '.php'], env)
     for limit in [8, 16, 32]:
         run(backend + '-connections-' + str(limit), php + ['tests/http/connections.php', limit], env)
@@ -84,7 +84,7 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
-        for test in ['capacity', 'hyper_uri', 'hyper', 'buffered_owner']:
+        for test in ['capacity', 'gate_protocol', 'hyper_uri', 'hyper', 'buffered_owner']:
             run(backend + '-prototype-' + test, php + ['tests/http/' + test + '.php'],
                 env | {'ASYNCARA_HTTP_BACKEND': 'hyper-prototype'})
 assert sha(module) == identity['moduleSha256']
