@@ -9,7 +9,10 @@ async def main():
     def control():
         data=os.read(0,1024)
         if data:release.set()
-        else:loop.remove_reader(0);stopped.set()
+        else:
+            # On owner failure, unblock held handlers before Server.wait_closed
+            # joins active connections. This is cleanup, not normal release.
+            loop.remove_reader(0);ready.set();release.set();stopped.set()
     loop.add_reader(0,control)
     async def client(reader,writer):
         nonlocal prefixes

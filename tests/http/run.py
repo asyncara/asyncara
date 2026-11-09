@@ -54,6 +54,8 @@ def run(name, cmd, env=None, timeout=120):
     if code:
         raise SystemExit(1)
 
+run('capacity-peer-shutdown', ['python3', 'tests/http/peer_shutdown.py', 'tests/http/capacity_server.py'])
+
 if not a.php_only:
     cc = shlex.split(os.environ.get('CC', 'cc'))
     flags = ['-std=c11', '-D_GNU_SOURCE', '-O2', '-g', '-Wall', '-Wextra', '-Werror',
