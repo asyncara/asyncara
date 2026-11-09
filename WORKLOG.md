@@ -2202,3 +2202,12 @@ DNS barrier, cancelled-worker drain and late-submission assertions are unchanged
 This removes an unintended DNS latency SLA; it is not a runtime correction or a
 relaxation of the historical FPM acceptance workload. Evidence:
 `recovery-control-{before,after}`. Rerun final acceptance with unique output paths.
+
+Client checkpoint before the owner-requested native-server task: full corrected
+controlled-DNS matrix20checks PASS; full ordinary HTTP gate FAIL at unchanged
+proxy two-tick assertion (one tick,49.915ms). Independent ordinary repeat fails
+with zero ticks; trace-only repeat also fails. Separate1ms epoll waits overshoot
+69.745/90.048ms at low thread CPU, but the failed trace's27ms PHP dispatch and16ms
+post-wait intervals lack CPU attribution. Root cause remains unresolved. No test
+threshold was changed. Final Gate A/memory/FPM repeats and packaging remain
+INCOMPLETE. New server work proceeds separately; these failures remain retained.

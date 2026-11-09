@@ -242,8 +242,8 @@ at trailer completion. The repeated32-byte allocation stacks and independent
 control establish external-library ownership here. The upstream report concerns
 7.88.1 and notes newer releases changed the parser; it is not evidence that every
 8.5 distro package is affected or that every newer build is fixed. This exact
-installed binary demonstrably is affected. No patched/newer library has been
-certified in this worktree yet.
+installed binary demonstrably is affected. At dd63396 no patched/newer library
+had been certified here; the later matched control below qualifies its own scope.
 
 Evidence root:`/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/`:
 `gcc-epoll-curl-multi-transfer_geometry`, `geometry-asan-symbols`,

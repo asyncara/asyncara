@@ -1,12 +1,16 @@
 # Hyper prototype safety review
 
+This review records the dd63396 checkpoint. The later [DNS continuation](HYPER_DNS.md)
+adds worker-resolved origins and separately verifies the curl trailer repair; it
+does not retroactively change the package or results recorded below.
+
 Date:2026-11-09. Release:EXPERIMENTAL. Native API First remains unchanged.
 This review concerns the optional Rust Hyper backend, not the default curl multi
 backend. Neither universal HTTP feature parity nor a fastest-PHP claim is proven.
 
 ## Findings from the seven reported concerns
 
-| Concern | Finding from source and execution | Current boundary |
+| Concern | Finding from source and execution | Boundary at this review checkpoint |
 |---|---|---|
 | DNS | Confirmed missing: `ar_hyper_submit` parses a numeric IP. The public regression rejects localhost. | NOT_IMPLEMENTED in Hyper. Default curl supports DNS. No blocking resolver was added. |
 | Portability | Hyper socket/FFI integration is Linux-only and now fails compilation explicitly on other targets. Certification of macOS/BSD was never established. | No portability implementation. Some cited constants also exist in BSD/Apple libc definitions; their presence alone does not certify behavior. |

@@ -6,7 +6,7 @@ These are measured results, not performance targets. The requested minimum
 
 This is the last complete five-sample four-client comparison of the checkpoint
 identified below. Later receive-geometry and Hyper safety changes in this worktree
-are **not measured by this table**. Their three-sample screen and corrections are
+and worker-resolved DNS are **not measured by this table**. Their three-sample screen and corrections are
 distinguished in [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md). The historical
 measurements remain unchanged; no speed target has newly passed. A separate,
 earlier rejected experiment is retained below.

@@ -1,6 +1,13 @@
 # Release readiness
 
-Current isolated review: [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md).
+See [HYPER_DNS.md](HYPER_DNS.md) for runtime922a024 and the isolated curl repair.
+DNS tests are scoped; HTTPS/decompression and speed targets remain incomplete.
+System libcurl is unchanged, prior FAIL remains, and final broad acceptance is
+INCOMPLETE (curl TLS-proxy progress failure). Release remains **EXPERIMENTAL**.
+
+## Previous safety candidate
+
+Previous isolated review: [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md).
 Native dd63396 fixes Hyper FFI panic containment and repeated content codings;
 ordinary PHP83/84/85 HTTP gates, scoped Hyper memory checks, Gate A and short FPM
 pass. **System libcurl8.5.0 trailer memory gate remains FAIL**, independently

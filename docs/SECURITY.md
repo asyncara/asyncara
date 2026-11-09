@@ -204,8 +204,10 @@ retention. No historical zero-tick attribution or universal leak guarantee follo
 
 ## Optional Hyper FFI containment
 
-The Hyper prototype remains numeric plaintext buffered GET on Linux; it does
-not implement DNS, TLS or decompression. The default curl backend remains the
+The Hyper prototype remains plaintext buffered GET on Linux. Worker-backed DNS
+now preserves original Host and isolates connection pools by origin; endpoint
+arrays are bounded and copied before submission returns. It does not implement
+TLS or decompression. See [DNS continuation](HYPER_DNS.md). The default curl backend remains the
 application-facing general HTTP path. Hyper rejects every unsupported
 Content-Encoding field, including duplicates after identity. See
 [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md) for the reproduced bypass and scope.

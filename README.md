@@ -6,11 +6,13 @@
 
 **Native reliability continuation:** [native fixes, fast gates and ownership evidence](docs/NATIVE_RELIABILITY_PROGRAM.md). The historical local FPM one-hour stage passed; the six-hour stage failed and its zero-tick cause remains unresolved. New short gates do not certify long-duration stability.
 
-**HTTP continuation:** [current native improvements, validation and measured performance](docs/HTTP_PERFORMANCE_WORK.md). Curl remains the default. The opt-in [Hyper prototype](docs/HYPER_EXPERIMENT.md) supports only numeric plaintext buffered GET; it is not a production replacement. Requested speed targets remain NOT_MET.
+**HTTP continuation:** [current native improvements, validation and measured performance](docs/HTTP_PERFORMANCE_WORK.md). Curl remains the default. The opt-in [Hyper prototype](docs/HYPER_EXPERIMENT.md) supports plaintext buffered GET with bounded worker-backed DNS; it is not a production replacement. Requested speed targets remain NOT_MET.
 
 The [Hyper safety review](docs/HYPER_SAFETY_REVIEW.md) records FFI panic containment,
 the repeated Content-Encoding correction, tested wakeup ownership, and the separate
-system-libcurl trailer leak. DNS/TLS/decompression remain unavailable in Hyper.
+system-libcurl trailer leak. The [DNS continuation](docs/HYPER_DNS.md) adds owned
+worker resolution and origin-safe fallback. TLS/decompression remain unavailable
+in Hyper. The isolated curl repair does not update the host library.
 
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 

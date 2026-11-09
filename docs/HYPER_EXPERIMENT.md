@@ -21,8 +21,11 @@ remain in place. No change to optional PHP hooks is involved.
 
 ## Deliberate scope
 
-`ASYNCARA_HTTP_BACKEND=hyper-prototype` selects **numeric-address plaintext HTTP
-GET** with buffered responses. Other methods, DNS names, HTTPS, custom headers,
+`ASYNCARA_HTTP_BACKEND=hyper-prototype` selects **plaintext HTTP GET** with
+buffered responses. Native922a024 adds worker-resolved ASCII DNS origins through
+HttpClient, bounded endpoint fallback and origin-isolated pooling; see
+[HYPER_DNS.md](HYPER_DNS.md) for exact lifecycle/tests and remaining restrictions.
+Other methods, HTTPS, custom headers,
 redirect following, proxies, uploads and response streaming are rejected. Proxy
 environment variables also cause rejection. There is no silent fallback which
 could bypass a proxy or create a second independently limited connection pool.

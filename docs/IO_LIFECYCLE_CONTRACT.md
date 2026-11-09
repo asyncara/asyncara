@@ -382,5 +382,20 @@ A subsequent request can create a fresh engine. This does not change ordinary
 single-waiter cancellation ownership. Tests inject eight boundary failures on
 epoll/poll and check exactly-once collection and zero tracked job/buffer ownership.
 See HYPER_SAFETY_REVIEW.md for allocation-abort/destructor/unsafe-FFI exclusions.
-DNS, TLS, decompression and streaming are not supplied by this prototype; default
+TLS, decompression and streaming are not supplied by this prototype; default
 curl lifecycle semantics still apply to those existing HTTP capabilities.
+
+## Optional Hyper DNS ownership (922a024)
+
+Domain requests use an owned Task and existing native DNS workers; numeric URLs
+retain direct buffered submission. The canonical client permit spans resolution,
+HTTP and cancellation collection. Sharing a Future does not transfer authority
+from its request owner to one waiter. Unawaited owned Tasks still run.
+Resolution consumes the total/connect budgets after admission. On cancellation
+or deadline, running getaddrinfo must finish before its owner releases the permit;
+the Event Loop remains available. A late result cannot start HTTP. This is a
+logical deadline with drained cleanup, not forcible DNS-worker termination.
+After the native result is collected, Rust owns a copy of1..16 validated endpoints.
+Retries occur only before a request future starts, with one connect budget and
+origin-specific pooling. No automatic replay after sending. DNS is not cached by
+Asyncara and this is not Happy Eyeballs. Detailed tests/limits: HYPER_DNS.md.

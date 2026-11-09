@@ -1,6 +1,19 @@
 # Current isolated HTTP development state
 
-Current isolated native source: `dd63396`, branch
+Current runtime: `922a02459774df98191937cbc1f3ffacc80c975d`; test follow-up
+`b1b14e9`, branch `phase6-http-transfer-20261109T211228Z`. Hyper now supports
+worker-resolved ASCII DNS origins, preserved Host/origin identity, bounded
+address fallback and owned cancellation/drain through the existing HttpClient.
+[DNS and dependency continuation](HYPER_DNS.md) records the executable evidence.
+Scoped normal/debug/sanitized DNS tests pass; final broad acceptance is INCOMPLETE (unchanged curl TLS-proxy progress assertion failed).
+HTTPS/decompression/streaming remain unavailable in Hyper. Default curl remains
+unchanged. Its host-library trailer memory FAIL is preserved; a separately built
+upstream correction passes matched controls. Release EXPERIMENTAL; speed targets
+remain NOT_MET. No prior package contains these DNS changes.
+
+## Previous safety checkpoint (historical)
+
+Previous isolated native source: `dd63396`, branch
 `phase6-http-transfer-20261109T211228Z`. Hyper FFI fatal containment and repeated
 Content-Encoding rejection have failing-before/passing-after regressions.
 PHP83/84/85 ordinary HTTP gates pass on epoll/poll. Memory acceptance is not
