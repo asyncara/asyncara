@@ -29,7 +29,7 @@ Future can be read outside a run. Nested `Async::run()` is rejected.
 |---|---|---|
 | `Files::read/write/append/replaceAtomic/delete/rename/mkdir/rmdir/stat/entries/copy`, `Dns::resolve` | `Scheduler::native()` submits immediately, copying bounded inputs | Scheduler retains the native Future until collection |
 | `Files::open`, `File` operations, `Files::exists/writeStream` | Immediately schedules a Task; native submission occurs when that Task runs and obtains its gate | File operations retain the gate through native completion |
-| `HttpClient::request/get/post` | Immediately schedules an owned Task; submits after obtaining a client permit | Permit retained through result conversion or cancellation drain |
+| `HttpClient::request/get/post` | Immediate native submission when a permit is available; otherwise an owned Task waits in the existing FIFO admission queue | The returned Future owns the permit and former Task budget through result conversion or cancellation drain |
 | HTTP response/file producer streams | Producer Task scheduled on construction; bounded queues may suspend it before any consumer awaits | Explicit `close()` cancels and joins the producer; iteration is single-consumer |
 | SQLite | Tasks serialize connection access; native work starts after admission | Worker completion is drained before releasing the operation gate |
 | PostgreSQL/MySQL | Tasks admit work through connection gates, then drive native library states | Readiness/deadline waits suspend Fibers; PHP converts bounded results |
@@ -46,8 +46,9 @@ are not stable across requests and are not serializable resource identities.
 PostgreSQL/MySQL instead use Zend resources; Redis uses a stream owner. There is
 no universal exposed operation ID covering every driver.
 
-`ar_done()` queues native completion under the engine mutex and signals its wake
-pipe. `ar_collect()` detaches completed jobs, releases busy flags, and decrements
+`ar_done()` queues native completion under the engine mutex. Worker completion
+signals the wake pipe (including EINTR retry). Interpreter-thread HTTP completion
+needs no pipe write: the normal poll/collect path observes its completed queue. `ar_collect()` detaches completed jobs, releases busy flags, and decrements
 pending accounting. `asyncara_poll()` converts results on the PHP thread;
 `Scheduler::poll()` removes each ID before settling its Future. Worker jobs have
 one completion owner; HTTP cancellation checks `done` before queuing completion.
@@ -80,7 +81,9 @@ PHP stream. Its weak registration does not retain an abandoned owner. The raw
   `Async::run()`. Dropping a variable does not undo submission. A plain native
   Future's unobserved rejection is not automatically rethrown by the scheduler;
   applications must await operations whose errors matter. Unobserved Task
-  failures have separate scheduler failure reporting.
+  failures have separate scheduler failure reporting. Buffered HTTP uses an owned
+  completion Future with the same unobserved-failure reporting and admission
+  budget as its former per-request Task; it is not a plain unowned native Future.
 * Last user-reference loss is not last native-owner loss. File/SQLite handles
   remain request-owned until explicit close or request teardown. A stream's
   producer can retain its stream through the scheduler; call `close()` to join
@@ -114,7 +117,7 @@ work. Do not use that ownership helper for shared work.
 
 | Driver/resource | Underlying action and completion boundary |
 |---|---|
-| Buffered HTTP | Remove active curl handle, queue cancellation, collect native result before releasing the public Task/permit |
+| Buffered HTTP | Remove active curl handle, queue cancellation, collect native result before releasing the owned Future or queued Task/permit |
 | HTTP response/upload streams | Cancel transfer and owned producer/pump, shield-join their completion and close owned readable sources |
 | File handles | Flag worker cancellation; retain per-handle gate through native completion; check Task cancellation before returning |
 | Whole-file/path operations | Flag native job; executing syscalls may finish. Await/drain before assuming resources have been released |
@@ -327,3 +330,29 @@ dispose an already completed resource-valued result. For explicit resource
 acquisition use `Async::using()` or shield acquisition and retain the object for
 finally cleanup. `tests/http/acquire_cancel.php` proves the download boundary;
 this is not a universal destructor/last-reference cancellation guarantee.
+
+
+## Buffered HTTP dispatch optimization (2026-11-09)
+
+An uncontended buffered request returns `HTTP\BufferedRequest`, a Future, rather
+than allocating an extra Task/Fiber. Callers must rely on the public Future
+contract, not an incidental Task subtype. Explicit cancellation requests native
+cancellation and waits for collection before settling. Shared waiter cancellation
+still detaches only that waiter. Success, error and submission-failure paths each
+release admission exactly once. Operation and unobserved-failure counts retain
+the existing task-limit protection. `tests/http/buffered_owner.php` verifies these
+boundaries including abandoned results and root failure.
+
+Completed native HTTP buffers stay on their registered job until conversion; no
+generic native result tree duplicates them. The common four-option submission
+view exists only during synchronous native setup and is cleared before returning
+to Zend. It never reaches a worker or survives an await. Complex options retain
+owned conversion. `tests/http/options_lifetime.php` checks referenced option
+mutation, validation failure and rejected admission cleanup. Task Future waits
+reuse observers with first-settler semantics; `tests/http/wait_observer.php`
+checks exceptional reuse and independent shared consumers.
+
+The opt-in [Hyper prototype](HYPER_EXPERIMENT.md) has a deliberately narrower
+HTTP-only scope. It does not change the default curl contract or silently provide
+TLS/proxy/streaming fallback. Its request-local Rust owners are dropped before C
+job cleanup. Rust/Hyper internal allocation is outside the native buffer ledger.

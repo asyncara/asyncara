@@ -1722,3 +1722,33 @@ HTTP checks pass in the current scope. The 13,000 requests/s target remains NOT_
 Detailed limitations, negative controls and raw paths: docs/HTTP_PERFORMANCE_WORK.md.
 Final matrix/memory/FPM validation and a justified Hyper experiment remain pending.
 No prior failure, archive or protected Phase 4 source was changed.
+
+
+### 2026-11-09 — Public HTTP dispatch and opt-in Hyper prototype
+
+After 5ffa61e, added a pinned Rust Hyper HTTP/1.1 prototype driven by the existing
+real readiness loop without a Tokio executor, hidden resolver, network worker or
+Zend cross-thread access. Default curl capabilities remain unchanged. Prototype
+scope is explicit numeric-address plaintext buffered GET; unsupported settings
+fail instead of bypassing proxies or mixing connection budgets. C retains bounded
+result ownership. Rust futures/sockets are dropped before C jobs at shutdown.
+
+Evidence: `/home/coder/Asyncara-http-speed-20261109T073938Z`. Targeted PHP 8.3/8.4/
+8.5 plus DEBUG both backends pass; complete curl HTTP suites on three NTS versions
+and full 8.5 suites pass. Gate A 187.64s PASS. Scoped DEBUG Valgrind zero lost bytes/
+errors and GCC ASan/UBSan+LSan PASS; this is not universal memory certification.
+
+One five-sample JIT/poll/1KiB/concurrency32 public Hyper run had median14623.47/s,
+but later matched public medians are9374.10/s (Hyper),6276.85/s (Asyncara/curl),
+9119.99/s (curl_multi),13728.21/s (Swoole). The strict13000 floor and4x/3x targets
+remain NOT_MET. Raw results, including slower four-server-worker controls, are
+retained in docs/phase6/http-speed-samples.json. No fastest-PHP claim.
+
+Preserved an isolated HTTP FPM post-fatal assertion failure. Exact attribution
+is unresolved because old error output lacks ticks/intervals. Five diagnostic
+repetitions passed. Independently proved/fixed a one-vs-four-operation peer barrier
+mismatch in the additional HTTP harness; original ticker/overlap thresholds and
+Phase4 fixtures remain intact. Three corrected isolated feature runs and one
+isolated Hyper FPM run pass; each has60 main responses plus fatal/recovery. No
+new long-duration campaign has been run. Archive/build attestation follows after
+remaining final-source validation. Release remains EXPERIMENTAL.

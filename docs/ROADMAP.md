@@ -215,3 +215,18 @@ optimizations pass the current HTTP gate and Gate A. Final matrix, memory and FP
 validation remain pending. The public 13,000 requests/s and relative 4x/3x targets
 are NOT_MET; see [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md). Hyper remains
 an evaluation until a real PHP integration demonstrates an advantage.
+
+
+### HTTP performance continuation — 2026-11-09
+
+- Buffered owner/wait observer/metadata/dispatch improvements: IMPLEMENTED_AND_TESTED
+  in scoped HTTP suites, PHP 8.3/8.4/8.5 epoll/poll, full8.5 and Gate A.
+- Optional Hyper backend: PARTIALLY_IMPLEMENTED. Numeric HTTP/1.1 buffered GET
+  passes targeted lifecycle/cancellation/bounds/FPM tests. It is not default and
+  does not implement TLS, DNS, proxies, general methods or streaming. Curl retains
+  these existing capabilities.
+- Performance acceptance: NOT_MET. One scoped median exceeds13000/s; later
+  repetitions are slower. 4x curl_multi /3x Swoole is not demonstrated.
+- Additional HTTP FPM harness barrier corrected with negative control; the retained
+  pre-correction assertion failure and historical Phase4 zero-tick attribution
+  remain unresolved. See HTTP_PERFORMANCE_WORK.md and HYPER_EXPERIMENT.md.

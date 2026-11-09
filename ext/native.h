@@ -116,6 +116,7 @@ typedef struct ar_job {
     ar_file *file;
     struct ar_engine *engine;
     struct ar_job *next, *queue_next, *done_next, *lifetime_next;
+    int http_hyper;
     CURL *curl;
     curl_mime *mime;
     struct curl_slist *headers;
@@ -151,11 +152,13 @@ typedef struct ar_engine {
     long next_id, next_db, next_file;
     ar_db *dbs;
     ar_file *files;
+    void *hyper;
+    int hyper_requested;
     CURLM *multi;
     CURL *http_idle[64];
     size_t http_idle_count;
     int http_max_connections, http_max_host_connections;
-    uint64_t http_created, http_reused;
+    uint64_t http_created, http_reused, hyper_submitted, hyper_completed;
     ar_socket *sockets;
     int running, use_epoll, http_wakeup;
 } ar_engine;
@@ -184,6 +187,19 @@ ar_db *ar_db_find(ar_engine *e, long id);
 ar_file *ar_file_find(ar_engine *e, long id);
 void ar_http_start(ar_engine *e, ar_job *j);
 void ar_http_progress(ar_engine *e);
+#ifdef HAVE_ASYNCARA_HYPER
+struct pollfd;
+void *ar_hyper_new(size_t total, size_t host);
+void ar_hyper_free(void *engine);
+int ar_hyper_submit(void *engine, void *job, const unsigned char *url, size_t len, uint64_t timeout, uint64_t connect);
+int ar_hyper_drive(void *engine);
+int ar_hyper_cancel(void *engine, void *job);
+int ar_hyper_timeout(void *engine);
+size_t ar_hyper_connections(void *engine);
+size_t ar_hyper_fds(void *engine, struct pollfd *fds, size_t capacity);
+void ar_hyper_ready(void *engine, int fd, int events);
+void ar_hyper_failed(ar_engine *e);
+#endif
 void ar_done(ar_engine *e, ar_job *j);
 int ar_trace_configure(ar_engine *e, size_t capacity, unsigned mask);
 void ar_trace_emit(ar_engine *e, unsigned category, unsigned code, int64_t id, int64_t a, int64_t b, int64_t c);

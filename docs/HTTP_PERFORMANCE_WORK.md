@@ -3,7 +3,10 @@
 Status: **EXPERIMENTAL, IN_PROGRESS**. Base `3fe4cf9d1a774b04a8d5d14bf111f424b4b2de8a`.
 Worktree `/home/coder/Asyncara-http-20261109T050419Z`, branch `phase6-http`.
 Evidence `/home/coder/Asyncara-http-speed-20261109T073938Z`.
-The 13,000 public HttpClient requests/second target is **NOT_MET** at this checkpoint.
+The default curl checkpoint below did not meet the 13,000 public HttpClient
+requests/second target. The later [Hyper experiment](HYPER_EXPERIMENT.md) exceeds
+that median only in a specified JIT/poll/1 KiB workload, with slower samples and
+limitations retained. It is not a universal throughput floor.
 No 4x curl_multi, 3x Swoole, or fastest-PHP claim is supported.
 Historical Phase 4 evidence and the http-r1 archive are unchanged.
 
@@ -79,3 +82,28 @@ an end-to-end experiment demonstrates a useful advantage. The existing standalon
 Rust experiment is not a PHP backend or evidence that the public target passed.
 Preserve curl for unsupported experimental configurations. Do not introduce a
 blocking network wait, an unbounded pool, or PHP access from native worker threads.
+
+
+## Preserved new FPM failure and fixture correction
+
+`isolated-fpm/stdout.log` and its `A-lifecycle/php-errors.log` retain a failed
+post-fatal overlap/two-tick assertion. Its error did not record the individual
+tick count or intervals, so exact attribution remains **UNRESOLVED**. Five
+separate diagnostic repetitions passed and do not erase that failure.
+
+Source inspection established a distinct feature-fixture mismatch: the post-fatal
+request used the generic lifecycle peer's one-operation barrier while the HTTP
+feature fixture submits four operations. `tests/http/fpm_barrier.py` proves that
+the one-operation barrier permits nonoverlap and the four-operation barrier holds
+the batch until all requests arrive. Only the additional HTTP harness now maps
+that recovery probe to the four-operation barrier. The >=2-tick and interval
+assertions are unchanged, and failure messages now retain the actual values.
+The historical `tests/audit/fpm_request.php` and campaign artifacts are untouched.
+This correction is not proof of the failed request's cause or of the historical
+Phase 4 zero-tick cause.
+
+`fpm-corrected-data-0/1/2/report.json` independently retain three passing feature
+runs (60 main responses each plus fatal/recovery). `responses.jsonl` preserves
+individual results even if a later check fails. The first `final-fpm` run overlapped
+the tail of sanitizer validation and is functional diagnostic evidence only;
+the corrected repetitions and `isolated-hyper-fpm-r2` were isolated.

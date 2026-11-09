@@ -805,6 +805,8 @@ ar_engine *ar_engine_new(void) {
     atomic_init(&e->memory_rejections, 0);
     e->memory_limit = AR_MEMORY_LIMIT;
     e->http_max_connections = 64; e->http_max_host_connections = 8;
+    const char *http_backend = getenv("ASYNCARA_HTTP_BACKEND");
+    e->hyper_requested = http_backend && !strcmp(http_backend, "hyper-prototype");
     e->use_epoll = 1;
     const char *backend = getenv("ASYNCARA_BACKEND");
     if (backend && !strcmp(backend, "poll"))
@@ -919,6 +921,12 @@ void ar_cancel(ar_engine *e, long id) {
             ar_trace_emit(e, AR_TRACE_JOB, 25, id, j->op, 0, 0);
             atomic_store(&j->cancelled, 1);
             if (j->op == OP_HTTP && !j->done) {
+#ifdef HAVE_ASYNCARA_HYPER
+                if (j->http_hyper) {
+                    if (ar_hyper_cancel(e->hyper, j)) ar_hyper_failed(e);
+                    return;
+                }
+#endif
                 if (j->curl)
                     curl_multi_remove_handle(e->multi, j->curl);
                 failure(j, "Operation cancelled");
@@ -983,6 +991,10 @@ void ar_engine_free(ar_engine *e) {
     pthread_mutex_unlock(&e->mutex);
     for (int i = 0; i < e->thread_count; i++)
         pthread_join(e->threads[i], NULL);
+#ifdef HAVE_ASYNCARA_HYPER
+    /* Drop all Rust futures/socket owners before any C job is freed. */
+    if (e->hyper) { ar_hyper_free(e->hyper); e->hyper = NULL; }
+#endif
     /* Includes collected results and not-yet-submitted jobs: Zend can bail out
      * during input validation or result conversion on PHP memory exhaustion. */
     while (e->allocations) {

@@ -1,5 +1,11 @@
 # HTTP completion and measured performance
 
+This report records the historical http-r1 checkpoint. Later source changes,
+validated ownership optimizations and the optional PHP-integrated Hyper prototype
+are in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
+[HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Historical results below remain
+attached to their original modules and source.
+
 Release: **EXPERIMENTAL**. Branch `phase6-http`, isolated worktree
 `/home/coder/Asyncara-http-20261109T050419Z`. Base
 `79d142f900a6324051484b921be23c9c81c92bd4`; implementation `a410d58`, corrected

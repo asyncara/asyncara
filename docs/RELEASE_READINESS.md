@@ -3,7 +3,10 @@
 **Current assessment: EXPERIMENTAL.** The HTTP continuation adds bounded multi-file
 MIME, atomic downloads and curl lifecycle repairs; see
 [HTTP_ENGINEERING.md](HTTP_ENGINEERING.md). Performance targets are not achieved;
-Hyper is an isolated benchmark, not a backend. Final-source validation/package
+Hyper also has an explicitly opt-in numeric-HTTP GET backend prototype; it is
+not a certified replacement for curl. A scoped JIT/poll benchmark median exceeds
+13,000 requests/sec, with slower samples preserved. Relative 4x/3x targets remain
+unmet; see [HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Final-source validation/package
 identities are recorded separately from historical releases.
 
 The inherited independent Phase5 resource-safety

@@ -192,3 +192,10 @@ uploads retain their requested method and do not replay on redirects.
 error injection, limits, proxy/TLS and original streaming tests on epoll and poll.
 See [HTTP engineering](HTTP_ENGINEERING.md) for source identities, completed
 validation and the benchmark comparison. New results do not certify older archives.
+
+
+The later buffered-request dispatch optimization and experimental Hyper adapter
+are described in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
+[HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Streaming, uploads and downloads keep
+their curl multi and worker-backed disk paths. The prototype explicitly rejects
+these operations instead of claiming support or silently mixing pools.
