@@ -387,7 +387,12 @@ PHP_FUNCTION(asyncara_http_headers) {
     array_init(return_value);
     const char *p = ZSTR_VAL(raw), *end = p + ZSTR_LEN(raw);
     while (p < end) {
-        const char *next = p;
+        /* Valid HTTP lines end at their first CR. Skip the ordinary value span
+         * with libc's bounded search, then retain the old exact-CRLF scan for
+         * malformed/binary input. Dense stray CRs must not cause a memchr call
+         * per byte. A final lone CR still belongs to the unterminated line. */
+        const char *next = memchr(p, '\r', (size_t)(end - p));
+        if (!next) next = end;
         while (next < end && !(next + 1 < end && next[0] == '\r' && next[1] == '\n')) next++;
         if (next - p >= 5 && !memcmp(p, "HTTP/", 5)) {
             zend_hash_clean(Z_ARRVAL_P(return_value));

@@ -1949,3 +1949,23 @@ plus320 warmups per client. Public Hyper makes8876 recv calls/4454 unsuccessful;
 public curl makes4427 recv/9302 poll calls. Swoole also makes unsuccessful reads,
 so syscall counts alone do not explain the speed gap. These perturbed timing
 results are diagnostic only; see `docs/phase6/http-syscall-profile.json`.
+
+## HTTP header line search candidate — 2026-11-09
+
+The isolated Hyper short-read experiment is preserved at `af89cdb` on
+`phase6-http-short-read` and is DO_NOT_ADOPT: 128 to 1 EAGAIN responses in the
+native control did not improve public throughput. Both body-size medians were
+slower. Its source is not merged here. Evidence:
+`/home/coder/Asyncara-http-short-read-evidence-20261109T184444Z`.
+
+`asyncara_http_headers` now uses one bounded `memchr` to skip the ordinary
+header-value prefix, retaining the original exact CRLF scan for stray CRs and
+binary input. No allocation, public semantics, network wait, or ownership changes.
+The independent PHP reference parser matches all10,090 cases, including new
+boundary/binary/dense CR and LF inputs, on PHP8.5.12 epoll/poll. Five alternating
+20,000-conversion samples per case measure median CPU ratios1.177x common headers,
+10.127x long values,1.140x dense CR,1.428x dense LF. These are conversion-only
+measurements, not HTTP response throughput. Raw results:
+`/home/coder/Asyncara-http-headers-20261109T185417Z/conversion-results.json`.
+Full HTTP/PHP matrix, memory checks, Gate A and public comparisons remain pending
+for this candidate. Performance targets remain NOT_MET; release EXPERIMENTAL.
