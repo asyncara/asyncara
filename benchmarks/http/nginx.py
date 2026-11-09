@@ -6,6 +6,8 @@ import argparse, hashlib, json, os, pathlib, resource, signal, socket, statistic
 p=argparse.ArgumentParser()
 for name in ['php','extension','output']:p.add_argument('--'+name,required=True)
 p.add_argument('--baseline-extension');p.add_argument('--baseline-source-root')
+p.add_argument('--baseline-compare-curl',action='store_true',help='Also measure the baseline module with its curl backend')
+p.add_argument('--tuned-curl-buffer',type=int,help='Additional ext-curl control with an explicit receive buffer hint; preserves the default reference')
 p.add_argument('--baseline-http-backend',choices=['curl','hyper-prototype'],default='curl',help='Explicit baseline backend; actual connection limits are verified from each process')
 p.add_argument('--php-extension-dir',help='Explicit matching PHP extension SDK directory; does not change host configuration')
 p.add_argument('--swoole-extension',help='Explicit independently built Swoole module')
@@ -17,6 +19,8 @@ p.add_argument('--public-pattern',choices=['workers','batch'],default='workers',
 p.add_argument('--hyper');p.add_argument('--raw',action='store_true');p.add_argument('--samples',type=int,default=5);p.add_argument('--count',type=int,default=8000)
 p.add_argument('--concurrency',type=int,default=8);a=p.parse_args()
 if bool(a.baseline_extension)!=bool(a.baseline_source_root):p.error('Both baseline arguments required')
+if a.baseline_compare_curl and not a.baseline_extension:p.error('Baseline curl control requires a baseline')
+if a.tuned_curl_buffer is not None and not 1024<=a.tuned_curl_buffer<=1048576:p.error('Tuned curl hint must be 1024..1048576 bytes')
 if a.server_workers<1 or a.server_workers>4:p.error('Server worker count must be 1..4')
 if a.samples<3 or a.count<1 or a.concurrency<1 or a.concurrency>256 or a.count%a.concurrency:p.error('Invalid sample/count/concurrency')
 root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.output).resolve();out.mkdir(parents=True,exist_ok=False)
@@ -85,22 +89,27 @@ try:
  (out/'server-processes.json').write_text(json.dumps({'pids':server_processes(),'workerCount':a.server_workers}))
  for size in [1024,65536]:
   for sample in range(a.samples):
-   modes=['asyncara','curl_multi','swoole']+(['asyncara_curl']if a.compare_curl else[])+(['asyncara_baseline']if a.baseline_extension else[])+(['hyper_standalone']if a.hyper else[])+(['asyncara_raw']if a.raw else[])
+   modes=['asyncara','curl_multi','swoole']+(['asyncara_curl']if a.compare_curl else[])+(['asyncara_baseline']if a.baseline_extension else[])+(['asyncara_baseline_curl']if a.baseline_compare_curl else[])+(['curl_multi_tuned']if a.tuned_curl_buffer else[])+(['hyper_standalone']if a.hyper else[])+(['asyncara_raw']if a.raw else[])
    pos=sample%len(modes);modes=modes[pos:]+modes[:pos]
    for mode in modes:
-    env=os.environ.copy();env['ASYNCARA_SOURCE_ROOT']=a.baseline_source_root if mode=='asyncara_baseline'else str(root)
+    is_baseline=mode in ['asyncara_baseline','asyncara_baseline_curl']
+    env=os.environ.copy();env['ASYNCARA_SOURCE_ROOT']=a.baseline_source_root if is_baseline else str(root)
+    env.pop('ASYNCARA_BENCH_CURL_BUFFER_SIZE',None)
+    if mode=='curl_multi_tuned':env['ASYNCARA_BENCH_CURL_BUFFER_SIZE']=str(a.tuned_curl_buffer)
     env['ASYNCARA_HTTP_BENCH_PATTERN']=a.public_pattern
     if mode=='asyncara_curl':env['ASYNCARA_HTTP_BACKEND']='curl'
     if mode=='asyncara_baseline':env['ASYNCARA_HTTP_BACKEND']=a.baseline_http_backend
+    if mode=='asyncara_baseline_curl':env['ASYNCARA_HTTP_BACKEND']='curl'
     url=f'http://127.0.0.1:{port}/body?size={size}'
     if mode=='hyper_standalone':cmd=[a.hyper,url,str(a.count),str(a.concurrency),str(size)]
     else:
      cmd=[a.php,'-n','-d','memory_limit=512M','-d','extension=curl']
      if a.php_extension_dir:cmd+=['-d','extension_dir='+str(pathlib.Path(a.php_extension_dir).resolve())]
      if a.jit:cmd+=['-d','opcache.enable_cli=1','-d','opcache.jit=tracing','-d','opcache.jit_buffer_size=128M']
-     if mode.startswith('asyncara'):cmd+=['-d','extension='+str(pathlib.Path(a.baseline_extension if mode=='asyncara_baseline'else a.extension).resolve())]
+     if mode.startswith('asyncara'):cmd+=['-d','extension='+str(pathlib.Path(a.baseline_extension if is_baseline else a.extension).resolve())]
      if mode=='swoole':cmd+=[item for ext in ['pdo','mysqlnd','sockets',a.swoole_extension or 'swoole']for item in ['-d','extension='+ext]]
-     cmd+=[str(root/'benchmarks/http/client.php'),'asyncara'if mode in ['asyncara_baseline','asyncara_curl']else mode,url,str(a.count),str(a.concurrency),str(size)]
+     client_mode='asyncara'if mode in ['asyncara_baseline','asyncara_baseline_curl','asyncara_curl']else'curl_multi'if mode=='curl_multi_tuned'else mode
+     cmd+=[str(root/'benchmarks/http/client.php'),client_mode,url,str(a.count),str(a.concurrency),str(size)]
     path=out/f'{size}-{sample}-{mode}.log';cpu_before=server_cpu();pressure=pathlib.Path('/proc/pressure/cpu').read_text();start=time.monotonic()
     with path.open('xb')as f:
      child=subprocess.Popen(cmd,cwd=root,env=env,stdout=f,stderr=subprocess.STDOUT)

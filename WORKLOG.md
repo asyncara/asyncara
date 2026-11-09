@@ -2071,3 +2071,21 @@ Workspace Hyper medians9301.92/s (1KiB),4970.34/s (64KiB), all target requiremen
 NOT_MET. Rejected9eea780 tier experiment and every earlier failure are retained.
 No long tests remain running; next work is public-path profiling and the unresolved
 progress failure, before any reliability/performance release promotion.
+
+## 2026-11-09 receive geometry candidate and Hyper review
+
+Independent worktree `phase6-http-transfer-20261109T211228Z`, base `9de4b2d`.
+Buffered curl receive hint128KiB; Hyper adaptive maximum128KiB with explicit64KiB
+header/trailer bound. No API or streaming buffer limit changed. Failed easy
+handles are disposed after a curl8.5 retained-buffer/reconfiguration failure.
+The exact failed redirect -> next request regression fails r2 and passes r3.
+Binary framing/bounds tests pass scoped85 epoll/poll controls. Full HTTP gate
+retains a zero-tick connections32 failure (146.545ms timer lag);8 baseline and8
+candidate repeats pass without explaining it. Candidate is NOT_ACCEPTED.
+Three-sample public screening improves64KiB versus its paired old source but
+does not beat all references; small-body Hyper median is lower. No speed target
+passed. A tuned curl reference is also retained, never substituted for default.
+Evidence: `/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/`
+(`receive-geometry-checkpoint.json`, raw reports and original failures).
+Next: owner-requested seven-point Hyper review; distinguish missing features,
+intentional bounds and demonstrated defects. No DNS/TLS/portability claims.
