@@ -204,7 +204,7 @@ int ar_hyper_cancel(void *engine, void *job);
 int ar_hyper_timeout(void *engine);
 size_t ar_hyper_connections(void *engine);
 size_t ar_hyper_fds(void *engine, struct pollfd *fds, size_t capacity);
-void ar_hyper_ready(void *engine, int fd, int events);
+int ar_hyper_ready(void *engine, int fd, int events);
 void ar_hyper_failed(ar_engine *e);
 #endif
 void ar_done(ar_engine *e, ar_job *j);

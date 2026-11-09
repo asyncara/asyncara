@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 license-file = "../../LICENSE"
+[features]
+ffi-fault-tests = [] # Isolated native regression builds only; never a production default.
 [lib]
 crate-type = ["staticlib"]
 [dependencies]

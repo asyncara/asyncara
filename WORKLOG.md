@@ -2089,3 +2089,25 @@ Evidence: `/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/`
 (`receive-geometry-checkpoint.json`, raw reports and original failures).
 Next: owner-requested seven-point Hyper review; distinguish missing features,
 intentional bounds and demonstrated defects. No DNS/TLS/portability claims.
+
+### Hyper FFI ownership correction
+
+The seven-point review confirms missing prototype DNS/TLS/compression and Linux
+scope. It does not establish a competing Sender/Driver socket-Waker defect:
+actual Hyper driver-owner assertions and150 held public requests pass on both
+backends. A64KiB header bound is intentional; no limit was weakened.
+
+Found incomplete panic propagation: fds/ready could unwind across an extern C
+boundary, while submit/timeout/connections hid fatal state. All engine entry
+points now catch and poison, report a distinct fatal result, and C drops Rust
+owners before collecting jobs. Existing drive/cancel already tore down the
+engine; their all-job completion counter was incomplete. Post-completion
+injection verifies no double publication. Rust allocation aborts and arbitrary
+foreign-pointer misuse are outside this guarantee.
+
+`hyper-ffi-final-data/report.json`: two Rust tests plus16 native injected cases
+(eight points on epoll/poll), PASS. Original pre-fix abort/assertion logs retained.
+`wakeups-*`:150 pending public responses, two ticks before explicit peer release,
+PASS for curl/Hyper on epoll/poll. Full r4 HTTP gate:66 commands PASS115.544s,
+before integrating the new150-connection test into the gate. Fresh final matrix
+and memory tests pending; no production-readiness or speed promotion.

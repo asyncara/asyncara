@@ -34,8 +34,11 @@ HTTP/3 are not enabled. This is not a replacement for the complete curl path.
 
 One request-local Rust engine owns pooled sockets, connection drivers and pending
 response futures. Limits are the existing 1..256 connection settings, per-host
-admission and at most 1024 native jobs. Each Rust driver has a 64 KiB read buffer
-limit and 256 header field limit. URI length is capped at 8192. C-owned response
+admission and at most 1024 native jobs. The receive-geometry candidate uses an
+adaptive read buffer with a 128 KiB maximum, an explicit 64 KiB header/trailer
+limit and 256 header field limit. The earlier implementation limited the read
+buffer to 64 KiB. This candidate is not a new accepted performance baseline.
+URI length is capped at 8192. C-owned response
 buffers retain the existing 16 MiB body and 64 KiB aggregate header limits and
 native memory ledger. Rust and Hyper internal allocations are **not** included in
 that ledger; this is not a total process memory ceiling. Rust allocator exhaustion
@@ -49,6 +52,38 @@ explicit cancellation drops the operation and its connection before publishing
 completion. Cancelling one PHP waiter retains the shared producer. Request
 shutdown drops Rust futures and sockets before freeing C jobs. No Rust worker can
 complete against a finished PHP request.
+
+The prototype explicitly targets Linux; other operating systems are not
+certified. The single read/write Waker slots belong to the connection driver.
+Hyper's SendRequest sends through its dispatch channel and does not separately
+poll the socket. `ext/hyper/src/tests.rs` checks the actual polling owner while
+200 responses traverse real sockets. `tests/http/hyper_wakeups.php` holds150
+responses until two timer ticks occur, then checks completion and cleanup.
+
+All mutable-engine C entry points now catch unwinding panics and poison the
+engine. Fatal results use -2 (SIZE_MAX for counts), distinct from rejected input
+or an absent deadline. The C caller drops the engine before publishing failures
+for remaining jobs. Already completed jobs are not completed again. Tests inject
+faults before/after completion and at submission, drive, deadline, readiness,
+descriptor enumeration and connection inspection. This does not recover an
+allocator abort, an invalid foreign pointer, a double panic or arbitrary
+destructor failure. Rust's default panic hook can still write to stderr.
+
+Callbacks perform bounded result-buffer copies and native completion publication;
+they do not invoke Zend, user callbacks, filesystem/network waits or Rust
+reentry. Publication uses the existing short completion mutex. Allocation,
+page faults, copying and mutex contention can delay the interpreter, so these
+callbacks do not provide a hard latency bound. No Tokio threadpool is implied.
+
+Isolated fault-injection validation (never a production module):
+
+```sh
+python3 tests/http/hyper_ffi.py --output /absolute/new-evidence-directory
+```
+
+This builds Rust ownership tests and a separate native executable with the
+`ffi-fault-tests` feature. Normal builds have no fault-control export. The PHP
+HTTP gate runs the150-connection regression for curl and, with `--hyper`, Hyper.
 
 ## Build and evaluation
 
