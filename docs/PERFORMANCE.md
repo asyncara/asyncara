@@ -1,5 +1,15 @@
 # Measured performance
 
+## HTTP completion comparison (November 9, 2026)
+
+[HTTP_ENGINEERING.md](HTTP_ENGINEERING.md) records matched public HttpClient,
+curl_multi and Swoole benchmarks, separate raw-native/standalone-Hyper controls,
+CPU/syscall diagnosis and source identities. [All nginx samples](phase6/http-performance.json)
+retain five samples per body/concurrency/mode. The requested4x curl_multi/3x
+Swoole target is not achieved; existing implementation remains slower. Hyper
+is an experiment, not an Asyncara backend. Earlier results below retain their
+original scope and are not results for the new HTTP checkpoint.
+
 ## Native reliability feedback measurements (November 7, 2026)
 
 Final native source `9bee5c3`, Ubuntu 24.04.5 / Linux 6.8.0-147, six available

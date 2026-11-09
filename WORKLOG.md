@@ -1660,3 +1660,28 @@ executes20 controlled boundaries without mock I/O; old source fails, corrected
 source passes. Native module/source are unchanged from92d0ba0. Rerun the affected
 PHP/backend matrix, DEBUG/ASan/Valgrind workloads and gates before packaging.
 The earlier Valgrind fail remains intact; no memory warning or assertion suppressed.
+
+
+## Final HTTP acceptance complete
+
+Runtime6b9da6b / native92d0ba0, module SHA-256
+96f4e160ebdb7910ab45e9c8ad25f6ee5cb4ea2b108c2d2b546e151da54db17b.
+HTTP PHP83/84/85 epoll/poll, full85 both backends, DEBUG/GCC ASan/UBSan,
+explicit LeakSanitizer acquisition/completion, native TSan, allocation checks,
+and scoped native/DEBUG Valgrind pass. Two full repaired Valgrind repetitions
+and deterministic acquisition regression pass; zero errors/lost bytes, with
+still-reachable library memory reported.543,316 callback fuzz inputs/31s pass.
+
+Gate A176.034s PASS. Gate B757.849s PASS:350,004 real kernel waits/210,000 worker
+jobs,9236 main FPM responses/600.253s; original lifecycle/fault/resource checks
+and independent review PASS. Pending-I/O ticks min5/max56 (minimum remains2).
+Four idle workers6FD/1thread, post-initial RSS ranges372..460KiB. All recorded
+owned FPM masters exited0. Separate feature FPM60 responses plus fatal/recovery
+passes with MIME/atomic work and min27 ticks. Gate C/long endurance not rerun.
+
+Native result adoption, handle reuse, batched/wait/error cleanup and new HTTP
+capabilities are tested; target4x curl_multi/3x Swoole remains NOT_MET. Hyper's
+standalone experiment is preserved, not integrated. Full report and exact
+commands/hashes: docs/HTTP_ENGINEERING.md and docs/phase6/http-validation.json.
+Next: new reproducible source package and independent extraction/build on all
+three PHP versions. Historical failures and Phase4/native worktrees intact.

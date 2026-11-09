@@ -1,6 +1,12 @@
 # Release readiness
 
-**Current assessment: EXPERIMENTAL.** The independent Phase5 resource-safety
+**Current assessment: EXPERIMENTAL.** The HTTP continuation adds bounded multi-file
+MIME, atomic downloads and curl lifecycle repairs; see
+[HTTP_ENGINEERING.md](HTTP_ENGINEERING.md). Performance targets are not achieved;
+Hyper is an isolated benchmark, not a backend. Final-source validation/package
+identities are recorded separately from historical releases.
+
+The inherited independent Phase5 resource-safety
 continuation implements guarded resource identities, opt-in bounded provenance
 and measured native watcher setup improvements. Its current evidence and remaining
 limits are in [RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md).

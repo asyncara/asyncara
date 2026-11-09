@@ -166,3 +166,22 @@ Native request shutdown joins worker publishers; no worker accesses Zend values.
 Soft PHP allocation bailout is cleanup-only, not safe application recovery.
 The earlier matrix remains historical scope; the copy-policy gaps described
 there are addressed by this continuation, not retroactively by old archives.
+
+## HTTP continuation ownership delta (2026-11-09)
+
+Native92d0ba0 / HTTP acquisition45a4a20, on isolated `phase6-http`.
+[HTTP_ENGINEERING.md](HTTP_ENGINEERING.md) records the completed validation and
+limits; this section does not relabel earlier ownership results.
+
+| Resource | Copy/sharing | Owner and release | Cancellation boundary | Evidence |
+|---|---|---|---|---|
+| Staged File and pinned parent descriptor | Existing File non-copyable/shared-reference policy | Request engine owns native registration; File serializes operations; close unlinks unpublished entry and closes both descriptors; RSHUTDOWN joins workers first | Download shields acquisition through assignment, then observes cancellation and closes; generic resource-valued Futures still require explicit ownership | `tests/http/acquire_cancel.php`, `stage_native.c`, `stage_shutdown.py` |
+| Multiple-file MIME source | Files opened sequentially; no duplicated descriptor owners | Upload producer owns active source; native job owns MIME descriptors and one64 KiB slot | Cancel producer and native operation, drain completion, release client permit; server effects are not rolled back | `completion.php`, `native_completion.c`, original streaming suite |
+| Completed buffered body | Native allocation moves once from job to ar_value; PHP conversion still copies | Job pointer is cleared on transfer; failed value allocation leaves job owner intact; result free releases allocation | Collection/cancellation authority unchanged | `native_completion.c`, `buffer_budget.php` |
+| Cached curl easy handle | No PHP resource alias; bounded request-local cache | Detached/reset at job free; destroyed at request shutdown; shared multi owns connection cache | No active-job handle enters idle cache | `pooling.php`, header/cookie reuse checks, `fpm_request.php` |
+
+The confirmed acquisition race retained a handle/private staging entry until
+request shutdown; it did not establish a post-shutdown native leak. The repair
+prevents this within-request retention without imposing a destructor-driven
+cancellation policy on arbitrary shared Futures. Library and kernel memory remain
+outside complete native-ledger accounting.

@@ -21,7 +21,7 @@ Current limits:
 | file/HTTP/IPC payload | generally 16 MiB per buffered operation/frame |
 | HTTP streaming response/upload buffers | 64 KiB each; HTTP/1.1 pause/resume, two PHP response chunks queued |
 | HTTP response headers | 64 KiB |
-| native HTTP connections | 64 total, eight per host |
+| native HTTP connections | defaults64 total/eight per host; request-local configurable1..256, per-host at most total, before submission |
 | HttpClient in-flight admission | configurable 1–256, default 32 |
 | native SQLite connections | 128 active |
 | DB buffered rows | 100,000 and driver-specific byte cap |

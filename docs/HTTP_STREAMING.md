@@ -82,6 +82,8 @@ Task, so cancelling before the Task starts does not abandon a transfer. It write
 through a worker-backed descriptor, truncates an existing destination and can
 leave partial data after failure. Optional `atomic: true` stages a private 0600 file in the destination directory
 and publishes only a complete body using worker-backed `renameat`.
+Acquisition is shielded through assignment to the download owner; cancellation
+at native stage completion still closes and discards the staged entry.
 `durable: true` requires atomic mode and syncs the file before rename and the
 pinned parent directory afterward. A directory-sync failure can therefore report
 `FilesystemException::committed === true`: the new file is already visible.

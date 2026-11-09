@@ -318,3 +318,12 @@ Easy handles enter a request-owned bounded cache only after detachment/collectio
 all callbacks/options reset before job buffers are freed. This cache is not a
 cross-request pool. Source/result owners, cancellation authority and client
 permits keep their existing rules. No timer hook is needed by any HTTP API.
+
+Atomic download acquisition is shielded until its staged File is assigned to the
+download owner. Only then is parent cancellation observed, so the finally block
+can close the resource even when cancellation races the acquisition completion.
+Generic `Async::await()` joins unfinished operations but cannot infer how to
+dispose an already completed resource-valued result. For explicit resource
+acquisition use `Async::using()` or shield acquisition and retain the object for
+finally cleanup. `tests/http/acquire_cancel.php` proves the download boundary;
+this is not a universal destructor/last-reference cancellation guarantee.

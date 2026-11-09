@@ -1,0 +1,1466 @@
+{
+  "release": "EXPERIMENTAL",
+  "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+  "nativeSource": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+  "testClockSource": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+  "ownershipRepair": "45a4a20",
+  "evidenceRoot": "/home/coder/Asyncara-http-evidence-20261109T050419Z",
+  "manifest": {
+    "ext/backend.c": "c26271cc61b218b44b0d4d31b8f7056db24ca82541160ca7d4a981b1781c9d40",
+    "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+    "ext/native.h": "d696e45dbf632d01a274b8ed3b0eed572b8f6655d955e72f417ff218cd9de082",
+    "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+    "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+    "ext/workers.c": "25ef1e2fa4f0ead35f37a391b8b5733840303bbc8578ac36c32d75978150dcbf",
+    "ext/php_asyncara.c": "b0fb72df9bacb11ccaf4613fec7470284d80992358b26f092948e4088f781026",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/Task.php": "2605933b6e3deec4679f0fe049488ed358fb702bdf9ddc334dd13713cf89b04f",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/Async.php": "6aef31a17e744b9ebb5d337b030ea19ff98f0932be82cb6a04ab52be7c821797",
+    "src/Asyncara/Scheduler.php": "7ac6b7db21260683971c463386c9ff1b4dc14319eec6a247dd1942e395644232",
+    "src/Asyncara/Future.php": "42d65f422ba2dda1d0a74b9938236d0c45affe363d7b52dff3ce2792784ccbf4",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "7d123c3c3c0f3e4b4a5efdc83618baca52d5dce7f162266624dd4c5730b78d52",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/Response.php": "43e2b2d49b489067933d84afdebc7cf7fb93c40cd55800b1433a2c3d06a6f90c",
+    "src/Asyncara/HTTP/HttpClient.php": "35ae2da77e794278d82164c0f467fbcfa9d98af69e1b551f2c4e984462f6c9a9",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/PostgreSQL/Connection.php": "ad2b9bee18bbecc701adf753258ea12932a221978fd095e63c349cecc79c5b10",
+    "src/Asyncara/PostgreSQL/Statement.php": "153bf69d38cf6da5b72ca800f2fc04a0d6ee6e7cabb0cb7217230c0f87fa57d8",
+    "src/Asyncara/SQLite/Connection.php": "a223f275e74f00fc1837ec94972c70a1869e59d2ef734f67f2a058d3e1e125f8",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Database/Database.php": "dfb3c4862bfea48558c1013473f79c7a026402dc925fb4bcbc512cf350e8275d",
+    "src/Asyncara/Pool/ConnectionPool.php": "1daed3f3fd359c2cb9fc3bfbbceed6eba2d70d81496f6726867e3a53cee934fb",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/MySQL/Connection.php": "9239bfd821b90045f4d5f9ce193c69b6c18daccc2f20b2952105a40f60f3ecd2",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/File.php": "8bb76689242c3725719cfd04b377e16cb22c4f647d7a63811ff59e23bad9e5a9",
+    "src/Asyncara/IO/TcpStream.php": "f84e528510d3c42600f763f2fdcf1d5eefceb4bf822d4d871e3491edf41d7390",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/IO/Files.php": "8e1217f97a14e2243922f9880bc556a245e1a760d3a60175e698805b4c27578a",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Semaphore.php": "9c2ffc74994e8d4ee109b358c410eb853dd0de9389d274ba416e94ffdb382c02",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Redis/Connection.php": "8279ec69970c735f64712cf8fbaeafa19b50e9db0fc1265055cb1c950e23eb6d",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Stream/AsyncStream.php": "348d72208df8c4071053a2d582344b2aef68c2416174dcfd0cfd2e91e6f0b111",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f"
+  },
+  "modules": {
+    "83": {
+      "path": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-83.so",
+      "sha256": "2901f19ec34d8fbb2ea60286ba02ce223408a7bb7de07f961813b28b5c4c3019"
+    },
+    "84": {
+      "path": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-84.so",
+      "sha256": "99ccb4727419d34c30555beb0c3c174a981f60939020a02f7a6cd5b15926952d"
+    },
+    "85": {
+      "path": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so",
+      "sha256": "96f4e160ebdb7910ab45e9c8ad25f6ee5cb4ea2b108c2d2b546e151da54db17b"
+    },
+    "debug": {
+      "path": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+      "sha256": "a663385104eacfc6a6946e01b88c9582c20f1bb5cf2009af99d5d8ea9976e07a"
+    },
+    "gcc": {
+      "path": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-gcc.so",
+      "sha256": "9bf58e7a441df4b360cc8e5f89877c927dd62f93ac682403b788de978f162b22"
+    }
+  },
+  "validation": {
+    "release-build-85": {
+      "utc": "2026-11-09T06:24:16.359306+00:00",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-20261109T050419Z/.local/sysroot/usr/include/php/20250925",
+        "ASYNCARA_OUTPUT": "build/http-release-85.so",
+        "ASYNCARA_EXTENSION": "build/http-release-85.so"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": "",
+      "pid": 3840563,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 5.803713544039056,
+      "cpuSeconds": 5.198168999999999,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "release-build-83": {
+      "utc": "2026-11-09T06:25:34.079976+00:00",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-20261109T050419Z/.local/sdk83",
+        "ASYNCARA_OUTPUT": "build/http-release-83.so",
+        "ASYNCARA_EXTENSION": "build/http-release-83.so"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": "",
+      "pid": 3841508,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 4.987562038004398,
+      "cpuSeconds": 4.832221999999998,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "release-build-84": {
+      "utc": "2026-11-09T06:26:07.924571+00:00",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "PHP_INCLUDE_DIR": "/home/coder/Asyncara-http-20261109T050419Z/.local/sdk84",
+        "ASYNCARA_OUTPUT": "build/http-release-84.so",
+        "ASYNCARA_EXTENSION": "build/http-release-84.so"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": "",
+      "pid": 3841801,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 4.702524506021291,
+      "cpuSeconds": 4.591870999999998,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "release-build-debug": {
+      "utc": "2026-11-09T06:26:37.079781+00:00",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "PHP_INCLUDE_DIR": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/include/php",
+        "ASYNCARA_OUTPUT": "build/http-release-debug.so",
+        "ASYNCARA_EXTENSION": "build/http-release-debug.so"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": "",
+      "pid": 3842060,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 4.842320736963302,
+      "cpuSeconds": 4.68753199999999,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "release-build-gcc": {
+      "utc": "2026-11-09T06:27:09.251935+00:00",
+      "command": [
+        "bash",
+        "scripts/build-local.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "PHP_INCLUDE_DIR": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/include/php",
+        "ASYNCARA_OUTPUT": "build/http-release-gcc.so",
+        "ASYNCARA_EXTENSION": "build/http-release-gcc.so",
+        "CC": "gcc",
+        "EXTRA_CFLAGS": "-O1 -fsanitize=address,undefined -fno-omit-frame-pointer",
+        "EXTRA_LDFLAGS": "-fsanitize=address,undefined",
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": "",
+      "pid": 3842427,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 10.893372989958152,
+      "cpuSeconds": 10.28229000000001,
+      "logSha256": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7"
+    },
+    "accepted-http-85": {
+      "utc": "2026-11-09T06:39:03.823244+00:00",
+      "command": [
+        "python3",
+        "tests/http/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-data-85"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843937,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 34.98126759403385,
+      "cpuSeconds": 26.414004,
+      "logSha256": "341c78322c904d37f5e20a5bfbfc94b4ccf43800cf2680a88e9b627b69c062be"
+    },
+    "accepted-http-83": {
+      "utc": "2026-11-09T06:40:22.044346+00:00",
+      "command": [
+        "python3",
+        "tests/http/run.py",
+        "--php",
+        "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-83.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-data-83",
+        "--php-only"
+      ],
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+        "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-83.so"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3844976,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 26.786781094036996,
+      "cpuSeconds": 18.040866,
+      "logSha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+    },
+    "accepted-http-84": {
+      "utc": "2026-11-09T06:40:48.834063+00:00",
+      "command": [
+        "python3",
+        "tests/http/run.py",
+        "--php",
+        "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-84.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-data-84",
+        "--php-only"
+      ],
+      "environment": {
+        "PHP_BIN": "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+        "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-84.so"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3845230,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 25.85436281003058,
+      "cpuSeconds": 17.247652000000002,
+      "logSha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+    },
+    "accepted-http-debug": {
+      "utc": "2026-11-09T06:41:14.692231+00:00",
+      "command": [
+        "python3",
+        "tests/http/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-data-debug",
+        "--php-only"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3845479,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 27.071505915140733,
+      "cpuSeconds": 19.518297000000004,
+      "logSha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+    },
+    "accepted-http-gcc": {
+      "utc": "2026-11-09T06:41:41.765468+00:00",
+      "command": [
+        "python3",
+        "tests/http/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-gcc.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-data-gcc",
+        "--php-only"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-gcc.so",
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3845723,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 52.55860141990706,
+      "cpuSeconds": 50.426775000000006,
+      "logSha256": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4"
+    },
+    "accepted-full-epoll": {
+      "utc": "2026-11-09T06:39:38.812629+00:00",
+      "command": [
+        "bash",
+        "scripts/test.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/http-release-85.so",
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3844405,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 21.88585807592608,
+      "cpuSeconds": 13.774567,
+      "logSha256": "d5060a069f3a34dfa8ecbc1fc441d1c39e653a0181a17059a59ed30b78601cc2"
+    },
+    "accepted-full-poll": {
+      "utc": "2026-11-09T06:40:00.701970+00:00",
+      "command": [
+        "bash",
+        "scripts/test.sh"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "ASYNCARA_EXTENSION": "build/http-release-85.so",
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3844687,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 21.340512414928526,
+      "cpuSeconds": 13.639693000000001,
+      "logSha256": "09d1c679e49117bc797f40f0f31bb5de746936203e5330fcdf9f6518b027674e"
+    },
+    "release-allocation-audit": {
+      "utc": "2026-11-09T06:28:27.861026+00:00",
+      "command": [
+        "bash",
+        "scripts/audit-allocations.sh"
+      ],
+      "environment": {},
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " docs/HTTP_ENGINEERING.md | 191 +++++++++++++++++++++++++++++++++++++----------\n 1 file changed, 151 insertions(+), 40 deletions(-)\n",
+      "pid": 3842840,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 4.331461424939334,
+      "cpuSeconds": 4.29427800000002,
+      "logSha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+    },
+    "release-http-fuzz": {
+      "utc": "2026-11-09T06:28:32.194536+00:00",
+      "command": [
+        "bash",
+        "scripts/fuzz-http-buffers.sh",
+        "30",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-fuzz-data"
+      ],
+      "environment": {},
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " docs/HTTP_ENGINEERING.md | 191 +++++++++++++++++++++++++++++++++++++----------\n 1 file changed, 151 insertions(+), 40 deletions(-)\n",
+      "pid": 3842863,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 39.732740560080856,
+      "cpuSeconds": 38.715531,
+      "logSha256": "0b5c2235d6d263cf563b6a00a4e449d8d1abca46ac93eac4d05093ff75161ba2"
+    },
+    "release-asan-run-stage": {
+      "utc": "2026-11-09T06:28:18.564716+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-stage"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " docs/HTTP_ENGINEERING.md | 191 +++++++++++++++++++++++++++++++++++++----------\n 1 file changed, 151 insertions(+), 40 deletions(-)\n",
+      "pid": 3842753,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.3929277390707284,
+      "cpuSeconds": 0.38954100000000835,
+      "logSha256": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d"
+    },
+    "release-asan-run-completion": {
+      "utc": "2026-11-09T06:28:23.249191+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-completion"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " docs/HTTP_ENGINEERING.md | 191 +++++++++++++++++++++++++++++++++++++----------\n 1 file changed, 151 insertions(+), 40 deletions(-)\n",
+      "pid": 3842817,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.08105609193444252,
+      "cpuSeconds": 0.07698700000000258,
+      "logSha256": "3b13566195a80a9ad595d32a9128d756947b6ecafc69c37378e6998f5c97b332"
+    },
+    "admission-asan-real": {
+      "utc": "2026-11-09T06:32:37.922991+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "source": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843345,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.1357892060186714,
+      "cpuSeconds": 0.08671999999999969,
+      "logSha256": "ab2fda5e10b16237c0329e39733c65ab07998916010c280384c562fae08d8a76"
+    },
+    "admission-asan-logical": {
+      "utc": "2026-11-09T06:32:38.060198+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan",
+        "--logical-clock"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "source": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843349,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.14232032699510455,
+      "cpuSeconds": 0.10072600000000076,
+      "logSha256": "cacf844c0a8a50db70ecdd3e802777f0deb1eb8f34cee25305d59614cfb03292"
+    },
+    "release-vg-r2-stage": {
+      "utc": "2026-11-09T06:30:34.885144+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-stage.log",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-gate-85/stage"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843098,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 1.622983805835247,
+      "cpuSeconds": 1.5276140000000002,
+      "logSha256": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d"
+    },
+    "release-vg-r2-completion": {
+      "utc": "2026-11-09T06:30:36.515520+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-completion.log",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-gate-85/completion"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843150,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 1.3008215799927711,
+      "cpuSeconds": 1.2486629999999999,
+      "logSha256": "3b13566195a80a9ad595d32a9128d756947b6ecafc69c37378e6998f5c97b332"
+    },
+    "release-vg-r3-wait": {
+      "utc": "2026-11-09T06:32:38.204355+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-wait.log",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-after",
+        "--logical-clock"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843353,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 1.3677229690365493,
+      "cpuSeconds": 1.3402680000000007,
+      "logSha256": "cacf844c0a8a50db70ecdd3e802777f0deb1eb8f34cee25305d59614cfb03292"
+    },
+    "accepted-vg-completion-1": {
+      "utc": "2026-11-09T06:42:34.328177+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-1.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+        "tests/http/completion.php"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846025,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 19.81557913683355,
+      "cpuSeconds": 19.159215000000017,
+      "logSha256": "a25829caf5940a8866096066bc18a96d50c51e90612db20830b08de277ba3b1d"
+    },
+    "accepted-vg-completion-2": {
+      "utc": "2026-11-09T06:42:54.147414+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-2.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+        "tests/http/completion.php"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846063,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 20.18708783504553,
+      "cpuSeconds": 19.635370999999964,
+      "logSha256": "a25829caf5940a8866096066bc18a96d50c51e90612db20830b08de277ba3b1d"
+    },
+    "accepted-vg-acquisition": {
+      "utc": "2026-11-09T06:43:14.340136+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-acquisition.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+        "tests/http/acquire_cancel.php"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846092,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 6.078188387211412,
+      "cpuSeconds": 6.070710000000005,
+      "logSha256": "b23147a181f0b7b4457210afe2af65110da09cd6817e0c773f80e1174098a308"
+    },
+    "accepted-tsan-stage-run": {
+      "utc": "2026-11-09T06:43:22.700133+00:00",
+      "command": [
+        "setarch",
+        "x86_64",
+        "-R",
+        "env",
+        "TSAN_OPTIONS=halt_on_error=1",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-tsan-stage"
+      ],
+      "environment": {},
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846113,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.28723169886507094,
+      "cpuSeconds": 0.23368099999997582,
+      "logSha256": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d"
+    },
+    "accepted-gcc-leak-completion": {
+      "utc": "2026-11-09T06:43:22.989993+00:00",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-gcc.so",
+        "tests/http/completion.php"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846165,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 2.771663432009518,
+      "cpuSeconds": 2.416050000000027,
+      "logSha256": "9b9119ec2d7922b9a499e3a4f726aebc4049f8ca586c839fa9e81c6d30579ded"
+    },
+    "accepted-gcc-leak-acquire_cancel": {
+      "utc": "2026-11-09T06:43:25.763005+00:00",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-gcc.so",
+        "tests/http/acquire_cancel.php"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846183,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 0.5551762890536338,
+      "cpuSeconds": 0.5110639999999904,
+      "logSha256": "b23147a181f0b7b4457210afe2af65110da09cd6817e0c773f80e1174098a308"
+    },
+    "release-http-feature-fpm": {
+      "utc": "2026-11-09T06:43:26.319759+00:00",
+      "command": [
+        "python3",
+        "tests/http/fpm.py",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-fpm-data"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846191,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 8.568308884976432,
+      "cpuSeconds": 4.902563999999984,
+      "logSha256": "6faea90f27f35836c6b68a5d8093610d18e136c68e5f06138d35041aac839856"
+    },
+    "release-gate-a": {
+      "utc": "2026-11-09T06:43:34.902513+00:00",
+      "command": [
+        "python3",
+        "tests/fast/pipeline.py",
+        "A",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-A"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 209 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 239 insertions(+), 47 deletions(-)\n",
+      "pid": 3846831,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 176.1838225608226,
+      "cpuSeconds": 175.854151,
+      "logSha256": "b8726302d4e1d8306a7066cbf0ba4ac57e84ae2de55ed8cfffdcd5d1bdaa0f42"
+    },
+    "release-gate-b": {
+      "utc": "2026-11-09T06:46:31.092518+00:00",
+      "command": [
+        "python3",
+        "tests/fast/pipeline.py",
+        "B",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--extension",
+        "/home/coder/Asyncara-http-20261109T050419Z/build/http-release-85.so",
+        "--output",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-B"
+      ],
+      "environment": {
+        "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+      },
+      "source": "6b9da6b7067637f56ab0764ae204d9132f8b47ef",
+      "diff": " README.md                     |   4 +-\n docs/BACKENDS.md              |   2 +-\n docs/COMPATIBILITY.md         |   2 +-\n docs/CURRENT.md               |  16 +++-\n docs/HTTP_ENGINEERING.md      | 213 ++++++++++++++++++++++++++++++++++--------\n docs/HTTP_STREAMING.md        |   2 +\n docs/IO_LIFECYCLE_CONTRACT.md |   9 ++\n docs/PERFORMANCE.md           |  10 ++\n docs/RELEASE_READINESS.md     |   8 +-\n docs/ROADMAP.md               |  18 ++++\n docs/SECURITY.md              |   6 ++\n 11 files changed, 243 insertions(+), 47 deletions(-)\n",
+      "pid": 3847236,
+      "exit": 0,
+      "expectedExit": 0,
+      "status": "PASS",
+      "wallSeconds": 758.0016740211286,
+      "cpuSeconds": 596.41071,
+      "logSha256": "c8cbe91354361824066c30024f42118146b15d2d1e36b6fbc8fb136fa918ffdd"
+    }
+  },
+  "preservedFailedOrNegativeRuns": {
+    "buffer-budget-r3-before": {
+      "utc": "2026-11-09T05:34:29.396806+00:00",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-baseline.so",
+        "tests/http/buffer_budget.php"
+      ],
+      "environment": {
+        "ASYNCARA_SOURCE_ROOT": "/home/coder/Asyncara-fast-reliability-20261107T155547Z"
+      },
+      "source": "79d142f900a6324051484b921be23c9c81c92bd4",
+      "diff": " ext/backend.c                        | 112 +++++++++++++++++++++++++++--------\n ext/native.h                         |  20 ++++++-\n ext/php_asyncara.c                   | 103 ++++++++++++++++++++++++--------\n ext/workers.c                        |  96 ++++++++++++++++++++++++++----\n scripts/test.sh                      |   4 ++\n src/Asyncara/HTTP/HttpClient.php     |  65 +++++++++++++++-----\n src/Asyncara/IO/File.php             |  17 ++++++\n src/Asyncara/Runtime.php             |   9 ++-\n tests/fixtures/http_stream_server.py |  13 ++++\n 9 files changed, 359 insertions(+), 80 deletions(-)\n",
+      "pid": 3760824,
+      "exit": 255,
+      "expectedExit": 255,
+      "status": "PASS",
+      "wallSeconds": 0.42245859419927,
+      "cpuSeconds": 0.35524899999999704,
+      "logSha256": "e4147dcfbafee9551b99a0f7222aaf3ba29ba74ece9e674df9b4dae952227c26"
+    },
+    "multi-error-before": {
+      "utc": "2026-11-09T05:34:32.590513+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/multi-before"
+      ],
+      "environment": {},
+      "source": "79d142f900a6324051484b921be23c9c81c92bd4",
+      "diff": " ext/backend.c                        | 112 +++++++++++++++++++++++++++--------\n ext/native.h                         |  20 ++++++-\n ext/php_asyncara.c                   | 103 ++++++++++++++++++++++++--------\n ext/workers.c                        |  96 ++++++++++++++++++++++++++----\n scripts/test.sh                      |   4 ++\n src/Asyncara/HTTP/HttpClient.php     |  65 +++++++++++++++-----\n src/Asyncara/IO/File.php             |  17 ++++++\n src/Asyncara/Runtime.php             |   9 ++-\n tests/fixtures/http_stream_server.py |  13 ++++\n 9 files changed, 359 insertions(+), 80 deletions(-)\n",
+      "pid": 3760863,
+      "exit": -6,
+      "expectedExit": -6,
+      "status": "PASS",
+      "wallSeconds": 1.6235478061717004,
+      "cpuSeconds": 0.033091000000002424,
+      "logSha256": "3c59a145310c767bf481d205d81e789f3af469a5b6ea6a757dde98a51adc0e65"
+    },
+    "start-wait-before-run": {
+      "utc": "2026-11-09T06:08:35.589089+00:00",
+      "command": [
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/start-wait-before"
+      ],
+      "environment": {},
+      "source": "a410d58f48848433efdec78106a9624fdfe41f66",
+      "diff": " .github/workflows/verify.yml  |  4 ++++\n benchmarks/http/client.php    | 24 ++++++++++++++++++++++--\n benchmarks/http/run.py        | 19 +++++++++++++------\n docs/HTTP_ENGINEERING.md      | 18 ++++++++++++++++++\n docs/IO_LIFECYCLE_CONTRACT.md | 32 ++++++++++++++++++++++++++++++++\n docs/RESOURCE_LIMITS.md       | 17 ++++++++++++++---\n docs/SECURITY.md              | 21 +++++++++++++++++++++\n 7 files changed, 124 insertions(+), 11 deletions(-)\n",
+      "pid": 3837833,
+      "exit": -6,
+      "expectedExit": -6,
+      "status": "PASS",
+      "wallSeconds": 1.3425257250200957,
+      "cpuSeconds": 0.031180999999999792,
+      "logSha256": "c451e38fc60750304f2e47cff356b7ce2eee838dd65ab3088f94f4c701df4acf"
+    },
+    "release-vg-stage": {
+      "utc": "2026-11-09T06:29:11.931412+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-stage.log",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-gate-85/stage"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3842916,
+      "exit": 1,
+      "expectedExit": 0,
+      "status": "FAIL",
+      "wallSeconds": 0.13907013414427638,
+      "cpuSeconds": 0.07600700000000415,
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "release-vg-r2-wait": {
+      "utc": "2026-11-09T06:30:37.818528+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-wait.log",
+        "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-gate-85/start-wait"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "92d0ba0cd28194a2626de3c4c12ca49ab9c25d4d",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843153,
+      "exit": -6,
+      "expectedExit": 0,
+      "status": "FAIL",
+      "wallSeconds": 2.699695785995573,
+      "cpuSeconds": 1.3280990000000004,
+      "logSha256": "cababc8612f74e62ac95a11eed40df320205f77a7051fcdef8cc92654422b505"
+    },
+    "release-vg-r3-debug": {
+      "utc": "2026-11-09T06:32:39.573782+00:00",
+      "command": [
+        "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+        "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+        "--keep-debuginfo=yes",
+        "--leak-check=full",
+        "--show-leak-kinds=all",
+        "--errors-for-leak-kinds=definite,indirect,possible",
+        "--error-exitcode=99",
+        "--log-file=/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-debug.log",
+        "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-http-20261109T050419Z/build/http-release-debug.so",
+        "tests/http/completion.php"
+      ],
+      "environment": {
+        "VALGRIND_LIB": "/home/coder/Asyncara/.local/sysroot/usr/libexec/valgrind",
+        "USE_ZEND_ALLOC": "0"
+      },
+      "source": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843357,
+      "exit": 255,
+      "expectedExit": 0,
+      "status": "FAIL",
+      "wallSeconds": 20.539038232993335,
+      "cpuSeconds": 19.703196,
+      "logSha256": "897f3862f99abf65b525e3e736951ac1bf420c97f17f36181e8ac4ac5067287b"
+    },
+    "acquire-cancel-before": {
+      "utc": "2026-11-09T06:37:38.476467+00:00",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=build/http-release-85.so",
+        "tests/http/acquire_cancel.php"
+      ],
+      "environment": {},
+      "source": "c6b5c8972f71a74ebfa5b4d5131a05541e3f6bde",
+      "diff": " README.md                 |   4 +-\n docs/BACKENDS.md          |   2 +-\n docs/COMPATIBILITY.md     |   2 +-\n docs/CURRENT.md           |  16 +++-\n docs/HTTP_ENGINEERING.md  | 191 ++++++++++++++++++++++++++++++++++++----------\n docs/PERFORMANCE.md       |  10 +++\n docs/RELEASE_READINESS.md |   8 +-\n docs/ROADMAP.md           |  18 +++++\n 8 files changed, 204 insertions(+), 47 deletions(-)\n",
+      "pid": 3843693,
+      "exit": 255,
+      "expectedExit": 0,
+      "status": "FAIL",
+      "wallSeconds": 0.1420107651501894,
+      "cpuSeconds": 0.095578,
+      "logSha256": "af698cb53e3b2e2c1356eef894259fe975a768138c834d8493f1d17ab7042f93"
+    }
+  },
+  "valgrind": {
+    "release-vg-r2-stage": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-stage.log",
+      "sha256": "6cd871bf1db1086773054361d5bdd091e36df3697b0c81bfebf7ac66f8574b0b",
+      "summary": [
+        "==3843098==    definitely lost: 0 bytes in 0 blocks",
+        "==3843098==    indirectly lost: 0 bytes in 0 blocks",
+        "==3843098==      possibly lost: 0 bytes in 0 blocks",
+        "==3843098==    still reachable: 56 bytes in 1 blocks",
+        "==3843098== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    },
+    "release-vg-r2-completion": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-completion.log",
+      "sha256": "9bedb41c1ec3e3f0aada3330848907cf7099c16e71fe24a28f498104e792436a",
+      "summary": [
+        "==3843150==    definitely lost: 0 bytes in 0 blocks",
+        "==3843150==    indirectly lost: 0 bytes in 0 blocks",
+        "==3843150==      possibly lost: 0 bytes in 0 blocks",
+        "==3843150==    still reachable: 56 bytes in 1 blocks",
+        "==3843150== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    },
+    "release-vg-r3-wait": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-wait.log",
+      "sha256": "abe2b6d3ac0e0307f4708b196b58658cb611801e2a21129fef32278247919988",
+      "summary": [
+        "==3843353==    definitely lost: 0 bytes in 0 blocks",
+        "==3843353==    indirectly lost: 0 bytes in 0 blocks",
+        "==3843353==      possibly lost: 0 bytes in 0 blocks",
+        "==3843353==    still reachable: 56 bytes in 1 blocks",
+        "==3843353== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    },
+    "accepted-vg-completion-1": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-1.log",
+      "sha256": "f891d96c8af1d90c67448667651725dfd359b22a9fc85f2165a9babdc5404e52",
+      "summary": [
+        "==3846025==    definitely lost: 0 bytes in 0 blocks",
+        "==3846025==    indirectly lost: 0 bytes in 0 blocks",
+        "==3846025==      possibly lost: 0 bytes in 0 blocks",
+        "==3846025==    still reachable: 3,888 bytes in 13 blocks",
+        "==3846025== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    },
+    "accepted-vg-completion-2": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-2.log",
+      "sha256": "55409514c7017d8d12fd267de7e78a1ddb3dde3d8a50cb5b15e02e0da87521c8",
+      "summary": [
+        "==3846063==    definitely lost: 0 bytes in 0 blocks",
+        "==3846063==    indirectly lost: 0 bytes in 0 blocks",
+        "==3846063==      possibly lost: 0 bytes in 0 blocks",
+        "==3846063==    still reachable: 3,888 bytes in 13 blocks",
+        "==3846063== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    },
+    "accepted-vg-acquisition": {
+      "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-acquisition.log",
+      "sha256": "92782fbc2dab9373298b7900039cfae1de6b0cc90f4277fdebe5e864e2f19b6d",
+      "summary": [
+        "==3846092==    definitely lost: 0 bytes in 0 blocks",
+        "==3846092==    indirectly lost: 0 bytes in 0 blocks",
+        "==3846092==      possibly lost: 0 bytes in 0 blocks",
+        "==3846092==    still reachable: 3,888 bytes in 13 blocks",
+        "==3846092== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+      ]
+    }
+  },
+  "gateBIndependentReview": {
+    "status": "PASS",
+    "workloadAndResourceChecks": "PASS",
+    "denseOperations": {
+      "pendingReads": 443328,
+      "ioCompletions": 332496,
+      "timerFirings": 55416,
+      "cancellations": 110832,
+      "closedEndpoints": 886656
+    },
+    "schedulerTaskSteps": 1451434,
+    "seeds": {
+      "17": 3080,
+      "271828": 3080,
+      "104729": 3076
+    },
+    "mainResponses": 9236,
+    "twoTickRequests": 6927,
+    "minTicks": 5,
+    "maxTicks": 56,
+    "workerResponseCounts": {
+      "3848243": 1,
+      "3848244": 1,
+      "3848245": 1,
+      "3848242": 1,
+      "3848313": 2306,
+      "3848315": 2303,
+      "3848314": 2307,
+      "3848312": 1,
+      "3848344": 2315
+    },
+    "resources": {
+      "3848344": {
+        "samples": 2307,
+        "rssMinKiB": 17392,
+        "rssMaxKiB": 18096,
+        "warmupPeakKiB": 14632,
+        "beyondWarmupKiB": 3464,
+        "rangeAfterFirstThreeKiB": 460,
+        "slopeKiBPerHour": 1040.953095778234,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "3848313": {
+        "samples": 2307,
+        "rssMinKiB": 19256,
+        "rssMaxKiB": 19892,
+        "warmupPeakKiB": 19252,
+        "beyondWarmupKiB": 640,
+        "rangeAfterFirstThreeKiB": 448,
+        "slopeKiBPerHour": 1006.5458994929334,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "3848314": {
+        "samples": 2307,
+        "rssMinKiB": 19396,
+        "rssMaxKiB": 19940,
+        "warmupPeakKiB": 19304,
+        "beyondWarmupKiB": 636,
+        "rangeAfterFirstThreeKiB": 372,
+        "slopeKiBPerHour": 1138.1304354846866,
+        "idleFds": 6,
+        "idleThreads": 1
+      },
+      "3848315": {
+        "samples": 2307,
+        "rssMinKiB": 19428,
+        "rssMaxKiB": 19888,
+        "warmupPeakKiB": 19252,
+        "beyondWarmupKiB": 636,
+        "rangeAfterFirstThreeKiB": 420,
+        "slopeKiBPerHour": 871.2927048556968,
+        "idleFds": 6,
+        "idleThreads": 1
+      }
+    },
+    "lifecycleCases": [
+      {
+        "name": "A-lifecycle",
+        "status": "PASS"
+      },
+      {
+        "name": "B-within-request",
+        "status": "PASS"
+      },
+      {
+        "name": "C-multiple-workers",
+        "status": "PASS"
+      },
+      {
+        "name": "D-streaming",
+        "status": "PASS"
+      },
+      {
+        "name": "recycling",
+        "status": "PASS"
+      },
+      {
+        "name": "mixed-reload-kill",
+        "status": "PASS"
+      },
+      {
+        "name": "request-timeout",
+        "status": "PASS"
+      }
+    ],
+    "gate": {
+      "status": "PASS",
+      "reason": "B2 duration and original workload/resource assertions completed; not a 200000-response claim",
+      "mainResponses": 9236,
+      "targetResponses": null,
+      "coverage": "B2 duration plus actual dense operation counts",
+      "seeds": [
+        17,
+        271828,
+        104729
+      ],
+      "denseFixtureSha256": "bcaf99c9732e5e77d97f1f200e3e85e248314e5c121d57a9407825bf9c306288",
+      "densitySha256": "02ce34482ce1260ebd2a4b5960d0dd8ee1a9bef29bf8d632eba87a5187ad2c08",
+      "mixedSeconds": 600.253160669934,
+      "responsesPerSecond": 15.386841095000369,
+      "workloadAssertions": "PASS",
+      "seed": 17,
+      "requestedSeconds": 600.0,
+      "totalWallSeconds": 609.5582192211878,
+      "runnerCpuSeconds": 120.550278,
+      "fpmExitRecords": [
+        {
+          "pid": 3848099,
+          "exit": 0
+        },
+        {
+          "pid": 3848241,
+          "exit": 0
+        },
+        {
+          "pid": 3914677,
+          "exit": 0
+        }
+      ]
+    },
+    "limitations": [
+      "Within-batch independent worker chronology was not recorded; no clock-rollback certification.",
+      "Helper A/B/C/D master exit codes are not separately recorded; their original functional assertions and shutdown logic are reused.",
+      "Short observation is not endurance certification."
+    ],
+    "artifacts": {
+      "mixed-responses.jsonl": "de8d5883a64d6b2d7921fc70dd16b2f42df2dc9005f0003c00613a4bb189b09b",
+      "large.bin": "cfadd44a103cbd6d5726fa07b27d7aad2f67ed3930ff96901c486a5beaf7e723",
+      "asyncara.so": "96f4e160ebdb7910ab45e9c8ad25f6ee5cb4ea2b108c2d2b546e151da54db17b",
+      "gate.json": "ecb06670877e9ad879b3aff12a53ea56d892da6df51bf523c2a3fcd8b278d35e",
+      "report.json": "52c38cc65d02704f254169e0ea0d2c275742de7c097f36aa35b7af9c7112c194",
+      "os-processes.jsonl": "2f9a3d6dea3402713f2716cedde14f837f9fae9d1d7feb9718aea9174bfebfd7",
+      "provenance.json": "71602eae64275876cf951403432adfa3f6b450f35c5e4de752324c35242dfcbf",
+      "fatal-warmup.json": "66ffa19d66a472a05401d905a806e53eb2ac44d7bccaa4dedd1769665c63381b",
+      "mixed-samples.jsonl": "29adb5e61ef7d9fdef73ffe535d145b7fc0470ddfe7b9d29a2b30fa6f434964a",
+      "mixed-growth.json": "34395b362f604dc0929668a986d36d7604f559fc77e143db186b679d6ff3e103",
+      "mixed-reload-kill/fpm.conf": "824b97f95fcf94d463f5321459501aa2f12863a78efea7b3c143d45c65838f71",
+      "mixed-reload-kill/error.log": "213d48edd44484365ec82968f4707567a38be089e9d17d13fc943f768297aab8",
+      "mixed-reload-kill/php-errors.log": "e1ee4551958fe18ff24fed0c4f8ef3b0c2d518327e34786e326f8b76db976f7f",
+      "mixed-reload-kill/startup.log": "ff4943a85b90f6d9d2c741c61df439feb962ea40a6d46f9e1722966fb6101fbb",
+      "C-multiple-workers/fpm.conf": "21fc8ada5d2c418299fbbea1650e6a17b8ba9e951945ce040f7f7149998067ef",
+      "C-multiple-workers/error.log": "66d232215376dbf9bd8d368d5627a11259f2ebe89ed4e0851c8ec882a3c2a40b",
+      "C-multiple-workers/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "recycling/fpm.conf": "75070ff1d213a9f86213f8f7298ff3c54312d5f68c53536b2fbdfe5dbd216412",
+      "recycling/error.log": "cb87e4821480ae5594221654cd7d4ea4bfd3ee1a38fc8de16afea6c39b0736ad",
+      "recycling/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "A-lifecycle/fpm.conf": "df207cc51c518140cf9a2ddddbdbfb764d4eefd556b92ca3acda07b25af29c94",
+      "A-lifecycle/error.log": "f07d0fd5879a8152a6b134b3c11629ece9171b41c66628c959b074d36db15cd9",
+      "A-lifecycle/php-errors.log": "62ccfaa3c78dfecb862406fa01d28725614afa1a402aeb2153dd23a9c98d5512",
+      "A-lifecycle/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "D-streaming/fpm.conf": "29f0f4dc262b2e7d5eb61320edb0f5000e00a62ac4b5143e5020974d4f70ab7e",
+      "D-streaming/error.log": "a05719a8bf4cf6f20ad618c4cd5da7ad2770911102a94fd17c367ec8b9932338",
+      "D-streaming/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "B-within-request/fpm.conf": "07d5f73388d9cd904ba930a55ec35f8f924f0f95379c711b1ff19e682fb2d02b",
+      "B-within-request/error.log": "adc743dcdd95bf87eef9b0eb71af70a0f55cd730008df3279068b8cbebd71d80",
+      "B-within-request/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "request-timeout/fpm.conf": "ca5a09a67d5fc7a9ee5d7d59d51e81fb18caf55742186216b5cee17d5b6907b6",
+      "request-timeout/error.log": "77d0a358b955f3f0384695c0093799fcf65620b6bae6ad7a0c201b4102906f5c",
+      "request-timeout/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "httpFeatureIndependentReview": {
+    "status": "PASS",
+    "raw": "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-fpm-data/report.json",
+    "rawSha256": "eab1015602159fe3ff5b3da5fbab55b1d887ec6d82dce8c6480cec04abcfa946",
+    "scope": "Independent arithmetic/ownership checks over 60 recorded new-feature responses; original A helper also executed fatal+recovery assertions. This is a short lifecycle smoke, not endurance.",
+    "cases": [
+      {
+        "case": "A-lifecycle",
+        "requests": 20,
+        "minTicks": 27,
+        "maxTicks": 38,
+        "workerPids": [
+          3846197
+        ],
+        "idle": [
+          {
+            "pid": 3846197,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20724,
+            "virtualKiB": 508992,
+            "idleWaitSeconds": 0.006577679887413979,
+            "transientThreadsBeforeReaping": 1
+          },
+          {
+            "pid": 3846197,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20808,
+            "virtualKiB": 509152,
+            "idleWaitSeconds": 0.005340186879038811,
+            "transientThreadsBeforeReaping": 1
+          },
+          {
+            "pid": 3846197,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 21060,
+            "virtualKiB": 509152,
+            "idleWaitSeconds": 0.000702529912814498,
+            "transientThreadsBeforeReaping": 1
+          }
+        ]
+      },
+      {
+        "case": "HTTP-four-workers",
+        "requests": 40,
+        "minTicks": 31,
+        "maxTicks": 40,
+        "workerPids": [
+          3846418,
+          3846419,
+          3846420,
+          3846421
+        ],
+        "idle": [
+          {
+            "pid": 3846418,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20416,
+            "virtualKiB": 509068,
+            "idleWaitSeconds": 0.000745491124689579,
+            "transientThreadsBeforeReaping": 1
+          },
+          {
+            "pid": 3846419,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20416,
+            "virtualKiB": 509068,
+            "idleWaitSeconds": 0.0006030169315636158,
+            "transientThreadsBeforeReaping": 1
+          },
+          {
+            "pid": 3846420,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20484,
+            "virtualKiB": 509068,
+            "idleWaitSeconds": 0.0004450420383363962,
+            "transientThreadsBeforeReaping": 1
+          },
+          {
+            "pid": 3846421,
+            "fds": 6,
+            "sockets": 1,
+            "threads": 1,
+            "rssKiB": 20296,
+            "virtualKiB": 509068,
+            "idleWaitSeconds": 0.0011036400683224201,
+            "transientThreadsBeforeReaping": 1
+          }
+        ]
+      }
+    ]
+  },
+  "fuzz": {
+    "executions": 543316,
+    "seconds": 31,
+    "peakRssMiB": 146,
+    "seed": 20261102,
+    "scope": "Asyncara buffer/MIME callbacks and allocation failures, not libcurl protocol parser"
+  },
+  "gateC": "NOT_STARTED for this HTTP checkpoint; prior-source results are historical",
+  "performance": "Requested4x curl_multi/3x Swoole target NOT_MET; see http-performance.json",
+  "limitations": [
+    "Historical zero-tick cause unresolved",
+    "Earlier richer distribution-PHP Valgrind retention discrepancy unresolved",
+    "Short gates are not long-duration certification",
+    "Hyper standalone only, no production integration",
+    "HTTP/2/3, broad proxy/auth/WAN and long large-transfer endurance not certified"
+  ],
+  "artifacts": {
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/protected-checkouts.json": "6e944e7264470328599dd6bd46300647fba1b7095f6d9a8521d8fbcf3d6a823a",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-environment.json": "46c33b7e9a80f35249f8d5c78df6c744403b0d0fcd3dea089ea42b1d657a27e2",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-A/report.json": "41846ec3b03171f53e1501fd2d8df92d80e351637343a4147a54f8646230a753",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-B/report.json": "cc5ebdd7f8d2f06f4e4551c9db8e54d2e75eeb1939d2a44b33958a6f7f49bf06",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-B/review/report.json": "8093b506b7ddd7a98835f2775483b3ef1e4a7bd2e9a77d5d8461764610908acd",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-B/native-counts.json": "2949f7593e1ea7dc88f20d832e5339c4b9828c49311d600fed40a98ba808f6a0",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/http-features-independent-review.json": "f24a40a61a6f42d0b5b7741a80dfa92dd598de8c4a41ecaa86eacf394824b386",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-fuzz-data/run.log": "0b5c2235d6d263cf563b6a00a4e449d8d1abca46ac93eac4d05093ff75161ba2",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-85/launch.json": "c4d892d595e411ed0c597048d2dab7b10698fc032a8037eb2c72958182bd8dc3",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-85/result.json": "503d5d823f13f944bd2328f22cd9952604e5f3acffa0dffef3492e860798e263",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-85/stdout.log": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-83/launch.json": "11928c115eb67ae301f393a0d2da914915dca0d53b6eda0a76fc2bdbb5f4d57a",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-83/result.json": "fbb22a7f491a7fdb5421dc691af97e02d0e8ebf0ed69840cc371d07c3d75ac85",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-83/stdout.log": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-84/launch.json": "f43f45b7eea004f97e608dd8c3c1db34c66550dc21c31ed98ed9108fa5463572",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-84/result.json": "f03de94c6783a8584c402e147202e2f40cb716c1bbf28a1b4ba2ce7ce884bf6f",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-84/stdout.log": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-debug/launch.json": "faedd485c2471b9e3b75c4b212f323447016439729ce3f3dfe809aeac7a3c6f0",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-debug/result.json": "87f3ae4be16ea7f86ec3eada2ebdd20ab796fc930dbb3ef2c2dd400a11e83207",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-debug/stdout.log": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-gcc/launch.json": "c76f3626408fa9abfaf33541444fa75ba061cfd3261262829cca3db2480605d2",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-gcc/result.json": "9375e274b2e3869d1a938fd8b60b4f060c3b3a4d8cd286116212950f54dfb54d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-build-gcc/stdout.log": "ec6fac384d5461d3dcf71db0d39581b25c0694c2f03d0bd46fe616d7eb4735e7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-85/launch.json": "e04076007e6e6676571ce647f0338f6b2734b34a4d5f276d5db21fec4d82da5d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-85/result.json": "c547eebad5532a8228dd9c356fe510b28e70703102324631f2bc97180409d570",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-85/stdout.log": "341c78322c904d37f5e20a5bfbfc94b4ccf43800cf2680a88e9b627b69c062be",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-83/launch.json": "8cc4841b2e32809f74ec2b957a1397702e836b24a921b7298b26592fb7d01a1b",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-83/result.json": "c984eb25884b858e961723642b5b263d882c952bb4b6e06c5bf9107edbe2ce1e",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-83/stdout.log": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-84/launch.json": "8302e672d764ae3b666c9cbc23388f14dc317ad4d818e4a082fd30f2524fd2bd",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-84/result.json": "981cd2090478bd16932989e4590e3d6482c476d3b1f0c77a18a8947b27e16a94",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-84/stdout.log": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-debug/launch.json": "a03749f401be3ed55dcba3611ac03d107a811c72d20279fa77ffa188edff8cf9",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-debug/result.json": "f5ba276ff23e9814a7eb373bacf389f22df3bbad0068419401c2bb6f2f0f9e78",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-debug/stdout.log": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-gcc/launch.json": "1eba2f0880f53e1e0da70546367bd25d7834b6b78d4e153e62a6695b7c1deb6b",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-gcc/result.json": "48990392ebb14f4dcbe49a858a93a27c6c213359ae23fd4004e271a8acc08a59",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-http-gcc/stdout.log": "5e12bcf245d80609a98afa64bbf79679e5ec84b3d3d5a94d2262a47c46df9fc4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-epoll/launch.json": "7942d0124f6237902ae0a5bb0c4af88b65c786e19adf5a9465b1937d71d5dc41",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-epoll/result.json": "4f217a2100457103e7527c6586f4787299f679ab2b1dc2edaa3617048ba865a8",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-epoll/stdout.log": "d5060a069f3a34dfa8ecbc1fc441d1c39e653a0181a17059a59ed30b78601cc2",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-poll/launch.json": "f68e6b121688e3d67759a93382d3511ac6a3681c274953f9eb4e0d3cbd08f909",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-poll/result.json": "e463e72a30738eb1ab31464ad2ab3ae0583ecd48cf270875f948d33710074c16",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-full-poll/stdout.log": "09d1c679e49117bc797f40f0f31bb5de746936203e5330fcdf9f6518b027674e",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-allocation-audit/launch.json": "3142141d965cee808a9d5539d3f3df09b5cf3caf5c57eb23df93ac2cc776d855",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-allocation-audit/result.json": "5729cd8c6cbd3dbadb39c0733476794d7a306f56543a1042d3ad8d391e765df7",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-allocation-audit/stdout.log": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-fuzz/launch.json": "7f7ff334b27992ca35c5861a24545b966564dd8adf90d95096502ddd78d1e157",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-fuzz/result.json": "d7bfa7c19ddf395d3c0290cb1b07d4a1bee4873cb36cf963992cd9c19c5510f6",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-fuzz/stdout.log": "0b5c2235d6d263cf563b6a00a4e449d8d1abca46ac93eac4d05093ff75161ba2",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-stage/launch.json": "be1a85d3e5d3ca6885fb13127ec227fe3a995345b9bb0bb59460e00866b806a4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-stage/result.json": "a4e13e821f35c4b72b786e9e4bf79156e236b813ebb8cb3748b61c55391f9c04",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-stage/stdout.log": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-completion/launch.json": "8ac641778b38e173b178434bbf161f2b6abf14775787f796f937c46d89946f72",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-completion/result.json": "90a888d1069af76e29dd4ecab1cee8691fd7f7f103284f26a3b241a6dd7875a9",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-asan-run-completion/stdout.log": "3b13566195a80a9ad595d32a9128d756947b6ecafc69c37378e6998f5c97b332",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-real/launch.json": "b8742b40bfa60ffa37ad6f728f1230c2b6ab8e66829f03d886a91f2a4446acee",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-real/result.json": "307deb8a99f665ddfca728ef1ebe47c8bcda85fb6936a994641abaa9864af865",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-real/stdout.log": "ab2fda5e10b16237c0329e39733c65ab07998916010c280384c562fae08d8a76",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-logical/launch.json": "94f3360e57c130a642784e27d4890ca47e64d15fe2caf480c966507a2738cacb",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-logical/result.json": "88d87d98d625c76740bd0d9b82b9dec7e62b281ac4c16825bdf1dd4ac4cfbfd4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/admission-asan-logical/stdout.log": "cacf844c0a8a50db70ecdd3e802777f0deb1eb8f34cee25305d59614cfb03292",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-stage/launch.json": "bc7b4b0c80f97d62200dce730c7928b7ffbf59d95ccbd3ca70d4e9906b1e5a37",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-stage/result.json": "aad75edbfc281d14618d930c8c454ea84ead3cedd7335ba9e0f016259060de55",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-stage/stdout.log": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-completion/launch.json": "abb667ff7fb11c1461f7b42a699d343e5ca98e979549b866f4b74faae1a0e29a",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-completion/result.json": "1893930e15af8f8db656d6a112bf403cf20d05e6e131e911d0aacac1ca0ec08e",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r2-completion/stdout.log": "3b13566195a80a9ad595d32a9128d756947b6ecafc69c37378e6998f5c97b332",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-wait/launch.json": "71013d944a1cecf2ef4e9a3e384032f658c5edb5f9201fce4ba1dc554d19ed40",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-wait/result.json": "93d811153bb89b227dd42ef570bc8f644120f2cf6f3ca07abed88d04838869d3",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-vg-r3-wait/stdout.log": "cacf844c0a8a50db70ecdd3e802777f0deb1eb8f34cee25305d59614cfb03292",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-1/launch.json": "42ddd4171c86003ec32b682f02a71e83b6b5c3fbfdd268d6aaa215aecfa36227",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-1/result.json": "9b9cc71236faaf4dbdcb6cd1480ddb68180e85ca9650ead0085a3da708c51358",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-1/stdout.log": "a25829caf5940a8866096066bc18a96d50c51e90612db20830b08de277ba3b1d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-2/launch.json": "fd4009bd0a99a906f8e59b95f304d79f2829cbf975d31050ecde31b52ac0fd38",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-2/result.json": "3e343166278311b92ab1beed5b8727e93353d12c339d752609cbee4c49903219",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-completion-2/stdout.log": "a25829caf5940a8866096066bc18a96d50c51e90612db20830b08de277ba3b1d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-acquisition/launch.json": "8dba3d8460e096543e4daedcc7c5761e3157770327b27f18532a83bf769c0f13",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-acquisition/result.json": "1a5efcad6194cdbf6e28f4b90b693eb2044db2456a117dd8e458ffebc3ce2e0c",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-vg-acquisition/stdout.log": "b23147a181f0b7b4457210afe2af65110da09cd6817e0c773f80e1174098a308",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-tsan-stage-run/launch.json": "fdad36c699f1e67948e3aa31f26233b81e3fdde229f04f7fd5fa3b2aba5e717c",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-tsan-stage-run/result.json": "05b09d745640fd2cb71093c6c70216b3dd2aef6779fe3b08e2cdfd555c516dfd",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-tsan-stage-run/stdout.log": "a4f3d3a006414d89d80008772581f6fa47db3ca2fbee78e203f5ef1782d6225d",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-completion/launch.json": "d896fef3752ace5434c2832e399f77e6dda4f132a6f726bd15a0805b88609b0e",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-completion/result.json": "dcab207b7307c58c0a0cea23a35c7afdb7f3761ac3321b686133e360c7d5f85c",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-completion/stdout.log": "9b9119ec2d7922b9a499e3a4f726aebc4049f8ca586c839fa9e81c6d30579ded",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-acquire_cancel/launch.json": "91bdc623c77d30f241749b869c2bd9b6638f6910b474d7d1164f59a1c6b68b21",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-acquire_cancel/result.json": "69ef360cadd58c4b8e549883f0f00ab3692c15073e6509d3aa554756070159e4",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/accepted-gcc-leak-acquire_cancel/stdout.log": "b23147a181f0b7b4457210afe2af65110da09cd6817e0c773f80e1174098a308",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-feature-fpm/launch.json": "b01d3341fdd8d9a30204fc1952c4e343d2e7fba12ccc09a0f87e305c82456a7a",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-feature-fpm/result.json": "7918aea90c61e89babef4047bc5cb4741c984d088815889b876e8be050e5b9ac",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-http-feature-fpm/stdout.log": "6faea90f27f35836c6b68a5d8093610d18e136c68e5f06138d35041aac839856",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-a/launch.json": "98ddbc25bd1ddb3a0603c2efd116eb04195cabdd0a1a43cbff9f3ded6db08a99",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-a/result.json": "ccbf1abc452ae3e04fb04f7861246f325c17f01c91f061d5f0eccb9fc1acd6d9",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-a/stdout.log": "b8726302d4e1d8306a7066cbf0ba4ac57e84ae2de55ed8cfffdcd5d1bdaa0f42",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-b/launch.json": "65915feb30d64d0c186a4fd52f96afadc95c263794999f54050f3d61b4d5e6fb",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-b/result.json": "81488898823028672abedb6957d0612299228b7cacd07ac824973394530ccbde",
+    "/home/coder/Asyncara-http-evidence-20261109T050419Z/release-gate-b/stdout.log": "c8cbe91354361824066c30024f42118146b15d2d1e36b6fbc8fb136fa918ffdd"
+  }
+}

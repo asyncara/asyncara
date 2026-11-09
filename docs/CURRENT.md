@@ -1,7 +1,19 @@
-# Current isolated native development state
+# Current isolated HTTP development state
 
-This file describes the Phase5 worktree, not the preserved Phase4 checkout.
-The authoritative current report is
+The active HTTP worktree is `/home/coder/Asyncara-http-20261109T050419Z`, branch
+`phase6-http`, based on79d142f. Native checkpoint92d0ba0 plus the45a4a20 acquisition repair (tests6b9da6b) add bounded multiple-file
+MIME, atomic downloads, connect/connection controls, native buffer ownership and
+curl lifecycle repairs. [HTTP_ENGINEERING.md](HTTP_ENGINEERING.md) records actual
+coverage, performance shortfall and the separate Rust Hyper experiment. Final
+HTTP/memory/PHP83-85 validation and Gates A/B pass on6b9da6b; B2 records9236
+responses in600.253s. Packaging has a separate attestation. No production-ready
+or fastest-PHP claim.
+
+## Inherited native resource-provenance checkpoint
+
+The remainder describes the preserved Phase5 baseline, not the HTTP checkpoint
+or the preserved Phase4 checkout.
+Its engineering report is
 [RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md), with the
 [ownership matrix](NATIVE_OWNERSHIP_AUDIT.md) and
 [lifecycle contract](IO_LIFECYCLE_CONTRACT.md).

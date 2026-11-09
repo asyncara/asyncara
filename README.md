@@ -6,6 +6,8 @@
 
 **Native reliability continuation:** [native fixes, fast gates and ownership evidence](docs/NATIVE_RELIABILITY_PROGRAM.md). The historical local FPM one-hour stage passed; the six-hour stage failed and its zero-tick cause remains unresolved. New short gates do not certify long-duration stability.
 
+**HTTP continuation:** [implemented MIME/atomic downloads, validation and honest performance comparisons](docs/HTTP_ENGINEERING.md). Rust Hyper was evaluated separately; no production backend replacement or fastest-PHP claim.
+
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
@@ -67,7 +69,7 @@ A Phase 3 one-hour mixed baseline completed. Later Phase 4 results and the
 remaining FPM gates are tracked separately. See [release readiness](docs/RELEASE_READINESS.md),
 [database matrix](docs/DATABASE_COMPATIBILITY.md), [filesystem contracts](docs/FILESYSTEM.md),
 [FPM lifecycle](docs/FPM_LIFECYCLE.md), [fuzzing](docs/FUZZING.md), and
-[ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies and one-file MIME. [WebSocket](docs/WEBSOCKET.md) now has tested bounded framing and independent client/server interop. Expanded hooks
+[ZTS scope](docs/ZTS_COMPATIBILITY.md). [HTTP streaming](docs/HTTP_STREAMING.md) now covers bounded HTTP/1.1 bodies, single/multiple-file MIME and optional atomic downloads. [WebSocket](docs/WEBSOCKET.md) now has tested bounded framing and independent client/server interop. Expanded hooks
 and framework certification remain unavailable. Release status stays EXPERIMENTAL.
 
 Current validation targets patched PHP8.3.36,8.4.27 and8.5.12 with matching SDKs.

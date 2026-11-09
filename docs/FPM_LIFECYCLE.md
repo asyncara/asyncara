@@ -516,3 +516,18 @@ thread. Full raw trends, limits, identities and chronology caveats are in
 results do not supersede the original one-hour supervisor PASS, six-hour FAIL,
 24-hour NOT_STARTED or original independent review's chronology uncertainty.
 Release remains EXPERIMENTAL.
+
+## HTTP feature lifecycle continuation (2026-11-09)
+
+`tests/http/fpm.py` is an additional isolated fixture, not a replacement for the
+original A/B/C/D or dense integration gates. It executes20 sequential and40
+four-worker responses, with four gated pending HTTP reads per request alongside
+multi-file MIME and atomic/durable downloads. The original two-tick/overlap
+condition remains. A fatal request with abandoned staging is followed by a
+successful request in the same worker. Request-entry counters reject inherited
+native/file/easy-handle owners; idle descriptors/threads are checked.
+
+The final-source results and the separate original Gate B are recorded in
+[HTTP_ENGINEERING.md](HTTP_ENGINEERING.md). Short feature/lifecycle checks do not
+certify prolonged multipart/atomic-download endurance. Historical FPM failures
+remain untouched and their cause is not attributed to these HTTP changes.

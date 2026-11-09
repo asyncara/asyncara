@@ -195,3 +195,9 @@ scoped to successful filesystem calls, not universal storage-device durability.
 No production-readiness or universal memory-safety claim follows from the new
 HTTP tests; historical distribution-PHP Valgrind losses and FPM zero-tick failure
 remain separately recorded in RESOURCE_PROVENANCE_PROGRAM.md.
+
+The HTTP continuation fixed a staged-resource acquisition/cancellation race. A
+cancelled download could lose the completed File result before taking ownership,
+retaining its private file and native descriptor until request shutdown. The
+shielded assignment and completion-boundary regression prevent this specific
+retention. No historical zero-tick attribution or universal leak guarantee follows.
