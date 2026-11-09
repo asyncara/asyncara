@@ -164,3 +164,29 @@ No useful overall speed improvement is established. Source, full measurements
 and failed fixture/build controls remain at
 `/home/coder/Asyncara-http-small-buffer-20261109T194455Z` and its separate evidence
 directory. The C tier change is absent from this capacity source.
+
+## Independently built source archive
+
+`build/asyncara-0.1.0-dev-http-r5-capacity.tar.gz` contains506 tracked files from
+source `f12146a1c74e6c5247425d7653738eaeb98d1f5d` (native b1cfd18).
+SHA-256: `62390a6f482f8d070a0a8e677e5deaa337d4ba84b436107b74719d2c431aa26e`.
+Two source packages are byte-identical; every archive file matches Git and the
+clean extracted tree after validation. Fresh curl-only PHP83/84/85 builds and
+HTTP gates pass on epoll/poll; a separate new Cargo/Hyper85 build and HTTP gate
+also pass. Package HEAD/feature FPM passes20 single-worker and40 four-worker
+main responses, minimum17/21 ticks, checked overlap, zero native pending/bytes
+before/after and idle6fds/1thread/1socket. No project binaries or generated source
+were copied into the extraction. Public SDK/dependency headers and host libraries
+are external build prerequisites.
+[Build and independent review](phase6/http-r5-capacity-package.json) retain all
+module/report hashes. These fresh binaries have their own identities; workspace
+benchmark numbers are not claimed as new measurements of package binaries.
+No archive was published to GitHub. The rejected small-initial-buffer9eea780 is
+not included. EXPERIMENTAL, with performance NOT_MET and previous failures retained.
+
+The scoped native Valgrind control has0 errors/definite/indirect/possible lost
+bytes and56 still-reachable bytes; DEBUG header conversion has0 errors/lost bytes
+and3888 still-reachable bytes. No suppression was used. This is not a universal
+leak guarantee or resolution of the distribution-PHP report. The callback fuzzer
+executed486795 inputs in31s (seed20261102), peak RSS145MiB, zero crash artifacts;
+it does not fuzz curl's parser or certify Rust machine code.

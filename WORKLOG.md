@@ -2057,3 +2057,17 @@ to the peer fault. Tests are wired into HTTP/full runners.
 The separate smaller-initial-buffer C experiment remains DO_NOT_ADOPT (9eea780):
 small-body memory improves, but no material public throughput gain is established
 and64KiB median/CPU are slower. All its raw failures and comparisons are retained.
+
+### HTTP r5 capacity distribution independently validated
+
+Source f12146a (native b1cfd18),506 files, SHA256
+62390a6f482f8d070a0a8e677e5deaa337d4ba84b436107b74719d2c431aa26e.
+Two byte-identical archives; Git/tree content match. Fresh PHP83/84/85 curl builds
+and both-backend HTTP gates pass, plus independently built Hyper85 and short
+HEAD/feature FPM (20+40 responses,min17/21 ticks). Independent review hashes raw
+logs and recomputes main-response/progress/overlap/native/idle assertions.
+See docs/phase6/http-r5-capacity-package.json. No publication or speed acceptance.
+Workspace Hyper medians9301.92/s (1KiB),4970.34/s (64KiB), all target requirements
+NOT_MET. Rejected9eea780 tier experiment and every earlier failure are retained.
+No long tests remain running; next work is public-path profiling and the unresolved
+progress failure, before any reliability/performance release promotion.

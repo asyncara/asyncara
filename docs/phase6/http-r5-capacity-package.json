@@ -1,0 +1,85 @@
+{
+  "status": "PASS_INDEPENDENT_PACKAGE_REVIEW",
+  "identity": {
+    "source": "f12146a1c74e6c5247425d7653738eaeb98d1f5d",
+    "nativeSource": "b1cfd18a97eb9962761ba1c4c2fad0bad3ef25bb",
+    "archive": "/home/coder/Asyncara-http-capacity-20261109T190638Z/build/asyncara-0.1.0-dev-http-r5-capacity.tar.gz",
+    "archiveSha256": "62390a6f482f8d070a0a8e677e5deaa337d4ba84b436107b74719d2c431aa26e",
+    "repeatSha256": "62390a6f482f8d070a0a8e677e5deaa337d4ba84b436107b74719d2c431aa26e",
+    "fileCount": 506,
+    "gitContentMatch": true,
+    "tree": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/package-http-r5-capacity/asyncara-0.1.0-dev",
+    "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7",
+    "dependencies": "Public PHP/library headers, host shared libraries, isolated Rust/Cargo dependency registry. New build outputs and certificates only. No prior project binaries/vendor/generated files copied.",
+    "moduleHashes": {
+      "85": "106f97ec4868863ca1f7f3323af462da8a491b9bb64791e3ef42ed1773d0705d",
+      "83": "9c61935f5bf901ef4b96990def7cf8d2fc82538a2905330596438f9f7a5edc26",
+      "84": "9aacffdfa875a162c3bf0dd0e08f3b350d4edf500abab9b3fd2757b18b48df31",
+      "hyper-85": "ff44d32b6946b6d1320a1d807be32323ec87fbc08002c68f1fb04257ca8b32d8"
+    }
+  },
+  "http": [
+    {
+      "name": "http-85",
+      "commands": 50,
+      "wallSeconds": 74.24923607101664,
+      "reportSha256": "99f79f4191b4d097cc0767f8c8dcf052ab72663c281476121c80d27c170c332b",
+      "moduleSha256": "106f97ec4868863ca1f7f3323af462da8a491b9bb64791e3ef42ed1773d0705d"
+    },
+    {
+      "name": "http-83",
+      "commands": 37,
+      "wallSeconds": 55.92544468003325,
+      "reportSha256": "df22af21555cc0b4350c55b43e5d4343efc92ea7686b8c0b2a0ad4f9a7182e1d",
+      "moduleSha256": "9c61935f5bf901ef4b96990def7cf8d2fc82538a2905330596438f9f7a5edc26"
+    },
+    {
+      "name": "http-84",
+      "commands": 37,
+      "wallSeconds": 53.00251717399806,
+      "reportSha256": "80cc57f10fa96af5890b4bf529a53963c09be7c731282d6d6062fcc759fd4d60",
+      "moduleSha256": "9aacffdfa875a162c3bf0dd0e08f3b350d4edf500abab9b3fd2757b18b48df31"
+    },
+    {
+      "name": "http-hyper-85",
+      "commands": 47,
+      "wallSeconds": 62.404054671060294,
+      "reportSha256": "5c5a5b155f6485b8d99cdb2b51a53db0c0d5b4be98725a59cdae47c13c2b1670",
+      "moduleSha256": "ff44d32b6946b6d1320a1d807be32323ec87fbc08002c68f1fb04257ca8b32d8"
+    }
+  ],
+  "fpm": [
+    {
+      "name": "A-lifecycle",
+      "mainResponses": 20,
+      "workers": 1,
+      "minimumTicks": 17,
+      "idleRssRangeKiB": [
+        20304,
+        20616
+      ]
+    },
+    {
+      "name": "HTTP-four-workers",
+      "mainResponses": 40,
+      "workers": 4,
+      "minimumTicks": 21,
+      "idleRssRangeKiB": [
+        20152,
+        20292
+      ]
+    }
+  ],
+  "packageReportSha256": "81b0815ff85ecdad5f1656c23d3b317a5dac82cce6c980fa2868f63a9d66fb1c",
+  "fpmReportSha256": "4d7ea9b083f4c9b5954b005f134203ff86c85a6dffc3d755376fd70dd0390af0",
+  "release": "EXPERIMENTAL",
+  "performance": "NOT_MET",
+  "limitations": [
+    "No mixed B2 recertification: its prior FAIL remains",
+    "PHP83/poll connection progress failure remains unresolved despite later passes",
+    "Historical distribution PHP Valgrind issue unchanged",
+    "Only HTTP and scoped feature FPM tested from the extracted archive",
+    "No claim of all third-party library or Rust sanitizer coverage",
+    "No GitHub publication"
+  ]
+}

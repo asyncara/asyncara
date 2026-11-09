@@ -1,5 +1,11 @@
 # Implementation status
 
+Current local source archive: **http-r5-capacity**,506 files, packaged f12146a,
+native b1cfd18. Independent PHP83/84/85 HTTP builds/tests, optional Hyper85 and
+short feature FPM pass. [Attestation](phase6/http-r5-capacity-package.json).
+Performance remains NOT_MET; prior progress/B2 failures remain unresolved.
+Release EXPERIMENTAL; not published. Later changes are documentation/evidence only.
+
 Test-only follow-up `f26ad6b` adds safe peer EOF teardown and a regression; native
 source remains b1cfd18. All12 capacity controls pass again. The smaller-initial-
 buffer experiment9eea780 is retained but not merged. See
