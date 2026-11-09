@@ -811,6 +811,9 @@ ar_engine *ar_engine_new(void) {
     const char *backend = getenv("ASYNCARA_BACKEND");
     if (backend && !strcmp(backend, "poll"))
         e->use_epoll = 0;
+    if (ar_wait_initialize(e)) {
+        int saved = errno; ar_engine_free(e); errno = saved; return NULL;
+    }
     return e;
 }
 ar_job *ar_job_new(ar_engine *e, ar_op op) {
@@ -991,6 +994,7 @@ void ar_engine_free(ar_engine *e) {
     pthread_mutex_unlock(&e->mutex);
     for (int i = 0; i < e->thread_count; i++)
         pthread_join(e->threads[i], NULL);
+    ar_wait_cleanup(e);
 #ifdef HAVE_ASYNCARA_HYPER
     /* Drop all Rust futures/socket owners before any C job is freed. */
     if (e->hyper) { ar_hyper_free(e->hyper); e->hyper = NULL; }

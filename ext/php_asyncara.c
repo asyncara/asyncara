@@ -527,6 +527,9 @@ PHP_FUNCTION(asyncara_info) {
     add_assoc_long(return_value, "nativeMemoryLimit", e->memory_limit);
     ar_trace *trace = atomic_load_explicit(&e->trace, memory_order_acquire);
     add_assoc_long(return_value, "nativeDiagnosticBytes", trace ? sizeof(*trace) + trace->capacity * sizeof(ar_trace_event) : 0);
+    add_assoc_long(return_value, "waitControlBytes", e->wait_control_bytes);
+    add_assoc_long(return_value, "epollCreated", e->epoll_created);
+    add_assoc_long(return_value, "epollReused", e->epoll_reused);
     size_t file_count = 0;
     for (ar_file *file = e->files; file; file = file->next)
         file_count++;

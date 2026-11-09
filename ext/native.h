@@ -162,6 +162,10 @@ typedef struct ar_engine {
     uint64_t http_created, http_reused, hyper_submitted, hyper_completed;
     ar_socket *sockets;
     int running, use_epoll, http_wakeup;
+    /* Interpreter/request-local control storage; no borrowed resource owner. */
+    struct ar_wait_cache *wait_cache;
+    size_t wait_control_bytes;
+    uint64_t epoll_created, epoll_reused;
 } ar_engine;
 typedef struct {
     int fd, events, ready, buffered;
@@ -183,6 +187,8 @@ void ar_job_free(ar_job *j);
 int ar_submit(ar_engine *e, ar_job *j);
 void ar_cancel(ar_engine *e, long id);
 int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout);
+int ar_wait_initialize(ar_engine *e);
+void ar_wait_cleanup(ar_engine *e);
 ar_job *ar_collect(ar_engine *e);
 ar_db *ar_db_find(ar_engine *e, long id);
 ar_file *ar_file_find(ar_engine *e, long id);
