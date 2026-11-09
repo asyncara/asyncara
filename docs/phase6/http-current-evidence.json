@@ -1,0 +1,1483 @@
+{
+  "status": "PERFORMANCE_NOT_MET",
+  "nativeSource": "c4aea948233d79aee887c9ceeea4b56da340cc57",
+  "referenceBuild": {
+    "phpVersion": "8.5.12",
+    "phpSha256": "eb85560c0bea6c5d1c06a93a602697efe94ad9803da400211469529f041929fa",
+    "sdkVersionHeaderSha256": "48cf925946272667030bc3274afcfcf8850d3fca6766546e7e82d43e2e7de230",
+    "modules": {
+      "curl": "7732e1a5d7b3f9e2e6c42a8decdb0faf3d949dd9ab2da4ab7770e60175e4343d",
+      "pdo": "7b38122ab86050874b95eea3687169d848d3e835947cde741b54e5fb634266ec",
+      "mysqlnd": "837b346b8f11c34669bca7874bfc027c866ebe7ae1d954c2e496ce83341d0b20",
+      "sockets": "72b28282f8e12ea411fe7f86a6ae1e73f3b7a937e4e8ecf39bf677c63572937a",
+      "swoole": "3b842c6686b346b7b217eb01a9242a0791030f64124491286bbac3b5473e61be"
+    },
+    "swooleSource": "8b20cd39f8c19da7aaf70290037e04f616db5ff7",
+    "swooleConfigure": "#! /bin/sh\n#\n# Created by configure\n\n'./configure' \\\n'--with-php-config=/home/coder/Asyncara/.local/bin/php-config' \\\n'--enable-swoole' \\\n'--enable-sockets' \\\n'--enable-mysqlnd' \\\n'--with-openssl-dir=/usr' \\\n\"$@\"\n",
+    "swooleMakeExtraIncludes": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/include",
+    "buildLogSha256": "e98b914cea4420bea5128a62d3ad28eb65be40738651496271de6849242088da",
+    "scope": "Matching PHP8.5.12 SDK; official Swoole6.2.3 source, local build; no global installation; plain HTTP1.1 comparison only"
+  },
+  "comparisons": {
+    "matched-reference-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/matched-reference-comparison-data/report.json",
+      "sha256": "dd6167dd49e65f38c567461e91214f1c0797d5242a62b918f714d61fed1ad208",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 7548.266375036879,
+          "publicMinimumRps": 6233.931372227487,
+          "curlMultiMedianRatio": 0.6698778669742786,
+          "swooleMedianRatio": 0.7576755589238856,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 3408.285256056186,
+          "publicMinimumRps": 2792.620111505579,
+          "curlMultiMedianRatio": 0.687549376986789,
+          "swooleMedianRatio": 0.5554040165185127,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              6233.931372227487,
+              7548.266375036879,
+              6481.72751893072,
+              8332.460065479534,
+              8546.193385335308
+            ],
+            "medianRps": 7548.266375036879,
+            "medianCpuUsPerRequest": 108.658375
+          },
+          "asyncara_curl": {
+            "rps": [
+              6239.514685680927,
+              4332.405716439621,
+              4666.052648939042,
+              5300.773259376786,
+              6889.827709635339
+            ],
+            "medianRps": 5300.773259376786,
+            "medianCpuUsPerRequest": 165.3140625
+          },
+          "curl_multi": {
+            "rps": [
+              11268.123261231305,
+              11360.630742559646,
+              9285.934842834278,
+              10526.46791771102,
+              12083.79528990426
+            ],
+            "medianRps": 11268.123261231305,
+            "medianCpuUsPerRequest": 79.9893125
+          },
+          "swoole": {
+            "rps": [
+              10131.28490032146,
+              7975.791192654014,
+              9962.399190700517,
+              8886.343484661142,
+              13234.482666264537
+            ],
+            "medianRps": 9962.399190700517,
+            "medianCpuUsPerRequest": 86.30325000000002
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              4742.628392559596,
+              2927.9451906872123,
+              3950.8929665310015,
+              2792.620111505579,
+              3408.285256056186
+            ],
+            "medianRps": 3408.285256056186,
+            "medianCpuUsPerRequest": 256.68525
+          },
+          "asyncara_curl": {
+            "rps": [
+              3107.366267531691,
+              3271.448871922592,
+              3053.821532492266,
+              3008.1411361583473,
+              2242.741224596284
+            ],
+            "medianRps": 3053.821532492266,
+            "medianCpuUsPerRequest": 311.9361875
+          },
+          "curl_multi": {
+            "rps": [
+              6569.558866411301,
+              6379.256556146163,
+              4881.308738717696,
+              4957.149799179696,
+              4236.371600636336
+            ],
+            "medianRps": 4957.149799179696,
+            "medianCpuUsPerRequest": 170.57649999999998
+          },
+          "swoole": {
+            "rps": [
+              7967.215735837466,
+              7622.211272280546,
+              6136.5873394662085,
+              6070.005116342819,
+              5239.537731173603
+            ],
+            "medianRps": 6136.5873394662085,
+            "medianCpuUsPerRequest": 137.94743750000004
+          }
+        }
+      }
+    },
+    "lto-reference-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/lto-reference-comparison-data/report.json",
+      "sha256": "4b20642032fd32eb160ffb9626bfd60b06a8916fbc90b65d829383e388d67192",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 9759.408833178963,
+          "publicMinimumRps": 6045.605667184607,
+          "curlMultiMedianRatio": 1.265712823280814,
+          "swooleMedianRatio": 1.031400848513746,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 3691.298005601354,
+          "publicMinimumRps": 2601.122952314036,
+          "curlMultiMedianRatio": 0.6433366591613064,
+          "swooleMedianRatio": 0.5939650982287379,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              12021.439916517591,
+              10455.565153735324,
+              7238.940295439178,
+              9759.408833178963,
+              6045.605667184607
+            ],
+            "medianRps": 9759.408833178963,
+            "medianCpuUsPerRequest": 91.37618750000001
+          },
+          "asyncara_baseline": {
+            "rps": [
+              10954.706056138075,
+              10761.469190990862,
+              7343.442403349162,
+              9001.461749623888,
+              4830.805543581481
+            ],
+            "medianRps": 9001.461749623888,
+            "medianCpuUsPerRequest": 90.47887500000002
+          },
+          "curl_multi": {
+            "rps": [
+              7378.5708491592695,
+              9976.674976619615,
+              7710.602795254858,
+              6439.8027567947165,
+              9283.894627032383
+            ],
+            "medianRps": 7710.602795254858,
+            "medianCpuUsPerRequest": 104.2776875
+          },
+          "swoole": {
+            "rps": [
+              9462.285053616468,
+              8726.041533582036,
+              11383.980353133958,
+              7288.690761136798,
+              10061.976549606507
+            ],
+            "medianRps": 9462.285053616468,
+            "medianCpuUsPerRequest": 84.32681249999999
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              2601.122952314036,
+              3749.786987784069,
+              3875.403204972741,
+              2977.8750649892386,
+              3691.298005601354
+            ],
+            "medianRps": 3691.298005601354,
+            "medianCpuUsPerRequest": 246.9256875
+          },
+          "asyncara_baseline": {
+            "rps": [
+              2757.1560945175975,
+              3560.1548491932767,
+              3105.360508341848,
+              3203.315720068686,
+              3307.1998128521773
+            ],
+            "medianRps": 3203.315720068686,
+            "medianCpuUsPerRequest": 278.56250000000006
+          },
+          "curl_multi": {
+            "rps": [
+              3283.6127756487645,
+              4152.183417306697,
+              6586.824094177686,
+              5925.3867969271505,
+              5737.73925834346
+            ],
+            "medianRps": 5737.73925834346,
+            "medianCpuUsPerRequest": 157.7701875
+          },
+          "swoole": {
+            "rps": [
+              4090.5554934144784,
+              5462.458387905255,
+              6214.671563378331,
+              6658.464769763273,
+              7472.9691286984025
+            ],
+            "medianRps": 6214.671563378331,
+            "medianCpuUsPerRequest": 139.17443749999998
+          }
+        }
+      }
+    },
+    "wait-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-comparison-data/report.json",
+      "sha256": "e6aae3a94516e4d150e18cf134532a2793dbe1fbf00b64f58c639afb294dc5a1",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 7912.973368155685,
+          "publicMinimumRps": 7321.507374708193,
+          "curlMultiMedianRatio": 0.5460412772332885,
+          "swooleMedianRatio": 0.4774226828725819,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 3285.502360251506,
+          "publicMinimumRps": 3036.8665069300823,
+          "curlMultiMedianRatio": 0.6616968391323503,
+          "swooleMedianRatio": 0.37588135387305655,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              8117.022945286198,
+              7912.973368155685,
+              7321.507374708193,
+              8384.995425704621,
+              7745.259870583262
+            ],
+            "medianRps": 7912.973368155685,
+            "medianCpuUsPerRequest": 125.31362499999999
+          },
+          "asyncara_baseline": {
+            "rps": [
+              7967.655858777203,
+              8859.272439559802,
+              8300.51557625313,
+              7754.136545186121,
+              7547.314520396521
+            ],
+            "medianRps": 7967.655858777203,
+            "medianCpuUsPerRequest": 124.03206249999998
+          },
+          "curl_multi": {
+            "rps": [
+              13437.95800445289,
+              14491.529666492552,
+              15818.07750856595,
+              14629.529614274723,
+              14030.190272161613
+            ],
+            "medianRps": 14491.529666492552,
+            "medianCpuUsPerRequest": 68.813
+          },
+          "swoole": {
+            "rps": [
+              16820.852700074654,
+              16574.355706236016,
+              15286.173850746254,
+              17259.453957326295,
+              15936.59547401346
+            ],
+            "medianRps": 16574.355706236016,
+            "medianCpuUsPerRequest": 58.99775
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              3285.502360251506,
+              3229.980294665417,
+              3448.989706306994,
+              3036.8665069300823,
+              3357.9022992600303
+            ],
+            "medianRps": 3285.502360251506,
+            "medianCpuUsPerRequest": 301.03987500000005
+          },
+          "asyncara_baseline": {
+            "rps": [
+              3027.951732306354,
+              3218.4966947112116,
+              3222.9441971076158,
+              3096.390191622383,
+              2281.9103965011423
+            ],
+            "medianRps": 3096.390191622383,
+            "medianCpuUsPerRequest": 320.18406250000004
+          },
+          "curl_multi": {
+            "rps": [
+              5312.375600764603,
+              4965.268331279351,
+              4493.510959159144,
+              5062.789737207279,
+              2141.496901405963
+            ],
+            "medianRps": 4965.268331279351,
+            "medianCpuUsPerRequest": 197.91162499999996
+          },
+          "swoole": {
+            "rps": [
+              9197.134441694221,
+              9786.860743573236,
+              8223.338163360686,
+              8740.796334795295,
+              4667.205601732314
+            ],
+            "medianRps": 8740.796334795295,
+            "medianCpuUsPerRequest": 111.62968749999999
+          }
+        }
+      },
+      "configuration": {
+        "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "extension": "build/http-wait-final-85.so",
+        "output": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-comparison-data",
+        "baseline_extension": "build/http-final-r3-85.so",
+        "baseline_source_root": "/home/coder/Asyncara-http-wait-baseline-20261109T112300Z",
+        "baseline_http_backend": "curl",
+        "php_extension_dir": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925",
+        "swoole_extension": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/swoole-matched/modules/swoole.so",
+        "reference_attestation": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/attestation.json",
+        "jit": true,
+        "server_workers": 1,
+        "compare_curl": false,
+        "hyper": null,
+        "raw": false,
+        "samples": 5,
+        "count": 16000,
+        "concurrency": 128
+      }
+    },
+    "batch-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/batch-comparison-data/report.json",
+      "sha256": "89dab5f40b6e17090742de524399a4a65942f64b039a5ef092ee03d0340c727c",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 7917.918670442178,
+          "publicMinimumRps": 6255.428764078798,
+          "curlMultiMedianRatio": 0.5962011859144837,
+          "swooleMedianRatio": 0.6522477491196897,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 5007.755374600295,
+          "publicMinimumRps": 4124.161246869877,
+          "curlMultiMedianRatio": 0.6796638685173115,
+          "swooleMedianRatio": 0.6522195750361389,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              7125.655086189189,
+              6255.428764078798,
+              8536.69261976662,
+              9178.204511551132,
+              7917.918670442178
+            ],
+            "medianRps": 7917.918670442178,
+            "medianCpuUsPerRequest": 98.8471875
+          },
+          "curl_multi": {
+            "rps": [
+              13280.615432351535,
+              7163.306916264742,
+              13862.30809361818,
+              15501.110808147285,
+              13008.366241315583
+            ],
+            "medianRps": 13280.615432351535,
+            "medianCpuUsPerRequest": 68.45581249999998
+          },
+          "swoole": {
+            "rps": [
+              10408.77738264064,
+              11236.048542628605,
+              14274.991230939802,
+              14636.148142616497,
+              12139.434258115334
+            ],
+            "medianRps": 12139.434258115334,
+            "medianCpuUsPerRequest": 72.8965625
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              5007.755374600295,
+              5506.329994022032,
+              4364.310346860518,
+              6010.143502498544,
+              4124.161246869877
+            ],
+            "medianRps": 5007.755374600295,
+            "medianCpuUsPerRequest": 183.6060625
+          },
+          "curl_multi": {
+            "rps": [
+              6839.364925589015,
+              8251.493861149778,
+              7455.521324337076,
+              5644.56905126965,
+              7367.988216770632
+            ],
+            "medianRps": 7367.988216770632,
+            "medianCpuUsPerRequest": 125.32025
+          },
+          "swoole": {
+            "rps": [
+              7041.798956267464,
+              7828.446514971127,
+              7271.99697582007,
+              8967.401035683706,
+              7678.020664011533
+            ],
+            "medianRps": 7678.020664011533,
+            "medianCpuUsPerRequest": 122.667625
+          }
+        }
+      },
+      "configuration": {
+        "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "extension": "build/http-wait-final-85.so",
+        "output": "/home/coder/Asyncara-http-speed-20261109T073938Z/batch-comparison-data",
+        "baseline_extension": null,
+        "baseline_source_root": null,
+        "baseline_http_backend": "curl",
+        "php_extension_dir": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925",
+        "swoole_extension": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/swoole-matched/modules/swoole.so",
+        "reference_attestation": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/attestation.json",
+        "jit": true,
+        "server_workers": 1,
+        "compare_curl": false,
+        "public_pattern": "batch",
+        "hyper": null,
+        "raw": false,
+        "samples": 5,
+        "count": 16000,
+        "concurrency": 32
+      }
+    },
+    "raw-cost-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/raw-cost-comparison-data/report.json",
+      "sha256": "23b5ce31226724236c2af075460c792144300662eccc52aacb2fca1087dac34b",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 14322.755950611856,
+          "publicMinimumRps": 11692.586131458958,
+          "curlMultiMedianRatio": 0.9466390598648982,
+          "swooleMedianRatio": 0.9187355660860353,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 5072.924777507163,
+          "publicMinimumRps": 4118.629215007456,
+          "curlMultiMedianRatio": 0.6571513148679868,
+          "swooleMedianRatio": 0.629205365547312,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              11692.586131458958,
+              15133.275527562751,
+              14322.755950611856,
+              14641.071027946953,
+              13686.079978211212
+            ],
+            "medianRps": 14322.755950611856,
+            "medianCpuUsPerRequest": 66.3689375
+          },
+          "asyncara_raw": {
+            "rps": [
+              17886.368684511723,
+              15438.325690807302,
+              14499.13929892125,
+              17549.49128472465,
+              17078.5010568518
+            ],
+            "medianRps": 17078.5010568518,
+            "medianCpuUsPerRequest": 55.880750000000006
+          },
+          "curl_multi": {
+            "rps": [
+              15814.603380303468,
+              16756.681377165245,
+              15000.699299787328,
+              15130.113004903857,
+              14382.389096784176
+            ],
+            "medianRps": 15130.113004903857,
+            "medianCpuUsPerRequest": 62.41974999999999
+          },
+          "swoole": {
+            "rps": [
+              15589.63915115331,
+              14644.840852583167,
+              16536.3060738956,
+              7540.678286811376,
+              16166.835158938333
+            ],
+            "medianRps": 15589.63915115331,
+            "medianCpuUsPerRequest": 57.55093749999999
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              5072.924777507163,
+              4118.629215007456,
+              5314.4657469755175,
+              5120.365669480583,
+              4922.7242151883
+            ],
+            "medianRps": 5072.924777507163,
+            "medianCpuUsPerRequest": 190.3756875
+          },
+          "asyncara_raw": {
+            "rps": [
+              5354.2656689839905,
+              4748.603643271529,
+              6879.984416216098,
+              5962.0898963795335,
+              4181.4054206066785
+            ],
+            "medianRps": 5354.2656689839905,
+            "medianCpuUsPerRequest": 171.141875
+          },
+          "curl_multi": {
+            "rps": [
+              7644.753309551434,
+              7719.568785350825,
+              7521.215144441469,
+              8884.229164984366,
+              7826.581839798623
+            ],
+            "medianRps": 7719.568785350825,
+            "medianCpuUsPerRequest": 121.3511875
+          },
+          "swoole": {
+            "rps": [
+              7629.48481240039,
+              9401.963949336256,
+              6841.632571162694,
+              8062.430893440487,
+              8657.215103380717
+            ],
+            "medianRps": 8062.430893440487,
+            "medianCpuUsPerRequest": 117.87331250000001
+          }
+        }
+      },
+      "configuration": {
+        "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "extension": "build/http-wait-final-85.so",
+        "output": "/home/coder/Asyncara-http-speed-20261109T073938Z/raw-cost-comparison-data",
+        "baseline_extension": null,
+        "baseline_source_root": null,
+        "baseline_http_backend": "curl",
+        "php_extension_dir": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925",
+        "swoole_extension": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/swoole-matched/modules/swoole.so",
+        "reference_attestation": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/attestation.json",
+        "jit": true,
+        "server_workers": 1,
+        "compare_curl": false,
+        "public_pattern": "workers",
+        "hyper": null,
+        "raw": true,
+        "samples": 5,
+        "count": 16000,
+        "concurrency": 32
+      }
+    },
+    "sustained-reference-comparison": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/sustained-reference-comparison-data/report.json",
+      "sha256": "eea487cd13f156993d91bd855a9cd6f1257ee60c5bddc92701fcb805f666330a",
+      "performanceStatus": "NOT_MET",
+      "acceptance": {
+        "1024": {
+          "publicMedianRps": 10086.97903357387,
+          "publicMinimumRps": 9070.643565994771,
+          "curlMultiMedianRatio": 0.9725634146645433,
+          "swooleMedianRatio": 0.8494446988644989,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        },
+        "65536": {
+          "publicMedianRps": 4840.750976846245,
+          "publicMinimumRps": 4319.425802735369,
+          "curlMultiMedianRatio": 0.734752464328089,
+          "swooleMedianRatio": 0.7673831088668092,
+          "minimum13000Passed": false,
+          "median4xCurlPassed": false,
+          "median3xSwoolePassed": false
+        }
+      },
+      "summary": {
+        "1024": {
+          "asyncara": {
+            "rps": [
+              9070.643565994771,
+              10932.740772952644,
+              10264.207626224024,
+              9878.750912520674,
+              10086.97903357387
+            ],
+            "medianRps": 10086.97903357387,
+            "medianCpuUsPerRequest": 93.696046875
+          },
+          "curl_multi": {
+            "rps": [
+              10143.387086266406,
+              11198.664078885904,
+              7984.461004288372,
+              10589.463382606378,
+              10371.538638488753
+            ],
+            "medianRps": 10371.538638488753,
+            "medianCpuUsPerRequest": 88.425453125
+          },
+          "swoole": {
+            "rps": [
+              9646.88943589033,
+              11921.745413494278,
+              12350.057553246137,
+              11874.7919047087,
+              10250.08189362988
+            ],
+            "medianRps": 11874.7919047087,
+            "medianCpuUsPerRequest": 79.033703125
+          }
+        },
+        "65536": {
+          "asyncara": {
+            "rps": [
+              5301.663843919873,
+              4588.323536418523,
+              4898.827775330978,
+              4319.425802735369,
+              4840.750976846245
+            ],
+            "medianRps": 4840.750976846245,
+            "medianCpuUsPerRequest": 203.95775000000003
+          },
+          "curl_multi": {
+            "rps": [
+              5645.012352476008,
+              6274.713669983874,
+              6619.874725538274,
+              6588.274571182254,
+              7307.011922127503
+            ],
+            "medianRps": 6588.274571182254,
+            "medianCpuUsPerRequest": 144.254375
+          },
+          "swoole": {
+            "rps": [
+              7070.540690372553,
+              6218.32247167207,
+              6267.182021770816,
+              6308.128131715797,
+              8047.505316148376
+            ],
+            "medianRps": 6308.128131715797,
+            "medianCpuUsPerRequest": 147.02921875
+          }
+        }
+      },
+      "configuration": {
+        "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "extension": "build/http-wait-final-85.so",
+        "output": "/home/coder/Asyncara-http-speed-20261109T073938Z/sustained-reference-comparison-data",
+        "baseline_extension": null,
+        "baseline_source_root": null,
+        "baseline_http_backend": "curl",
+        "php_extension_dir": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925",
+        "swoole_extension": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/swoole-matched/modules/swoole.so",
+        "reference_attestation": "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/attestation.json",
+        "jit": true,
+        "server_workers": 4,
+        "compare_curl": false,
+        "public_pattern": "workers",
+        "hyper": null,
+        "raw": false,
+        "samples": 5,
+        "count": 64000,
+        "concurrency": 32
+      }
+    }
+  },
+  "guard-gate-A-data": {
+    "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-A-data/report.json",
+    "sha256": "4eb03cd033a3b81c9c38716ad323522f19a2e47ea18da6c66c0919ad672faa87",
+    "result": {
+      "gate": "A",
+      "status": "PASS",
+      "wallSeconds": 193.43751780502498,
+      "cpuSeconds": 188.34750599999998,
+      "commands": [
+        {
+          "name": "A",
+          "command": [
+            "python3",
+            "tests/fast/gate_a.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--extension",
+            "/home/coder/Asyncara-http-20261109T050419Z/build/http-guard-r2-85.so",
+            "--output",
+            "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-A-data/A"
+          ],
+          "environment": {},
+          "exit": 0,
+          "wallSeconds": 193.36558464192785,
+          "cpuSeconds": 188.34750599999998,
+          "log": "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-A-data/A.log",
+          "sha256": "db6a89ac441c6e108e636003ecc8abf5bdeb64537125dc448f06ac2e11db51e8"
+        }
+      ]
+    }
+  },
+  "guard-gate-B2-data": {
+    "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/report.json",
+    "sha256": "0219995908c86a2b01c3182eb53c7c749107a2b7c3b97af2e81042ea8fdc34d0",
+    "result": {
+      "gate": "B2",
+      "status": "PASS",
+      "wallSeconds": 615.1444905418903,
+      "cpuSeconds": 517.963219,
+      "commands": [
+        {
+          "name": "fpm",
+          "command": [
+            "python3",
+            "tests/fast/fpm_integration.py",
+            "--seconds",
+            "600",
+            "--output",
+            "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/fpm"
+          ],
+          "environment": {
+            "ASYNCARA_EXTENSION": "/home/coder/Asyncara-http-20261109T050419Z/build/http-guard-r2-85.so",
+            "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5"
+          },
+          "exit": 0,
+          "wallSeconds": 614.1241082788911,
+          "cpuSeconds": 517.079412,
+          "log": "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/fpm.log",
+          "sha256": "c0abb909e5b05a1631efa4823743500e5df7d328ac5a54fa1bc0af721ffd8c18"
+        },
+        {
+          "name": "independent-review",
+          "command": [
+            "python3",
+            "tests/fast/review_integration.py",
+            "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/fpm",
+            "--output",
+            "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/review"
+          ],
+          "environment": {},
+          "exit": 0,
+          "wallSeconds": 0.9364367160014808,
+          "cpuSeconds": 0.8838069999999334,
+          "log": "/home/coder/Asyncara-http-speed-20261109T073938Z/guard-gate-B2-data/independent-review.log",
+          "sha256": "134aaa63c069e30fda8cd7cbb976b9ff05eb12a7333fd2c60563aaf6ff0f3eb3"
+        }
+      ]
+    }
+  },
+  "currentValidation": "PASS_SCOPED_HTTP",
+  "currentModuleSha256": "1c0842dbfe058d93d5f82fe7f36b960e908febe361c4d7ea67fbb3948ab2b11b",
+  "waitCostControl": {
+    "scope": "Real ar_wait with1024 submitted pending jobs,256 curl sockets and one unrelated ready socket;2000 waits. Not response throughput. Native post-change artifact before no-curl early-return follow-up; exact sources in launch/diff.",
+    "before-0": [
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-0-0/stdout.log",
+        "sha256": "94a88d33e1eff74b397957c3729ad14b8f571bf55f28917e12e9289d63149b35",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.573561971,
+          "cpuSeconds": 2.572127,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-0-1/stdout.log",
+        "sha256": "8342719b3acdc63940c3c212638926ef730d348b09f2e726aabe07539bad9101",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.563389584,
+          "cpuSeconds": 2.554278,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-0-2/stdout.log",
+        "sha256": "16f17bbaf2fb7d102045afcf1f43b6bd9677cd27a56f0a68c05f0b46dd7b7f2c",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.858074428,
+          "cpuSeconds": 2.856653,
+          "collected": 1024
+        }
+      }
+    ],
+    "before-1": [
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-1-0/stdout.log",
+        "sha256": "4ce79b87ed4e3aee89f674dd135aa4492bc29b4035bd18eb86b66e3b006b9138",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 5.496299115,
+          "cpuSeconds": 5.281416,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-1-1/stdout.log",
+        "sha256": "f4effd0578aff239d8a23a6da9c89ea94ca9e5351969862b5754b99d752b1403",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 5.711605621,
+          "cpuSeconds": 5.553084,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-before-1-2/stdout.log",
+        "sha256": "ef3b95f114c77130d921488a905f4efb642fa1ce9f699b63bce0454313f54b1c",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 5.719708591,
+          "cpuSeconds": 5.473897,
+          "collected": 1024
+        }
+      }
+    ],
+    "after-0": [
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-0-0/stdout.log",
+        "sha256": "f8f1c03e72571d9bc750ada1256efc3b80b661dcf1535d7e3c0432cdf29f74b9",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 0.216426658,
+          "cpuSeconds": 0.215873,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-0-1/stdout.log",
+        "sha256": "7b10e4713031ec8cdb56a59ace7f622db809d6286f69c8f07cfef1e66607ed07",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 0.14174554,
+          "cpuSeconds": 0.141672,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-0-2/stdout.log",
+        "sha256": "e0c6bb7c4179640820cd3abe598984c68a54b71db7faacf6f8dd9a3dae8baae2",
+        "result": {
+          "backend": "poll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 0.185833901,
+          "cpuSeconds": 0.1858,
+          "collected": 1024
+        }
+      }
+    ],
+    "after-1": [
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-1-0/stdout.log",
+        "sha256": "3682a946ccd70bb939c1458fed1c1ea34f1778c646f96ba7f13fcfc4d0e730e0",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.219250075,
+          "cpuSeconds": 2.140206,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-1-1/stdout.log",
+        "sha256": "924fd66ba9231983e7142c80766dd7246a68c3aa27b3d6b6b5fd5d05fd1ba3af",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.329348711,
+          "cpuSeconds": 2.132266,
+          "collected": 1024
+        }
+      },
+      {
+        "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-scaling-after-1-2/stdout.log",
+        "sha256": "fd3ab19456b68f084e073ea2016bf9aac4c0dfc50c0a7d6a19d78d7269e11138",
+        "result": {
+          "backend": "epoll",
+          "waits": 2000,
+          "pendingJobs": 1024,
+          "sockets": 256,
+          "wallSeconds": 2.442103428,
+          "cpuSeconds": 2.309142,
+          "collected": 1024
+        }
+      }
+    ]
+  },
+  "runtimeBuilds": {
+    "source": "c4aea948233d79aee887c9ceeea4b56da340cc57",
+    "modules": {
+      "build/http-wait-final-debug.so": "942dab1855a042644917fe82ab9447504daff53537a30feef1c439c15ab9a54d",
+      "build/http-wait-final-83.so": "f8d4b7a631d326ae8880d172860ec7cf07f4670ade5337ac07cea97ee52c3e62",
+      "build/http-wait-final-gcc.so": "b91e3e0abf9192666bb68ff800689a0f7bb2b9beea5b817f553f7062e3b805f1",
+      "build/http-wait-final-84.so": "fc502876ed834283dba8456c52819690a869316abd19a640ce3d8ae1e4101387",
+      "build/http-wait-final-85.so": "1c0842dbfe058d93d5f82fe7f36b960e908febe361c4d7ea67fbb3948ab2b11b"
+    },
+    "manifest": {
+      "ext/backend.c": "c9ba46b9ec6bd141f5fbc94dbd35117b960b01acd9e4a1c09523494dc3d46706",
+      "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+      "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+      "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+      "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+      "ext/native.h": "c943e53af15f4849debb9f3d47671f3f246d04c63dccc4c87300df27cde40205",
+      "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+      "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+      "ext/workers.c": "5e5517063deb8ee4324e4fde61e7320c9afaf7cf130bdd5094a116418eaacd01",
+      "ext/php_asyncara.c": "1f2902b4388f1b8a881beedf5c09de6f3d30b80884a3b10f437f18d85c22e232",
+      "ext/hyper/Cargo.toml": "348ab623be56341e66bb59f512b2e2481779ac41c19d0c2c7769082ef48c37b9",
+      "ext/hyper/Cargo.lock": "88a684f1885fe6b499a33270c535e4f2a32eba1d020a1ba4934a8f8f4a7415c4",
+      "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+      "ext/hyper/src/lib.rs": "f8c14798cb2a81833e2963ba5a270143f6914826edc39c0fc7a3eaeb44fe3e3d"
+    }
+  },
+  "currentValidationEvidence": {
+    "wait-final-build-83": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-build-83/result.json",
+      "sha256": "352dc7715af627febc1abc31c660f3fbb87d8f742bd4626282e5274b9d86728b",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 6.2842199199367315,
+      "logSha256": "e33e133fa920c4116a43ce024fa5314459b9bc11c6a41a7459361d92255d86d5"
+    },
+    "wait-final-build-84": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-build-84/result.json",
+      "sha256": "6d1243ce6da5b01819bff11c190c2a6e0cf1b680689e290e55bb1605a9d90713",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 5.149465520167723,
+      "logSha256": "b95631ab368028264fe3be85fa59217b029610daf2cf9cdefcec8750567b83d3"
+    },
+    "wait-final-build-85": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-build-85/result.json",
+      "sha256": "5031581ef9ebb0b097c215d9b5793ee4a44413eb70b6d3f8304a6c0597c20b1b",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 5.165070342831314,
+      "logSha256": "d98c154c8b0ef5f4fd6d3c90965bd4c7c041cd241bae279cc85ec90cbbbe397b"
+    },
+    "wait-final-build-debug": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-build-debug/result.json",
+      "sha256": "0c0b5edc642a7b6cc7f1d692495f03758824bbaaf0c0ae181ef46c86080650fe",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 5.4036839050240815,
+      "logSha256": "d98c154c8b0ef5f4fd6d3c90965bd4c7c041cd241bae279cc85ec90cbbbe397b"
+    },
+    "wait-final-build-gcc": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-build-gcc/result.json",
+      "sha256": "b98279e1d8c59e6fb9767452241a74d43dbcdacd8780f0789f291e84075e009c",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 11.272612849948928,
+      "logSha256": "b95631ab368028264fe3be85fa59217b029610daf2cf9cdefcec8750567b83d3"
+    },
+    "wait-final-debug-epoll-buffered_owner": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-epoll-buffered_owner/result.json",
+      "sha256": "e4ee50772ad24c7f492a5e2affd59bf6f95d57a3f5e497641688b314b88ee8c1",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 1.2389296209439635,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    "wait-final-debug-epoll-completion": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-epoll-completion/result.json",
+      "sha256": "2386b6233f041c63cc3415eb5f69814a1aadf3bd1332e8eb9c90ae1f82d97f28",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 2.113735591992736,
+      "logSha256": "24db7ce5cd765538e0a5e4b8ea84f773fa500922bbd30207462ab19e2c4b7c1c"
+    },
+    "wait-final-debug-epoll-hyper": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-epoll-hyper/result.json",
+      "sha256": "9aef77ca6917d5d3504d83a17c6caa7d4bacc4a0b658ce866ffdfa0426dbb29a",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 1.2917127849068493,
+      "logSha256": "1f63e7ffceeef619e7dd0fc0ff8155ea57f4796c259fcd510b645463e314b57d"
+    },
+    "wait-final-debug-epoll-hyper_uri": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-epoll-hyper_uri/result.json",
+      "sha256": "f8605c2b8242fc8487bf225a5e809bcc69128bb0200548ee723241082761ba72",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 0.09363184892572463,
+      "logSha256": "c8fc8b44eb89911e72cc6eb973572ad485313364709d2bb786029d7e1c965ef1"
+    },
+    "wait-final-debug-poll-buffered_owner": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-poll-buffered_owner/result.json",
+      "sha256": "3a3098b2289b5b241433dcc5ee9cd6d49c9844aa877a4990c448b946f51b12de",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 1.3135382870677859,
+      "logSha256": "4c0e2d1a4144ccb2a8eaaa197ec09223260cdbee6488143488c4aca6ad50efbb"
+    },
+    "wait-final-debug-poll-completion": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-poll-completion/result.json",
+      "sha256": "1a48b69c46f59d1129247f5e55ff777e37380eeea491aad5252eb758c7fd9cb9",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 2.4050062529277056,
+      "logSha256": "7a4f4a624ecac0594c50bef26b8a6e377d76f17cc367b7e3e9fad6bdf8af22a5"
+    },
+    "wait-final-debug-poll-hyper": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-poll-hyper/result.json",
+      "sha256": "ed8b2f4d1ca7152179f06949c6af9285bce09839857808f312328dce02bacf50",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 1.7688663799781352,
+      "logSha256": "7429a90f5c58851ac5de8cd98953b58ff00072a803a3c6d873faf464c1195560"
+    },
+    "wait-final-debug-poll-hyper_uri": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-debug-poll-hyper_uri/result.json",
+      "sha256": "168e62f70cbfd93e61b444964bea3fe736f6e71789c2d900824780d888ff687d",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 0.06893840222619474,
+      "logSha256": "c8fc8b44eb89911e72cc6eb973572ad485313364709d2bb786029d7e1c965ef1"
+    },
+    "wait-final-fpm": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-fpm/result.json",
+      "sha256": "1afdd28c213d2a78cc770a9590cff4d10dce19039a19c7b4e824f78f89878fcf",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 10.043515829835087,
+      "logSha256": "6faea90f27f35836c6b68a5d8093610d18e136c68e5f06138d35041aac839856"
+    },
+    "wait-final-full-epoll": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-full-epoll/result.json",
+      "sha256": "057d1b83de045140e6e7930924f7960d661f65f079dcbfaaa0022d6e23a2834f",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 33.656804885016754,
+      "logSha256": "7262a96142189806475b737e09fb7f2e347756bbe517a959beed08b12505cda4"
+    },
+    "wait-final-full-poll": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-full-poll/result.json",
+      "sha256": "097f0bc4b5e974c3d49e6c44c433376a5a1665014b57e6c96f8233c0402e6d77",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 28.769880370935425,
+      "logSha256": "46373a32704f113f9f93af7441e213a417c1a52967af0d7431ca503446ad7d01"
+    },
+    "wait-final-gate-A": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-gate-A/result.json",
+      "sha256": "15d0ffcbd3a59657f5133a727f285915b8e9dfcd85c3a29606606037734354d4",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 174.99362416681834,
+      "logSha256": "b97342b2da6308dbfe12069a2aa3e219cb9e4edada5824eb76451b28ea0ae607"
+    },
+    "wait-final-http-83": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-http-83/result.json",
+      "sha256": "0e8561875e5e5c58b8dc7587fc8d754431479fbf4df60c133e35ffe90e022635",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 53.850387618876994,
+      "logSha256": "b5159b33732db8a522ac767206dc20a34bd745415bec90ce7166a2ad92756735"
+    },
+    "wait-final-http-84": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-http-84/result.json",
+      "sha256": "413d177d275eb31c0085b36dc6e467f1468c871a5c68de3cc2a8ca4ccbdb5f40",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 52.95592467812821,
+      "logSha256": "b5159b33732db8a522ac767206dc20a34bd745415bec90ce7166a2ad92756735"
+    },
+    "wait-final-http-85": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-http-85/result.json",
+      "sha256": "8ca11d47d08010de09d76be44820f19a1e412f0f9c8ae32b372bfc7a39b795d0",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 63.201118192169815,
+      "logSha256": "77d5d080853b17e5cbf3eea6320b4b3b61a13aaf9d2091f4336d22af6dc2bf29"
+    },
+    "wait-final-http-gcc": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-http-gcc/result.json",
+      "sha256": "a1c8683d2198f3297f60ac1423b7fba5dcef1a46d94e69dcfebb40d060df54b3",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 145.051769830985,
+      "logSha256": "77d5d080853b17e5cbf3eea6320b4b3b61a13aaf9d2091f4336d22af6dc2bf29"
+    },
+    "wait-final-hyper_fpm": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-hyper_fpm/result.json",
+      "sha256": "1c312b8c24bdc0fd81b8e72bc342f2f01683fd7d4e33c20156aaa0937ad0bd05",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 8.280141082126647,
+      "logSha256": "8f01c3ab58e9243c99830fdc2b14726e16b88cd79011d0fd9593c5ab1e792718"
+    },
+    "wait-final-vg-buffered_owner": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-vg-buffered_owner/result.json",
+      "sha256": "b1a9af0e39832cb29e741df8476b19fa80524873feeaf223e5bab382416fb37c",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 6.4347477469127625,
+      "logSha256": "977859595b2625736f9e70505c8b89726ff6385ae17f8da4f7ae39406eb61cad"
+    },
+    "wait-final-vg-completion": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-vg-completion/result.json",
+      "sha256": "00d73fb83000bcfb945dda21c127ff2bf6f7968125dac6713dec3d1d7eb39218",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 20.314655567053705,
+      "logSha256": "5be3a33b0a84171d171f86e821325ceda4d66c80db0185404108852f8a87ebe8"
+    },
+    "wait-final-vg-hyper": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-vg-hyper/result.json",
+      "sha256": "20c1adda45d27eb1d007c08fd2b41196ccde039d6be1fa1978a1f187ecc23fdb",
+      "status": "PASS",
+      "exit": 0,
+      "wallSeconds": 7.85230559296906,
+      "logSha256": "8096016a22775bc2a89b320edba1ac51fb01a0229fa095c6110183094e7e6d77"
+    },
+    "gate-A-report": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-gate-A-data/report.json",
+      "sha256": "8a5c0213ef563ef6ed16af376c175f1084a881ca5f29d0b2723c9efad11535a2",
+      "status": "PASS",
+      "duration": 174.8739352049306
+    },
+    "hyper_fpm-report": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-hyper_fpm-data/report.json",
+      "sha256": "efc5eb320ea079fd78b61c80e0af38771a8966710ca20bd708a68d21d33c33c4",
+      "status": "PASS",
+      "duration": 7.8222176500130445,
+      "cases": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 20,
+          "idle": [
+            {
+              "pid": 4024464,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17468,
+              "virtualKiB": 214184,
+              "idleWaitSeconds": 0.04947366192936897,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024464,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17476,
+              "virtualKiB": 214316,
+              "idleWaitSeconds": 0.0007813058327883482,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024464,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17888,
+              "virtualKiB": 214316,
+              "idleWaitSeconds": 0.0007997858338057995,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        },
+        {
+          "name": "Hyper-four-workers",
+          "workers": 4,
+          "requests": 40,
+          "idle": [
+            {
+              "pid": 4024552,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17308,
+              "virtualKiB": 214196,
+              "idleWaitSeconds": 0.0011510939802974463,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024554,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17156,
+              "virtualKiB": 214328,
+              "idleWaitSeconds": 0.0005651619285345078,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024555,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17132,
+              "virtualKiB": 214196,
+              "idleWaitSeconds": 0.002915730932727456,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024558,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17476,
+              "virtualKiB": 214196,
+              "idleWaitSeconds": 0.0006030329968780279,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        }
+      ]
+    },
+    "fpm-report": {
+      "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/wait-final-fpm-data/report.json",
+      "sha256": "cc585eb9240c63a2ecc707ed85fdd3e07e5542d3715730a74f62a0561a3aca48",
+      "status": "PASS",
+      "duration": 8.359245674917474,
+      "cases": [
+        {
+          "name": "A-lifecycle",
+          "workers": 1,
+          "requests": 20,
+          "idle": [
+            {
+              "pid": 4024736,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20908,
+              "virtualKiB": 509672,
+              "idleWaitSeconds": 0.021037640050053596,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024736,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 21044,
+              "virtualKiB": 509672,
+              "idleWaitSeconds": 0.006831793114542961,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024736,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 21296,
+              "virtualKiB": 509672,
+              "idleWaitSeconds": 0.00046099908649921417,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        },
+        {
+          "name": "HTTP-four-workers",
+          "workers": 4,
+          "requests": 40,
+          "idle": [
+            {
+              "pid": 4024955,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20616,
+              "virtualKiB": 509716,
+              "idleWaitSeconds": 0.0007585759740322828,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024956,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20560,
+              "virtualKiB": 509716,
+              "idleWaitSeconds": 0.00043366895988583565,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024957,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20696,
+              "virtualKiB": 509716,
+              "idleWaitSeconds": 0.0003856280818581581,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4024958,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20676,
+              "virtualKiB": 509716,
+              "idleWaitSeconds": 0.0003976591397076845,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "EXPERIMENTAL; requested absolute/relative speed gates NOT_MET",
+    "Hyper numeric-address plaintext buffered GET only; default curl retains general features",
+    "Current short HTTP FPM fixtures are not the historical ten-minute mixed B2 or long endurance campaign",
+    "Rust code not instrumented by GCC ASan; scoped C/PHP checks only",
+    "Historical distribution-PHP Valgrind findings and Phase4 zero-tick cause remain separate and unresolved"
+  ],
+  "threadCapacityControl": {
+    "path": "/home/coder/Asyncara-http-speed-20261109T073938Z/hyper-thread-capacity/measurements/report.json",
+    "sha256": "753bf7fe3eda5ec376db22830e332839e31064214e2a588fc9e954f8232658b7",
+    "scope": "Rust-only capacity experiment, not PHP/API throughput or an implemented backend",
+    "summary": {
+      "1024": {
+        "1": {
+          "medianRps": 10923.135934373537,
+          "medianCpuUsPerRequest": 73.5215625
+        },
+        "2": {
+          "medianRps": 18941.493288233385,
+          "medianCpuUsPerRequest": 72.22100000000002
+        },
+        "4": {
+          "medianRps": 14917.041340557884,
+          "medianCpuUsPerRequest": 91.60062499999998
+        }
+      },
+      "65536": {
+        "1": {
+          "medianRps": 4840.994927147134,
+          "medianCpuUsPerRequest": 175.07387500000002
+        },
+        "2": {
+          "medianRps": 3933.4903763796037,
+          "medianCpuUsPerRequest": 292.716375
+        },
+        "4": {
+          "medianRps": 6264.99066409103,
+          "medianCpuUsPerRequest": 277.0535
+        }
+      }
+    },
+    "decision": "NOT_ADOPTED; not PHP throughput; no4x/3x advantage demonstrated, total CPU increases for some configurations"
+  },
+  "latestPerformanceResult": "NOT_MET",
+  "latestPerformanceComparison": "sustained-reference-comparison"
+}

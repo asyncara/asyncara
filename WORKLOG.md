@@ -1781,3 +1781,55 @@ using the standard module version. No host PHP installation was changed.
 The original Gate B result remains FAIL. Its B1 native-volume checks completed;
 B2 did not reach the timed phase. Revalidation must select the matching isolated
 FPM executable. Historical Phase4 failures remain separately unresolved.
+
+### Matching FPM completion and performance investigation continuation
+
+d57d088 matching-SDK Gate A passed193.438s. B2 and independent review passed:
+8092 main responses/600.094582s, minimum6 ticks, unchanged A/B/C/D and lifecycle
+checks, idle6 descriptors/1 thread per worker. Evidence: guard-gate-B2-data under
+the existing HTTP speed evidence root. Previous failures remain unchanged.
+
+Isolated native-Future experiment02891a6 and timer-adapter cost controld42ad07
+were built and measured but not adopted: neither showed a useful public HTTP
+gain. No source from either experiment entered phase6-http. Concurrency128/256
+did not reach the throughput target either. All raw comparisons were retained.
+
+Inspection found system reference curl/Swoole extension builds older than the
+PHP8.5.12 benchmark interpreter. Matching8.5.12 packages were downloaded/extracted
+locally; official Swoole6.2.3 source is being built against matching headers.
+Earlier relative measurements are not treated as certified. Failed prerequisite
+and flag-configuration attempts remain in reference-swoole-build-*; the incorrectly
+configured owned make was terminated explicitly and a fresh source tree used.
+No host PHP installation/configuration, protected Phase4 checkout or campaign
+artifact was changed. The benchmark now records functional and performance
+acceptance separately, explicit module paths and reference fingerprints.
+
+## HTTP wait-cost continuation — 2026-11-09
+
+Native checkpoint c4aea948233d79aee887c9ceeea4b56da340cc57 removes the
+socket-by-job scan for unpaused curl transfers. Three real-kernel1024-pending-job
+controls per backend show reduced wait CPU; the public128-concurrency comparison
+does not show a1KiB throughput gain. The new pause/reset unit controls pass in
+the HTTP suite. Final-source matrix is scheduled separately; no older module
+result is relabelled. Matching curl/Swoole8.5.12 reference builds and all
+comparisons are preserved, including failed targets and rejected experiments.
+No historical Phase4 artifact, assertion or installed module was changed.
+
+c4aea94 final validation is now terminal: PHP83/84/85 HTTP epoll/poll, DEBUG,
+scoped GCC ASan/UBSan, full85 epoll/poll, DEBUG Valgrind, Gate A174.69s and
+separate short curl/Hyper FPM fixtures PASS. All raw logs and module/source
+hashes are in wait-final-* and phase6/http-current-evidence.json. No original
+failure is relabelled and no relative-speed target passed. Current-source
+packaging and Rust-only threaded capacity evaluation are separate remaining work.
+
+Rust-only1/2/4-worker capacity experiment completed on a four-worker nginx fixture.
+It does not justify introducing a threaded PHP backend: no4x/3x result, increased
+CPU cost in several configurations, and wide sample variation. Rejected control
+source/binary/logs remain in hyper-thread-capacity; no runtime adoption. A longer
+64000-request/sample matched public comparison is now running independently.
+
+The longer matched comparison completed in265.476s:64000 requests/sample, five
+rotated samples,32 connections and four nginx workers. Public1KiB median10086.979/s,
+minimum9070.644/s;0.9726x curl_multi and0.8494x Swoole.64KiB median4840.751/s.
+The requested acceptance remains NOT_MET. Earlier higher samples are preserved,
+not substituted. All runtime/source manifests match c4aea94 after validation.

@@ -1,5 +1,26 @@
 # Current isolated HTTP development state
 
+Latest native checkpoint: `c4aea948233d79aee887c9ceeea4b56da340cc57` on
+`phase6-http`. Buffered HTTP admission/dispatch improvements and a bounded opt-in
+Hyper prototype follow the initial checkpoint described below. The default curl
+backend retains TLS/DNS/streaming/uploads; Hyper currently supports only numeric
+plaintext buffered GET. The PHP patch SDK guard rejects incompatible module loads.
+The matching 8.5.12 Gate A and 600-second four-worker FPM B2 pass, with independent
+review. Performance acceptance remains **NOT_MET**. Rejected native-Future and
+hook-cost experiments remain on separate branches, without changing this runtime.
+Earlier benchmark reference extensions had foreign patch build identities;
+matching reference builds and comparisons are complete and still fail the speed
+targets. The latest C change removes repeated unpaused socket/job scanning; its
+wait-cost improvement does not establish a public-client throughput gain.
+The d57d088 FPM evidence remains tied to its original module; new-checkpoint
+validation now passes PHP83/84/85 HTTP suites, full85 epoll/poll, scoped memory
+checks, Gate A and separate short curl/Hyper FPM fixtures. It is recorded
+separately from the historical B2. See
+[HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
+[HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md) for exact evidence and limitations.
+
+## Initial HTTP checkpoint (historical)
+
 The active HTTP worktree is `/home/coder/Asyncara-http-20261109T050419Z`, branch
 `phase6-http`, based on79d142f. Native checkpoint92d0ba0 plus the45a4a20 acquisition repair (tests6b9da6b) add bounded multiple-file
 MIME, atomic downloads, connect/connection controls, native buffer ownership and

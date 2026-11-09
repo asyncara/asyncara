@@ -1,6 +1,20 @@
 # Implementation status
 
-## HTTP native API continuation (2026-11-09)
+## Latest HTTP continuation (2026-11-09)
+
+Native checkpoint `d57d088` includes `5ffa61e` dispatch improvements and `c79e907`
+optional Hyper integration. These supersede the historical HTTP table below.
+Default curl feature coverage is preserved. Hyper is **PARTIALLY_IMPLEMENTED**,
+limited to numeric plaintext buffered GET. Exact PHP patch SDK matching is now
+enforced at module initialization. Matching 8.5.12 Gate A and B2 pass; B2 has
+8,092 responses over 600.095 seconds with independently recomputed resource and
+progress assertions. New final matrix/package validation remains in progress.
+The 13,000/s, 4x curl_multi and 3x Swoole requirements remain **NOT_MET**.
+No native-Future or timer-adapter experiment was adopted. Older comparator PHP
+extensions require matching-SDK replacement before certified relative comparisons.
+See [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md).
+
+## Initial HTTP native API continuation (historical, 2026-11-09)
 
 Implementation checkpoint6b9da6b (native92d0ba0, ownership45a4a20) on isolated `phase6-http`, based on79d142f.
 [HTTP_ENGINEERING.md](HTTP_ENGINEERING.md) records the completed PHP83/84/85 epoll/poll tests,
@@ -230,3 +244,17 @@ an evaluation until a real PHP integration demonstrates an advantage.
 - Additional HTTP FPM harness barrier corrected with negative control; the retained
   pre-correction assertion failure and historical Phase4 zero-tick attribution
   remain unresolved. See HTTP_PERFORMANCE_WORK.md and HYPER_EXPERIMENT.md.
+
+### HTTP wait-cost checkpoint c4aea94 (2026-11-09)
+
+C curl interest preparation now scans socket/job sets linearly when no stream is
+paused. Native negative/positive pause controls and real1024-operation wait-cost
+measurements retain cancellation and backpressure. This does not establish the
+public HTTP speed target; the matching reference comparisons remain NOT_MET.
+Latest-source matrix/memory/FPM results are recorded in HTTP_PERFORMANCE_WORK.md
+and phase6/http-current-evidence.json. Older checkpoint results remain historical.
+
+At c4aea94, the wait-interest optimization is IMPLEMENTED_AND_TESTED in the
+scoped native/HTTP PHP83/84/85 matrix, full85 suites, memory checks, Gate A and
+short FPM fixtures. This status applies to that change, not universal HTTP
+certification. Hyper remains PARTIALLY_IMPLEMENTED and performance NOT_MET.

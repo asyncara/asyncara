@@ -6,7 +6,7 @@
 
 **Native reliability continuation:** [native fixes, fast gates and ownership evidence](docs/NATIVE_RELIABILITY_PROGRAM.md). The historical local FPM one-hour stage passed; the six-hour stage failed and its zero-tick cause remains unresolved. New short gates do not certify long-duration stability.
 
-**HTTP continuation:** [implemented MIME/atomic downloads, validation and honest performance comparisons](docs/HTTP_ENGINEERING.md). Rust Hyper was evaluated separately; no production backend replacement or fastest-PHP claim.
+**HTTP continuation:** [current native improvements, validation and measured performance](docs/HTTP_PERFORMANCE_WORK.md). Curl remains the default. The opt-in [Hyper prototype](docs/HYPER_EXPERIMENT.md) supports only numeric plaintext buffered GET; it is not a production replacement. Requested speed targets remain NOT_MET.
 
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 

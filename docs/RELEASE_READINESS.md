@@ -4,10 +4,18 @@
 MIME, atomic downloads and curl lifecycle repairs; see
 [HTTP_ENGINEERING.md](HTTP_ENGINEERING.md). Performance targets are not achieved;
 Hyper also has an explicitly opt-in numeric-HTTP GET backend prototype; it is
-not a certified replacement for curl. A scoped JIT/poll benchmark median exceeds
-13,000 requests/sec, with slower samples preserved. Relative 4x/3x targets remain
-unmet; see [HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Final-source validation/package
+not a certified replacement for curl. Matching-reference repetitions do not
+establish a13,000 requests/sec floor; older higher samples remain historical
+evidence. Relative4x/3x targets remain unmet; see [HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Final-source validation/package
 identities are recorded separately from historical releases.
+
+The later matching-SDK d57d088 FPM B2 passes (8,092 responses / 600.095 seconds),
+with original resource/ticker checks and independent review. The earlier failed
+FPM attempt remains preserved. Native-Future and hook-cost experiments showed no
+measured benefit and were not adopted. Historical relative benchmarks loaded
+foreign patch builds of the reference PHP extensions; those observations are
+retained. Fresh matching PHP8.5.12 reference builds now pass load and complete
+comparison checks; their measurements still fail the requested relative targets.
 
 The inherited independent Phase5 resource-safety
 continuation implements guarded resource identities, opt-in bounded provenance

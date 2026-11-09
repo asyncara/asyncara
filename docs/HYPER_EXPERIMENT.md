@@ -4,6 +4,15 @@ Status: **IMPLEMENTED_BUT_NOT_FULLY_TESTED**, opt-in prototype. Default HTTP
 continues to use curl multi with existing TLS, DNS, proxy, upload, download,
 multipart and streaming support. No universal performance claim is established.
 
+Later inspection found foreign patch SDKs in the system curl/Swoole PHP extensions
+used by the historical comparisons below. Their raw observations are preserved,
+but relative-speed certification requires the isolated matching reference build
+described in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md). Asyncara's own
+matching-SDK absolute measurements still do not establish a13000/s floor.
+The later matching reference builds and results are now complete and recorded
+in [http-current-evidence.json](phase6/http-current-evidence.json). Targets remain
+NOT_MET; the historical sample sets below do not supersede those later results.
+
 This experiment uses Hyper 1.12.0 through a pinned Rust static library and a
 small C ABI. It is driven on the interpreter thread by Asyncara's real epoll/poll
 wait; it does not start a Tokio executor or native network worker. Rust never
@@ -76,7 +85,7 @@ endurance result. Final matrix and memory results will be appended only after
 completion. Historical Phase 4 failures are unaffected by these experiments.
 
 
-## Validation and later measurements
+## Historical c79e907 validation and measurements
 
 The final optional module (`http-hyper-final-85.so`, SHA-256
 `ce3cb79f2df7d7b73163a15c7b0f98faf66ac16c3230cded4319869d0e1beb26`)
