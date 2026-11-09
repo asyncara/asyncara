@@ -15,8 +15,15 @@ module = pathlib.Path(a.extension).resolve()
 sha = lambda f: hashlib.sha256(f.read_bytes()).hexdigest()
 manifest = {str(f.relative_to(ROOT)): sha(f) for d in ['ext', 'src', 'tests/http']
             for f in (ROOT / d).rglob('*') if f.is_file() and '__pycache__' not in str(f)}
-identity = {'source': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-            'status': subprocess.check_output(['git', 'status', '--short'], cwd=ROOT, text=True),
+def git_identity(*args):
+    # Source distributions have no Git metadata. Their file manifest and module
+    # hash remain the identity; do not accidentally report an enclosing checkout.
+    if not (ROOT / '.git').exists():
+        return None
+    return subprocess.check_output(['git', *args], cwd=ROOT, text=True).strip()
+
+identity = {'source': git_identity('rev-parse', 'HEAD'),
+            'status': git_identity('status', '--short'),
             'module': str(module), 'moduleSha256': sha(module), 'manifest': manifest, 'arguments': vars(a)}
 (out / 'identity.json').write_text(json.dumps(identity, indent=2) + '\n')
 rows = []
@@ -53,7 +60,8 @@ if not a.php_only:
     flags += shlex.split(os.environ.get('EXTRA_CFLAGS', ''))
     for name, files, wraps in [
         ('stage', ['tests/http/stage_native.c', 'ext/backend.c'], ['fsync', 'renameat']),
-        ('completion', ['tests/http/native_completion.c'], ['curl_multi_socket_action'])]:
+        ('completion', ['tests/http/native_completion.c'], ['curl_multi_socket_action']),
+        ('start-wait', ['tests/http/start_wait.c', 'ext/backend.c'], ['epoll_wait', 'poll', '__poll_chk'])]:
         run(name + '-build', cc + flags + files + ['ext/workers.c', 'ext/memory.c', '-pthread',
             '-l:libsqlite3.so.0', '-l:libcurl.so.4'] + ['-Wl,--wrap=' + w for w in wraps] + ['-o', out / name])
         run(name, [out / name])

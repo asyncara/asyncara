@@ -49,6 +49,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-4.log bash -c './scripts/phpize-local.sh'
       - run: ./scripts/ci-run.sh build/ci-step-5.log bash -c 'ASYNCARA_EXTENSION=ext/modules/asyncara.so ./scripts/test.sh'
       - run: ./scripts/ci-run.sh build/ci-step-6.log bash -c 'ASYNCARA_BACKEND=poll ./scripts/test.sh'
+      - run: ./scripts/ci-run.sh build/ci-http-completion.log python3 tests/http/run.py --php php --extension build/asyncara.so --output build/http-completion
       - run: ./scripts/ci-run.sh build/ci-step-7.log bash -c './scripts/test-network-edges.sh'
       - run: ./scripts/ci-run.sh build/ci-network-failure.log python3 tests/soak/test_network_failure.py --output build/network-failure
       - run: ./scripts/ci-run.sh build/ci-step-8.log bash -c './scripts/test-websocket.sh'
@@ -78,6 +79,7 @@ jobs:
             build/fuzz-http-smoke/artifacts/
             build/ws-fuzz-smoke/
             build/network-failure/
+            build/http-completion/
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
   database-lifecycle:
@@ -116,6 +118,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-23.log bash -c 'PHP_BIN="$PWD/build/php-valgrind/install/bin/php" ASYNCARA_EXTENSION=build/valgrind.so ASYNCARA_AUDIT_FATAL_PG=1 ./scripts/test-databases.py --test-file tests/audit/databases.php'
       - run: ./scripts/ci-run.sh build/ci-step-24.log bash -c './scripts/test-databases.py --test-file tests/database/resource_bounds.php'
       - run: ./scripts/ci-run.sh build/ci-step-25.log bash -c 'make audit-fpm'
+      - run: ./scripts/ci-run.sh build/ci-http-fpm.log python3 tests/http/fpm.py --extension build/asyncara.so --output build/http-fpm
       - run: ./scripts/ci-run.sh build/ci-step-26.log bash -c 'python3 tests/soak/fpm.py --seconds 60 --output build/fpm-expanded'
       - name: Build pinned Connector/C for strict TLS regression
         run: |
@@ -130,6 +133,7 @@ jobs:
             build/ci-audit/
             build/audit-fpm/
             build/fpm-expanded/
+            build/http-fpm/
             build/database-tls/*client.log
             build/database-tls/report.json
     env:
