@@ -38,7 +38,8 @@ was changed. Initialization failures now have explicit rollback tests.
 Scratch grows to at most `AR_MAX_WATCHERS` entries (16384). It is freed before
 growth, so peak retained control storage is at most
 `sizeof(ar_wait_cache) + 16384 * (sizeof(int) + sizeof(epoll_event))`: 262184 bytes
-on the tested Linux x86-64 ABI. One additional engine-owned descriptor is retained
+on the tested Linux x86-64 ABI, excluding allocator overhead, kernel storage and
+the new fixed fields in the engine structure. One engine-owned descriptor is retained
 until request shutdown. Kernel epoll allocation is external to that byte count.
 Like existing wait scratch, these control allocations are outside the payload
 ledger, allowing operations to drain when their payload budget is full.
@@ -65,7 +66,7 @@ The new regression and initialization control are included in Gate A.
 - Corrected initialized-resource lifetime: `copy-epoll-r2` PASS. Gate A PASS in
   212.141s (201.504s child CPU), three seeds, epoll/poll, including failure and
   initialization controls (`gate-A-r2-data/A/report.json`). Further compatibility
-  and memory checks are pending.
+  and memory checks are recorded below.
 
 ## Measured performance, including the shortfall
 
@@ -97,3 +98,33 @@ attribute the shortfall to the environment or excuse the failed targets.
 No result from this change resolves the historical Phase 4 zero-tick failure.
 The existing HTTP r2 archive and its results remain attached to their original
 source. This candidate is not in that archive.
+
+## Preserved B2 failure — candidate not accepted
+
+Gate B failed after B1 completed. B2 recorded 5,236 main responses before the
+next batch returned HTTP 500 with ticks=1 (required >=2), maxTaskStep333.295ms,
+and maxTimerLag329.285ms. The worker consumed368.422ms scheduled CPU during
+the415.161ms measurement, with35.855ms runnable wait. This does not justify
+attribution solely to host descheduling. The HTTP intervals overlap. The exact
+failed request/worker was not written by the batch-oriented runner. No acceptance
+assertion has been changed. No new package or Gate C is accepted.
+
+Original failure: `gate-B-data/fpm/failure.json`; request error:
+`gate-B-data/fpm/mixed-reload-kill/php-errors.log`. Independent partial resource
+recalculation and artifact hashes: `fpm-failure-independent-r1.json` in the
+evidence root. This FAIL is separate from the historical Phase4 zero-tick FAIL.
+
+The separate120-second-class diagnostic investigation is preserved in
+`fpm-diagnostic-findings-r1.json` under the evidence root. The trace-only candidate
+failed after41.204s/139 completed responses, identifying request136 on worker4090280,
+ticks=1, complete1748-event ring without overflow or contention loss. A1ms native
+wait took99.589ms; timer dispatch then had a171.238ms gap not attributed by that
+trace alone. A later explicitly preloaded syscall diagnostic completed1028
+responses/120.495s with minimum2 ticks. It correlates separate slow steps with
+PHP Fiber-stack munmap (318.073ms) and socketpair (174.103ms). Probe output can
+perturb timing, and its4096-event/process cap means absent events prove nothing.
+A matched old-binary trace-only control completes1100 responses/120.383s,
+minimum5 ticks, while also recording a487.068ms maximum step. Four PHP-free C
+controls (160000 syscall groups total) reach31.062ms maximum, not333ms.
+These controls narrow observations but do not establish the original cause.
+No instrumentation pass substitutes for B2; no speculative scheduler repair.

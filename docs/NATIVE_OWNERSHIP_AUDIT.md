@@ -5,6 +5,13 @@ The current per-object matrix and tested copy policies are below under
 checkpoint and its then-open gaps. Current evidence is in
 [RESOURCE_PROVENANCE_PROGRAM.md](RESOURCE_PROVENANCE_PROGRAM.md).
 
+HTTP continuation `09b4767` changes the current epoll ownership boundary:
+the request engine now owns its descriptor from engine initialization through
+shutdown, plus bounded cached registration arrays. Watched resources remain
+borrowed; every reused registration is revalidated. The opening historical
+table below describes the earlier transient implementation. Current evidence:
+[HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md).
+
 Historical scope: source review from `f2c0b83` through `9bee5c3`, focused negative controls,
 existing lifecycle tests, and the final validation indexed in
 [NATIVE_RELIABILITY_PROGRAM.md](NATIVE_RELIABILITY_PROGRAM.md). This is a scoped
@@ -153,7 +160,7 @@ continued operation/cleanup, not only exception type.
 | ConnectionPool | NON_COPYABLE | idle Queue and leased/queued count | borrower token; close refuses leases | closer finally restores capacity, pool close drains | resource_copy, queued-lease regression; caller must join borrowers |
 | IO File | NON_COPYABLE | request ar_file; PHP operations retain wrapper/gate | accepted worker cancellation, mandatory close | explicit close/collect or request teardown after joins | resource_copy pending write/drop/close; file handle tests; no automatic last-user-reference close |
 | ProcessPool / jobs | NON_COPYABLE | pool owns proc resources, pipes and queued Tasks | job/pool may terminate owned child | close/reap; destructor/request process resources | resource_copy checks child count; existing crash/IPC tests; shutdown can wait on OS behavior |
-| Watcher / pending network operation | no copyable native object; keyed registration | PHP scheduler retains resource until removal | wait/token/close; completion removes registration | temporary C arrays freed each wait; request clears PHP state | kernel, native_wait, readiness tests; raw close bypass remains outside contract |
+| Watcher / pending network operation | no copyable native object; keyed registration | PHP scheduler retains resource until removal; engine owns cached epoll fd/arrays | wait/token/close; completion removes scheduler registration; cache validates fd identity | temporary poll/index arrays freed each wait; epoll cache freed at engine shutdown | kernel, native_wait, readiness, epoll_cache controls; raw close bypass remains outside contract |
 | Native worker job / completion | no PHP object copy; request operation ID | allocation list until result conversion/release | explicit atomic flag; one publication/collection owner | join before engine destruction; conversion bailout retains allocation list | allocation/close/fatal/injection tests; internal callers must not republish a job |
 | Diagnostic ring | no PHP resource owner to clone; bounded snapshots are value arrays | request engine, published pointer retained through worker joins | capture mask; extraction does not cancel operations | native free after joins; export before RSHUTDOWN only | ring concurrent/overflow/allocation tests, diagnostic FPM; loss and EBUSY are explicit |
 | TaskResult / WaitResult / HookReport | VALUE_COPY containers; object members remain shared | ordinary PHP references | none added by copying | PHP GC; nested owner serialization remains rejected | existing aggregate/report tests; no deep-copy promise |

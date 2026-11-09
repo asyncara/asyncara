@@ -356,3 +356,15 @@ The opt-in [Hyper prototype](HYPER_EXPERIMENT.md) has a deliberately narrower
 HTTP-only scope. It does not change the default curl contract or silently provide
 TLS/proxy/streaming fallback. Its request-local Rust owners are dropped before C
 job cleanup. Rust/Hyper internal allocation is outside the native buffer ledger.
+
+## Request-local readiness cache (09b4767)
+
+The engine owns its epoll descriptor from initialization through request teardown.
+It never owns the watched application descriptor. Reuse requires an unchanged
+descriptor vector and successful MOD revalidation of every descriptor; stale
+registration or vector changes discard the instance. This includes close/reuse
+while another descriptor retains the old open file description. The original
+monotonic wait budget includes registration work. Cached control storage has its
+own strict bound and `waitControlBytes` counter outside the payload ledger.
+Poll and public cancellation/sharing semantics are unchanged. Exact failure and
+cleanup evidence: [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md).

@@ -2,6 +2,16 @@
 
 ## Latest HTTP continuation (2026-11-09)
 
+`09b4767` adds bounded request-local epoll reuse with descriptor revalidation,
+unchanged deadlines and exact teardown. Gate A and the PHP83/84/85 targeted
+checks pass, alongside full85 suites, scoped ASan/UBSan, native TSan/Valgrind and
+DEBUG Valgrind. B1 passes; B2 FAILS after5,236 recorded main responses with
+one tick instead of the required two. Separate diagnosis is ongoing; no
+acceptance assertion was changed. The public performance
+targets remain **NOT_MET**. See [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md).
+
+The entries below preserve earlier checkpoints and their own test scope.
+
 Native checkpoint `d57d088` includes `5ffa61e` dispatch improvements and `c79e907`
 optional Hyper integration. These supersede the historical HTTP table below.
 Default curl feature coverage is preserved. Hyper is **PARTIALLY_IMPLEMENTED**,

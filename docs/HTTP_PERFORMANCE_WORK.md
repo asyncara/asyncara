@@ -1,6 +1,18 @@
 # HTTP public-path performance investigation
 
-## Latest checkpoint: c4aea948233d79aee887c9ceeea4b56da340cc57
+## Latest checkpoint: 09b47672644daeae8157b90a47116c0b92776b57
+
+Bounded epoll reuse reduces the measured stable-wait CPU cost by6.58x while
+checking descriptor identity and retaining original deadlines. The public
+comparison still fails the requested targets, and shows no small-body speedup
+over its immediate baseline. Exact measurements, the initial failed lifecycle
+test, correction and validation: [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md).
+Do not substitute this wait-cost ratio for HTTP response throughput.
+The current B2 run FAILS after5,236 responses with ticks=1. B1 passes.
+The source remains an unaccepted candidate pending diagnosis; no package
+is certified for it. Historical passes below retain their original identities.
+
+## Previous checkpoint: c4aea948233d79aee887c9ceeea4b56da340cc57
 
 Performance acceptance remains **NOT_MET**. The latest longer sample group
 (64000 requests per sample, five rotated samples, four nginx workers) measures

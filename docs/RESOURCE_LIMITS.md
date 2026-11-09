@@ -158,8 +158,17 @@ failed diagnostic, not silently missing evidence. Old raw reports remain intact.
 Native wait setup retains the small descriptor-set scan. At 32 or more input
 watchers it adds a temporary, at-most 131,072-byte descriptor index to the
 existing mapping allocation. It is freed on every return, including allocation
-and wait errors. This control buffer, like the existing poll/epoll arrays, is
+and wait errors. This control buffer, like the bounded readiness arrays, is
 outside the payload memory ledger and bounded by AR_MAX_WATCHERS.
+
+From `09b4767`, epoll also retains an engine-owned descriptor and bounded
+registration/output arrays. Maximum requested retained cache storage is262184
+bytes on the tested Linux x86-64 ABI (allocator/kernel overhead and fixed engine
+fields excluded). `waitControlBytes` reports current retained bytes; `epollCreated`
+and `epollReused` report instance creation and validated reuse. The cache is freed
+before buffer growth and at engine shutdown. Initialization/allocation failure
+rolls back ownership. Poll-only engines allocate no epoll cache. See
+[HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md) and `tests/fast/epoll_cache.c`.
 
 
 HTTP completion adds request-header limits: 256 entries / 64 KiB including CRLF;

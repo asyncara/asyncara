@@ -1,6 +1,18 @@
 # Current isolated HTTP development state
 
-Latest native checkpoint: `c4aea948233d79aee887c9ceeea4b56da340cc57` on
+Latest native checkpoint: `09b47672644daeae8157b90a47116c0b92776b57` on
+`phase6-http`. Request-local epoll reuse validates every descriptor through
+MOD and rebuilds on identity/vector changes. Exact fd cleanup, failure recovery,
+Gate A, PHP83/84/85 HTTP checks, full85 epoll/poll suites, scoped GCC/DEBUG/native
+memory checks and short curl/Hyper FPM tests pass. Gate B now FAILS: B1
+passes, but B2 stops after 5,236 recorded responses with one ticker increment
+instead of the required two. A 333ms Task step is under investigation. [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md) preserves the initial
+candidate fd-lifetime failure and the corrected result. Its measured wait-only
+CPU reduction does not meet the public HTTP speed requirements: latest1KiB
+median4714.42/s,64KiB3062.36/s; all requested performance gates remain NOT_MET.
+The r2 archive below contains the earlier c4aea94 native source, not this change.
+
+Previous native checkpoint: `c4aea948233d79aee887c9ceeea4b56da340cc57` on
 `phase6-http`. Buffered HTTP admission/dispatch improvements and a bounded opt-in
 Hyper prototype follow the initial checkpoint described below. The default curl
 backend retains TLS/DNS/streaming/uploads; Hyper currently supports only numeric

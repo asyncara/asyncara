@@ -1860,3 +1860,17 @@ rotated samples. PHP83/84/DEBUG HTTP matrices and scoped GCC ASan/UBSan HTTP
 checks pass; full85 suites and FPM/memory validation continue. Details and paths:
 docs/HTTP_EPOLL_REUSE.md. HTTP performance targets remain NOT_MET. No new
 performance, universal reliability or historical zero-tick repair claim.
+
+
+## 2026-11-09 — epoll candidate acceptance failure and isolated diagnosis
+
+Source09b4767: B1 passes350004 real kernel waits and210000 worker jobs. B2 FAILS
+with ticks=1 after5236 recorded main responses. Original>=2 assertion and raw
+logs are unchanged; the failed batch lacks an exact worker/request identity.
+Evidence: `/home/coder/Asyncara-http-epoll-20261109T164557Z/`;
+`fpm-failure-independent-r1.json` recalculates idle resources and hashes36 raw
+artifacts. Separate bounded tracing reproduces ticks=1 in41.204s and identifies
+the request. Later syscall and baseline controls remain diagnostic-only, with
+inconclusive attribution; see `fpm-diagnostic-findings-r1.json` and
+`docs/HTTP_EPOLL_REUSE.md`. No new archive, Gate C, release or speed acceptance.
+Historical Phase4 failures and the protected worktree remain untouched.
