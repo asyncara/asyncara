@@ -1918,3 +1918,20 @@ one/four-worker repetition passes20/40 main requests, minimum21/16 ticks, and
 fatal/reset cleanup with the original assertions. The independent raw response
 review is `head-fpm-methods-independent.json`. These are test-only additions;
 native source remains84e49f1. Historical campaign files remain untouched.
+
+## 2026-11-09 — independent archive reporting defect
+
+`http-r3-head` (source2d3b275,495 files, SHA-256
+`4c3613d6ba4805ad92c046636842abf6f3a6c9b5c62b2072731161627a6f61e3`)
+matches Git and is byte-reproducible. Fresh PHP83/84/85 builds and complete HTTP
+suites pass; the optional fresh Hyper85 build/HTTP suite also pass. The extra
+FPM run completes both functional cases, then FAILS while obtaining Git HEAD
+from an archive without.git. Preserve the archive and full failure under
+`package-http-r3-head`. The package validation is not relabeled PASS.
+
+Correct only `tests/http/fpm.py` reporting: an extracted source tree reports
+`source=null`, retains module/fixture hashes, and does not adopt an enclosing
+checkout's commit. This matches the existing HTTP gate's source-identity rule.
+No runtime, fixture assertion or acceptance threshold changes. A new archive
+and fresh extraction will verify the correction; previous binaries/results
+remain tied to their actual source identities.

@@ -26,7 +26,9 @@ try:
         results.append(audit.run(*case));print(case[0],'PASS',flush=True)
         assert not list(out.glob('.asyncara-*')),'Staged entry escaped normal/fatal cleanup'
     (out/'report.json').write_text(json.dumps({'status':'PASS','seconds':time.monotonic()-started,
-        'source':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),
+        # An extracted distribution has no Git metadata. Do not fail after a
+        # completed test or accidentally inherit an enclosing checkout's HEAD.
+        'source':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip() if (root/'.git').exists() else None,
         'moduleSha256':hashlib.sha256(pathlib.Path(a.extension).read_bytes()).hexdigest(),
         'fixtureSha256':hashlib.sha256((root/'tests/http/fpm_request.php').read_bytes()).hexdigest(),
         'cases':results},indent=2)+'\n')
