@@ -31,6 +31,18 @@ $result = Async::run(function () use ($url, $dir, $path): array {
             if (array_filter($jobs, static fn($j) => !$j->isCompleted())) $ticks++;
         }
     });
+    $produced = false;
+    $body = (static function () use (&$produced): Generator { $produced = true; yield 'x'; })();
+    try {
+        $client->requestStream('HEAD', $url.'/small', $body, 1)->await();
+        throw new RuntimeException('FPM accepted unsupported HEAD upload');
+    } catch (ValueError $error) {
+        if (!str_contains($error->getMessage(), 'HEAD') || $produced)
+            throw new RuntimeException('FPM HEAD rejection did not precede producer', 0, $error);
+    }
+    $head = $client->request('HEAD', $url.'/small')->await();
+    if ($head->status !== 200 || $head->body !== '' || $head->headers['content-length'] !== ['65536'] ||
+        $head->headers['x-method'] !== ['HEAD']) throw new RuntimeException('FPM HEAD framing');
     $mime = $client->multipartFiles($url.'/multipart', ['request'=>'isolated'], [
         ['field'=>'files[]','path'=>$dir.'/http-input.bin'],
         ['field'=>'files[]','path'=>$dir.'/http-input.bin'],
@@ -46,7 +58,7 @@ $result = Async::run(function () use ($url, $dir, $path): array {
     if ($download->await() !== 65536 || Files::stat($path)->await()['size'] !== 65536)
         throw new RuntimeException('Atomic download mismatch');
     Files::delete($path)->await();
-    return ['ticks'=>$ticks,'http'=>$intervals];
+    return ['ticks'=>$ticks,'http'=>$intervals,'headStatus'=>$head->status,'headBodyBytes'=>strlen($head->body),'headProducerStarted'=>$produced];
 });
 $after = asyncara_info();
 foreach (['pendingOperations','nativeMemoryBytes','openFileHandles','httpUploadBufferedBytes','httpStreamingBufferedBytes'] as $key)
