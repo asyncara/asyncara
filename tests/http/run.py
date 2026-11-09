@@ -59,6 +59,7 @@ if not a.php_only:
              '-I.local/sysroot/usr/include', '-I.local/sysroot/usr/include/x86_64-linux-gnu']
     flags += shlex.split(os.environ.get('EXTRA_CFLAGS', ''))
     for name, files, wraps in [
+        ('dispatch', ['tests/http/dispatch_native.c', 'ext/backend.c'], ['curl_multi_timeout', 'curl_multi_socket_action', 'write']),
         ('stage', ['tests/http/stage_native.c', 'ext/backend.c'], ['fsync', 'renameat']),
         ('completion', ['tests/http/native_completion.c'], ['curl_multi_socket_action']),
         ('start-wait', ['tests/http/start_wait.c', 'ext/backend.c'], ['epoll_wait', 'poll', '__poll_chk', 'clock_gettime'])]:
@@ -72,7 +73,7 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
-    for test in ['completion', 'acquire_cancel', 'proxy', 'pooling', 'buffer_budget']:
+    for test in ['completion', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
         run(backend + '-' + test, php + ['tests/http/' + test + '.php'], env)
     for limit in [8, 16, 32]:
         run(backend + '-connections-' + str(limit), php + ['tests/http/connections.php', limit], env)

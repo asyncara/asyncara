@@ -10,7 +10,7 @@ final class Scheduler
     private \SplQueue $ready;
     private \SplPriorityQueue $heap;
     private array $tasks = [], $failures = [], $timers = [], $readers = [], $writers = [], $native = [], $httpReaders = [], $httpWriters = [];
-    private int $next = 0, $nextTimer = 0, $nextWatch = 0;
+    private int $next = 0, $nextTimer = 0, $nextWatch = 0, $ownedOperations = 0;
     public ?Task $task = null;
     private array $metrics = ['turns' => 0, 'taskSteps' => 0, 'maxStepSeconds' => 0.0, 'maxTimerLagSeconds' => 0.0];
     public function __construct(private int $taskLimit = 20000)
@@ -24,13 +24,21 @@ final class Scheduler
     public static function now(): float { return hrtime(true) / 1e9; }
     public function spawn(callable $body, bool $inherit = true): Task
     {
-        if (count($this->tasks) + count($this->failures) >= $this->taskLimit) {
-            $this->failures = array_filter($this->failures, static fn(Task $t): bool => !$t->observed);
-            if (count($this->tasks) + count($this->failures) >= $this->taskLimit) throw new CapacityException('Task limit reached (includes retained unobserved failures)');
-        }
+        $this->checkTaskCapacity();
         $task = new Task(++$this->next, $this, $body, $inherit ? ($this->task?->context ?? []) : []);
         $this->tasks[$task->id] = $task; $this->enqueue($task); return $task;
     }
+    /** @internal Bound retained unobserved failures, including owned HTTP Futures. */
+    public function checkTaskCapacity(): void
+    {
+        if (count($this->tasks) + $this->ownedOperations + count($this->failures) >= $this->taskLimit) {
+            $this->failures = array_filter($this->failures, static fn(Future $t): bool => !$t->observed);
+            if (count($this->tasks) + $this->ownedOperations + count($this->failures) >= $this->taskLimit) throw new CapacityException('Task limit reached (includes retained unobserved failures)');
+        }
+    }
+    /** @internal HTTP completion owners consume the former Task admission budget. */
+    public function reserveOperation(): void { $this->checkTaskCapacity(); $this->ownedOperations++; }
+    /** @internal */ public function releaseOperation(): void { $this->ownedOperations--; }
     /** @internal */ public function enqueue(Task $task): void
     {
         if (!$task->queued && !$task->isCompleted()) { $task->queued = true; $task->state = 'ready'; $this->ready->enqueue($task); if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,32,$task->id,$this->ready->count(),count($this->tasks),0); }
@@ -39,8 +47,24 @@ final class Scheduler
     {
         unset($this->tasks[$task->id]);
         if (Trace::$mask & Trace::SCHEDULER) \asyncara_trace_event(4,36,$task->id,count($this->tasks),0,0);
+        $this->retainFailure($task);
+    }
+    /** @internal Retain errors from an owned operation until observed or run exit. */
+    public function retainFailure(Future $task): void
+    {
         $observed = $task->observed; $error = $task->exception(); $task->observed = $observed;
         if ($error && !$observed && !$error instanceof CancelledException) $this->failures[] = $task;
+    }
+    /** @internal Same ready queue and first-settler semantics without per-wait closures. */
+    public function awaitFuture(Future $future, ?CancellationToken $token): void
+    {
+        $task = $this->task ?? throw new \LogicException('Await requires a scheduled Fiber');
+        if (\Fiber::getCurrent() !== $task->fiber) throw new \LogicException('Await requires the current Task Fiber; independent Fibers cannot register its waits');
+        $task->waitFuture($future, $token);
+    }
+    /** @internal */ public function traceFutureWait(Task $task, int $event): void
+    {
+        \asyncara_trace_event(4, $event, $task->id, $this->ready->count(), 0, 0);
     }
     public function suspend(\Closure $register, ?CancellationToken $token = null): mixed
     {
@@ -146,10 +170,10 @@ final class Scheduler
         return $this->nativeOperation($op, $args)[1];
     }
     /** @internal Native operation identity for bounded HTTP streaming. */
-    public function nativeOperation(string $op, array $args): array
+    public function nativeOperation(string $op, array $args, ?Future $future = null): array
     {
         // Reserve the PHP-visible completion before submitting native work.
-        $future = new Future(); $id = asyncara_submit($op, $args);
+        $future ??= new Future(); $id = asyncara_submit($op, $args);
         $future->canceller = static fn() => asyncara_cancel($id);
         $this->native[$id] = $future; return [$id, $future];
     }

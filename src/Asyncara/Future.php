@@ -38,9 +38,7 @@ class Future implements Awaitable
         $cancellation ??= Scheduler::tryCurrent()?->currentCancellation();
         $cancellation?->throwIfRequested();
         if (!$this->complete) {
-            Scheduler::current()->suspend(function (\Closure $resume): \Closure {
-                return $this->subscribe(static fn() => $resume(null, null));
-            }, $cancellation);
+            Scheduler::current()->awaitFuture($this, $cancellation);
         }
         return $this->result();
     }
@@ -49,10 +47,17 @@ class Future implements Awaitable
     public function subscribe(\Closure $listener): \Closure
     {
         if ($this->complete) { $listener($this); return static function (): void {}; }
-        if (count($this->listeners) >= 65536) throw new CapacityException('Future listener limit reached');
-        $id = ++$this->next; $this->listeners[$id] = $listener;
-        return function () use ($id): void { unset($this->listeners[$id]); };
+        $id = $this->attach($listener);
+        return function () use ($id): void { $this->detach($id); };
     }
+    /** @internal Allocation-free removal for the Task's reusable wait observer. */
+    public function attach(\Closure $listener): int
+    {
+        if ($this->complete) { $listener($this); return 0; }
+        if (count($this->listeners) >= 65536) throw new CapacityException('Future listener limit reached');
+        $id = ++$this->next; $this->listeners[$id] = $listener; return $id;
+    }
+    /** @internal */ public function detach(int $id): void { unset($this->listeners[$id]); }
     /** @internal */
     public function resolve(mixed $value = null): void { $this->settle($value, null); }
     /** @internal */

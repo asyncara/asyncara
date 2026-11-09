@@ -140,16 +140,6 @@ static void http_action(ar_engine *e, curl_socket_t fd, int events) {
     curl_multi_cleanup(e->multi); e->multi = NULL; e->running = 0;
     while (e->sockets) { ar_socket *s = e->sockets; e->sockets = s->next; ar_free(s); }
 }
-/* Transfer ownership of completed buffers instead of copying and charging a
- * second full response. Failed value construction leaves the job as owner. */
-static ar_value *take_http_buffer(ar_engine *e, char **buffer, size_t *length, size_t *capacity) {
-    if (!*buffer) return ar_string(e, "", 0);
-    ar_value *v = ar_value_new(e, V_STRING);
-    if (!v) return NULL;
-    v->string = *buffer; v->length = *length;
-    *buffer = NULL; *length = *capacity = 0;
-    return v;
-}
 void ar_http_start(ar_engine *e, ar_job *j) {
     if (!e->multi) {
         e->multi = curl_multi_init();
@@ -308,20 +298,10 @@ void ar_http_progress(ar_engine *e) {
         curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &j->status);
         if (msg->data.result != CURLE_OK && !j->error[0])
             snprintf(j->error, sizeof(j->error), "%s", curl_easy_strerror(msg->data.result));
-        else if (msg->data.result == CURLE_OK) {
-            j->result = ar_value_new(e, V_ARRAY);
-            ar_value *status = ar_value_new(e, V_INT);
-            if (status)
-                status->integer = j->status;
-            if (!j->result) {
-                ar_value_free(status);
-                snprintf(j->error, sizeof(j->error), "Native memory limit or allocation failure");
-            } else if (ar_add(j->result, "status", status) ||
-                       ar_add(j->result, "body", take_http_buffer(e, &j->body, &j->body_len, &j->body_capacity)) ||
-                       ar_add(j->result, "headers",
-                              take_http_buffer(e, &j->response_headers, &j->headers_len, &j->headers_capacity)))
-                snprintf(j->error, sizeof(j->error), "Native memory limit or allocation failure");
-        }
+        /* Keep completed bytes on their existing job owner until PHP collects
+         * them. No generic ar_value tree, duplicated keys or interim arrays are
+         * needed for this fixed response shape. Fatal conversion still leaves
+         * the job on the request allocation list for RSHUTDOWN. */
         curl_multi_remove_handle(e->multi, j->curl);
         ar_done(e, j);
     }
@@ -528,7 +508,12 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
                                  (fds[i].revents & (POLLERR | POLLHUP) ? CURL_CSELECT_ERR : 0);
                     http_action(e, fds[i].fd, action);
                 }
-            http_action(e, CURL_SOCKET_TIMEOUT, 0);
+            /* Socket actions may replace/remove curl's timer. Drive the timer
+             * only when it is due; an unrelated ready descriptor is not a curl
+             * timeout and must not rescan every active transfer. */
+            long due = -1;
+            if (e->multi && curl_multi_timeout(e->multi, &due) == CURLM_OK && due == 0)
+                http_action(e, CURL_SOCKET_TIMEOUT, 0);
             ar_http_progress(e);
         }
     }

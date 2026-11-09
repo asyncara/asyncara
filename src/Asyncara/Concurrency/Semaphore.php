@@ -12,6 +12,12 @@ class Semaphore
     {
         if ($permits < 1) throw new \ValueError('Semaphore permits must be positive'); $this->available = $permits;
     }
+    /** @internal Non-suspending admission; never bypasses queued owners. */
+    public function tryAcquire(): bool
+    {
+        if ($this->available === 0) return false;
+        $this->available--; $this->held++; return true;
+    }
     public function acquire(): void
     {
         Scheduler::current()->currentCancellation()?->throwIfRequested();

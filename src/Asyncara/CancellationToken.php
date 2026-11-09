@@ -23,7 +23,13 @@ final class CancellationToken
     public function subscribe(\Closure $listener): \Closure
     {
         if ($this->reason) { $listener($this->reason); return static function (): void {}; }
-        $id = ++$this->next; $this->listeners[$id] = $listener;
-        return function () use ($id): void { unset($this->listeners[$id]); };
+        $id = $this->attach($listener);
+        return function () use ($id): void { $this->detach($id); };
     }
+    /** @internal */ public function attach(\Closure $listener): int
+    {
+        if ($this->reason) { $listener($this->reason); return 0; }
+        $id = ++$this->next; $this->listeners[$id] = $listener; return $id;
+    }
+    /** @internal */ public function detach(int $id): void { unset($this->listeners[$id]); }
 }
