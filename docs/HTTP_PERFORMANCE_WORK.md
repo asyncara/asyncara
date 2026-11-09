@@ -293,3 +293,28 @@ and all samples remain in the evidence directory. No C/Zend/runtime source was
 changed for this control. It does not establish a4x/3x gain, a stable13k floor,
 or public PHP performance. Adding Rust execution threads to Asyncara is not
 justified by this control; existing request-local ownership remains unchanged.
+
+## Reproducible http-r2 distribution
+
+Packaged source: `ba9200f9e71e5247d6ef8d202dd37393fb4e577c`.
+Native implementation: `c4aea948233d79aee887c9ceeea4b56da340cc57`.
+Archive: `build/asyncara-0.1.0-dev-http-r2.tar.gz`,486 files.
+SHA-256: `b9fae9987f2e564c2db6971577519900bbc3305cbf90cc6ad5a51f9792b034d8`.
+Two independent archive creations match byte-for-byte. Every entry matches the
+packaged Git tree; LICENSE bytes are unchanged. Clean extraction builds default
+C modules and passes HTTP feature suites on PHP8.3.36/8.4.27/8.5.12, both backends.
+The optional Hyper build uses a new Cargo target directory and passes the HTTP/
+prototype gate on8.5.12. No previous module, generated project file, vendor tree
+or test certificate is copied. Public SDK/library headers and pinned third-party
+sources are build dependencies. Debug-path differences mean this is not a claim
+of bit-identical compiled modules. No GitHub package or release was published.
+[Full attestation](phase6/http-r2-package.json) records every build/test command,
+module hash, log hash and exact scope. The following documentation-only commit
+records this completed attestation and is deliberately outside the archive it
+attests. The old http-r1 artifact is unchanged.
+
+The reference-attestation negative control rejects an altered PHP hash before
+starting a server or client. Functional success and performance success remain
+separate. Final performance status is NOT_MET; the release is EXPERIMENTAL.
+No source change in this continuation proves the historical Phase4 zero-tick
+cause or resolves the separate distribution-PHP memory discrepancy.

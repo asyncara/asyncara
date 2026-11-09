@@ -19,6 +19,11 @@ separately from the historical B2. See
 [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
 [HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md) for exact evidence and limitations.
 
+Current independently validated distribution: `asyncara-0.1.0-dev-http-r2.tar.gz`,
+486 files, packaged source ba9200f, native source c4aea94. See the
+[package attestation](phase6/http-r2-package.json). It remains a local artifact;
+no release or performance promotion follows from a reproducible build.
+
 ## Initial HTTP checkpoint (historical)
 
 The active HTTP worktree is `/home/coder/Asyncara-http-20261109T050419Z`, branch

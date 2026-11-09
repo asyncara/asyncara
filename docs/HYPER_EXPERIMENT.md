@@ -64,7 +64,9 @@ ASYNCARA_HTTP_BACKEND=hyper-prototype ASYNCARA_BACKEND=poll \
 
 Cargo.lock pins the dependency tree. The default build has no Rust dependency.
 The experimental local script does not install global tools or enable the backend
-by default. Portable phpize integration and package certification are unfinished.
+by default. Portable phpize integration remains unfinished. The later http-r2 source
+archive builds the optional prototype independently with this script and passes
+its scoped PHP8.5.12 HTTP gate; see [attestation](phase6/http-r2-package.json).
 `asyncara_info()` exposes the selected HTTP backend and exact prototype submission,
 completion and connection counts. The benchmark asserts those counts, zero pending
 jobs and zero tracked result memory, so raw-native or standalone Rust throughput

@@ -1833,3 +1833,13 @@ rotated samples,32 connections and four nginx workers. Public1KiB median10086.97
 minimum9070.644/s;0.9726x curl_multi and0.8494x Swoole.64KiB median4840.751/s.
 The requested acceptance remains NOT_MET. Earlier higher samples are preserved,
 not substituted. All runtime/source manifests match c4aea94 after validation.
+
+http-r2 packaging completed: source ba9200f9e71e5247d6ef8d202dd37393fb4e577c,
+native c4aea94,486 files; SHA-256
+b9fae9987f2e564c2db6971577519900bbc3305cbf90cc6ad5a51f9792b034d8.
+Two creations identical; clean independent default builds and HTTP gates pass
+on PHP83/84/85 epoll/poll. A fresh Cargo build and optional Hyper HTTP gate pass
+on85. All tracked extracted bytes remain unchanged; LICENSE exact. Full
+attestation is docs/phase6/http-r2-package.json. No publication or push occurred.
+Performance remains NOT_MET, including the longer matching-reference comparison.
+The historical http-r1 archive and protected Phase4 checkout remain unchanged.
