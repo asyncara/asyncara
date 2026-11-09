@@ -2111,3 +2111,19 @@ foreign-pointer misuse are outside this guarantee.
 PASS for curl/Hyper on epoll/poll. Full r4 HTTP gate:66 commands PASS115.544s,
 before integrating the new150-connection test into the gate. Fresh final matrix
 and memory tests pending; no production-readiness or speed promotion.
+
+### Repeated Content-Encoding defect reproduced
+
+A real local response declaring identity followed by gzip bypassed Hyper's
+single-header compression rejection and returned encoded bytes as success.
+`encoding-before` exits42 and `encoding-regression-before` exits255 on2678bd2.
+The transfer now checks every Content-Encoding value. This preserves explicit
+rejection; it does not implement decompression. New public regression covers
+both header orders, a combined list, another unsupported coding, repeated
+identity, subsequent connection recovery and exact completion collection.
+
+The first frozen2678bd2 PHP85 full HTTP gate failed the unchanged poll proxy
+TLS-timeout/progress assertion. Its original report is retained. The assertion
+now includes elapsed/ticks/transport error and diagnostics on failure; bounds
+remain0.8s and>=2ticks. Matched repetitions are diagnostic controls, not an
+explanation or erasure of the initial failure. Final-source validation follows.

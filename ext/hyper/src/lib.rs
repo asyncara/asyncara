@@ -364,8 +364,9 @@ async fn transfer(mut sender: Sender, uri: Uri, job: usize) -> (Sender, Result<(
             .map_err(|_| "Hyper request failed")?;
         if response
             .headers()
-            .get("content-encoding")
-            .is_some_and(|v| v.as_bytes() != b"identity")
+            .get_all("content-encoding")
+            .iter()
+            .any(|v| v.as_bytes() != b"identity")
         {
             return Err("Hyper prototype does not decode compressed responses".into());
         }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Raw HTTP framing boundaries; stdin EOF owns fixture shutdown."""
 import asyncio
+import gzip
 import json
 import os
 import sys
@@ -36,7 +37,15 @@ async def main():
                 if not 0 <= size <= 262144:
                     raise ValueError('Fixture bound')
                 body = (bytes(range(251)) * (size // 251 + 1))[:size]
-                if kind == 'head':
+                if kind == 'encoding':
+                    values = {0: [b'identity', b'identity'], 1: [b'identity', b'gzip'],
+                              2: [b'gzip', b'identity'], 3: [b'identity, gzip'],
+                              4: [b'identity', b'br']}[size]
+                    encoded = b'x' if size == 0 else gzip.compress(b'x', mtime=0)
+                    writer.write(b'HTTP/1.1 200 OK\r\n' +
+                                 b''.join(b'Content-Encoding: ' + v + b'\r\n' for v in values) +
+                                 f'Content-Length: {len(encoded)}\r\n\r\n'.encode() + encoded)
+                elif kind == 'head':
                     writer.write(b'HTTP/1.1 200 OK\r\nX-Pad: ' + b'p' * size +
                                  b'\r\nContent-Length: 1\r\n\r\nx')
                 elif kind == 'chunked':

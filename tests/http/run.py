@@ -86,7 +86,7 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
-        for test in ['transfer_geometry', 'hyper_wakeups', 'capacity', 'gate_protocol', 'hyper_uri', 'hyper', 'buffered_owner']:
+        for test in ['transfer_geometry', 'hyper_wakeups', 'hyper_encoding', 'capacity', 'gate_protocol', 'hyper_uri', 'hyper', 'buffered_owner']:
             run(backend + '-prototype-' + test, php + ['tests/http/' + test + '.php'],
                 env | {'ASYNCARA_HTTP_BACKEND': 'hyper-prototype'})
 assert sha(module) == identity['moduleSha256']
