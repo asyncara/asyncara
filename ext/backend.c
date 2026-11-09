@@ -188,7 +188,9 @@ void ar_hyper_failed(ar_engine *e) {
     ar_hyper_free(e->hyper); e->hyper = NULL;
     for (ar_job *j = e->jobs; j; j = j->next) {
         if (!j->http_hyper || j->done) continue;
-        snprintf(j->error, sizeof(j->error), "Hyper engine failed"); ar_done(e, j);
+        snprintf(j->error, sizeof(j->error), "Hyper engine failed");
+        e->hyper_completed++;
+        ar_done(e, j);
     }
 }
 static int hyper_progress(ar_engine *e) {
@@ -216,7 +218,15 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     }
     if (!e->hyper) e->hyper = ar_hyper_new(e->http_max_connections, e->http_max_host_connections);
     if (!e->hyper) goto unsupported;
-    if (ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect)) goto unsupported;
+    int submitted = ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect);
+    if (submitted == -2) {
+        /* Submission may unwind after retaining the new job pointer. Drop all
+         * Rust owners before this unadmitted C job can be collected/freed. */
+        ar_hyper_failed(e);
+        snprintf(j->error, sizeof(j->error), "Hyper engine failed"); ar_done(e, j);
+        return;
+    }
+    if (submitted) goto unsupported;
     j->http_hyper = 1; e->hyper_submitted++;
     return;
 unsupported:
@@ -608,6 +618,7 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
 #ifdef HAVE_ASYNCARA_HYPER
     if (hyper_progress(e)) deadline = 0;
     int hyper_timeout = e->hyper ? ar_hyper_timeout(e->hyper) : -1;
+    if (hyper_timeout == -2) { ar_hyper_failed(e); deadline = 0; }
     if (hyper_timeout >= 0 && deadline != 0) {
         int64_t hyper_deadline;
         if (deadline_for(hyper_timeout, &hyper_deadline)) return -1;
@@ -635,6 +646,7 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     size_t nh = 0;
 #ifdef HAVE_ASYNCARA_HYPER
     if (e->hyper) nh = ar_hyper_fds(e->hyper, NULL, 0);
+    if (nh == SIZE_MAX) { ar_hyper_failed(e); nh = 0; deadline = 0; }
 #endif
     if (nh > 256 || n + ns + nh + 1 > AR_MAX_WATCHERS) {
         errno = EOVERFLOW;
@@ -693,7 +705,11 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     }
     size_t curl_end = count;
 #ifdef HAVE_ASYNCARA_HYPER
-    if (e->hyper) count += ar_hyper_fds(e->hyper, fds + count, nh);
+    if (e->hyper) {
+        size_t actual = ar_hyper_fds(e->hyper, fds + count, nh);
+        if (actual > nh) { ar_hyper_failed(e); deadline = 0; }
+        else count += actual;
+    }
 #endif
     int rc = wait_fds(e, fds, count, deadline);
     if (rc >= 0) {
@@ -721,8 +737,11 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     }
 #ifdef HAVE_ASYNCARA_HYPER
     if (e->hyper) {
-        for (size_t i = curl_end; i < count; i++) if (fds[i].revents)
-            ar_hyper_ready(e->hyper, fds[i].fd, fds[i].revents);
+        for (size_t i = curl_end; i < count; i++) if (fds[i].revents) {
+            if (ar_hyper_ready(e->hyper, fds[i].fd, fds[i].revents)) {
+                ar_hyper_failed(e); break;
+            }
+        }
         hyper_progress(e);
     }
 #endif

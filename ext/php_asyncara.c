@@ -501,7 +501,9 @@ PHP_FUNCTION(asyncara_info) {
     add_assoc_string(return_value, "httpBackend", e->hyper_requested ? "hyper-prototype" : "curl-multi");
 #ifdef HAVE_ASYNCARA_HYPER
     add_assoc_bool(return_value, "hyperPrototypeBuilt", 1);
-    add_assoc_long(return_value, "hyperConnections", e->hyper ? ar_hyper_connections(e->hyper) : 0);
+    size_t hyper_connections = e->hyper ? ar_hyper_connections(e->hyper) : 0;
+    if (hyper_connections == SIZE_MAX) { ar_hyper_failed(e); hyper_connections = 0; }
+    add_assoc_long(return_value, "hyperConnections", hyper_connections);
 #else
     add_assoc_bool(return_value, "hyperPrototypeBuilt", 0);
 #endif

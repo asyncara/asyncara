@@ -1,6 +1,8 @@
 //! Experimental HTTP/1.1 bridge. Numeric plain-HTTP GET only; no threads,
 //! Tokio executor, hidden resolver or blocking socket calls. Asyncara owns readiness,
 //! request deadlines and response buffers. No Zend API crosses this boundary.
+#[cfg(not(target_os = "linux"))]
+compile_error!("The Asyncara Hyper prototype currently supports Linux only");
 use http_body_util::{BodyExt, Full};
 use hyper::{body::Bytes, Request, Uri};
 use std::{
@@ -20,6 +22,26 @@ use std::{
     task::{Context, Poll, Wake, Waker},
     time::{Duration, Instant},
 };
+// No fault controls or exported setter exist in a normal build.
+#[cfg(feature = "ffi-fault-tests")]
+thread_local! { static TEST_FAULT: std::cell::Cell<u32> = const { std::cell::Cell::new(0) }; }
+#[cfg(feature = "ffi-fault-tests")]
+#[no_mangle]
+pub extern "C" fn ar_hyper_test_fault(point: u32) {
+    TEST_FAULT.with(|f| f.set(point));
+}
+#[inline]
+fn fault(point: u32) {
+    #[cfg(feature = "ffi-fault-tests")]
+    TEST_FAULT.with(|f| {
+        if f.get() == point {
+            f.set(0);
+            panic!("injected Hyper boundary fault {point}");
+        }
+    });
+    #[cfg(not(feature = "ffi-fault-tests"))]
+    let _ = point;
+}
 type Sender = hyper::client::conn::http1::SendRequest<Full<Bytes>>;
 type Driver = Pin<Box<dyn Future<Output = Result<(), hyper::Error>>>>;
 type Setup = Pin<
@@ -68,6 +90,8 @@ struct Socket {
     writable: bool,
     read: Option<Waker>,
     write: Option<Waker>,
+    #[cfg(test)]
+    owner_waker: Waker,
 }
 #[derive(Clone)]
 struct Io(Rc<RefCell<Socket>>);
@@ -78,6 +102,14 @@ impl hyper::rt::Read for Io {
         mut buf: hyper::rt::ReadBufCursor<'_>,
     ) -> Poll<io::Result<()>> {
         let mut s = self.0.borrow_mut();
+        #[cfg(test)]
+        {
+            assert!(
+                cx.waker().will_wake(&s.owner_waker),
+                "non-driver read waker"
+            );
+            tests::IO_POLLS.with(|n| n.set(n.get() + 1));
+        }
         if !s.readable {
             s.read = Some(cx.waker().clone());
             return Poll::Pending;
@@ -117,6 +149,14 @@ impl hyper::rt::Write for Io {
         buf: &[u8],
     ) -> Poll<io::Result<usize>> {
         let mut s = self.0.borrow_mut();
+        #[cfg(test)]
+        {
+            assert!(
+                cx.waker().will_wake(&s.owner_waker),
+                "non-driver write waker"
+            );
+            tests::IO_POLLS.with(|n| n.set(n.get() + 1));
+        }
         if !s.writable {
             s.write = Some(cx.waker().clone());
             return Poll::Pending;
@@ -233,6 +273,8 @@ impl Conn {
             } else {
                 Some(Waker::from(wake.clone()))
             },
+            #[cfg(test)]
+            owner_waker: Waker::from(wake.clone()),
         })));
         Ok(Self {
             addr,
@@ -265,7 +307,9 @@ impl Conn {
             // Permit fewer reads for medium bodies without enlarging the header
             // or trailer acceptance limit. The buffer remains adaptive; small
             // responses do not eagerly reserve the 128 KiB maximum.
-            b.max_buf_size(131072).max_header_size(65536).max_headers(256);
+            b.max_buf_size(131072)
+                .max_header_size(65536)
+                .max_headers(256);
             self.setup = Some(Box::pin(b.handshake(self.io.clone())));
         }
         if let Some(setup) = &mut self.setup {
@@ -300,6 +344,7 @@ struct Op {
     wake: Arc<Flag>,
 }
 struct Engine {
+    poisoned: bool,
     conns: Vec<Option<Conn>>,
     ops: Vec<Op>,
     total: usize,
@@ -382,6 +427,7 @@ async fn transfer(mut sender: Sender, uri: Uri, job: usize) -> (Sender, Result<(
 impl Engine {
     fn finish(&mut self, i: usize, error: Option<&str>) {
         let op = self.ops.swap_remove(i);
+        fault(13);
         if let Some(c) = op.conn {
             if error.is_some() || self.conns[c].as_ref().is_some_and(|x| x.closed) {
                 self.conns[c] = None
@@ -391,6 +437,7 @@ impl Engine {
         }
         let message = error.unwrap_or("");
         unsafe { ar_hyper_complete(op.job as *mut c_void, message.as_ptr(), message.len()) }
+        fault(18);
     }
     fn drive(&mut self) -> i32 {
         let now = Instant::now();
@@ -533,6 +580,27 @@ impl Engine {
 fn ffi<T>(fallback: T, f: impl FnOnce() -> T) -> T {
     catch_unwind(AssertUnwindSafe(f)).unwrap_or(fallback)
 }
+// The C bridge serializes all entry points on the interpreter thread. Callbacks
+// only copy bounded bytes/publish completion; they must not reenter this engine.
+// -1 remains a validation/no-deadline result. -2 (or SIZE_MAX for counts) is a
+// fatal engine result: C must destroy the engine and fail every owned operation.
+// Even if a caller overlooks that result, no later entry drives poisoned state.
+unsafe fn engine_ffi<T>(ptr: *mut c_void, failure: T, f: impl FnOnce(&mut Engine) -> T) -> T {
+    if ptr.is_null() {
+        return failure;
+    }
+    let engine = &mut *ptr.cast::<Engine>();
+    if engine.poisoned {
+        return failure;
+    }
+    match catch_unwind(AssertUnwindSafe(|| f(engine))) {
+        Ok(value) => value,
+        Err(_) => {
+            engine.poisoned = true;
+            failure
+        }
+    }
+}
 #[no_mangle]
 pub extern "C" fn ar_hyper_new(total: usize, host: usize) -> *mut c_void {
     ffi(std::ptr::null_mut(), || {
@@ -540,6 +608,7 @@ pub extern "C" fn ar_hyper_new(total: usize, host: usize) -> *mut c_void {
             return std::ptr::null_mut();
         }
         Box::into_raw(Box::new(Engine {
+            poisoned: false,
             conns: Vec::new(),
             ops: Vec::new(),
             total,
@@ -563,7 +632,7 @@ pub unsafe extern "C" fn ar_hyper_submit(
     timeout: u64,
     connect: u64,
 ) -> i32 {
-    ffi(-1, || {
+    engine_ffi(ptr, -2, |engine| {
         if ptr.is_null()
             || job.is_null()
             || url.is_null()
@@ -575,7 +644,6 @@ pub unsafe extern "C" fn ar_hyper_submit(
         {
             return -1;
         }
-        let engine = &mut *ptr.cast::<Engine>();
         if engine.ops.len() >= 1024 {
             return -1;
         }
@@ -628,17 +696,20 @@ pub unsafe extern "C" fn ar_hyper_submit(
             future: None,
             wake: Flag::new(),
         });
+        fault(11);
         0
     })
 }
 #[no_mangle]
 pub unsafe extern "C" fn ar_hyper_drive(ptr: *mut c_void) -> i32 {
-    ffi(-1, || (&mut *ptr.cast::<Engine>()).drive())
+    engine_ffi(ptr, -2, |e| {
+        fault(12);
+        e.drive()
+    })
 }
 #[no_mangle]
 pub unsafe extern "C" fn ar_hyper_cancel(ptr: *mut c_void, job: *mut c_void) -> i32 {
-    ffi(-1, || {
-        let e = &mut *ptr.cast::<Engine>();
+    engine_ffi(ptr, -2, |e| {
         if let Some(i) = e.ops.iter().position(|op| op.job == job as usize) {
             e.finish(i, Some("Operation cancelled"));
         }
@@ -647,8 +718,8 @@ pub unsafe extern "C" fn ar_hyper_cancel(ptr: *mut c_void, job: *mut c_void) -> 
 }
 #[no_mangle]
 pub unsafe extern "C" fn ar_hyper_timeout(ptr: *mut c_void) -> i32 {
-    ffi(0, || {
-        let e = &*ptr.cast::<Engine>();
+    engine_ffi(ptr, -2, |e| {
+        fault(14);
         let now = Instant::now();
         let deadline = e
             .ops
@@ -676,57 +747,66 @@ pub unsafe extern "C" fn ar_hyper_fds(
     out: *mut libc::pollfd,
     max: usize,
 ) -> usize {
-    let e = &*ptr.cast::<Engine>();
-    let mut n = 0;
-    for c in e.conns.iter().flatten() {
-        if c.closed {
-            continue;
-        }
-        let s = c.io.0.borrow();
-        let events = (if s.read.is_some() { libc::POLLIN } else { 0 })
-            | (if s.write.is_some() { libc::POLLOUT } else { 0 });
-        if events == 0 {
-            continue;
-        }
-        if n < max && !out.is_null() {
-            *out.add(n) = libc::pollfd {
-                fd: s.stream.as_raw_fd(),
-                events,
-                revents: 0,
+    engine_ffi(ptr, usize::MAX, |e| {
+        fault(15);
+        let mut n = 0;
+        for c in e.conns.iter().flatten() {
+            if c.closed {
+                continue;
             }
+            let s = c.io.0.borrow();
+            let events = (if s.read.is_some() { libc::POLLIN } else { 0 })
+                | (if s.write.is_some() { libc::POLLOUT } else { 0 });
+            if events == 0 {
+                continue;
+            }
+            if n < max && !out.is_null() {
+                *out.add(n) = libc::pollfd {
+                    fd: s.stream.as_raw_fd(),
+                    events,
+                    revents: 0,
+                }
+            }
+            n += 1;
         }
-        n += 1;
-    }
-    n
+        n
+    })
 }
 #[no_mangle]
-pub unsafe extern "C" fn ar_hyper_ready(ptr: *mut c_void, fd: i32, events: i32) {
-    let e = &mut *ptr.cast::<Engine>();
-    for c in e.conns.iter_mut().flatten() {
-        let mut s = c.io.0.borrow_mut();
-        if s.stream.as_raw_fd() != fd {
-            continue;
-        }
-        if events & (libc::POLLIN | libc::POLLERR | libc::POLLHUP) as i32 != 0 {
-            s.readable = true;
-            if let Some(w) = s.read.take() {
-                w.wake()
+pub unsafe extern "C" fn ar_hyper_ready(ptr: *mut c_void, fd: i32, events: i32) -> i32 {
+    engine_ffi(ptr, -2, |e| {
+        fault(16);
+        for c in e.conns.iter_mut().flatten() {
+            let mut s = c.io.0.borrow_mut();
+            if s.stream.as_raw_fd() != fd {
+                continue;
             }
-        }
-        if events & (libc::POLLOUT | libc::POLLERR | libc::POLLHUP) as i32 != 0 {
-            s.writable = true;
-            if let Some(w) = s.write.take() {
-                w.wake()
+            if events & (libc::POLLIN | libc::POLLERR | libc::POLLHUP) as i32 != 0 {
+                s.readable = true;
+                if let Some(w) = s.read.take() {
+                    w.wake()
+                }
             }
+            if events & (libc::POLLOUT | libc::POLLERR | libc::POLLHUP) as i32 != 0 {
+                s.writable = true;
+                if let Some(w) = s.write.take() {
+                    w.wake()
+                }
+            }
+            c.wake.set();
+            break;
         }
-        c.wake.set();
-        break;
-    }
+        0
+    })
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn ar_hyper_connections(ptr: *mut c_void) -> usize {
-    ffi(0, || {
-        (&*ptr.cast::<Engine>()).conns.iter().flatten().count()
+    engine_ffi(ptr, usize::MAX, |e| {
+        fault(17);
+        e.conns.iter().flatten().count()
     })
 }
+
+#[cfg(test)]
+mod tests;

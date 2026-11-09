@@ -3,21 +3,29 @@
 import asyncio
 import json
 import os
+import sys
 
 
 async def main():
     stopped = asyncio.Event()
     clients = set()
+    released = asyncio.Event()
+    gated = 0
+    ready_count = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+    assert 0 <= ready_count <= 256
     loop = asyncio.get_running_loop()
 
     def control():
         if not os.read(0, 1024):
             loop.remove_reader(0)
             stopped.set()
+        else:
+            released.set()
 
     loop.add_reader(0, control)
 
     async def client(reader, writer):
+        nonlocal gated
         clients.add(asyncio.current_task())
         try:
             while True:
@@ -39,8 +47,15 @@ async def main():
                     writer.write(b'0\r\nX-End: yes\r\n\r\n')
                 else:
                     writer.write(f'HTTP/1.1 200 OK\r\nContent-Length: {size}\r\n\r\n'.encode())
-                    writer.write(body[:-1] if kind in ('truncated', 'held') else body)
+                    writer.write(body[:-1] if kind in ('truncated', 'held', 'gated') else body)
                 await writer.drain()
+                if kind == 'gated':
+                    gated += 1
+                    if gated == ready_count:
+                        print(json.dumps({'prefixes': gated}), flush=True)
+                    await released.wait()
+                    writer.write(body[-1:])
+                    await writer.drain()
                 if kind == 'held':
                     await reader.read()  # Only owner cancellation releases this peer.
                     break
