@@ -9,6 +9,17 @@ if [[ ! -f "$inc/main/php.h" ]]; then
   exit 1
 fi
 python3 scripts/check-php-sdk.py "$inc" "${PHP_BIN:-php}"
+curl_inc=()
+curl_lib=(-l:libcurl.so.4)
+# Explicit isolated dependency builds only. Never install over the host library.
+if [[ -n "${CURL_PREFIX:-}" ]]; then
+  if [[ "$CURL_PREFIX" != /* || ! -f "$CURL_PREFIX/include/curl/curl.h" || ! -f "$CURL_PREFIX/lib/libcurl.so.4" ]]; then
+    echo 'CURL_PREFIX must be an absolute prefix containing curl headers and lib/libcurl.so.4.' >&2
+    exit 1
+  fi
+  curl_inc=("-I$CURL_PREFIX/include")
+  curl_lib=("-L$CURL_PREFIX/lib" "-Wl,-rpath,$CURL_PREFIX/lib" -l:libcurl.so.4)
+fi
 pq_flags=()
 if [[ -f .local/sysroot/usr/include/postgresql/libpq-fe.h ]]; then
   pq_flags=(-DHAVE_ASYNCARA_PQ=1 -I.local/sysroot/usr/include/postgresql -l:libpq.so.5)
@@ -21,7 +32,7 @@ fi
 "${CC:-cc}" -std=c11 -D_GNU_SOURCE -DCOMPILE_DL_ASYNCARA=1 -fPIC -shared \
   -O2 -g -Wall -Wextra -Werror -Wno-unused-parameter ${EXTRA_CFLAGS:-} \
   -I"$inc" -I"$inc/main" -I"$inc/Zend" -I"$inc/TSRM" -I"$inc/ext" \
-  -I.local/sysroot/usr/include -I.local/sysroot/usr/include/x86_64-linux-gnu \
+  "${curl_inc[@]}" -I.local/sysroot/usr/include -I.local/sysroot/usr/include/x86_64-linux-gnu \
   ext/php_asyncara.c ext/workers.c ext/backend.c ext/memory.c -o "${ASYNCARA_OUTPUT:-build/asyncara.so}" -pthread \
-  -l:libsqlite3.so.0 -l:libcurl.so.4 "${pq_flags[@]}" ${EXTRA_LDFLAGS:-}
+  -l:libsqlite3.so.0 "${curl_lib[@]}" "${pq_flags[@]}" ${EXTRA_LDFLAGS:-}
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_OUTPUT:-build/asyncara.so}" --ri asyncara
