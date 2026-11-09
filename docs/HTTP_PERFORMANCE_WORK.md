@@ -1,5 +1,23 @@
 # HTTP public-path performance investigation
 
+## HTTP capacity continuation (2026-11-09)
+
+Native `b1cfd18`, tests `9a59bef`: buffer growth now reserves the terminator
+without doubling exact power-of-two payload capacity. Four512KiB public responses
+complete under3MiB where the old implementation fails; two ticks during pending
+I/O, binary integrity, cancellation, bounds and zero-after-collection are tested.
+PHP83/84/85, DEBUG/GCC HTTP matrices, full85 suites, Gate A and scoped memory/
+short FPM tests pass. [HTTP_BUFFER_CAPACITY.md](HTTP_BUFFER_CAPACITY.md) records
+all exact identities and retained failures. The initial PHP83/poll progress
+failure remains unexplained. A separate early-release race in the test peer is
+fixed with a failing-before/passing-after regression; it is not a runtime change.
+
+Current public Hyper medians: 9301.92/s (1KiB),
+4970.34/s (64KiB). Requested performance:
+**NOT_MET**. Historical B2 remains FAIL; release EXPERIMENTAL.
+No Phase4 files or installed campaign module were changed.
+
+## Previous recorded checkpoint
 ## Latest native checkpoint: 84e49f137396c58e0954f2ba90dc8dd61df2615e
 
 HEAD framing is repaired; see [HTTP_HEAD_SAFETY.md](HTTP_HEAD_SAFETY.md).

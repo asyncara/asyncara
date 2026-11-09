@@ -2031,3 +2031,14 @@ Hyper ownership test pass. The test is wired into the HTTP gate/full suite.
 This does not explain the separate PHP8.3 connection-progress failure or historical
 Phase4/B2 failures. Native source remains b1cfd18; final validation restarts with
 new artifact paths and the corrected peer protocol.
+
+### Capacity source validation and public measurement completed
+
+Native b1cfd18/test9a59bef passed the final scoped compatibility and memory
+checks, full85 suites, Gate A and short feature FPM; exact commands/hashes and
+recomputed assertions are in docs/phase6/http-capacity-evidence.json.
+The first PHP83/poll connection failure remains unresolved; later passes do not
+erase it. The separate test-peer early-release regression is corrected without
+changing runtime/thresholds. Public comparison status remains NOT_MET;
+no microbenchmark or native capacity claim is substituted for public throughput.
+New source archive/independent extraction validation is the next step.

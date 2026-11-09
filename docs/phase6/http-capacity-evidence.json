@@ -1,0 +1,541 @@
+{
+  "status": "IMPLEMENTED_AND_TESTED_SCOPED",
+  "release": "EXPERIMENTAL",
+  "nativeSource": "b1cfd18a97eb9962761ba1c4c2fad0bad3ef25bb",
+  "testSource": "9a59bef23a584ed1b6a0702f380be5ba5c690b19",
+  "baseline": "c2dc5594b6f0d0b60e94a73f1209cda3e03b0142",
+  "module": "/home/coder/Asyncara-http-capacity-20261109T190638Z/build/http-capacity-r1-85.so",
+  "moduleSha256": "435da35dd414bfd2e756006b02e6ee142586037e02c7a0975fa0a1367ae67bb5",
+  "performanceStatus": "NOT_MET",
+  "publicComparison": {
+    "1024": {
+      "asyncara": {
+        "medianRps": 9301.916324117543,
+        "minimumRps": 4257.910968785872,
+        "medianCpuUs": 96.27493749999998,
+        "medianNativePeak": 294656
+      },
+      "asyncara_curl": {
+        "medianRps": 6762.6654300546825,
+        "minimumRps": 6042.288467164856,
+        "medianCpuUs": 140.55425,
+        "medianNativePeak": 294720
+      },
+      "asyncara_baseline": {
+        "medianRps": 7147.14633362268,
+        "minimumRps": 5384.255121775461,
+        "medianCpuUs": 114.67831249999999,
+        "medianNativePeak": 294592
+      },
+      "curl_multi": {
+        "medianRps": 8730.990716484906,
+        "minimumRps": 7038.8513734852395,
+        "medianCpuUs": 101.1495625,
+        "medianNativePeak": null
+      },
+      "swoole": {
+        "medianRps": 7813.950334807114,
+        "minimumRps": 7205.837286654581,
+        "medianCpuUs": 101.57925000000002,
+        "medianNativePeak": null
+      }
+    },
+    "65536": {
+      "asyncara": {
+        "medianRps": 4970.341134154204,
+        "minimumRps": 3626.2857637858106,
+        "medianCpuUs": 189.01325,
+        "medianNativePeak": 2260768
+      },
+      "asyncara_curl": {
+        "medianRps": 2860.0286761275715,
+        "minimumRps": 2577.139252226665,
+        "medianCpuUs": 325.0161875,
+        "medianNativePeak": 2260832
+      },
+      "asyncara_baseline": {
+        "medianRps": 3639.102269242553,
+        "minimumRps": 3193.8796489145525,
+        "medianCpuUs": 242.8765625,
+        "medianNativePeak": 4357856
+      },
+      "curl_multi": {
+        "medianRps": 5537.474917397374,
+        "minimumRps": 4048.4714345433613,
+        "medianCpuUs": 162.8701875,
+        "medianNativePeak": null
+      },
+      "swoole": {
+        "medianRps": 5792.458053298654,
+        "minimumRps": 5126.072609708722,
+        "medianCpuUs": 156.58712500000004,
+        "medianNativePeak": null
+      }
+    }
+  },
+  "validation": {
+    "http-85-r3": {
+      "status": "PASS",
+      "commands": 59,
+      "wallSeconds": 93.97594185406342,
+      "cpuSeconds": 54.863131999999986,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-85-r3-data/report.json",
+      "sha256": "bb3fb339623c730cd89b593b90f9f75a17faa7fd0bd9e416666e80182fdb9a85"
+    },
+    "http-83-r3": {
+      "status": "PASS",
+      "commands": 46,
+      "wallSeconds": 67.62768209492788,
+      "cpuSeconds": 34.23264800000001,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-83-r3-data/report.json",
+      "sha256": "3ba2de7434c3e5d0b81213405b9a1a1d4511e0da4e28c5440a0c839a7ce07794"
+    },
+    "http-84": {
+      "status": "PASS",
+      "commands": 46,
+      "wallSeconds": 64.96654162183404,
+      "cpuSeconds": 30.838572,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-84-data/report.json",
+      "sha256": "a8d4246952da3a83fd165fc04dd86f3c3deb5aab98340930979df3ed795bc235"
+    },
+    "http-debug": {
+      "status": "PASS",
+      "commands": 46,
+      "wallSeconds": 72.30818936717696,
+      "cpuSeconds": 40.928646,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-debug-data/report.json",
+      "sha256": "66231cf5fb25491dff2f29829e9f39f7d21523affba6a1b5d3cf3452352dd6ba"
+    },
+    "http-gcc": {
+      "status": "PASS",
+      "commands": 46,
+      "wallSeconds": 173.66108540608548,
+      "cpuSeconds": 148.072222,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-gcc-data/report.json",
+      "sha256": "f414f68c35074ef0738e2e14b5271040baee71322fd02a130ec2206546ca3108"
+    },
+    "gate-A": {
+      "status": "PASS",
+      "commands": 47,
+      "wallSeconds": 201.82157832896337,
+      "cpuSeconds": 191.881752,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/gate-A-data/report.json",
+      "sha256": "a6b2ac49537992974f6d5aa24b5fe03e6a2fd5bcb73d9bbc724914ac2a1a741e"
+    },
+    "full-r2-epoll": {
+      "status": "PASS",
+      "wallSeconds": 36.10053718998097,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/full-r2-epoll/result.json",
+      "sha256": "e56b496c66048359a18bb28f6111c13d692823b4c9f64de467ace952d9d92ae7"
+    },
+    "full-r2-poll": {
+      "status": "PASS",
+      "wallSeconds": 38.35900067491457,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/full-r2-poll/result.json",
+      "sha256": "a9543b81ae9099a332ea5202d4519e373489c2b1c45e8e28412ce472598ff3ad"
+    },
+    "headers-debug-valgrind": {
+      "status": "PASS",
+      "wallSeconds": 36.967345788143575,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/headers-debug-valgrind/result.json",
+      "sha256": "15bd304460ff67f06ccf2558a458539e3461ee3a91359e57b89527ff5569eaa2"
+    },
+    "capacity-native-valgrind": {
+      "status": "PASS",
+      "wallSeconds": 2.04875468602404,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-native-valgrind/result.json",
+      "sha256": "4dbae60171aa14016df1b15cefa42eb74b8f3b67194761e605d4b4c9613c84cd"
+    },
+    "capacity-asan-run": {
+      "status": "PASS",
+      "wallSeconds": 0.21623866516165435,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/capacity-asan-run/result.json",
+      "sha256": "161082095476cfb74f3b95414206e1bc3e0860f5b773e606720305390073b4be"
+    },
+    "http-buffer-fuzz": {
+      "status": "PASS",
+      "wallSeconds": 41.90871452912688,
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-buffer-fuzz/result.json",
+      "sha256": "57c744c4d85b2e92b129bd6ecfade2539a1c204a44572ce0506fc6cf30890580"
+    }
+  },
+  "fpm": [
+    {
+      "name": "fpm",
+      "status": "PASS_SCOPED_SHORT_FPM",
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/fpm-data/report.json",
+      "sha256": "ce229d072d23d26e452442b847520d5332bdd11c173174a2860b1093c3702d03",
+      "cases": [
+        {
+          "name": "A-lifecycle",
+          "responses": 20,
+          "workers": [
+            4137868
+          ],
+          "minTicks": 10,
+          "idleRssKiBRange": [
+            20844,
+            21220
+          ],
+          "idleSamples": [
+            {
+              "pid": 4137868,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20844,
+              "virtualKiB": 509712,
+              "idleWaitSeconds": 0.0013862040359526873,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4137868,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20980,
+              "virtualKiB": 509712,
+              "idleWaitSeconds": 0.006739877164363861,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4137868,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 21220,
+              "virtualKiB": 509712,
+              "idleWaitSeconds": 0.009055644972249866,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        },
+        {
+          "name": "HTTP-four-workers",
+          "responses": 40,
+          "workers": [
+            4138088,
+            4138089,
+            4138090,
+            4138091
+          ],
+          "minTicks": 9,
+          "idleRssKiBRange": [
+            18952,
+            20796
+          ],
+          "idleSamples": [
+            {
+              "pid": 4138088,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20580,
+              "virtualKiB": 509792,
+              "idleWaitSeconds": 0.0008743409998714924,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138089,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20784,
+              "virtualKiB": 509724,
+              "idleWaitSeconds": 0.0004028098192065954,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138090,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 20796,
+              "virtualKiB": 509792,
+              "idleWaitSeconds": 0.0005636438727378845,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138091,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 18952,
+              "virtualKiB": 509692,
+              "idleWaitSeconds": 0.0005540840793401003,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hyper_fpm",
+      "status": "PASS_SCOPED_SHORT_FPM",
+      "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/hyper_fpm-data/report.json",
+      "sha256": "423f59e047b4f84fcb5f70d09ca3d2ea265b90e44aac01e43206216fb1cb00f3",
+      "cases": [
+        {
+          "name": "A-lifecycle",
+          "responses": 20,
+          "workers": [
+            4138501
+          ],
+          "minTicks": 21,
+          "idleRssKiBRange": [
+            17556,
+            18004
+          ],
+          "idleSamples": [
+            {
+              "pid": 4138501,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17556,
+              "virtualKiB": 214192,
+              "idleWaitSeconds": 0.0006959871388971806,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138501,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17576,
+              "virtualKiB": 214192,
+              "idleWaitSeconds": 0.002423810074105859,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138501,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 18004,
+              "virtualKiB": 214192,
+              "idleWaitSeconds": 0.013314170995727181,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        },
+        {
+          "name": "Hyper-four-workers",
+          "responses": 40,
+          "workers": [
+            4138585,
+            4138588,
+            4138589,
+            4138590
+          ],
+          "minTicks": 23,
+          "idleRssKiBRange": [
+            15648,
+            17516
+          ],
+          "idleSamples": [
+            {
+              "pid": 4138585,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 17516,
+              "virtualKiB": 214204,
+              "idleWaitSeconds": 0.0011078780516982079,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138588,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 15648,
+              "virtualKiB": 214340,
+              "idleWaitSeconds": 0.0005979449488222599,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138589,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 15656,
+              "virtualKiB": 214336,
+              "idleWaitSeconds": 0.0008070999756455421,
+              "transientThreadsBeforeReaping": 1
+            },
+            {
+              "pid": 4138590,
+              "fds": 6,
+              "sockets": 1,
+              "threads": 1,
+              "rssKiB": 15648,
+              "virtualKiB": 214336,
+              "idleWaitSeconds": 0.0005253730341792107,
+              "transientThreadsBeforeReaping": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "controls": {
+    "baseline-run": {
+      "exit": 2,
+      "expectedExit": 2,
+      "sha256": "d55803a243290dcab075f0edfac6397e9b1c11e97518012b824447a16f456072",
+      "wallSeconds": 0.2100172690115869
+    },
+    "native-run": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "22c61d5ffb7e248873497846c03c4779c14de9cbe649a9cd3811f2443dcf5eff",
+      "wallSeconds": 0.14185296511277556
+    },
+    "capacity-before-epoll-curl": {
+      "exit": 255,
+      "expectedExit": 255,
+      "sha256": "4ec3aeb7ed069b0391ab4ac37b0357bbc7072fc07519626f65bd3501913322b4",
+      "wallSeconds": 0.5590637209825218
+    },
+    "capacity-before-epoll-hyper-prototype": {
+      "exit": 255,
+      "expectedExit": 255,
+      "sha256": "0860e8dd5f633fc27f94e7ddc0a2420f1a613280bdf284b4d17b5dc1ac2e2059",
+      "wallSeconds": 0.8666143328882754
+    },
+    "capacity-before-poll-curl": {
+      "exit": 255,
+      "expectedExit": 255,
+      "sha256": "90b2d7d3ec144ac29a7644777fbc89ef7e33e4c4ae86b9babda9bd08f83eb0dd",
+      "wallSeconds": 0.49035818316042423
+    },
+    "capacity-before-poll-hyper-prototype": {
+      "exit": 255,
+      "expectedExit": 255,
+      "sha256": "5e47f7aa097ed3ac51e976b3a3ca2f9b107b95171213ba255a3ac596ffe71622",
+      "wallSeconds": 0.4517248449847102
+    },
+    "capacity-after-epoll-curl": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "1371d458d46c69ca2b98c8d2a30024ea7c27ae5985a6449f97a34a04b322ab83",
+      "wallSeconds": 0.5799005550798029
+    },
+    "capacity-after-epoll-hyper-prototype": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "a3887590bd4edaafcac97f24125ff1e8f2d1136a0850e9f8061b3fdf8f4193ba",
+      "wallSeconds": 0.31512411613948643
+    },
+    "capacity-after-poll-curl": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "6068071228537bc43320ba24363308fff2a6d569eec6eda5fe2f4016042e2bf4",
+      "wallSeconds": 0.36004172917455435
+    },
+    "capacity-after-poll-hyper-prototype": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "e259e47e55815e599560af1411b8a10eb2ed9f06f9828c99bd76b2fb768df4ac",
+      "wallSeconds": 0.3540580540429801
+    },
+    "gate-before": {
+      "exit": 255,
+      "expectedExit": 255,
+      "sha256": "58e50deea04dcf27a52fbbc6c9d66ccee655a5e5405a8c17e2974ef37243811c",
+      "wallSeconds": 16.12649580393918
+    },
+    "gate-after-epoll-curl": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "eb1e4650b6e6a188e738acfef9f155539ab542dd7bf029c65c6d3083d36917a1",
+      "wallSeconds": 1.3423725210595876
+    },
+    "gate-after-epoll-hyper-prototype": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "2651bbd736d44cd702b60bcf131e07d4b3d945dbf63674da166683def26f18cf",
+      "wallSeconds": 1.24642822612077
+    },
+    "gate-after-poll-curl": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "a390f50e2957d84a6c86cc58776d003f0797d6c17f513b9cce5fb71e0e3cfd1d",
+      "wallSeconds": 1.4416351469699293
+    },
+    "gate-after-poll-hyper-prototype": {
+      "exit": 0,
+      "expectedExit": 0,
+      "sha256": "f766b158cc9b50d9690ab950ffd9f91e640c154d8117317b0678f73937353934",
+      "wallSeconds": 1.277908394811675
+    }
+  },
+  "artifacts": {
+    "source-r3.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/source-r3.json",
+      "sha256": "2cb4c086c3d71deb2aea8cda357c9b31ea444da43a71800963453693bdd23c8e"
+    },
+    "native-manifest.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/native-manifest.json",
+      "sha256": "f438fc57bfcc80fd6cb54566fa52d68eba195288330defaa7d0c3e15d3c0214b"
+    },
+    "independent-review.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/independent-review.json",
+      "sha256": "4f2d174492be031459f83bbd4da9f9f17b8902dc085ada43e4b33952a3be855f"
+    },
+    "validation-terminal.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/validation-terminal.json",
+      "sha256": "100861aa720cbe138d1ef89ec34002072e674c0ae3d056df3a6fbc0ac45c1846"
+    },
+    "comparison-data/report.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/comparison-data/report.json",
+      "sha256": "6a0bef51a2660c525c874eb6f9c889ed6849bddb5e96e08ef14b58a6d78b1bc2"
+    },
+    "host-snapshot.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/host-snapshot.json",
+      "sha256": "b923c9ead3fe49120defde01428289edb53de3d569c6a2a1053bea8aea723306"
+    },
+    "preserved-phase4.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/preserved-phase4.json",
+      "sha256": "b91761c39ec0b3da40d271cca8ae031ef9ca7ae34f23c58ce030684d98e59bf3"
+    },
+    "gate-original-identity.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/gate-original-identity.json",
+      "sha256": "3d4761fccffb737a9ceb998cea824dd69d9b76b2ff1afd655b570e9dd8bbdc3e"
+    },
+    "connections-control-results.json": {
+      "path": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/connections-control-results.json",
+      "sha256": "0b7f9cd041424c8e8e236ba8eaed585e861150a5935ac9390b73f357c60e4518"
+    }
+  },
+  "preservedFailure": {
+    "report": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-83-data/poll-connections-32.log",
+    "sha256": "6a8865238f846ad0733d61288ba4aedec1434ba8fd89cdb218fe1fb526e49c30",
+    "status": "FAIL: original predicate values unavailable; independent successful repetitions do not explain it"
+  },
+  "fixtureCorrection": {
+    "commit": "9a59bef23a584ed1b6a0702f380be5ba5c690b19",
+    "originalFailure": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/http-85-r2-data/poll-prototype-buffered_owner.log",
+    "originalFailureSha256": "967cfd6c446f94b65b749144d644e4d1aa8562ff3a7095b9b50b2d5d334d6495",
+    "conclusion": "Early release is deterministically lost by old Event.clear and retained by corrected counting semaphore. The original failure did not record peer ordering. This does not resolve the separate connection-progress or historical B2 failure."
+  },
+  "infrastructureFailures": {
+    "full-epoll": {
+      "log": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/full-epoll/stdout.log",
+      "sha256": "99ae40029c67b3ccfdd22e6dc25afb6738668e427866dc13233ceb95a35899db",
+      "cause": "Nyholm PSR17Factory missing because locked dev dependencies were not installed in isolated checkout;43 core tests passed,1 failed. Composer install from unchanged lock repaired environment; full-r2 both pass."
+    },
+    "composer-install": {
+      "log": "/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z/composer-install/stdout.log",
+      "sha256": "49ed328ed96d9f849a9777832f62dc9c0ab7bab307ea5f77129bbdda7842b8ee",
+      "cause": "-n disabled Phar; retry loads matching isolated PHP8.5.12 extension modules. No global configuration change."
+    }
+  },
+  "limitations": [
+    "Not a long-duration endurance review",
+    "No global memory-safety guarantee",
+    "Rust machine code not ASan-instrumented",
+    "No performance target inferred from functional passes"
+  ]
+}

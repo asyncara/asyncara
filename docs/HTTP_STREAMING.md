@@ -209,3 +209,13 @@ are described in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
 [HYPER_EXPERIMENT.md](HYPER_EXPERIMENT.md). Streaming, uploads and downloads keep
 their curl multi and worker-backed disk paths. The prototype explicitly rejects
 these operations instead of claiming support or silently mixing pools.
+
+
+## Buffer-capacity accounting correction
+
+Native b1cfd18 reserves the terminating byte separately from geometric payload
+capacity; exact64KiB payloads no longer trigger the next capacity tier. Payload,
+header, pause, upload and queue limits are unchanged. Failed growth retains the
+original owner and bytes. The ledger is not a complete process memory limit.
+See [capacity evidence](HTTP_BUFFER_CAPACITY.md) for before/after real-I/O tests,
+scoped instruments and retained unrelated failures.
