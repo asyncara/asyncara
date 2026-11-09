@@ -2,6 +2,8 @@
 declare(strict_types=1);
 require (getenv('ASYNCARA_SOURCE_ROOT') ?: dirname(__DIR__,2)).'/autoload.php';
 [$script,$mode,$url,$count,$concurrency,$size]=$argv;
+$pattern=getenv('ASYNCARA_HTTP_BENCH_PATTERN') ?: 'workers';
+if (!in_array($pattern,['workers','batch'],true)) throw new ValueError('Invalid public API benchmark pattern');
 $count=(int)$count;$concurrency=(int)$concurrency;$size=(int)$size;
 if ($count%$concurrency) throw new ValueError('Count must divide concurrency');
 $body=str_repeat('x',$size);$latencies=[];$elapsed=0;$cpu=0;
@@ -28,12 +30,23 @@ if ($mode==='asyncara_raw') {
  }
 } elseif ($mode==='asyncara') {
  if(function_exists('asyncara_http_limits')) Asyncara\Runtime::configure(['httpMaxConnections'=>$concurrency,'httpMaxHostConnections'=>$concurrency]);
- Asyncara\Async::run(function()use($url,$count,$concurrency,&$latencies,&$elapsed,&$cpu){
+ Asyncara\Async::run(function()use($url,$count,$concurrency,$pattern,&$latencies,&$elapsed,&$cpu){
   $client=new Asyncara\HTTP\HttpClient(concurrency:$concurrency,timeout:10);
   foreach([10,$count/$concurrency]as$phase=>$perWorker){
    $times=[];$start=hrtime(true);$before=cpu();$tasks=[];
-   for($w=0;$w<$concurrency;$w++)$tasks[]=Asyncara\Async::spawn(function()use($client,$url,$perWorker,&$times){for($i=0;$i<$perWorker;$i++){$s=hrtime(true);$r=$client->get($url)->await();verifyResponse($r->status,$r->body);$times[]=(hrtime(true)-$s)/1e6;}});
-   Asyncara\Async::gather($tasks);
+   if($pattern==='batch') {
+    // Existing public API, one root Fiber: admit a bounded batch then await
+    // each response. This introduces a batch barrier, unlike rolling workers.
+    // Preserve both patterns; never substitute this result for worker mode.
+    for($i=0;$i<$perWorker;$i++){
+     $batch=[];
+     for($w=0;$w<$concurrency;$w++){$s=hrtime(true);$batch[]=[$client->get($url),$s];}
+     foreach($batch as[$future,$s]){$r=$future->await();verifyResponse($r->status,$r->body);$times[]=(hrtime(true)-$s)/1e6;}
+    }
+   } else {
+    for($w=0;$w<$concurrency;$w++)$tasks[]=Asyncara\Async::spawn(function()use($client,$url,$perWorker,&$times){for($i=0;$i<$perWorker;$i++){$s=hrtime(true);$r=$client->get($url)->await();verifyResponse($r->status,$r->body);$times[]=(hrtime(true)-$s)/1e6;}});
+    Asyncara\Async::gather($tasks);
+   }
    if($phase){$elapsed=(hrtime(true)-$start)/1e9;$cpu=cpu()-$before;$latencies=$times;}
   }
  });
