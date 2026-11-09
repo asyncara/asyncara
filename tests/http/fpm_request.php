@@ -39,7 +39,7 @@ $result = Async::run(function () use ($url, $dir, $path): array {
     $intervals = array_map(static fn($r) => $r->json(), Async::gather($jobs));
     $ticker->await();
     if ($ticks < 2 || max(array_column($intervals,'start')) >= min(array_column($intervals,'end')))
-        throw new RuntimeException('Original overlap/two-tick condition failed');
+        throw new RuntimeException('Original overlap/two-tick condition failed: '.json_encode(['ticks'=>$ticks,'intervals'=>$intervals],JSON_THROW_ON_ERROR));
     $parts = $mime->await()->json()['parts'];
     if (count($parts) !== 3 || $parts[1]['sha256'] !== hash('sha256', str_repeat('m',65536)) || $parts[2]['sha256'] !== $parts[1]['sha256'])
         throw new RuntimeException('Multipart mismatch');

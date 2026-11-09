@@ -140,7 +140,72 @@ static void http_action(ar_engine *e, curl_socket_t fd, int events) {
     curl_multi_cleanup(e->multi); e->multi = NULL; e->running = 0;
     while (e->sockets) { ar_socket *s = e->sockets; e->sockets = s->next; ar_free(s); }
 }
+#ifdef HAVE_ASYNCARA_HYPER
+/* Experimental bridge callbacks execute exclusively on the interpreter thread.
+ * No Zend API or application callback is invoked while Rust owns a borrow. */
+int ar_hyper_head(void *job, int status, const unsigned char *p, size_t n) {
+    ar_job *j = job; if (status) j->status = status;
+    return receive_buffer((char *)p, 1, n, j, 1) == n ? 0 : -1;
+}
+int ar_hyper_chunk(void *job, const unsigned char *p, size_t n) {
+    return receive_buffer((char *)p, 1, n, job, 0) == n ? 0 : -1;
+}
+void ar_hyper_complete(void *job, const unsigned char *error, size_t n) {
+    ar_job *j = job;
+    if (n && !j->error[0]) snprintf(j->error, sizeof(j->error), "%.*s", (int)(n > 511 ? 511 : n), error);
+    j->engine->hyper_completed++;
+    ar_done(j->engine, j);
+}
+void ar_hyper_failed(ar_engine *e) {
+    /* An unexpected Rust unwind invalidates the complete prototype engine. */
+    ar_hyper_free(e->hyper); e->hyper = NULL;
+    for (ar_job *j = e->jobs; j; j = j->next) {
+        if (!j->http_hyper || j->done) continue;
+        snprintf(j->error, sizeof(j->error), "Hyper engine failed"); ar_done(e, j);
+    }
+}
+static int hyper_progress(ar_engine *e) {
+    int result = e->hyper ? ar_hyper_drive(e->hyper) : 0;
+    if (result < 0) ar_hyper_failed(e);
+    return result;
+}
+static void hyper_start(ar_engine *e, ar_job *j) {
+    /* Deliberately narrow evaluation scope. Never silently bypass a proxy,
+     * discard options, or mix independently bounded connection pools. */
+    if (j->stream_response || j->stream_upload || j->b) goto unsupported;
+    const char *proxy[] = {"http_proxy", "HTTP_PROXY", "all_proxy", "ALL_PROXY"};
+    for (size_t i = 0; i < sizeof(proxy)/sizeof(*proxy); i++) {
+        const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
+    }
+    uint64_t connect = 10000;
+    if (j->params) for (size_t i = 0; i < j->params->count; i++) {
+        const char *key = j->params->keys[i]; ar_value *v = j->params->items[i];
+        if (!key) goto unsupported;
+        if (!strcmp(key, "method")) { if (strcmp(v->string, "GET")) goto unsupported; }
+        else if (!strcmp(key, "headers")) { if (v->count) goto unsupported; }
+        else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
+        else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
+        else goto unsupported;
+    }
+    if (!e->hyper) e->hyper = ar_hyper_new(e->http_max_connections, e->http_max_host_connections);
+    if (!e->hyper) goto unsupported;
+    if (ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect)) goto unsupported;
+    j->http_hyper = 1; e->hyper_submitted++;
+    return;
+unsupported:
+    snprintf(j->error, sizeof(j->error), "Hyper prototype supports numeric-address plain HTTP GET only, without proxies, redirects, custom headers or streaming");
+    ar_done(e, j);
+}
+#endif
 void ar_http_start(ar_engine *e, ar_job *j) {
+    if (e->hyper_requested) {
+#ifdef HAVE_ASYNCARA_HYPER
+        hyper_start(e, j);
+#else
+        snprintf(j->error, sizeof(j->error), "Hyper prototype not built"); ar_done(e, j);
+#endif
+        return;
+    }
     if (!e->multi) {
         e->multi = curl_multi_init();
         if (!e->multi)
@@ -411,6 +476,15 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         if (dispatch) deadline = 0;
     }
     ar_http_progress(e);
+#ifdef HAVE_ASYNCARA_HYPER
+    if (hyper_progress(e)) deadline = 0;
+    int hyper_timeout = e->hyper ? ar_hyper_timeout(e->hyper) : -1;
+    if (hyper_timeout >= 0 && deadline != 0) {
+        int64_t hyper_deadline;
+        if (deadline_for(hyper_timeout, &hyper_deadline)) return -1;
+        if (deadline < 0 || hyper_deadline < deadline) deadline = hyper_deadline;
+    }
+#endif
     pthread_mutex_lock(&e->mutex);
     int done = e->done_head != NULL;
     pthread_mutex_unlock(&e->mutex);
@@ -431,11 +505,15 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     size_t ns = 0;
     for (ar_socket *s = e->sockets; s; s = s->next)
         ns++;
-    if (n + ns + 1 > AR_MAX_WATCHERS) {
+    size_t nh = 0;
+#ifdef HAVE_ASYNCARA_HYPER
+    if (e->hyper) nh = ar_hyper_fds(e->hyper, NULL, 0);
+#endif
+    if (nh > 256 || n + ns + nh + 1 > AR_MAX_WATCHERS) {
         errno = EOVERFLOW;
         return -1;
     }
-    struct pollfd *fds = calloc(n + ns + 1, sizeof(*fds));
+    struct pollfd *fds = calloc(n + ns + nh + 1, sizeof(*fds));
     /* Preserve the small-set path. Larger sets previously compared every new
      * descriptor with every existing descriptor (quadratic setup each wait).
      * A <= half-full index merges interests without changing input/dispatch
@@ -493,6 +571,10 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         fds[count].fd = s->fd;
         fds[count++].events = events;
     }
+    size_t curl_end = count;
+#ifdef HAVE_ASYNCARA_HYPER
+    if (e->hyper) count += ar_hyper_fds(e->hyper, fds + count, nh);
+#endif
     int rc = wait_fds(e, fds, count, deadline);
     if (rc >= 0) {
         for (size_t i = 0; i < n; i++)
@@ -501,7 +583,7 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         for (size_t i = 0; i < n; i++) if (w[i].ready)
             ar_trace_emit(e, AR_TRACE_IO, 52, w[i].key, w[i].fd, fds[indices[i]].revents, w[i].buffered);
         if (e->multi) {
-            for (size_t i = curl_start; i < count; i++)
+            for (size_t i = curl_start; i < curl_end; i++)
                 if (fds[i].revents) {
                     int action = (fds[i].revents & POLLIN ? CURL_CSELECT_IN : 0) |
                                  (fds[i].revents & POLLOUT ? CURL_CSELECT_OUT : 0) |
@@ -517,6 +599,13 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
             ar_http_progress(e);
         }
     }
+#ifdef HAVE_ASYNCARA_HYPER
+    if (e->hyper) {
+        for (size_t i = curl_end; i < count; i++) if (fds[i].revents)
+            ar_hyper_ready(e->hyper, fds[i].fd, fds[i].revents);
+        hyper_progress(e);
+    }
+#endif
     int saved = errno;
     free(fds);
     free(indices);

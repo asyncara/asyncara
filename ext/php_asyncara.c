@@ -492,6 +492,15 @@ PHP_FUNCTION(asyncara_info) {
 #endif
     add_assoc_string(return_value, "filesystemBackend", "pthread-workers");
     add_assoc_string(return_value, "networkBackend", "nonblocking-streams+curl-multi");
+    add_assoc_string(return_value, "httpBackend", e->hyper_requested ? "hyper-prototype" : "curl-multi");
+#ifdef HAVE_ASYNCARA_HYPER
+    add_assoc_bool(return_value, "hyperPrototypeBuilt", 1);
+    add_assoc_long(return_value, "hyperConnections", e->hyper ? ar_hyper_connections(e->hyper) : 0);
+#else
+    add_assoc_bool(return_value, "hyperPrototypeBuilt", 0);
+#endif
+    add_assoc_long(return_value, "hyperSubmitted", e->hyper_submitted);
+    add_assoc_long(return_value, "hyperCompleted", e->hyper_completed);
     add_assoc_string(return_value, "dnsBackend", "worker-getaddrinfo");
     add_assoc_string(return_value, "sqliteVersion", sqlite3_libversion());
     add_assoc_string(return_value, "curlVersion", curl_version_info(CURLVERSION_NOW)->version);
