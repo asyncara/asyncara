@@ -259,3 +259,38 @@ Memory acceptance of the affected curl path remains **FAIL**. Deployments need a
 vetted package containing the trailer fix or a separately validated newer curl,
 then must rerun the exact regression. A clean scoped Hyper result cannot erase
 this default-backend dependency failure. No universal memory-clean claim follows.
+
+### Matched isolated trailer correction (continuation)
+
+Evidence: `/home/coder/Asyncara-http-continuation-20261109T224615Z`.
+Official curl8.5.0 archive SHA256:
+`42ab8db9e20d8290a3b633e7fbb3cec15db34df65fd1015ef8ac1e4723750eeb`.
+Its detached signature verifies against the publisher's HTTPS-delivered key
+`27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2`; no local web-of-trust claim.
+The two extracted trees differ only by `Curl_dyn_reset` → `Curl_dyn_free` for
+`conn->trailer` in `lib/http_chunks.c`, as in the maintainer-vetted patch linked
+above. Configuration/compiler settings are identical apart from separate prefixes.
+Both include OpenSSL3.0.13, zlib1.3 and threaded DNS. LDAP, PSL, IDN2 and HTTP/2
+are absent in this **diagnostic configuration**.
+
+The standalone reuse control fails on unpatched upstream8.5.0 with288 definitely
+lost bytes/9blocks, then passes with zero definite/indirect/possible losses after
+the single-line correction. Both no-reuse controls pass. All four retain56
+reachable loader bytes; no suppressions. Reports: `curl-{upstream,patched}-control-data/`.
+Patched library SHA256:
+`1700e28526f921a11cb80e07ef90bdbd0d4f2587173631d60219b754efe53e17`.
+
+The real Asyncara160-response binary/chunked/trailer regression also passes
+scoped GCC ASan/UBSan and DEBUG Valgrind on both epoll/poll with that isolated
+library (`gcc-*-curl-multi-transfer_geometry`, `valgrind-*-transfer_geometry`).
+The Valgrind scope reports zero lost bytes; exact remaining reachable allocations
+are retained in each log. Rust machine code and the dependency are not compiled
+with ASan merely because Asyncara's C/PHP test binary is instrumented.
+
+`scripts/build-local.sh` accepts explicit `CURL_PREFIX=/absolute/prefix`; the
+control runner accepts `--curl-prefix`. Missing headers/library reject. `ldd`
+records confirm the actual selected dependency. The system library is untouched
+and its previous FAIL remains valid. This experiment proves the trailer repair;
+it does **not** recommend deploying an otherwise unpatched old8.5.0 tarball or
+certify all TLS/proxy/security behavior. Use a maintained vendor/upstream build
+and revalidate the required configuration before deployment.
