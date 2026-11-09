@@ -1,5 +1,7 @@
 #include "../../ext/backend.c"
 #include <assert.h>
+#include <arpa/inet.h>
+#include <sys/wait.h>
 /* Real multi setup/ownership; inject only the documented action error result. */
 CURLMcode __real_curl_multi_socket_action(CURLM *,curl_socket_t,int,int *);
 static int fail_action;
@@ -13,11 +15,30 @@ int main(void) {
     ar_job *j=ar_job_new(e,OP_HTTP);assert(j);
     char bytes[65536];memset(bytes,'a',sizeof(bytes));
     for (int i=0;i<32;i++)assert(receive_body(bytes,1,sizeof(bytes),j)==sizeof(bytes));
-    char *original=j->body;size_t charged=atomic_load(&e->memory_bytes);
-    ar_value *v=take_http_buffer(e,&j->body,&j->body_len,&j->body_capacity);
-    assert(v && v->string==original && v->length==2097152 && !j->body);
-    assert(atomic_load(&e->memory_bytes)-charged<1024);
-    ar_value_free(v);ar_job_free(j);assert(!atomic_load(&e->memory_bytes));
+    assert(j->body_len==2097152 && !memcmp(j->body,bytes,sizeof(bytes)));
+    ar_job_free(j);assert(!atomic_load(&e->memory_bytes));
+    /* Real HTTP completion retains the original buffers on the job, without
+     * constructing a generic native response tree. Collection frees once. */
+    for (int backend=0;backend<2;backend++) {
+        e->use_epoll=backend;
+        int server=socket(AF_INET,SOCK_STREAM|SOCK_CLOEXEC,0);assert(server>=0);
+        struct sockaddr_in addr={.sin_family=AF_INET,.sin_addr.s_addr=htonl(INADDR_LOOPBACK)};
+        assert(!bind(server,(struct sockaddr *)&addr,sizeof(addr)) && !listen(server,8));
+        socklen_t length=sizeof(addr);assert(!getsockname(server,(struct sockaddr *)&addr,&length));
+        pid_t child=fork();assert(child>=0);
+        if(!child){
+            alarm(10);int peer=accept(server,NULL,NULL);assert(peer>=0);char request[4096];assert(read(peer,request,sizeof(request))>0);
+            const char response[]="HTTP/1.1 200 OK\r\nContent-Length: 4\r\nConnection: close\r\n\r\nbody";
+            assert(write(peer,response,sizeof(response)-1)==sizeof(response)-1);close(peer);close(server);_exit(0);
+        }
+        char url[80];snprintf(url,sizeof(url),"http://127.0.0.1:%u/",ntohs(addr.sin_port));
+        j=ar_job_new(e,OP_HTTP);assert(j);j->a=ar_strdup(e,url);j->length=2000;assert(!ar_submit(e,j));
+        for(int turn=0;!j->done && turn<20;turn++)assert(ar_wait(e,NULL,0,1000)>=0);
+        assert(j->done && !j->error[0] && !j->result && j->body_len==4 && !memcmp(j->body,"body",4));
+        char *original=j->body;assert(ar_collect(e)==j && j->body==original);ar_job_free(j);
+        int status;assert(waitpid(child,&status,0)==child && WIFEXITED(status) && WEXITSTATUS(status)==0);close(server);
+        assert(!e->pending && !atomic_load(&e->memory_bytes));
+    }
     /* Empty first file, partial second-file reads and invalid part ordering
      * use the actual libcurl read callback and the same shared bounded slot. */
     j=ar_job_new(e,OP_HTTP);assert(j);j->upload_size=-1;

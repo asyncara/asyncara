@@ -131,6 +131,23 @@ static bool export_value(ar_value *v, zval *z) {
     }
     return true;
 }
+/* HTTP has a fixed result shape and remains on its native job until export.
+ * Avoid constructing/destroying a second native object graph per response. */
+static bool export_http_result(ar_job *j, zval *value) {
+    ZVAL_NULL(value);
+    if (ar_php_oom()) return false;
+    array_init_size(value, 3);
+    add_assoc_long(value, "status", j->status);
+    zend_string *body = ar_php_string_init(j->body ? j->body : "", j->body_len);
+    if (!body) goto error;
+    add_assoc_str(value, "body", body);
+    zend_string *headers = ar_php_string_init(j->response_headers ? j->response_headers : "", j->headers_len);
+    if (!headers) goto error;
+    add_assoc_str(value, "headers", headers);
+    if (!ar_php_oom()) return true;
+error:
+    zval_ptr_dtor(value); ZVAL_NULL(value); return false;
+}
 static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool binary, size_t *length) {
     zval *z = zend_hash_index_find(args, index);
     if (z)
@@ -185,6 +202,41 @@ static bool capture_path(ar_engine *e, char **path) {
         return false;
     }
     return true;
+}
+/* Common buffered options need no heap tree: curl consumes this bounded view
+ * synchronously and copies option strings. Never attach it to a request-owned
+ * job across a Zend call, return, suspension, or worker submission. Complex
+ * headers/MIME/streaming configurations retain the existing owned conversion. */
+typedef struct {
+    ar_value root, values[4];
+    ar_value *items[4];
+    char *keys[4];
+} ar_http_option_view;
+static bool http_option_view(zval *options, ar_http_option_view *view) {
+    ZVAL_DEREF(options);
+    if (Z_TYPE_P(options) != IS_ARRAY || zend_hash_num_elements(Z_ARRVAL_P(options)) != 4) return false;
+    memset(view, 0, sizeof(*view));
+    view->root.type = V_ARRAY; view->root.count = 4;
+    view->root.items = view->items; view->root.keys = view->keys;
+    zend_string *key; zval *value; size_t i = 0, bytes = 0; unsigned found = 0;
+    ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARRVAL_P(options), key, value) {
+        if (!key) return false;
+        bytes += sizeof(ar_value) + ZSTR_LEN(key);
+        ZVAL_DEREF(value);
+        ar_value *v = &view->values[i];
+        view->items[i] = v; view->keys[i++] = ZSTR_VAL(key);
+        if (zend_string_equals_literal(key, "method") && Z_TYPE_P(value) == IS_STRING) {
+            v->type = V_STRING; v->string = Z_STRVAL_P(value); v->length = Z_STRLEN_P(value); bytes += v->length; found |= 1;
+        } else if (zend_string_equals_literal(key, "headers") && Z_TYPE_P(value) == IS_ARRAY && !zend_hash_num_elements(Z_ARRVAL_P(value))) {
+            v->type = V_ARRAY; found |= 2;
+        } else if (zend_string_equals_literal(key, "followRedirects") && (Z_TYPE_P(value) == IS_TRUE || Z_TYPE_P(value) == IS_FALSE)) {
+            v->type = V_BOOL; v->integer = Z_TYPE_P(value) == IS_TRUE; found |= 4;
+        } else if (zend_string_equals_literal(key, "connectTimeoutMs") && Z_TYPE_P(value) == IS_LONG) {
+            v->type = V_INT; v->integer = Z_LVAL_P(value); found |= 8;
+        } else return false;
+        if (bytes > AR_LIMIT) return false;
+    } ZEND_HASH_FOREACH_END();
+    return found == 15;
 }
 static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
@@ -316,6 +368,54 @@ PHP_FUNCTION(asyncara_udp_bind) {
         RETURN_THROWS();
     }
     php_stream_to_zval(stream, return_value);
+}
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_headers, 0, 1, IS_ARRAY, 0)
+ZEND_ARG_TYPE_INFO(0, headers, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+/* Response metadata conversion only. libcurl continues to own HTTP parsing.
+ * Match the public Response constructor, including duplicate fields, interim
+ * status blocks and PHP's default trim bytes. No native job or worker owns a
+ * Zend value here; this runs on the interpreter thread after collection. */
+static int http_trim_byte(unsigned char c) {
+    return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\0' || c == '\v';
+}
+PHP_FUNCTION(asyncara_http_headers) {
+    zend_string *raw;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_STR(raw)
+    ZEND_PARSE_PARAMETERS_END();
+    array_init(return_value);
+    const char *p = ZSTR_VAL(raw), *end = p + ZSTR_LEN(raw);
+    while (p < end) {
+        const char *next = p;
+        while (next < end && !(next + 1 < end && next[0] == '\r' && next[1] == '\n')) next++;
+        if (next - p >= 5 && !memcmp(p, "HTTP/", 5)) {
+            zend_hash_clean(Z_ARRVAL_P(return_value));
+        } else {
+            const char *colon = memchr(p, ':', (size_t)(next - p));
+            if (colon) {
+                const char *name = p, *name_end = colon, *value = colon + 1, *value_end = next;
+                while (name < name_end && http_trim_byte((unsigned char)*name)) name++;
+                while (name_end > name && http_trim_byte((unsigned char)name_end[-1])) name_end--;
+                while (value < value_end && http_trim_byte((unsigned char)*value)) value++;
+                while (value_end > value && http_trim_byte((unsigned char)value_end[-1])) value_end--;
+                zend_string *key = zend_string_alloc((size_t)(name_end - name), 0);
+                for (size_t i = 0; i < ZSTR_LEN(key); i++) {
+                    unsigned char c = (unsigned char)name[i];
+                    ZSTR_VAL(key)[i] = c >= 'A' && c <= 'Z' ? c + ('a' - 'A') : c;
+                }
+                ZSTR_VAL(key)[ZSTR_LEN(key)] = 0;
+                zval *values = zend_symtable_find(Z_ARRVAL_P(return_value), key);
+                if (!values) {
+                    zval list; array_init(&list);
+                    values = zend_symtable_update(Z_ARRVAL_P(return_value), key, &list);
+                }
+                zend_string_release(key);
+                add_next_index_stringl(values, value, (size_t)(value_end - value));
+            }
+        }
+        p = next < end ? next + 2 : end;
+    }
 }
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_read, 0, 1, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
@@ -526,6 +626,8 @@ PHP_FUNCTION(asyncara_trace_snapshot) {
     add_assoc_zval(return_value, "events", &rows);
 }
 PHP_FUNCTION(asyncara_submit) {
+    ar_http_option_view view;
+    ar_value *borrowed_options = NULL;
     char *name;
     size_t len;
     HashTable *args;
@@ -726,7 +828,10 @@ PHP_FUNCTION(asyncara_submit) {
                 if (!j->b)
                     goto error;
             }
-            if (!opts || !(j->params = copy_value(e, opts, 0, &bytes)) || !valid_http_options(j->params)) {
+            ar_value *options = NULL;
+            if (opts && http_option_view(opts, &view)) options = borrowed_options = &view.root;
+            else if (opts) options = j->params = copy_value(e, opts, 0, &bytes);
+            if (!options || !valid_http_options(options)) {
                 zend_value_error("Invalid HTTP options");
                 goto error;
             }
@@ -736,12 +841,12 @@ PHP_FUNCTION(asyncara_submit) {
                 goto error;
             }
             j->length = Z_LVAL_P(timeout);
-            for (size_t i = 0; i < j->params->count; i++)
-                if (!strcmp(j->params->keys[i], "streamResponse"))
-                    j->stream_response = (int)j->params->items[i]->integer;
-                else if (!strcmp(j->params->keys[i], "uploadSize")) {
+            for (size_t i = 0; i < options->count; i++)
+                if (!strcmp(options->keys[i], "streamResponse"))
+                    j->stream_response = (int)options->items[i]->integer;
+                else if (!strcmp(options->keys[i], "uploadSize")) {
                     j->stream_upload = 1;
-                    j->upload_size = j->params->items[i]->integer;
+                    j->upload_size = options->items[i]->integer;
                 }
             if (j->stream_upload && j->b) {
                 zend_value_error("Streaming upload cannot also have a buffered body");
@@ -749,7 +854,12 @@ PHP_FUNCTION(asyncara_submit) {
             }
         }
     }
-    if (ar_submit(e, j)) {
+    /* No Zend API is called while a borrowed stack view is attached. HTTP
+     * ar_submit -> ar_http_start is synchronous; workers never receive it. */
+    if (borrowed_options) j->params = borrowed_options;
+    int submitted = ar_submit(e, j);
+    if (borrowed_options) j->params = NULL;
+    if (submitted) {
         zend_throw_exception(zend_ce_exception, "Cannot submit native operation", 0);
         goto error;
     }
@@ -861,7 +971,7 @@ PHP_FUNCTION(asyncara_poll) {
             add_assoc_string(&item, "error", j->error);
         else
             add_assoc_null(&item, "error");
-        if (!export_value(j->result, &value)) {
+        if (!(j->op == OP_HTTP && !j->error[0] ? export_http_result(j, &value) : export_value(j->result, &value))) {
             zval_ptr_dtor(&item);
             zval_ptr_dtor(&r);
             zval_ptr_dtor(&wr);
@@ -1058,6 +1168,7 @@ static void execute_hook(zend_execute_data *execute_data, zval *return_value) {
 #endif
 static const zend_function_entry functions[] = {
     PHP_FE(asyncara_udp_bind, arginfo_udp_bind)
+    PHP_FE(asyncara_http_headers, arginfo_http_headers)
     PHP_FE(asyncara_http_read, arginfo_http_read)
     PHP_FE(asyncara_http_head, arginfo_http_head)
     PHP_FE(asyncara_http_write, arginfo_http_write)

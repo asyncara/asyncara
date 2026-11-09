@@ -1,0 +1,81 @@
+# HTTP public-path performance investigation
+
+Status: **EXPERIMENTAL, IN_PROGRESS**. Base `3fe4cf9d1a774b04a8d5d14bf111f424b4b2de8a`.
+Worktree `/home/coder/Asyncara-http-20261109T050419Z`, branch `phase6-http`.
+Evidence `/home/coder/Asyncara-http-speed-20261109T073938Z`.
+The 13,000 public HttpClient requests/second target is **NOT_MET** at this checkpoint.
+No 4x curl_multi, 3x Swoole, or fastest-PHP claim is supported.
+Historical Phase 4 evidence and the http-r1 archive are unchanged.
+
+## Implemented candidate
+
+- Buffered requests admitted immediately use a native-completion-owned Future,
+  without a new Fiber. Contended admission retains the existing FIFO Task path.
+  Slots and the former Task admission budget remain owned until native collection.
+  Shared waiter cancellation does not cancel its producer. Explicit operation
+  cancellation drains the result. Unobserved owned HTTP failures still reach run exit.
+- Task Future waits reuse two bounded observers instead of allocating a closure
+  graph on each wait. The ready queue, first-settler behavior, cancellation tokens
+  and trace events remain. Observers are detached after each wait and cleared when
+  the Task finishes. Generic descriptor/timer suspension is unchanged.
+- Interpreter-thread HTTP completions skip their redundant pipe notification.
+  Worker publication retains the EINTR retry and real wake byte. The operation
+  kind is captured before publishing; workers must not read a collected job.
+- Socket readiness does not invoke curl's timeout action unless curl reports a due
+  timer. New transfers still receive their initial kick. Both readiness backends
+  remain real kernel waits.
+- HTTP body/header buffers remain owned by the native job until PHP conversion.
+  No intermediate generic native result tree is created. Fatal conversion leaves
+  native ownership registered for request shutdown.
+- Common four-field buffered options use a bounded temporary native view during
+  synchronous curl setup. The view is never attached across a Zend call, suspension
+  or return, and never reaches a worker. Curl copies option strings. Complex
+  headers/MIME/stream options retain owned conversion. Existing validation and
+  native/PHP memory boundaries remain. See the [curl method ownership contract](https://curl.se/libcurl/c/CURLOPT_CUSTOMREQUEST.html).
+- Response header metadata conversion runs in C, with the original PHP fallback
+  for value-only use without the new native helper. Curl still owns protocol parsing.
+
+## Current evidence
+
+`build/http-speed-8.so`: SHA-256
+`c962050566c5587091d440a5682204ba52ad3b3d8168a0439cc73a132dfd8400`.
+
+- `speed8-http-results/report.json`: PASS, HTTP native/PHP suite, epoll and poll.
+- `gate-A/report.json`: PASS, 177.126 seconds (three seeds/both backends).
+- `options-lifetime/result.json`: PASS; referenced PHP option mutation after submit,
+  invalid values, 1024 accepted/cancelled jobs and rejected admission cleanup.
+- `dispatch-before-run`: preserved expected assertion failure on 3fe4cf9;
+  `dispatch-after-run`: PASS, real kernel readiness with controlled curl timer return.
+- `headers-test`: 10,005 metadata cases match the former PHP implementation.
+- `wait-observer`: 2,000 shared first-settler races and 10,000 exceptional reused waits.
+- `buffered-owner-1` and the later HTTP gate cover cancellation, queued owners,
+  repeated results, abandoned operations, root failure and permit collection.
+- `await-full-epoll`: initial full suite PASS before final ownership-budget/option
+  view changes; this is not final-source full-matrix evidence.
+
+Other PHP SDKs, final-source full suites, memory instruments and FPM integration
+are pending for this checkpoint. No older result is attributed to the new source.
+
+## Performance evidence and next experiment
+
+`admission-nginx`, `speed3-nginx`, `speed4-nginx`, `speed5-nginx`,
+`speed5-c32-nginx`, `speed5-jit-nginx`, `speed8-poll-nginx` retain all samples.
+Each comparison uses checked complete 1/64 KiB responses, persistent connections,
+8,000 operations/sample, five rotated serialized samples and matched concurrency.
+JIT is a separate explicit configuration for **all** PHP clients and must report
+active JIT; it is not combined with no-JIT results. Raw native mode is diagnostic,
+not public-client throughput. Benchmark PASS means functional execution, not that
+its speed target passed. Host/relative rates vary substantially; no cherry-picked
+best sample is used as acceptance.
+
+Callgrind and strace are separate diagnostics, not speed samples. Before reusable
+wait observers, the 800-request public profile executed 202,293,984 instructions
+(including startup) versus 102,387,834 for curl_multi. The newer syscall profile
+removed the per-request Fiber stack churn and HTTP wake writes. Perf hardware
+counters were unavailable (`perf_event_paranoid=4`); host settings were not changed.
+
+Next: evaluate a bounded Hyper integration through the same public API, only if
+an end-to-end experiment demonstrates a useful advantage. The existing standalone
+Rust experiment is not a PHP backend or evidence that the public target passed.
+Preserve curl for unsupported experimental configurations. Do not introduce a
+blocking network wait, an unbounded pool, or PHP access from native worker threads.

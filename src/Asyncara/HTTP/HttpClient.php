@@ -163,6 +163,15 @@ final class HttpClient
     public function request(string $method, string $url, ?string $body = null, array $headers = [], bool $followRedirects = false): Future
     {
         $options = $this->options($method, $url, $headers, $followRedirects);
+        $scheduler = Scheduler::current();
+        if ($this->slots->tryAcquire()) {
+            try { $completion = new BufferedRequest($this->slots, $scheduler); }
+            catch (\Throwable $error) { $this->slots->release(); throw $error; }
+            try { $scheduler->nativeOperation('http', [$url, $body, $options, (int)ceil($this->timeout * 1000)], $completion); }
+            catch (\Throwable $error) { $completion->reject($error); }
+            return $completion;
+        }
+        // Contended admission retains the existing cancellable FIFO Task path.
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options): Response {
             $future = Scheduler::current()->native('http', [$url, $body, $options, (int)ceil($this->timeout * 1000)]);
             try { $result = $future->await(); return new Response($result['status'], $result['body'], $result['headers']); }

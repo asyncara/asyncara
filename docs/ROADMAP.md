@@ -207,3 +207,11 @@ code is retained in phase4/profile-log-review-launch.json. No longer stage start
 6. Add framework/PSR-3/loop adapters and production telemetry, then certify supported OS/PHP/SAPI combinations. Only after a stable boundary consider ZTS interpreter-thread execution.
 
 Continuation commands: `make audit`, `make audit-fpm`, `./scripts/audit-allocations.sh`, `make verify`, `ASYNCARA_BACKEND=poll ./scripts/test.sh`, `./scripts/phpize-local.sh`, `./benchmarks/run.py`. Consult WORKLOG.md and build logs before changing a status. All source and scripts are in the repository; external dependencies/build products are isolated and ignored.
+
+### HTTP public-path performance continuation (2026-11-09)
+
+PARTIALLY_IMPLEMENTED: buffered completion ownership and native conversion/wait
+optimizations pass the current HTTP gate and Gate A. Final matrix, memory and FPM
+validation remain pending. The public 13,000 requests/s and relative 4x/3x targets
+are NOT_MET; see [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md). Hyper remains
+an evaluation until a real PHP integration demonstrates an advantage.

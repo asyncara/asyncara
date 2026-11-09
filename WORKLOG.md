@@ -1710,3 +1710,15 @@ Next measured work: request completion/Fiber lifecycle overhead while preserving
 cancellation/admission/owner guarantees; broader protocol and endurance coverage
 remain separate. Release EXPERIMENTAL; historical zero-tick/memory uncertainty
 not erased by this checkpoint.
+
+## 2026-11-09 — public HTTP performance continuation
+
+From 3fe4cf9 in the existing isolated phase6-http worktree: removed per-request
+Fiber creation from uncontended buffered HTTP, retained explicit native ownership
+and admission limits, reused bounded Future wait observers, added native response
+metadata conversion, eliminated HTTP self-notification and premature curl timeout
+actions, and removed temporary native option/result graphs. Gate A and both-backend
+HTTP checks pass in the current scope. The 13,000 requests/s target remains NOT_MET.
+Detailed limitations, negative controls and raw paths: docs/HTTP_PERFORMANCE_WORK.md.
+Final matrix/memory/FPM validation and a justified Hyper experiment remain pending.
+No prior failure, archive or protected Phase 4 source was changed.

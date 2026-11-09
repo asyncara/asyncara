@@ -6,6 +6,7 @@ final class Response
     public readonly array $headers;
     public function __construct(public readonly int $status, public readonly string $body, string $rawHeaders)
     {
+        if (function_exists('asyncara_http_headers')) { $this->headers = asyncara_http_headers($rawHeaders); return; }
         $headers = [];
         foreach (explode("\r\n", $rawHeaders) as $line) {
             if (str_starts_with($line, 'HTTP/')) { $headers = []; continue; }

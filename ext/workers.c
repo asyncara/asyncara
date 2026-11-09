@@ -701,6 +701,7 @@ finish:
 }
 void ar_done(ar_engine *e, ar_job *j) {
     long id = j->id;
+    int local_completion = j->op == OP_HTTP;
     ar_trace_emit(e, AR_TRACE_JOB, 22, id, j->op, j->error[0] != 0, atomic_load(&j->cancelled));
     pthread_mutex_lock(&e->mutex);
     j->done = 1;
@@ -711,6 +712,10 @@ void ar_done(ar_engine *e, ar_job *j) {
         e->done_head = j;
     e->done_tail = j;
     pthread_mutex_unlock(&e->mutex);
+    /* HTTP completion is published by the interpreter thread itself, before
+     * its done-queue check or after its wait. It cannot race that thread into
+     * sleep. Only worker publication needs the pipe notification. */
+    if (local_completion) return;
     char byte = 1;
     /* Publication can race the interpreter's last done-queue check before
      * entering poll/epoll. An interrupted notification must be retried: the

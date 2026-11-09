@@ -6,6 +6,7 @@ import argparse, hashlib, json, os, pathlib, resource, signal, socket, subproces
 p=argparse.ArgumentParser()
 for name in ['php','extension','output']:p.add_argument('--'+name,required=True)
 p.add_argument('--baseline-extension');p.add_argument('--baseline-source-root')
+p.add_argument('--jit',action='store_true',help='Enable identical tracing-JIT settings for every PHP client; separate configuration from no-JIT evidence')
 p.add_argument('--hyper');p.add_argument('--raw',action='store_true');p.add_argument('--samples',type=int,default=5);p.add_argument('--count',type=int,default=8000)
 p.add_argument('--concurrency',type=int,default=8);a=p.parse_args()
 if bool(a.baseline_extension)!=bool(a.baseline_source_root):p.error('Both baseline arguments required')
@@ -68,6 +69,7 @@ try:
     if mode=='hyper_standalone':cmd=[a.hyper,url,str(a.count),str(a.concurrency),str(size)]
     else:
      cmd=[a.php,'-n','-d','memory_limit=512M','-d','extension=curl']
+     if a.jit:cmd+=['-d','opcache.enable_cli=1','-d','opcache.jit=tracing','-d','opcache.jit_buffer_size=128M']
      if mode.startswith('asyncara'):cmd+=['-d','extension='+str(pathlib.Path(a.baseline_extension if mode=='asyncara_baseline'else a.extension).resolve())]
      if mode=='swoole':cmd+=[item for ext in ['pdo','mysqlnd','sockets','swoole']for item in ['-d','extension='+ext]]
      cmd+=[str(root/'benchmarks/http/client.php'),'asyncara'if mode=='asyncara_baseline'else mode,url,str(a.count),str(a.concurrency),str(size)]
@@ -80,6 +82,7 @@ try:
     if code:raise RuntimeError(str(path)+': '+path.read_text())
     row=json.loads(path.read_text())|{'mode':mode,'sample':sample,'serverCpuSeconds':server_cpu()-cpu_before,'processWallSeconds':time.monotonic()-start,
        'cpuPressureBefore':pressure,'command':cmd,'logSha256':sha(path)}
+    if a.jit and mode!='hyper_standalone' and not (row.get('jit') or {}).get('on'):raise RuntimeError('JIT not active for '+mode)
     rows.append(row);(out/'results.json').write_text(json.dumps(rows,indent=2)+'\n');print(size,sample,mode,round(row['requestsPerSecond'],1),flush=True)
 finally:
  if server.poll()is None:server.send_signal(signal.SIGQUIT)
