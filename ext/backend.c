@@ -260,8 +260,11 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     if (!j->curl) goto error;
 #define SET(opt, val)                                                                                        \
     do {                                                                                                     \
-        if (curl_easy_setopt(j->curl, opt, val) != CURLE_OK)                                                 \
+        CURLcode set_result = curl_easy_setopt(j->curl, opt, val);                                             \
+        if (set_result != CURLE_OK) {                                                                         \
+            snprintf(j->error, sizeof(j->error), "libcurl option %s failed: %s", #opt, curl_easy_strerror(set_result)); \
             goto error;                                                                                      \
+        }                                                                                      \
     } while (0)
     SET(CURLOPT_URL, j->a);
     SET(CURLOPT_PROTOCOLS_STR, "http,https");
@@ -287,6 +290,11 @@ void ar_http_start(ar_engine *e, ar_job *j) {
         SET(CURLOPT_SUPPRESS_CONNECT_HEADERS, 1L);
     } else {
         SET(CURLOPT_ACCEPT_ENCODING, "");
+        /* Buffered transfers can read a medium response in fewer socket calls.
+         * This is curl's receive workspace, not the owned body limit. Keep
+         * streaming on curl's default geometry so pause/redelivery bounds do
+         * not change. Set before multi admission, never on an active handle. */
+        SET(CURLOPT_BUFFERSIZE, 128L * 1024L);
     }
     if (j->params)
         for (size_t i = 0; i < j->params->count; i++) {
@@ -383,7 +391,7 @@ void ar_http_start(ar_engine *e, ar_job *j) {
 #undef SET
     return;
 error:
-    snprintf(j->error, sizeof(j->error), "libcurl initialization failed");
+    if (!j->error[0]) snprintf(j->error, sizeof(j->error), "libcurl initialization failed");
     ar_done(e, j);
 }
 void ar_http_progress(ar_engine *e) {

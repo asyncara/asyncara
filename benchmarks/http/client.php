@@ -51,8 +51,11 @@ if ($mode==='asyncara_raw') {
   }
  });
 } elseif($mode==='curl_multi') {
+ $bufferHint=getenv('ASYNCARA_BENCH_CURL_BUFFER_SIZE');
+ if($bufferHint!==false && (!preg_match('/^[0-9]+$/D',$bufferHint)||(int)$bufferHint<1024||(int)$bufferHint>1048576))throw new ValueError('Invalid diagnostic curl buffer hint');
  $multi=curl_multi_init();curl_multi_setopt($multi,CURLMOPT_MAX_TOTAL_CONNECTIONS,$concurrency);curl_multi_setopt($multi,CURLMOPT_MAX_HOST_CONNECTIONS,$concurrency);
  $handles=[];for($i=0;$i<$concurrency;$i++){$h=curl_init($url);curl_setopt_array($h,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_TIMEOUT_MS=>10000,CURLOPT_NOSIGNAL=>true,CURLOPT_HTTP_VERSION=>CURL_HTTP_VERSION_1_1,CURLOPT_ACCEPT_ENCODING=>'']);$handles[]=$h;}
+ if($bufferHint!==false)foreach($handles as$h)if(!curl_setopt($h,CURLOPT_BUFFERSIZE,(int)$bufferHint))throw new RuntimeException('curl buffer hint rejected');
  foreach([10,$count/$concurrency]as$phase=>$perWorker){
   $done=[];$starts=[];$times=[];$start=hrtime(true);$before=cpu();
   foreach($handles as$h){$id=spl_object_id($h);$done[$id]=0;$starts[$id]=hrtime(true);curl_multi_add_handle($multi,$h);}

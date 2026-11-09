@@ -262,7 +262,10 @@ impl Conn {
         }
         if self.setup.is_none() && self.driver.is_none() && self.sender.is_none() {
             let mut b = hyper::client::conn::http1::Builder::new();
-            b.max_buf_size(65536).max_headers(256);
+            // Permit fewer reads for medium bodies without enlarging the header
+            // or trailer acceptance limit. The buffer remains adaptive; small
+            // responses do not eagerly reserve the 128 KiB maximum.
+            b.max_buf_size(131072).max_header_size(65536).max_headers(256);
             self.setup = Some(Box::pin(b.handshake(self.io.clone())));
         }
         if let Some(setup) = &mut self.setup {
