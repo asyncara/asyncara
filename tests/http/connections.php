@@ -10,6 +10,6 @@ try{
  $port=json_decode(fgets($pipes[1]),true,512,JSON_THROW_ON_ERROR)['port'];$ticks=0;
  Async::run(function()use($port,$limit,&$ticks){$client=new HttpClient(concurrency:32);$jobs=[];for($i=0;$i<32;$i++)$jobs[]=$client->get('http://127.0.0.1:'.$port.'/body?size=1024&delay=.05');$finished=false;$ticker=Async::spawn(function()use(&$finished,&$ticks){while(!$finished){Async::sleep(.001);if(!$finished)$ticks++;}});foreach(Async::gather($jobs)as$r)if(strlen($r->body)!==1024)throw new RuntimeException('response');$finished=true;$ticker->await();});
  try{asyncara_http_limits(64,8);throw new RuntimeException('Late reconfiguration accepted');}catch(Exception $e){if($e instanceof RuntimeException)throw$e;}
- if($ticks<2||asyncara_info()['pendingOperations']||asyncara_info()['nativeMemoryBytes'])throw new RuntimeException('Progress or cleanup');
+ if($ticks<2||asyncara_info()['pendingOperations']||asyncara_info()['nativeMemoryBytes'])throw new RuntimeException('Progress or cleanup '.json_encode(['ticks'=>$ticks,'native'=>asyncara_info(),'scheduler'=>Runtime::diagnostics()],JSON_THROW_ON_ERROR));
 }finally{fclose($pipes[0]);$stats=json_decode(trim(stream_get_contents($pipes[1])),true,512,JSON_THROW_ON_ERROR);fclose($pipes[1]);proc_close($p);}
 if($stats['peak']!==$limit||$stats['connections']!==$limit)throw new RuntimeException('Wrong connection admission '.json_encode($stats));echo json_encode(['status'=>'PASS','limit'=>$limit,'ticks'=>$ticks,'server'=>$stats]),"\n";
