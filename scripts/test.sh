@@ -24,6 +24,7 @@ python3 scripts/test-udp-limits.py
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/buffered_owner.php
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/options_lifetime.php
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/headers.php
+"${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/capacity.php
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/wait_observer.php
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/proxy.php
 "${PHP_BIN:-php}" -n -d memory_limit=128M -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/http/pooling.php

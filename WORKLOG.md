@@ -1969,3 +1969,29 @@ measurements, not HTTP response throughput. Raw results:
 `/home/coder/Asyncara-http-headers-20261109T185417Z/conversion-results.json`.
 Full HTTP/PHP matrix, memory checks, Gate A and public comparisons remain pending
 for this candidate. Performance targets remain NOT_MET; release EXPERIMENTAL.
+
+## HTTP payload-capacity correction — 2026-11-09
+
+Isolated continuation `phase6-http-capacity`, base c2dc559. The native receive
+buffer previously doubled its payload capacity to store the trailing NUL when a
+body ended at a power-of-two boundary. A64KiB body reserved128KiB;1MiB reserved
+2MiB. The C correction grows payload space and adds one terminator byte, preserving
+16MiB buffered-body and64KiB streaming/header limits, aggregate accounting,
+cancellation and pause behavior. Initial small capacity increases by one byte.
+
+The direct production-callback regression preserves all data and ownership checks.
+Before:23 excess power-of-two capacities;0/4 final bytes accepted for four512KiB
+bodies under3MiB. After:zero excess tiers and4/4 completions under the same limit.
+The real public HttpClient regression independently fails with the old module's
+native-memory error on curl/Hyper and epoll/poll; all four corrected combinations
+pass with two ticks while bodies are held pending, zero retained native allocations
+and zero pending operations. Peak tracked bytes2117800 curl /2117544 Hyper.
+
+Evidence: `/home/coder/Asyncara-http-capacity-evidence-20261109T190638Z`.
+The initial PHP8.5 HTTP suite passed before the new regression was wired into the
+runner. Full final-source compatibility, instruments and gates are pending.
+The preceding header-search candidate c2dc559 passed its complete matrix, Gate A
+and short FPM; its public benchmark did not demonstrate a speed increase despite
+improved isolated conversion CPU. All raw comparisons are preserved under
+`/home/coder/Asyncara-http-headers-20261109T185417Z`. All user performance targets
+remain NOT_MET. No change is attributed to the historical zero-tick/B2 failure.
