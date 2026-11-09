@@ -1,12 +1,20 @@
 # Release readiness
 
-The `09b4767` epoll-cache checkpoint retains **EXPERIMENTAL** classification.
+Latest native source `84e49f1` repairs unsupported HEAD upload framing. Its
+PHP83/84/85, DEBUG/GCC, Gate A and scoped memory checks pass; a dedicated short
+HEAD FPM run also passes. Archive `http-r4-head`, source `b04aa98`, independently
+builds and passes HTTP suites on83/84/85 plus optional Hyper85 and short HEAD FPM.
+See [package attestation](phase6/http-r4-head-package.json). The predecessor
+`http-r3-head` remains preserved with its Git-dependent report-writing failure.
+These are correctness/build results, not acceptance of the speed goals or B2.
+
+The inherited `09b4767` epoll-cache checkpoint retains **EXPERIMENTAL** classification.
 Its wait-cost reduction is not a public HTTP speed acceptance result. The
 13,000/s,4x curl_multi and3x Swoole targets remain NOT_MET; see
 [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md). Historical failure evidence remains
 unchanged. Its B2 result is FAIL (ticks=1 after5,236 recorded responses);
-the candidate is not accepted. The new source has not received an independent
-package build. Diagnostic results cannot substitute for acceptance.
+the candidate is not accepted. Later independent builds do not erase that failed
+acceptance. Diagnostic results cannot substitute for acceptance.
 
 **Current assessment: EXPERIMENTAL.** The HTTP continuation adds bounded multi-file
 MIME, atomic downloads and curl lifecycle repairs; see

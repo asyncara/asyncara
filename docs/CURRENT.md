@@ -17,6 +17,15 @@ requested targets; [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) records
 both client backends and matching reference builds. Historical numbers below
 are not results of this newer configuration.
 
+Archive `build/asyncara-0.1.0-dev-http-r4-head.tar.gz` packages source `b04aa98`
+with unchanged native source84e49f1:495 files, SHA-256
+`12bc9fffeb1803b9deab72ab669323e4ad521bb9c4590ff2d4cdb27d0dc52051`.
+Fresh PHP83/84/85 builds/HTTP gates, optional Hyper85 and HEAD FPM pass.
+[Attestation](phase6/http-r4-head-package.json) records exact module hashes.
+The r3 attempt remains a FAIL because its FPM report required Git after passing
+functional cases; r4 fixes only that reporting assumption and its work-log entry.
+Neither archive is a published or accepted reliability/performance release.
+
 Previous native checkpoint: `09b47672644daeae8157b90a47116c0b92776b57` on
 `phase6-http`. Request-local epoll reuse validates every descriptor through
 MOD and rebuilds on identity/vector changes. Exact fd cleanup, failure recovery,

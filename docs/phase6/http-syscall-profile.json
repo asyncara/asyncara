@@ -1,0 +1,885 @@
+{
+  "status": "DIAGNOSTIC_ONLY",
+  "nativeSource": "84e49f137396c58e0954f2ba90dc8dd61df2615e",
+  "report": "/home/coder/Asyncara-http-epoll-20261109T164557Z/syscall-profile-data/report.json",
+  "reportSha256": "83011285933ccab81602f53f0543d062504ba32ea0a700bb000c9a43fd9e9501",
+  "scope": "strace syscall counts; matched PHP8.5.12 JIT/poll,4096 responses+320 warmups per mode. Includes startup. Ptrace perturbs readiness and timing; no performance acceptance or exact per-request syscall invariant.",
+  "perf": "BLOCKED: task-clock probe exit255, perf_event_paranoid=4. No host changes.",
+  "syscalls": {
+    "raw-hyper": {
+      "recvfrom": {
+        "calls": 8928,
+        "unsuccessful": 4479
+      },
+      "sendto": {
+        "calls": 4416,
+        "unsuccessful": 0
+      },
+      "mprotect": {
+        "calls": 71,
+        "unsuccessful": 0
+      },
+      "poll": {
+        "calls": 273,
+        "unsuccessful": 0
+      },
+      "mmap": {
+        "calls": 215,
+        "unsuccessful": 1
+      },
+      "read": {
+        "calls": 381,
+        "unsuccessful": 273
+      },
+      "close": {
+        "calls": 118,
+        "unsuccessful": 0
+      },
+      "newfstatat": {
+        "calls": 545,
+        "unsuccessful": 8
+      },
+      "munmap": {
+        "calls": 40,
+        "unsuccessful": 0
+      },
+      "fstat": {
+        "calls": 91,
+        "unsuccessful": 0
+      },
+      "openat": {
+        "calls": 96,
+        "unsuccessful": 15
+      },
+      "futex": {
+        "calls": 26,
+        "unsuccessful": 0
+      },
+      "getrusage": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "brk": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "access": {
+        "calls": 2,
+        "unsuccessful": 1
+      },
+      "rt_sigaction": {
+        "calls": 79,
+        "unsuccessful": 0
+      },
+      "connect": {
+        "calls": 34,
+        "unsuccessful": 34
+      },
+      "fcntl": {
+        "calls": 26,
+        "unsuccessful": 0
+      },
+      "getsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "socket": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "setsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "getcwd": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "getrandom": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "pread64": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "lseek": {
+        "calls": 6,
+        "unsuccessful": 0
+      },
+      "arch_prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "prlimit64": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "rseq": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_tid_address": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_robust_list": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "rt_sigprocmask": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "getdents64": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "write": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "ioctl": {
+        "calls": 1,
+        "unsuccessful": 1
+      },
+      "getpid": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "execve": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "gettid": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "pipe2": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "memfd_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "total": {
+        "calls": 15547,
+        "unsuccessful": 4812
+      }
+    },
+    "public-curl": {
+      "poll": {
+        "calls": 9302,
+        "unsuccessful": 0
+      },
+      "sendto": {
+        "calls": 4416,
+        "unsuccessful": 0
+      },
+      "recvfrom": {
+        "calls": 4427,
+        "unsuccessful": 0
+      },
+      "mmap": {
+        "calls": 282,
+        "unsuccessful": 1
+      },
+      "munmap": {
+        "calls": 106,
+        "unsuccessful": 0
+      },
+      "read": {
+        "calls": 309,
+        "unsuccessful": 186
+      },
+      "mprotect": {
+        "calls": 270,
+        "unsuccessful": 0
+      },
+      "fcntl": {
+        "calls": 246,
+        "unsuccessful": 0
+      },
+      "close": {
+        "calls": 135,
+        "unsuccessful": 0
+      },
+      "getsockname": {
+        "calls": 128,
+        "unsuccessful": 0
+      },
+      "openat": {
+        "calls": 111,
+        "unsuccessful": 15
+      },
+      "getpeername": {
+        "calls": 64,
+        "unsuccessful": 0
+      },
+      "newfstatat": {
+        "calls": 580,
+        "unsuccessful": 8
+      },
+      "getsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "rt_sigaction": {
+        "calls": 175,
+        "unsuccessful": 0
+      },
+      "fstat": {
+        "calls": 106,
+        "unsuccessful": 0
+      },
+      "madvise": {
+        "calls": 65,
+        "unsuccessful": 0
+      },
+      "connect": {
+        "calls": 34,
+        "unsuccessful": 34
+      },
+      "write": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "execve": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "prctl": {
+        "calls": 67,
+        "unsuccessful": 0
+      },
+      "socket": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "getdents64": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "brk": {
+        "calls": 28,
+        "unsuccessful": 0
+      },
+      "setsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "futex": {
+        "calls": 26,
+        "unsuccessful": 0
+      },
+      "memfd_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "lseek": {
+        "calls": 6,
+        "unsuccessful": 0
+      },
+      "getcwd": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "pread64": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "access": {
+        "calls": 2,
+        "unsuccessful": 1
+      },
+      "getpid": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "gettid": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "rt_sigprocmask": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "ioctl": {
+        "calls": 1,
+        "unsuccessful": 1
+      },
+      "prlimit64": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "getrandom": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "getrusage": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "arch_prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_tid_address": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_robust_list": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "pipe2": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "rseq": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "total": {
+        "calls": 21051,
+        "unsuccessful": 246
+      }
+    },
+    "swoole": {
+      "recvfrom": {
+        "calls": 12452,
+        "unsuccessful": 8002
+      },
+      "sendto": {
+        "calls": 4416,
+        "unsuccessful": 0
+      },
+      "epoll_ctl": {
+        "calls": 7300,
+        "unsuccessful": 0
+      },
+      "openat": {
+        "calls": 85,
+        "unsuccessful": 6
+      },
+      "mmap": {
+        "calls": 250,
+        "unsuccessful": 1
+      },
+      "mprotect": {
+        "calls": 67,
+        "unsuccessful": 0
+      },
+      "newfstatat": {
+        "calls": 531,
+        "unsuccessful": 0
+      },
+      "fstat": {
+        "calls": 86,
+        "unsuccessful": 0
+      },
+      "rt_sigaction": {
+        "calls": 78,
+        "unsuccessful": 0
+      },
+      "epoll_wait": {
+        "calls": 160,
+        "unsuccessful": 0
+      },
+      "execve": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "munmap": {
+        "calls": 73,
+        "unsuccessful": 0
+      },
+      "read": {
+        "calls": 107,
+        "unsuccessful": 0
+      },
+      "brk": {
+        "calls": 75,
+        "unsuccessful": 0
+      },
+      "getdents64": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "close": {
+        "calls": 113,
+        "unsuccessful": 0
+      },
+      "fcntl": {
+        "calls": 22,
+        "unsuccessful": 0
+      },
+      "connect": {
+        "calls": 32,
+        "unsuccessful": 32
+      },
+      "getrandom": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "memfd_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "futex": {
+        "calls": 24,
+        "unsuccessful": 0
+      },
+      "getcwd": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "arch_prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "socket": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "shutdown": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "lseek": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "setsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "write": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "getsockname": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "getsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "set_robust_list": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "rseq": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "prctl": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "access": {
+        "calls": 3,
+        "unsuccessful": 1
+      },
+      "getpid": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "epoll_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "gettid": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "getrusage": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "prlimit64": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "set_tid_address": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "uname": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "pread64": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "rt_sigprocmask": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "ioctl": {
+        "calls": 1,
+        "unsuccessful": 1
+      },
+      "total": {
+        "calls": 26114,
+        "unsuccessful": 8043
+      }
+    },
+    "public-hyper": {
+      "recvfrom": {
+        "calls": 8876,
+        "unsuccessful": 4454
+      },
+      "sendto": {
+        "calls": 4416,
+        "unsuccessful": 0
+      },
+      "read": {
+        "calls": 348,
+        "unsuccessful": 225
+      },
+      "poll": {
+        "calls": 225,
+        "unsuccessful": 0
+      },
+      "mmap": {
+        "calls": 282,
+        "unsuccessful": 1
+      },
+      "fcntl": {
+        "calls": 170,
+        "unsuccessful": 0
+      },
+      "munmap": {
+        "calls": 106,
+        "unsuccessful": 0
+      },
+      "mprotect": {
+        "calls": 262,
+        "unsuccessful": 0
+      },
+      "rt_sigaction": {
+        "calls": 79,
+        "unsuccessful": 0
+      },
+      "madvise": {
+        "calls": 65,
+        "unsuccessful": 0
+      },
+      "prctl": {
+        "calls": 67,
+        "unsuccessful": 0
+      },
+      "connect": {
+        "calls": 34,
+        "unsuccessful": 34
+      },
+      "getsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "close": {
+        "calls": 133,
+        "unsuccessful": 0
+      },
+      "openat": {
+        "calls": 111,
+        "unsuccessful": 15
+      },
+      "futex": {
+        "calls": 26,
+        "unsuccessful": 0
+      },
+      "brk": {
+        "calls": 33,
+        "unsuccessful": 0
+      },
+      "newfstatat": {
+        "calls": 580,
+        "unsuccessful": 8
+      },
+      "fstat": {
+        "calls": 106,
+        "unsuccessful": 0
+      },
+      "setsockopt": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "socket": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "write": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "prlimit64": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "execve": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "getcwd": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "getdents64": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "pread64": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "getrusage": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "lseek": {
+        "calls": 6,
+        "unsuccessful": 0
+      },
+      "getrandom": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "pipe2": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "getpid": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "access": {
+        "calls": 2,
+        "unsuccessful": 1
+      },
+      "gettid": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "rt_sigprocmask": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "ioctl": {
+        "calls": 1,
+        "unsuccessful": 1
+      },
+      "arch_prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_tid_address": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_robust_list": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "memfd_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "rseq": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "total": {
+        "calls": 16092,
+        "unsuccessful": 4739
+      }
+    },
+    "curl-multi": {
+      "poll": {
+        "calls": 13531,
+        "unsuccessful": 0
+      },
+      "sendto": {
+        "calls": 4416,
+        "unsuccessful": 0
+      },
+      "recvfrom": {
+        "calls": 4420,
+        "unsuccessful": 0
+      },
+      "newfstatat": {
+        "calls": 531,
+        "unsuccessful": 0
+      },
+      "mprotect": {
+        "calls": 71,
+        "unsuccessful": 0
+      },
+      "mmap": {
+        "calls": 195,
+        "unsuccessful": 1
+      },
+      "getsockname": {
+        "calls": 136,
+        "unsuccessful": 0
+      },
+      "close": {
+        "calls": 110,
+        "unsuccessful": 0
+      },
+      "read": {
+        "calls": 98,
+        "unsuccessful": 0
+      },
+      "connect": {
+        "calls": 34,
+        "unsuccessful": 34
+      },
+      "fcntl": {
+        "calls": 102,
+        "unsuccessful": 0
+      },
+      "getpeername": {
+        "calls": 68,
+        "unsuccessful": 0
+      },
+      "munmap": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "socket": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "openat": {
+        "calls": 76,
+        "unsuccessful": 3
+      },
+      "brk": {
+        "calls": 27,
+        "unsuccessful": 0
+      },
+      "fstat": {
+        "calls": 82,
+        "unsuccessful": 0
+      },
+      "setsockopt": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "getdents64": {
+        "calls": 32,
+        "unsuccessful": 0
+      },
+      "rt_sigaction": {
+        "calls": 78,
+        "unsuccessful": 0
+      },
+      "getsockopt": {
+        "calls": 34,
+        "unsuccessful": 0
+      },
+      "execve": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "prlimit64": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "lseek": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "getrandom": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "rt_sigprocmask": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "futex": {
+        "calls": 24,
+        "unsuccessful": 0
+      },
+      "access": {
+        "calls": 2,
+        "unsuccessful": 1
+      },
+      "getcwd": {
+        "calls": 4,
+        "unsuccessful": 0
+      },
+      "getpid": {
+        "calls": 3,
+        "unsuccessful": 0
+      },
+      "getrusage": {
+        "calls": 5,
+        "unsuccessful": 0
+      },
+      "gettid": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "pread64": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "ioctl": {
+        "calls": 1,
+        "unsuccessful": 1
+      },
+      "rseq": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "arch_prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_tid_address": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "set_robust_list": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "write": {
+        "calls": 2,
+        "unsuccessful": 0
+      },
+      "prctl": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "pipe2": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "memfd_create": {
+        "calls": 1,
+        "unsuccessful": 0
+      },
+      "total": {
+        "calls": 24210,
+        "unsuccessful": 40
+      }
+    }
+  },
+  "limitations": [
+    "Ptrace affects batching, readiness and timing. These are observed counts, not throughput results.",
+    "Unsuccessful recv is not necessarily a transfer error; commands completed correctly. The summary does not identify each errno.",
+    "Swoole also made unsuccessful reads; these counts alone do not attribute the public speed gap."
+  ]
+}

@@ -1935,3 +1935,17 @@ checkout's commit. This matches the existing HTTP gate's source-identity rule.
 No runtime, fixture assertion or acceptance threshold changes. A new archive
 and fresh extraction will verify the correction; previous binaries/results
 remain tied to their actual source identities.
+
+The corrected `http-r4-head` archive (b04aa98,495 files) independently passes
+fresh PHP83/84/85 HTTP gates, fresh optional Hyper85 and HEAD FPM. Byte-repeat
+SHA-256: `12bc9fffeb1803b9deab72ab669323e4ad521bb9c4590ff2d4cdb27d0dc52051`.
+All command exits, source members, binary hashes and raw FPM responses were
+rechecked. The archive FPM source field is correctly null; the external
+attestation binds it to the source archive. No historical archive was replaced.
+
+Read-only perf task-clock sampling is denied by the host (exit255, paranoid4);
+no host setting changed. Separate strace controls complete4096 checked responses
+plus320 warmups per client. Public Hyper makes8876 recv calls/4454 unsuccessful;
+public curl makes4427 recv/9302 poll calls. Swoole also makes unsuccessful reads,
+so syscall counts alone do not explain the speed gap. These perturbed timing
+results are diagnostic only; see `docs/phase6/http-syscall-profile.json`.
