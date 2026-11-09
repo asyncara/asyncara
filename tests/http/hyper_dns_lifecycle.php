@@ -19,6 +19,11 @@ try {
     putenv('ASYNCARA_DNS_TEST_PORT='.$ports['dnsPort']);
     Async::run(function()use($ports,$pipes):void{
         Async::timeout(8,function()use($ports,$pipes):void{
+            // Warm a numeric connection independently of the deliberately short DNS
+            // deadline. Recovery still must complete a real HTTP request using
+            // the SAME client/permit; it must not assume localhost DNS takes <30ms.
+            $recovery='http://127.0.0.1:'.$ports['port'].'/';
+            check((new HttpClient())->get($recovery)->await()->status===200,'Recovery warmup');
             $url='http://dns-gated.invalid:'.$ports['port'].'/';
             foreach(['success','cancel','deadline'] as $mode) {
                 $client=new HttpClient(concurrency:1,timeout:3,connectTimeout:$mode==='deadline'?.03:2);
@@ -42,7 +47,7 @@ try {
                 }
                 check(asyncara_info()['pendingOperations']===0,'DNS job not collected');
                 check(asyncara_info()['hyperSubmitted']===$before+($mode==='success'?1:0),'Late DNS result submitted HTTP');
-                check($client->get('http://localhost:'.$ports['port'].'/')->await()->status===200,'Admission permit not released');
+                check($client->get($recovery)->await()->status===200,'Admission permit not released');
             }
         });
     });

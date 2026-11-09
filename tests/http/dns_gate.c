@@ -8,8 +8,14 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <time.h>
 extern int __real_getaddrinfo(const char *, const char *, const struct addrinfo *, struct addrinfo **);
 int __wrap_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **result) {
+    if (node && !strcmp(node, "localhost") && getenv("ASYNCARA_DNS_SLOW_RECOVERY")) {
+        /* Reproduce a legitimate >30ms lookup in the old recovery assertion. */
+        struct timespec delay = {.tv_sec = 0, .tv_nsec = 80000000};
+        while (nanosleep(&delay, &delay) && errno == EINTR) {}
+    }
     if (node && !strcmp(node, "dns-gated.invalid")) {
         const char *port = getenv("ASYNCARA_DNS_TEST_PORT");
         if (!port) return EAI_FAIL;
