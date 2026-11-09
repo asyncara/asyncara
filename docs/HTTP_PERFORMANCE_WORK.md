@@ -107,3 +107,32 @@ runs (60 main responses each plus fatal/recovery). `responses.jsonl` preserves
 individual results even if a later check fails. The first `final-fpm` run overlapped
 the tail of sanitizer validation and is functional diagnostic evidence only;
 the corrected repetitions and `isolated-hyper-fpm-r2` were isolated.
+
+
+### Exact PHP patch SDK guard (2026-11-09)
+
+Gate B's first FPM attempt failed before its timed stage because PATH selected
+system PHP-FPM8.5.11 for a module compiled against8.5.12. Both advertise the same
+module API, but `executor_globals` is1984 bytes in the former binary and2008 in
+the latter. The October delayed-OOM layout is different. An isolated DNS export
+on8.5.11 returned an empty poll array; the identical module/control passed on8.5.12.
+This is an actual unsafe binary compatibility gap, not a zero-tick explanation.
+
+MINIT now compares the runtime standard-module version with the compiled PHP
+version **before** curl, database or hook initialization. A mismatched binary is
+rejected with a matching-SDK instruction. `asyncara_info()` reports buildPhpVersion.
+The fast FPM runner preflights the actual FPM executable and records its hash;
+the pipeline propagates its explicit CLI selection. Native tests and API/header
+numbers alone do not establish patch-SDK compatibility. Rebuild after a PHP patch
+change; matching version is necessary, not proof of arbitrary vendor ABI safety.
+
+`sdk-mismatch-before` preserves the failing empty-array control; `sdk-matched-before`
+passes. `guard-regression-r2-data` proves matching load/submission and rejected
+mismatch. `fpm-sdk-r2-negative/positive` verify the runner preflight. The first
+candidate guard mistakenly used the Core module's Zend4.x version and rejected
+its own matching PHP8.x runtime; that failed build is preserved and corrected by
+using the standard module version. No host PHP installation was changed.
+
+The original Gate B result remains FAIL. Its B1 native-volume checks completed;
+B2 did not reach the timed phase. Revalidation must select the matching isolated
+FPM executable. Historical Phase4 failures remain separately unresolved.

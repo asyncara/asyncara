@@ -44,7 +44,7 @@ try:
    run(f'{backend}-resources',php+['tests/fast/resources.php',30000],{'ASYNCARA_BACKEND':backend})
  if a.gate in ['B2','B','C']:
   seconds=a.seconds if a.seconds is not None else 1800 if a.gate=='C'else 600
-  run('fpm',['python3','tests/fast/fpm_integration.py','--seconds',seconds,'--output',out/'fpm'],{'ASYNCARA_EXTENSION':str(module)},timeout=seconds+180)
+  run('fpm',['python3','tests/fast/fpm_integration.py','--seconds',seconds,'--output',out/'fpm'],{'ASYNCARA_EXTENSION':str(module),'PHP_BIN':a.php},timeout=seconds+180)
   run('independent-review',['python3','tests/fast/review_integration.py',out/'fpm','--output',out/'review'])
  # No mutation of source or module permitted within a gate.
  assert sha(module)==identity['moduleSha256']

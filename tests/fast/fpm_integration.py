@@ -23,6 +23,8 @@ os.environ['ASYNCARA_FPM_DIR']=str(out)
 spec=importlib.util.spec_from_file_location('audit_fpm',root/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
 selected=(root/os.environ.get('ASYNCARA_EXTENSION','build/asyncara.so')).resolve()
 subprocess.run(['python3',str(root/'scripts/check-build.py'),str(selected)],check=True)
+with(out/'fpm-sdk.json').open('x')as sdk_log:
+    subprocess.run(['python3',str(root/'scripts/check-fpm-sdk.py'),os.environ.get('PHP_BIN','php'),os.environ.get('FPM_BIN','php-fpm8.5'),str(selected)],stdout=sdk_log,check=True)
 extension=out/'asyncara.so';shutil.copy2(selected,extension)
 os.environ['ASYNCARA_EXTENSION']=str(extension)
 def launch(name,workers,recycle=0,timeout=0):

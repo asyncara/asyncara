@@ -119,3 +119,13 @@ builds pinned PHP8.5.12 DEBUG with --with-valgrind; set
 ASYNCARA_CONNECTOR_VALGRIND=1 for build-test-connector.sh to enable its upstream
 stack annotations too. Use the resulting PHP_BIN, PHP_INCLUDE_DIR and
 MARIADB_PREFIX when compiling the tested module. No error suppression is used.
+
+
+### Match the PHP patch SDK and FPM executable
+
+Build against the exact PHP patch version used by CLI/FPM. The module API number
+alone is insufficient for PHP versions spanning the October2026 allocator changes.
+Asyncara refuses loading when its compiled PHP version differs from the runtime.
+Use `asyncara_info()['buildPhpVersion']` and set `FPM_BIN` explicitly during tests;
+`scripts/check-fpm-sdk.py PHP_BIN FPM_BIN MODULE` verifies the selected executables.
+Rebuild after upgrading PHP. This does not change any global PHP configuration.
