@@ -1995,3 +1995,19 @@ and short FPM; its public benchmark did not demonstrate a speed increase despite
 improved isolated conversion CPU. All raw comparisons are preserved under
 `/home/coder/Asyncara-http-headers-20261109T185417Z`. All user performance targets
 remain NOT_MET. No change is attributed to the historical zero-tick/B2 failure.
+
+### Preserved capacity-candidate validation failure
+
+The first final-source PHP8.3/poll HTTP suite failed `connections.php 32` with
+`Progress or cleanup` (exit255). Its original message does not distinguish fewer
+than two ticks from outstanding operations/allocations. Evidence remains
+`http-83-data/poll-connections-32.log` under the capacity evidence directory.
+No assertion or timeout is changed. This failure is not classified as environmental,
+resolved, or proof of a capacity-change defect.
+
+Ten alternating diagnostic repetitions per old/new module all passed. Old minimum
+10 ticks, candidate minimum15; pending operations and tracked memory were zero.
+These controls do not explain or erase the original failure. The test now records
+ticks, native counters and scheduler metrics *only after its existing assertion
+has failed*, so a recurrence can be distinguished. No tracing or extra sampling
+is introduced into successful execution. Native source remains b1cfd18.
