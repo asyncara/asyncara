@@ -8,6 +8,10 @@
 
 **HTTP continuation:** [current native improvements, validation and measured performance](docs/HTTP_PERFORMANCE_WORK.md). Curl remains the default. The opt-in [Hyper prototype](docs/HYPER_EXPERIMENT.md) supports only numeric plaintext buffered GET; it is not a production replacement. Requested speed targets remain NOT_MET.
 
+The [Hyper safety review](docs/HYPER_SAFETY_REVIEW.md) records FFI panic containment,
+the repeated Content-Encoding correction, tested wakeup ownership, and the separate
+system-libcurl trailer leak. DNS/TLS/decompression remain unavailable in Hyper.
+
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
 
 Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).

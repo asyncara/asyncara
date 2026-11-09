@@ -2127,3 +2127,24 @@ TLS-timeout/progress assertion. Its original report is retained. The assertion
 now includes elapsed/ticks/transport error and diagnostics on failure; bounds
 remain0.8s and>=2ticks. Matched repetitions are diagnostic controls, not an
 explanation or erasure of the initial failure. Final-source validation follows.
+
+### Expanded memory check exposed a separate curl dependency leak
+
+Final dd63396 PHP83/84/85 ordinary HTTP matrices pass72commands each on epoll/poll.
+The GCC curl transfer-geometry workload completes functionally but LeakSanitizer
+reports2304bytes/72allocations; DEBUG Valgrind agrees. The previous baseline also
+fails identically. A standalone no-PHP/no-Asyncara libcurl control leaks288bytes
+in9blocks over ten reused chunked/trailer responses; disabling connection reuse
+in that diagnostic control yields no lost blocks. This matches upstream curl
+issue17749. System8.5.0-2ubuntu10.16 and original failures remain untouched;
+no pool-disabling runtime workaround and no suppression were added. The memory
+check remains FAIL while independent Hyper/FFI validation continues.
+
+Final native source dd63396:216 ordinary HTTP gate commands PASS (72 per PHP
+version); scoped DEBUG18, GCC Hyper10, native FFI16ASan+16Valgrind and DEBUG
+Hyper6Valgrind PASS. Curl geometry memory tests remain FAIL with the independently
+reproduced dependency leak. Gate A PASS211.949s. Short FPM:60main requests each,
+minimum curl25/Hyper19ticks; idle6FD/1thread. No long endurance claim. Detailed
+identities/hashes:docs/phase6/hyper-safety.json and HYPER_SAFETY_REVIEW.md.
+The host/Phase4 source and historical reports were not modified. Hosted CI is
+configured but NOT_EXECUTED. Performance requirements remain NOT_MET.

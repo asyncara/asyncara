@@ -4,11 +4,12 @@ Date: **2026-11-09**. Release: **EXPERIMENTAL**.
 These are measured results, not performance targets. The requested minimum
 13,000 requests/s, 4x PHP multi curl and 3x Swoole are **NOT_MET**.
 
-This is the latest complete four-client comparison of the selected implementation,
-which is included in this branch. A later, rejected experiment is distinguished
-below; its measurements are not mixed into this table. No benchmark was rerun for
-this documentation-only commit. The measured native, PHP and benchmark source
-manifests were rechecked against the selected source before writing this report.
+This is the last complete five-sample four-client comparison of the checkpoint
+identified below. Later receive-geometry and Hyper safety changes in this worktree
+are **not measured by this table**. Their three-sample screen and corrections are
+distinguished in [HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md). The historical
+measurements remain unchanged; no speed target has newly passed. A separate,
+earlier rejected experiment is retained below.
 
 ## Public API throughput
 

@@ -368,3 +368,19 @@ monotonic wait budget includes registration work. Cached control storage has its
 own strict bound and `waitControlBytes` counter outside the payload ledger.
 Poll and public cancellation/sharing semantics are unchanged. Exact failure and
 cleanup evidence: [HTTP_EPOLL_REUSE.md](HTTP_EPOLL_REUSE.md).
+
+
+## Optional Hyper fatal engine errors
+
+The narrow Hyper prototype has a request-local engine shared by its admitted
+buffered GET jobs. A caught Rust unwind poisons that whole engine, not merely the
+current waiter. C drops Rust futures and sockets before publishing failures for
+remaining jobs. A job already completed is not completed again; completion
+counters include engine-wide failures. Fatal submission after retaining a C job
+pointer follows the same teardown before that unadmitted job can be collected.
+A subsequent request can create a fresh engine. This does not change ordinary
+single-waiter cancellation ownership. Tests inject eight boundary failures on
+epoll/poll and check exactly-once collection and zero tracked job/buffer ownership.
+See HYPER_SAFETY_REVIEW.md for allocation-abort/destructor/unsafe-FFI exclusions.
+DNS, TLS, decompression and streaming are not supplied by this prototype; default
+curl lifecycle semantics still apply to those existing HTTP capabilities.

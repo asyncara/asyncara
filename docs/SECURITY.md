@@ -201,3 +201,27 @@ cancelled download could lose the completed File result before taking ownership,
 retaining its private file and native descriptor until request shutdown. The
 shielded assignment and completion-boundary regression prevent this specific
 retention. No historical zero-tick attribution or universal leak guarantee follows.
+
+## Optional Hyper FFI containment
+
+The Hyper prototype remains numeric plaintext buffered GET on Linux; it does
+not implement DNS, TLS or decompression. The default curl backend remains the
+application-facing general HTTP path. Hyper rejects every unsupported
+Content-Encoding field, including duplicates after identity. See
+[HYPER_SAFETY_REVIEW.md](HYPER_SAFETY_REVIEW.md) for the reproduced bypass and scope.
+
+Unexpected Rust unwinding poisons the request-local engine. Fatal FFI sentinels
+cause C to drop Rust futures/sockets before publishing remaining failures, with
+no duplicate completion. Fault controls are compiled only into isolated test
+executables. This cannot recover an allocator abort, foreign-pointer misuse,
+arbitrary destructor failure or process termination. Rust allocations are not
+fully represented by Asyncara's native ledger. No universal memory-safety or
+hard callback-latency guarantee follows from scoped tests.
+
+The expanded framing test also reproduces a system libcurl8.5.0 chunked-trailer
+leak without PHP or Asyncara linked. It persists in the previous Asyncara source.
+Loss accumulates across reused connections;32bytes/trailer in the minimal fixture
+is not a general upper bound. Asyncara's native ledger does not contain this
+external allocation growth. The affected memory check remains FAIL pending a
+vetted dependency repair and rerun; see DEPENDENCY_FINDINGS.md. No global library
+was changed and no suppressions or pool-disabling workaround were introduced.

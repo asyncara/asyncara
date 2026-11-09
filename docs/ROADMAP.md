@@ -1,10 +1,22 @@
 # Implementation status
 
-Current local source archive: **http-r5-capacity**,506 files, packaged f12146a,
+Current isolated native source: `dd63396`, branch
+`phase6-http-transfer-20261109T211228Z`. Hyper FFI fatal containment and repeated
+Content-Encoding rejection have failing-before/passing-after regressions.
+PHP83/84/85 ordinary HTTP gates pass on epoll/poll. Memory acceptance is not
+universal: system libcurl8.5.0 leaks repeated chunked-trailer allocations in an
+independent no-Asyncara control. The original failures remain retained.
+See [Hyper safety review](HYPER_SAFETY_REVIEW.md) and
+[dependency findings](DEPENDENCY_FINDINGS.md). Hyper remains PARTIALLY_IMPLEMENTED:
+numeric plaintext buffered GET, no DNS/TLS/decompression. Receive-geometry speed
+experiment remains unaccepted;13k/4x/3x targets NOT_MET. Release EXPERIMENTAL.
+The package below predates these source changes; it does not contain them.
+
+Previous local source archive: **http-r5-capacity**,506 files, packaged f12146a,
 native b1cfd18. Independent PHP83/84/85 HTTP builds/tests, optional Hyper85 and
 short feature FPM pass. [Attestation](phase6/http-r5-capacity-package.json).
 Performance remains NOT_MET; prior progress/B2 failures remain unresolved.
-Release EXPERIMENTAL; not published. Later changes are documentation/evidence only.
+Release EXPERIMENTAL; not published. That package remains historical evidence.
 
 Test-only follow-up `f26ad6b` adds safe peer EOF teardown and a regression; native
 source remains b1cfd18. All12 capacity controls pass again. The smaller-initial-

@@ -207,3 +207,55 @@ bytes and exit99. `final-distribution-memory.log` is the full unsuppressed repor
 `final-distribution-native` reports zero loss for raw worker operations. Final
 DEBUG lifecycle/copy/trace controls and native ring/index/worker controls also
 report zero loss/errors. These results preserve the distinction above.
+
+## 2026-11-09: repeated chunked trailers in system libcurl8.5.0
+
+A newly expanded real HTTP framing regression exposed a dependency leak. This is
+separate from PHP Fiber/cyclic-object shutdown and libpq TLS findings above.
+
+Installed library: Ubuntu `libcurl4t64 8.5.0-2ubuntu10.16`,
+`/lib/x86_64-linux-gnu/libcurl.so.4`, SHA256
+`3e51df20a6b52879ee83a207115a9bc6891092741ce2f5ec791606e6caf859fa`.
+`tests/http/transfer_geometry.php` sends80 chunked/trailer responses among160
+binary responses. Both previous capacity source and the new candidate report
+**2304 definitely lost bytes in72 allocations** under GCC LeakSanitizer. DEBUG
+Valgrind independently reports2304 definite,0 indirect,0 possible,3888 reachable,
+zero suppressions. The Asyncara native ledger returns to zero: this does not
+account for libcurl's allocations and does not make the workload memory-clean.
+
+A dependency-only C control, [curl_trailer_control.c](../tests/http/curl_trailer_control.c),
+links libcurl and no PHP/Asyncara code. Ten repeated chunked responses over a
+reused connection lose288 bytes in9 allocations under Valgrind3.22.0 (exit99).
+The same control with `CURLOPT_FORBID_REUSE=1` loses0 definite/indirect/possible
+bytes (exit0). Both retain20893 reachable bytes in library/loader state, not lost
+blocks. The control does not reset easy handles, so Asyncara's easy-handle cache
+and its recent receive-buffer change are not required to reproduce the leak.
+The no-reuse case is a diagnostic control, not a production workaround or speed
+comparison. Normal Asyncara connection pooling has not been disabled.
+
+The observed pattern agrees with curl's
+[upstream trailer-leak issue17749](https://github.com/curl/curl/issues/17749) and
+[maintainer-vetted legacy patch](https://curl.se/mail/distros-2025-07/0001.html).
+The public [8.5.0 source](https://raw.githubusercontent.com/curl/curl/curl-8_5_0/lib/http_chunks.c)
+initializes the connection trailer buffer again and resets rather than frees it
+at trailer completion. The repeated32-byte allocation stacks and independent
+control establish external-library ownership here. The upstream report concerns
+7.88.1 and notes newer releases changed the parser; it is not evidence that every
+8.5 distro package is affected or that every newer build is fixed. This exact
+installed binary demonstrably is affected. No patched/newer library has been
+certified in this worktree yet.
+
+Evidence root:`/home/coder/Asyncara-http-transfer-evidence-20261109T211228Z/`:
+`gcc-epoll-curl-multi-transfer_geometry`, `geometry-asan-symbols`,
+`geometry-baseline-gcc`, `geometry-debug-valgrind`, and
+`curl-trailer-control-r2-{0,1}`. The symbolization control sets
+ZEND_DONT_UNLOAD_MODULES=1 only for that diagnostic process and still reports the
+same loss; ordinary reports retain the original unload configuration. Initial
+native Valgrind invocations lacked the existing debuginfo path and could not
+start; those logs also remain. No suppressions or global dependency updates.
+
+Status: **REPRODUCED_UPSTREAM_DEPENDENCY_DEFECT** for this workload/library.
+Memory acceptance of the affected curl path remains **FAIL**. Deployments need a
+vetted package containing the trailer fix or a separately validated newer curl,
+then must rerun the exact regression. A clean scoped Hyper result cannot erase
+this default-backend dependency failure. No universal memory-clean claim follows.
