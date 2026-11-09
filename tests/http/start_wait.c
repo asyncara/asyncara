@@ -8,8 +8,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/epoll.h>
+#include <time.h>
 #include <unistd.h>
 static int requested = -2;
+static int logical_clock;
+static struct timespec instant;
+int __real_clock_gettime(clockid_t, struct timespec *);
+int __wrap_clock_gettime(clockid_t clock, struct timespec *value) {
+    /* Optional arithmetic control for memory instrumentation: startup under
+     * Valgrind may legitimately exhaust the real 50ms preparation budget.
+     * Keep the real-kernel default separate; no production clock is changed. */
+    if (logical_clock && clock == CLOCK_MONOTONIC) { *value = instant; return 0; }
+    return __real_clock_gettime(clock, value);
+}
 int __real_epoll_wait(int, struct epoll_event *, int, int);
 int __wrap_epoll_wait(int fd, struct epoll_event *events, int count, int timeout) {
     requested = timeout; return __real_epoll_wait(fd, events, count, timeout);
@@ -21,7 +32,10 @@ int __wrap_poll(struct pollfd *fds, nfds_t count, int timeout) {
 int __wrap___poll_chk(struct pollfd *fds, nfds_t count, int timeout, size_t bytes) {
     assert(count <= bytes / sizeof(*fds)); return __wrap_poll(fds, count, timeout);
 }
-int main(void) {
+int main(int argc, char **argv) {
+    assert(argc == 1 || (argc == 2 && !strcmp(argv[1], "--logical-clock")));
+    logical_clock = argc == 2;
+    assert(!__real_clock_gettime(CLOCK_MONOTONIC, &instant));
     assert(curl_global_init(CURL_GLOBAL_DEFAULT) == CURLE_OK);
     int server = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0); assert(server >= 0);
     struct sockaddr_in addr = {.sin_family = AF_INET, .sin_addr.s_addr = htonl(INADDR_LOOPBACK)};
@@ -41,5 +55,6 @@ int main(void) {
         assert(!e->pending && !atomic_load(&e->memory_bytes)); ar_engine_free(e); assert(!close(peer));
     }
     assert(!close(server)); curl_global_cleanup();
-    puts("PASS buffered admission wait and streaming dispatch, epoll+poll");
+    puts(logical_clock ? "PASS controlled-clock admission, real epoll+poll readiness" :
+                        "PASS real-clock buffered admission and streaming dispatch, epoll+poll");
 }

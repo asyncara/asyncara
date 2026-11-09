@@ -61,10 +61,12 @@ if not a.php_only:
     for name, files, wraps in [
         ('stage', ['tests/http/stage_native.c', 'ext/backend.c'], ['fsync', 'renameat']),
         ('completion', ['tests/http/native_completion.c'], ['curl_multi_socket_action']),
-        ('start-wait', ['tests/http/start_wait.c', 'ext/backend.c'], ['epoll_wait', 'poll', '__poll_chk'])]:
+        ('start-wait', ['tests/http/start_wait.c', 'ext/backend.c'], ['epoll_wait', 'poll', '__poll_chk', 'clock_gettime'])]:
         run(name + '-build', cc + flags + files + ['ext/workers.c', 'ext/memory.c', '-pthread',
             '-l:libsqlite3.so.0', '-l:libcurl.so.4'] + ['-Wl,--wrap=' + w for w in wraps] + ['-o', out / name])
         run(name, [out / name])
+        if name == 'start-wait':
+            run(name + '-logical-clock', [out / name, '--logical-clock'])
 php = [a.php, '-n', '-d', 'memory_limit=128M', '-d', 'extension=' + str(module)]
 run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
