@@ -45,11 +45,24 @@ class Handler(http.server.BaseHTTPRequestHandler):
                     ('Content-Type: '+self.headers['Content-Type']+'\r\nMIME-Version: 1.0\r\n\r\n').encode()+b''.join(multipart))
                 result['parts']=[{'name':p.get_param('name',header='content-disposition'),'filename':p.get_filename(),
                     'bytes':len(p.get_payload(decode=True)),'sha256':hashlib.sha256(p.get_payload(decode=True)).hexdigest()} for p in message.iter_parts()]
+            if self.path == '/post-redirect':
+                self.send_response(303);self.send_header('Location','/echo-headers');self.send_header('Content-Length','0');self.end_headers();return
             body=json.dumps(result).encode();self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
         except (BrokenPipeError,ConnectionResetError,ssl.SSLError):self.close_connection=True
     def do_GET(self):
         path = urllib.parse.urlparse(self.path).path
         try:
+            if path == '/echo-headers':
+                body=json.dumps({'method':self.command,'marker':self.headers.get('X-Marker'),'cookie':self.headers.get('Cookie'),'length':self.headers.get('Content-Length')}).encode()
+                self.send_response(200);self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body);return
+            if path == '/status':
+                self.send_response(503);self.send_header('Content-Length','4');self.end_headers();self.wfile.write(b'fail');return
+            if path == '/redirect-body':
+                self.send_response(302);self.send_header('Location','/small');self.send_header('Content-Length','12');self.end_headers();self.wfile.write(b'intermediate');return
+            if path == '/redirect-loop':
+                self.send_response(302);self.send_header('Location','/redirect-loop');self.send_header('Content-Length','0');self.end_headers();return
+            if path == '/redirect-file':
+                self.send_response(302);self.send_header('Location','file:///etc/passwd');self.send_header('Content-Length','0');self.end_headers();return
             if path == '/redirect':
                 self.send_response(302); self.send_header('Location', '/small'); self.send_header('Content-Length', '0'); self.end_headers(); return
             if path == '/stall':

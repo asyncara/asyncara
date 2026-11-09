@@ -11,6 +11,9 @@
 #define AR_MAX_WATCHERS 16384
 #define AR_MEMORY_LIMIT (256u * 1024u * 1024u)
 #define AR_HTTP_STREAM_LIMIT 65536u
+#ifndef AR_HTTP_EASY_CACHE
+#define AR_HTTP_EASY_CACHE 64u
+#endif
 #define AR_TRACE_MAX 4096u
 #define AR_TRACE_WAIT 1u
 #define AR_TRACE_JOB 2u
@@ -60,6 +63,9 @@ typedef struct ar_db {
 typedef struct ar_file {
     long id;
     int fd, busy;
+    int staging, directory_fd;
+    char stage_name[64];
+    char *stage_target;
     struct ar_file *next;
 } ar_file;
 typedef enum {
@@ -87,8 +93,14 @@ typedef enum {
     OP_FILE_STAT,
     OP_FILE_SYNC,
     OP_FILE_CLOSE,
-    OP_ATOMIC_WRITE
+    OP_ATOMIC_WRITE,
+    OP_FILE_STAGE,
+    OP_FILE_PUBLISH
 } ar_op;
+typedef struct {
+    struct ar_job *job;
+    size_t index;
+} ar_http_part;
 typedef struct ar_job {
     long id;
     ar_op op;
@@ -114,6 +126,8 @@ typedef struct ar_job {
     char *upload;
     size_t upload_len, upload_offset;
     int64_t upload_size, upload_sent;
+    ar_http_part *upload_parts;
+    size_t upload_part_count, upload_index;
     long status;
     int done;
 } ar_job;
@@ -138,6 +152,10 @@ typedef struct ar_engine {
     ar_db *dbs;
     ar_file *files;
     CURLM *multi;
+    CURL *http_idle[64];
+    size_t http_idle_count;
+    int http_max_connections, http_max_host_connections;
+    uint64_t http_created, http_reused;
     ar_socket *sockets;
     int running, use_epoll, http_wakeup;
 } ar_engine;

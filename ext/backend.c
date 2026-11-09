@@ -105,29 +105,76 @@ static size_t send_body(char *buffer, size_t size, size_t count, void *ctx) {
     if (j->upload_offset == j->upload_len) j->upload_len = j->upload_offset = 0;
     return n;
 }
+/* All MIME files share one bounded upload slot. Curl advances parts only
+ * after consuming EOF; the producer then becomes writable for the next file. */
+static size_t send_part(char *buffer, size_t size, size_t count, void *ctx) {
+    ar_http_part *part = ctx; ar_job *j = part->job;
+    if (part->index != j->upload_index) {
+        if (part->index != j->upload_index + 1 || !j->upload_eof || j->upload_len) return CURL_READFUNC_ABORT;
+        j->upload_index = part->index; j->upload_eof = 0; j->upload_sent = 0;
+    }
+    return send_body(buffer, size, count, j);
+}
+static ar_value *array_option(ar_value *array, const char *name) {
+    if (array) for (size_t i = 0; i < array->count; i++)
+        if (array->keys[i] && !strcmp(array->keys[i], name)) return array->items[i];
+    return NULL;
+}
 static ar_value *http_option(ar_job *j, const char *name) {
     if (j->params) for (size_t i = 0; i < j->params->count; i++)
         if (j->params->keys[i] && !strcmp(j->params->keys[i], name)) return j->params->items[i];
     return NULL;
+}
+/* libcurl multi errors invalidate the whole active set. Fail and detach it
+ * before accepting another batch; never keep driving an uncertain multi. */
+static void http_action(ar_engine *e, curl_socket_t fd, int events) {
+    if (!e->multi) return;
+    CURLMcode code = curl_multi_socket_action(e->multi, fd, events, &e->running);
+    if (code == CURLM_OK) return;
+    for (ar_job *j = e->jobs; j; j = j->next) {
+        if (j->op != OP_HTTP || j->done || !j->curl) continue;
+        curl_multi_remove_handle(e->multi, j->curl);
+        if (!j->error[0]) snprintf(j->error, sizeof(j->error), "libcurl multi failed: %s", curl_multi_strerror(code));
+        ar_done(e, j);
+    }
+    curl_multi_cleanup(e->multi); e->multi = NULL; e->running = 0;
+    while (e->sockets) { ar_socket *s = e->sockets; e->sockets = s->next; ar_free(s); }
+}
+/* Transfer ownership of completed buffers instead of copying and charging a
+ * second full response. Failed value construction leaves the job as owner. */
+static ar_value *take_http_buffer(ar_engine *e, char **buffer, size_t *length, size_t *capacity) {
+    if (!*buffer) return ar_string(e, "", 0);
+    ar_value *v = ar_value_new(e, V_STRING);
+    if (!v) return NULL;
+    v->string = *buffer; v->length = *length;
+    *buffer = NULL; *length = *capacity = 0;
+    return v;
 }
 void ar_http_start(ar_engine *e, ar_job *j) {
     if (!e->multi) {
         e->multi = curl_multi_init();
         if (!e->multi)
             goto error;
-        curl_multi_setopt(e->multi, CURLMOPT_SOCKETFUNCTION, socket_changed);
-        curl_multi_setopt(e->multi, CURLMOPT_SOCKETDATA, e);
-        curl_multi_setopt(e->multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, 64L);
-        curl_multi_setopt(e->multi, CURLMOPT_MAX_HOST_CONNECTIONS, 8L);
+        if (curl_multi_setopt(e->multi, CURLMOPT_SOCKETFUNCTION, socket_changed) != CURLM_OK ||
+            curl_multi_setopt(e->multi, CURLMOPT_SOCKETDATA, e) != CURLM_OK ||
+            curl_multi_setopt(e->multi, CURLMOPT_MAXCONNECTS, (long)e->http_max_connections) != CURLM_OK ||
+            curl_multi_setopt(e->multi, CURLMOPT_MAX_TOTAL_CONNECTIONS, (long)e->http_max_connections) != CURLM_OK ||
+            curl_multi_setopt(e->multi, CURLMOPT_MAX_HOST_CONNECTIONS, (long)e->http_max_host_connections) != CURLM_OK) {
+            curl_multi_cleanup(e->multi); e->multi = NULL; goto error;
+        }
     }
     if (!(curl_version_info(CURLVERSION_NOW)->features & CURL_VERSION_ASYNCHDNS)) {
         snprintf(j->error, sizeof(j->error), "libcurl asynchronous DNS required");
         ar_done(e, j);
         return;
     }
-    j->curl = curl_easy_init();
-    if (!j->curl)
-        goto error;
+    if (e->http_idle_count) {
+        j->curl = e->http_idle[--e->http_idle_count]; e->http_reused++;
+    } else {
+        j->curl = curl_easy_init();
+        if (j->curl) e->http_created++;
+    }
+    if (!j->curl) goto error;
 #define SET(opt, val)                                                                                        \
     do {                                                                                                     \
         if (curl_easy_setopt(j->curl, opt, val) != CURLE_OK)                                                 \
@@ -165,12 +212,14 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             if (!key)
                 continue;
             if (!strcmp(key, "method")) {
-                SET(CURLOPT_CUSTOMREQUEST, v->string);
-                if (!strcmp(v->string, "HEAD")) {
-                    SET(CURLOPT_NOBODY, 1L);
-                }
+                if (!strcmp(v->string, "HEAD")) SET(CURLOPT_NOBODY, 1L);
+                else if (!strcmp(v->string, "POST")) SET(CURLOPT_POST, 1L);
+                else if (strcmp(v->string, "GET") || j->b) SET(CURLOPT_CUSTOMREQUEST, v->string);
+            } else if (!strcmp(key, "connectTimeoutMs")) {
+                SET(CURLOPT_CONNECTTIMEOUT_MS, (long)v->integer);
             } else if (!strcmp(key, "proxy")) {
                 SET(CURLOPT_PROXY, v->string);
+                SET(CURLOPT_NOPROXY, "");
             } else if (!strcmp(key, "caFile")) {
                 SET(CURLOPT_CAINFO, v->string);
             } else if (!strcmp(key, "followRedirects")) {
@@ -199,13 +248,23 @@ void ar_http_start(ar_engine *e, ar_job *j) {
                 if (!part || curl_mime_name(part, fields->keys[i]) != CURLE_OK ||
                     curl_mime_data(part, fields->items[i]->string, fields->items[i]->length) != CURLE_OK) goto error;
             }
-            curl_mimepart *part = curl_mime_addpart(j->mime);
-            ar_value *field = http_option(j, "fileField"), *name = http_option(j, "fileName"), *type = http_option(j, "fileType");
-            if (!part || !field || !name || !type ||
-                curl_mime_name(part, field->string) != CURLE_OK ||
-                curl_mime_filename(part, name->string) != CURLE_OK ||
-                curl_mime_type(part, type->string) != CURLE_OK ||
-                curl_mime_data_cb(part, (curl_off_t)j->upload_size, send_body, NULL, NULL, j) != CURLE_OK) goto error;
+            ar_value *files = http_option(j, "files");
+            j->upload_part_count = files ? files->count : 1;
+            j->upload_parts = ar_calloc(e, j->upload_part_count, sizeof(*j->upload_parts));
+            if (!j->upload_parts) goto error;
+            for (size_t i = 0; i < j->upload_part_count; i++) {
+                curl_mimepart *part = curl_mime_addpart(j->mime);
+                ar_value *field = files ? array_option(files->items[i], "field") : http_option(j, "fileField");
+                ar_value *name = files ? array_option(files->items[i], "name") : http_option(j, "fileName");
+                ar_value *type = files ? array_option(files->items[i], "type") : http_option(j, "fileType");
+                j->upload_parts[i] = (ar_http_part){j, i};
+                if (!part || !field || !name || !type ||
+                    curl_mime_name(part, field->string) != CURLE_OK ||
+                    curl_mime_filename(part, name->string) != CURLE_OK ||
+                    curl_mime_type(part, type->string) != CURLE_OK ||
+                    curl_mime_data_cb(part, files ? (curl_off_t)-1 : (curl_off_t)j->upload_size,
+                                      send_part, NULL, NULL, &j->upload_parts[i]) != CURLE_OK) goto error;
+            }
             SET(CURLOPT_MIMEPOST, j->mime);
         } else {
             SET(CURLOPT_UPLOAD, 1L);
@@ -213,6 +272,10 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             SET(CURLOPT_READDATA, j);
             SET(CURLOPT_INFILESIZE_LARGE, (curl_off_t)j->upload_size);
         }
+        /* CURLOPT_UPLOAD selects PUT internally. Preserve the caller's method
+         * for streamed POST/PATCH/etc; these streams never enable replay. */
+        ar_value *method = http_option(j, "method");
+        if (method) SET(CURLOPT_CUSTOMREQUEST, method->string);
         SET(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
     }
     if (j->headers) {
@@ -220,7 +283,8 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     }
     if (curl_multi_add_handle(e->multi, j->curl) != CURLM_OK)
         goto error;
-    curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
+    /* One kick at the next poll starts all admitted handles together. */
+    e->http_wakeup = 1;
 #undef SET
     return;
 error:
@@ -251,9 +315,9 @@ void ar_http_progress(ar_engine *e) {
                 ar_value_free(status);
                 snprintf(j->error, sizeof(j->error), "Native memory limit or allocation failure");
             } else if (ar_add(j->result, "status", status) ||
-                       ar_add(j->result, "body", ar_string(e, j->body ? j->body : "", j->body_len)) ||
+                       ar_add(j->result, "body", take_http_buffer(e, &j->body, &j->body_len, &j->body_capacity)) ||
                        ar_add(j->result, "headers",
-                              ar_string(e, j->response_headers ? j->response_headers : "", j->headers_len)))
+                              take_http_buffer(e, &j->response_headers, &j->headers_len, &j->headers_capacity)))
                 snprintf(j->error, sizeof(j->error), "Native memory limit or allocation failure");
         }
         curl_multi_remove_handle(e->multi, j->curl);
@@ -357,7 +421,7 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     ar_trace_emit(e, AR_TRACE_WAIT, 10, e->wait_id, timeout, n, deadline);
     if (e->http_wakeup) {
         e->http_wakeup = 0;
-        if (e->multi) curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
+        if (e->multi) http_action(e, CURL_SOCKET_TIMEOUT, 0);
         /* New application data can consume an upload buffer immediately, or
          * resume can redeliver response bytes. Dispatch those state changes to
          * Fibers before blocking on another network event. */
@@ -459,9 +523,9 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
                     int action = (fds[i].revents & POLLIN ? CURL_CSELECT_IN : 0) |
                                  (fds[i].revents & POLLOUT ? CURL_CSELECT_OUT : 0) |
                                  (fds[i].revents & (POLLERR | POLLHUP) ? CURL_CSELECT_ERR : 0);
-                    curl_multi_socket_action(e->multi, fds[i].fd, action, &e->running);
+                    http_action(e, fds[i].fd, action);
                 }
-            curl_multi_socket_action(e->multi, CURL_SOCKET_TIMEOUT, 0, &e->running);
+            http_action(e, CURL_SOCKET_TIMEOUT, 0);
             ar_http_progress(e);
         }
     }

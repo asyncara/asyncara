@@ -61,9 +61,12 @@ File uploads obtain chunks from the existing worker-backed `Files::readStream`.
 An application iterable can itself perform blocking work; Asyncara cannot make
 arbitrary producer code nonblocking.
 
-Multipart uses curl MIME callbacks and supports one streamed file plus up to64
+Multipart uses curl MIME callbacks. `multipart()` retains the single-file API;
+`multipartFiles()` accepts 1..16 file descriptors, including repeated field names,
+empty files and different content types. Only the active file is opened and all
+parts share one native 64 KiB upload slot. Both APIs support up to 64
 scalar string fields. Each field is at most 64 KiB, all fields together at most 1 MiB;
-field/file metadata rejects NUL/CR/LF and is bounded. Multiple files, nested MIME,
+field/file metadata rejects NUL/CR/LF and is bounded. Nested MIME,
 redirect replay and resumable uploads remain unavailable. Curl-owned copies of
 field metadata/content are outside the ledger but inputs are bounded. The tested
 curl 8.5 MIME layer may report a nested pause after emitting boundary bytes; the
@@ -77,9 +80,17 @@ Transfers start eagerly when their producer Task runs. Client permits are held
 until stream cleanup. `download()` creates its producer lazily inside its owned
 Task, so cancelling before the Task starts does not abandon a transfer. It writes
 through a worker-backed descriptor, truncates an existing destination and can
-leave partial data after failure. It does not provide atomic publication or crash
-durability. HTTP error-status bodies are not automatically rejected; use
-`getStream()->headers()` when status-based acceptance is required.
+leave partial data after failure. Optional `atomic: true` stages a private 0600 file in the destination directory
+and publishes only a complete body using worker-backed `renameat`.
+`durable: true` requires atomic mode and syncs the file before rename and the
+pinned parent directory afterward. A directory-sync failure can therefore report
+`FilesystemException::committed === true`: the new file is already visible.
+Cancellation after rename does not undo publication. Use a trusted destination
+directory; removing write permissions can prevent temporary-file cleanup and
+produce an error. There is no cross-filesystem copy fallback. Existing modes and
+metadata are not copied from a replaced destination. `failOnHttpError: true`
+rejects non-2xx responses before writing/publishing. Default downloads still
+permit error-status bodies and partial destination files.
 
 `upload()` and `multipart()` own their lazily created file source. A caller-created
 ReadableStream passed to `requestStream()` remains the caller's responsibility
@@ -113,7 +124,8 @@ executed 704,679 inputs/61s, then 602,547/61s against the final callback source;
 finding. This fuzz target does not claim coverage of curl's HTTP parser.
 Further instrumentation, benchmark and soak evidence is recorded separately in
 WORKLOG and docs/phase3. Long-duration streaming soak, other curl versions,
-HTTP/2/3, multi-file MIME and proxy/remote deployment matrices remain unverified.
+HTTP/2/3 and broad proxy/remote deployment matrices remain unverified.
+The historical runs above predate the HTTP completion work below.
 
 
 Phase 4 extended mixed smoke adds verified HTTPS buffered and streamed bodies
@@ -141,3 +153,40 @@ current bounded API under the workload described in SOAK_TESTING.md. Large-body,
 multipart, upload, proxy and single-connection24h endurance remain unverified.
 No HTTP/2/3 or multi-file capability was added. See phase4/endurance-r4.json and
 phase4/hosted-r4.json for exact source, durations and retained local FPM failure.
+
+
+## HTTP completion checkpoint (2026-11-09)
+
+```php
+$client = new HttpClient(concurrency: 32, timeout: 30, connectTimeout: 5);
+$reply = $client->multipartFiles($url, ['description' => 'sample'], [
+    ['field' => 'attachments[]', 'path' => '/tmp/a.bin'],
+    ['field' => 'attachments[]', 'path' => '/tmp/b.txt', 'contentType' => 'text/plain'],
+])->await();
+$bytes = $client->download($url, '/tmp/result.bin',
+    atomic: true, durable: true, failOnHttpError: true)->await();
+```
+
+`Runtime::configure(['httpMaxConnections' => 64, 'httpMaxHostConnections' => 32])`
+is request-local and must run outside `Async::run()` before any native submission.
+Defaults remain 64 total / 8 per host; configurable range is 1..256 with per-host
+at most total. Client semaphore admission and connection admission remain separate.
+At most 64 detached easy handles are cached per PHP request; all options and
+callbacks are reset before reuse. The shared multi owns connection reuse. The
+cache and all library handles are freed at request shutdown, never shared across
+FPM requests. Diagnostics expose limits, cached handles, creations and reuse.
+Library allocations remain outside the native payload ledger.
+
+Request headers are limited to 256 entries and 64 KiB combined including CRLF.
+`connectTimeout` includes connection establishment/TLS as implemented by curl;
+the existing total transfer timeout includes queueing inside curl and paused time,
+but begins after client semaphore admission. Explicit proxies override environment
+NO_PROXY exclusions. Local HTTP forward-proxy and HTTPS CONNECT tests verify
+success and certificate rejection; SOCKS/proxy-authentication/WAN matrices are not
+certified. Buffered POST follows curl's standard 303-to-GET behavior. Streamed
+uploads retain their requested method and do not replay on redirects.
+
+`tests/http/run.py` is the focused completion gate, covering multipart, staging,
+error injection, limits, proxy/TLS and original streaming tests on epoll and poll.
+See [HTTP engineering](HTTP_ENGINEERING.md) for source identities, completed
+validation and the benchmark comparison. New results do not certify older archives.

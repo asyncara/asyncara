@@ -1586,3 +1586,25 @@ Attestation: docs/phase5/resource-provenance-package.json. Later documentation
 commits do not change tested/packaged runtime. Historical Phase4 evidence and
 prior archive verified unchanged. Distribution Valgrind loss and historical
 zero-tick uncertainty remain. No push or release; EXPERIMENTAL.
+
+
+## 2026-11-09 — HTTP completion candidate (isolated phase6-http)
+
+Base 79d142f900a6324051484b921be23c9c81c92bd4, worktree
+`/home/coder/Asyncara-http-20261109T050419Z`. Historical Phase 4 files remain untouched.
+Added bounded multi-file MIME, worker-staged atomic downloads, explicit connect
+timeout and request-local connection limits. Native completion adopts buffers;
+batched starts, bounded reset easy-handle reuse and multi-error collection preserve
+the existing curl multi architecture. No new hooks or protocol backends.
+
+Own evidence: `/home/coder/Asyncara-http-evidence-20261109T050419Z`. Candidate r6
+passes full PHP 8.5 epoll/poll suites and focused MIME/atomic/proxy/TLS/limits tests.
+The first full run lacked locked dev dependencies; installing them fixed it without
+changing composer.lock. An earlier streamed POST regression failed the unchanged
+streaming test and was corrected. All failed outputs retained. Baseline negative
+controls fail at the 7 MiB completion budget and injected CURLM failure; candidate
+passes. Final cross-version/instrumentation/gates/packaging pending at this checkpoint.
+
+4x curl_multi / 3x Swoole are requested targets, not established results. Initial
+matched HTTP/1.1 samples are slower than both controls. Final repeated comparisons
+will report exact scope and ratios, including any target shortfall. EXPERIMENTAL.

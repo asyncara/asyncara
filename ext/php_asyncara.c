@@ -189,6 +189,8 @@ static bool capture_path(ar_engine *e, char **path) {
 static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
         return false;
+    bool files = false, multipart = false, legacy_file = false, upload = false;
+    int64_t upload_size = -1;
     for (size_t i = 0; i < v->count; i++) {
         char *key = v->keys[i];
         ar_value *x = v->items[i];
@@ -197,9 +199,30 @@ static bool valid_http_options(ar_value *v) {
         if (!strcmp(key, "followRedirects") || !strcmp(key, "streamResponse")) {
             if (x->type != V_BOOL)
                 return false;
+        } else if (!strcmp(key, "connectTimeoutMs")) {
+            if (x->type != V_INT || x->integer < 1 || x->integer > 3600000) return false;
         } else if (!strcmp(key, "uploadSize")) {
             if (x->type != V_INT || x->integer < -1) return false;
+            upload = true; upload_size = x->integer;
+        } else if (!strcmp(key, "files")) {
+            files = true;
+            if (x->type != V_ARRAY || !x->count || x->count > 16) return false;
+            for (size_t f = 0; f < x->count; f++) {
+                ar_value *file = x->items[f]; unsigned found = 0;
+                if (x->keys[f] || file->type != V_ARRAY || file->count != 3) return false;
+                for (size_t m = 0; m < file->count; m++) {
+                    const char *name = file->keys[m]; ar_value *value = file->items[m];
+                    if (!name || value->type != V_STRING || !value->length || value->length > 256 ||
+                        memchr(value->string, 0, value->length) || strpbrk(value->string, "\r\n")) return false;
+                    if (!strcmp(name, "field")) found |= 1;
+                    else if (!strcmp(name, "name")) found |= 2;
+                    else if (!strcmp(name, "type")) found |= 4;
+                    else return false;
+                }
+                if (found != 7) return false;
+            }
         } else if (!strcmp(key, "multipart")) {
+            multipart = true;
             if (x->type != V_ARRAY || x->count > 64) return false;
             size_t total = 0;
             for (size_t h = 0; h < x->count; h++) {
@@ -210,22 +233,26 @@ static bool valid_http_options(ar_value *v) {
             }
             if (total > 1048576) return false;
         } else if (!strcmp(key, "headers")) {
-            if (x->type != V_ARRAY)
-                return false;
+            if (x->type != V_ARRAY || x->count > 256) return false;
+            size_t bytes = 0;
             for (size_t h = 0; h < x->count; h++) {
                 ar_value *s = x->items[h];
-                if (s->type != V_STRING || memchr(s->string, 0, s->length) || strpbrk(s->string, "\r\n"))
-                    return false;
+                if (s->type != V_STRING || s->length > 65536 || memchr(s->string, 0, s->length) || strpbrk(s->string, "\r\n")) return false;
+                bytes += s->length + 2;
+                if (bytes > 65536) return false;
             }
         } else if (!strcmp(key, "method") || !strcmp(key, "proxy") || !strcmp(key, "caFile") ||
                    !strcmp(key, "fileField") || !strcmp(key, "fileName") || !strcmp(key, "fileType")) {
             if (x->type != V_STRING || memchr(x->string, 0, x->length) || strpbrk(x->string, "\r\n"))
                 return false;
             if (!strncmp(key, "file", 4) && (!x->length || x->length > 256)) return false;
+            if (!strncmp(key, "file", 4)) legacy_file = true;
         } else
             return false;
     }
-    return true;
+    /* Multiple files use one sequential unknown-length producer. Do not
+     * silently ignore file descriptors without the matching MIME/upload mode. */
+    return !files || (multipart && upload && upload_size == -1 && !legacy_file);
 }
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_info, 0, 0, IS_ARRAY, 0)
 ZEND_END_ARG_INFO()
@@ -300,6 +327,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_write, 0, 3, _IS_BOOL, 0)
 ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
 ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
 ZEND_ARG_TYPE_INFO(0, eof, _IS_BOOL, 0)
+ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, part, IS_LONG, 0, "0")
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_submit, 0, 2, IS_LONG, 0)
 ZEND_ARG_TYPE_INFO(0, operation, IS_STRING, 0)
@@ -335,6 +363,20 @@ PHP_FUNCTION(asyncara_memory_limit) {
         RETURN_THROWS();
     }
     e->memory_limit = (size_t)bytes;
+}
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_http_limits, 0, 2, IS_VOID, 0)
+ZEND_ARG_TYPE_INFO(0, total, IS_LONG, 0)
+ZEND_ARG_TYPE_INFO(0, perHost, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_http_limits) {
+    zend_long total, per_host;
+    ZEND_PARSE_PARAMETERS_START(2, 2) Z_PARAM_LONG(total) Z_PARAM_LONG(per_host) ZEND_PARSE_PARAMETERS_END();
+    if (total < 1 || total > 256 || per_host < 1 || per_host > total) {
+        zend_value_error("HTTP limits require 1 <= perHost <= total <= 256"); RETURN_THROWS();
+    }
+    ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
+    if (e->next_id) { zend_throw_exception(zend_ce_exception, "Configure HTTP limits before submitting operations", 0); RETURN_THROWS(); }
+    e->http_max_connections = (int)total; e->http_max_host_connections = (int)per_host;
 }
 PHP_FUNCTION(asyncara_info) {
     ZEND_PARSE_PARAMETERS_NONE();
@@ -387,6 +429,11 @@ PHP_FUNCTION(asyncara_info) {
     pthread_mutex_unlock(&e->mutex);
     add_assoc_long(return_value, "sqliteConnections", sqlite_count);
     add_assoc_long(return_value, "httpReadinessSockets", http_sockets);
+    add_assoc_long(return_value, "httpMaxConnections", e->http_max_connections);
+    add_assoc_long(return_value, "httpMaxHostConnections", e->http_max_host_connections);
+    add_assoc_long(return_value, "httpCachedHandles", e->http_idle_count);
+    add_assoc_long(return_value, "httpHandlesCreated", e->http_created);
+    add_assoc_long(return_value, "httpHandlesReused", e->http_reused);
     add_assoc_long(return_value, "nativeQueueDepth", queued);
     size_t streaming = 0, buffered = 0, paused = 0, uploads = 0, upload_buffered = 0, upload_paused = 0;
     for (ar_job *job = e->jobs; job; job = job->next) {
@@ -488,7 +535,7 @@ PHP_FUNCTION(asyncara_submit) {
                                   "mkdir",      "rmdir",       "stat",         "list",         "copy",
                                   "dns",        "sqlite_open", "sqlite_query", "sqlite_close", "http",
                                   "read_range", "write_range", "file_open",    "file_read",    "file_write",
-                                  "file_seek",  "file_stat",   "file_sync",    "file_close", "atomic_write"};
+                                  "file_seek",  "file_stat",   "file_sync",    "file_close", "atomic_write", "file_stage", "file_publish"};
     size_t op;
     for (op = 0; op < sizeof(names) / sizeof(*names); op++)
         if (strlen(names[op]) == len && !memcmp(names[op], name, len))
@@ -509,26 +556,28 @@ PHP_FUNCTION(asyncara_submit) {
         zend_throw_exception(zend_ce_exception, "Native memory limit or allocation failure", 0);
         RETURN_THROWS();
     }
-    if (op >= OP_FILE_OPEN && op <= OP_FILE_CLOSE) {
-        if (op == OP_FILE_OPEN) {
+    if ((op >= OP_FILE_OPEN && op <= OP_FILE_CLOSE) || op == OP_FILE_STAGE || op == OP_FILE_PUBLISH) {
+        if (op == OP_FILE_OPEN || op == OP_FILE_STAGE) {
             j->a = string_arg(e, args, 0, false, NULL);
             if (!j->a)
                 goto error;
             if (!capture_path(e, &j->a)) {
                 goto error;
             }
-            j->b = string_arg(e, args, 1, false, NULL);
-            if (!j->b)
-                goto error;
-            const char *modes[] = {"r", "r+", "rb", "r+b", "rb+", "w", "w+", "wb", "w+b", "wb+",
-                                   "a", "a+", "ab", "a+b", "ab+", "x", "x+", "xb", "x+b", "xb+"};
-            bool valid = false;
-            for (size_t m = 0; m < sizeof(modes) / sizeof(*modes); m++)
-                if (!strcmp(j->b, modes[m]))
-                    valid = true;
-            if (!valid) {
-                zend_value_error("Unsupported file mode");
-                goto error;
+            if (op == OP_FILE_OPEN) {
+                j->b = string_arg(e, args, 1, false, NULL);
+                if (!j->b)
+                    goto error;
+                const char *modes[] = {"r", "r+", "rb", "r+b", "rb+", "w", "w+", "wb", "w+b", "wb+",
+                                       "a", "a+", "ab", "a+b", "ab+", "x", "x+", "xb", "x+b", "xb+"};
+                bool valid = false;
+                for (size_t m = 0; m < sizeof(modes) / sizeof(*modes); m++)
+                    if (!strcmp(j->b, modes[m]))
+                        valid = true;
+                if (!valid) {
+                    zend_value_error("Unsupported file mode");
+                    goto error;
+                }
             }
             size_t count = 0;
             for (ar_file *file = e->files; file; file = file->next)
@@ -553,7 +602,13 @@ PHP_FUNCTION(asyncara_submit) {
                 zend_value_error("Native file handle missing, closed or busy");
                 goto error;
             }
-            if (op == OP_FILE_READ) {
+            if (op == OP_FILE_PUBLISH) {
+                zval *durable = zend_hash_index_find(args, 1);
+                if (!durable || (Z_TYPE_P(durable) != IS_TRUE && Z_TYPE_P(durable) != IS_FALSE)) {
+                    zend_value_error("Durability must be boolean"); goto error;
+                }
+                j->offset = Z_TYPE_P(durable) == IS_TRUE;
+            } else if (op == OP_FILE_READ) {
                 zval *length = zend_hash_index_find(args, 1);
                 if (!length || Z_TYPE_P(length) != IS_LONG || Z_LVAL_P(length) < 1 ||
                     Z_LVAL_P(length) > AR_LIMIT) {
@@ -700,7 +755,7 @@ PHP_FUNCTION(asyncara_submit) {
     }
     RETURN_LONG(j->id);
 error:
-    if (j->op == OP_FILE_OPEN && j->file && !j->file->busy) {
+    if ((j->op == OP_FILE_OPEN || j->op == OP_FILE_STAGE) && j->file && !j->file->busy) {
         ar_file **entry = &e->files;
         while (*entry && *entry != j->file)
             entry = &(*entry)->next;
@@ -882,19 +937,22 @@ PHP_FUNCTION(asyncara_http_read) {
     }
 }
 PHP_FUNCTION(asyncara_http_write) {
-    zend_long id;
+    zend_long id, part = 0;
     char *data;
     size_t length;
     bool eof;
-    ZEND_PARSE_PARAMETERS_START(3, 3)
-    Z_PARAM_LONG(id) Z_PARAM_STRING(data, length) Z_PARAM_BOOL(eof) ZEND_PARSE_PARAMETERS_END();
+    ZEND_PARSE_PARAMETERS_START(3, 4)
+    Z_PARAM_LONG(id) Z_PARAM_STRING(data, length) Z_PARAM_BOOL(eof) Z_PARAM_OPTIONAL Z_PARAM_LONG(part) ZEND_PARSE_PARAMETERS_END();
     ar_job *j = engine ? engine->jobs : NULL;
     while (j && j->id != id) j = j->next;
-    if (!j || j->op != OP_HTTP || !j->stream_upload || j->upload_eof || length > AR_HTTP_STREAM_LIMIT) {
+    if (!j || j->op != OP_HTTP || !j->stream_upload || part < 0 || (size_t)part >= (j->upload_part_count ? j->upload_part_count : 1) || length > AR_HTTP_STREAM_LIMIT) {
         zend_value_error("Invalid streaming upload state or chunk exceeds 65536 bytes");
         RETURN_THROWS();
     }
-    if (j->upload_len) RETURN_FALSE;
+    if ((size_t)part < j->upload_index || ((size_t)part == j->upload_index && j->upload_eof)) {
+        zend_value_error("Upload part has already ended"); RETURN_THROWS();
+    }
+    if ((size_t)part > j->upload_index || j->upload_len) RETURN_FALSE;
     if (j->done) RETURN_FALSE;
     if (length > (uint64_t)(INT64_MAX - j->upload_sent) ||
         (j->upload_size >= 0 && ((uint64_t)length > (uint64_t)(j->upload_size - j->upload_sent) ||
@@ -1004,6 +1062,7 @@ static const zend_function_entry functions[] = {
     PHP_FE(asyncara_http_head, arginfo_http_head)
     PHP_FE(asyncara_http_write, arginfo_http_write)
     PHP_FE(asyncara_memory_limit, arginfo_memory_limit)
+    PHP_FE(asyncara_http_limits, arginfo_http_limits)
     PHP_FE(asyncara_trace_configure, arginfo_trace_configure)
     PHP_FE(asyncara_trace_event, arginfo_trace_event)
     PHP_FE(asyncara_trace_snapshot, arginfo_info)

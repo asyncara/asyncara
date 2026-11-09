@@ -17,12 +17,13 @@ int LLVMFuzzerTestOneInput(const unsigned char *data,size_t size) {
     e->memory_limit=4096+(size_t)data[1]*1024;
     ar_job *j=ar_job_new(e,OP_HTTP);
     if(!j){ar_engine_free(e);return 0;}
-    j->stream_response=j->stream_upload=1;
+    j->stream_response=j->stream_upload=1;j->upload_size=-1;
+    ar_http_part parts[3]={{j,0},{j,1},{j,2}};
     char payload[AR_HTTP_STREAM_LIMIT],output[AR_HTTP_STREAM_LIMIT];
     memset(payload,0xA5,sizeof(payload));
     for(size_t i=2;i+2<size && i<386;i+=3) {
         size_t n=((size_t)data[i+1]+1)*256;
-        switch(data[i]%8) {
+        switch(data[i]%9) {
         case 0: {
             size_t before=j->body_len,rc=receive_body(payload,1,n,j);
             if(rc==CURL_WRITEFUNC_PAUSE || !rc)assert(j->body_len==before);
@@ -43,6 +44,13 @@ int LLVMFuzzerTestOneInput(const unsigned char *data,size_t size) {
             break;
         }
         case 6: j->upload_eof=data[i+2]&1;break;
+        case 7: {
+            size_t before=j->upload_len-j->upload_offset;
+            size_t rc=send_part(output,1,n,&parts[data[i+2]%3]);
+            if(rc!=CURL_READFUNC_ABORT && rc!=CURL_READFUNC_PAUSE)assert(rc<=before && rc<=n);
+            assert(j->upload_index<3);
+            break;
+        }
         default:
             assert(receive_body(payload,SIZE_MAX,2,j)==0);
             assert(send_body(output,SIZE_MAX,2,j)==CURL_READFUNC_ABORT);
