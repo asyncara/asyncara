@@ -485,6 +485,7 @@ PHP_FUNCTION(asyncara_info) {
         RETURN_THROWS();
     array_init(return_value);
     add_assoc_string(return_value, "version", PHP_ASYNCARA_VERSION);
+    add_assoc_string(return_value, "buildPhpVersion", PHP_VERSION);
 #ifdef __linux__
     add_assoc_string(return_value, "eventLoopBackend", e->use_epoll ? "epoll" : "poll");
 #else
@@ -1199,6 +1200,14 @@ static const zend_function_entry functions[] = {
                                 PHP_FE(asyncara_poll, arginfo_poll) PHP_FE(asyncara_cancel, arginfo_cancel)
                                     PHP_FE(asyncara_hooks, arginfo_hooks) PHP_FE_END};
 PHP_MINIT_FUNCTION(asyncara) {
+    /* PHP's October allocation changes preserved the module API number while
+     * changing executor-global layout. A matching major/minor API is insufficient:
+     * reject foreign patch SDKs before any library, hook or request initialization. */
+    const char *runtime_version = zend_get_module_version("standard");
+    if (!runtime_version || strcmp(runtime_version, PHP_VERSION)) {
+        php_error_docref(NULL, E_WARNING, "Asyncara was built for PHP %s; runtime is %s. Rebuild with the exact matching PHP SDK", PHP_VERSION, runtime_version ? runtime_version : "unknown");
+        return FAILURE;
+    }
     if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK)
         return FAILURE;
 #ifdef HAVE_ASYNCARA_PQ
