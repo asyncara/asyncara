@@ -591,9 +591,30 @@ pub unsafe extern "C" fn ar_hyper_submit(
         if authority.as_str().contains('@') {
             return -1;
         }
-        let host = uri.host().unwrap_or("").trim_matches(['[', ']']);
+        // Authority::port_u16() also returns None for an invalid explicit port.
+        // Only an absent suffix may select port 80; never silently redirect an
+        // invalid authority to a different endpoint. Bracketed IPv6 is retained
+        // here so its internal colons are not confused with the port separator.
+        let raw_host = authority.host();
+        let port = match authority.as_str().strip_prefix(raw_host) {
+            Some("") => 80,
+            Some(suffix) => {
+                let Some(digits) = suffix.strip_prefix(':') else {
+                    return -1;
+                };
+                if digits.is_empty() || !digits.bytes().all(|c| c.is_ascii_digit()) {
+                    return -1;
+                }
+                let Ok(port) = digits.parse::<u16>() else {
+                    return -1;
+                };
+                port
+            }
+            None => return -1,
+        };
+        let host = raw_host.trim_matches(['[', ']']);
         let Ok(ip) = host.parse() else { return -1 };
-        let addr = SocketAddr::new(ip, uri.port_u16().unwrap_or(80));
+        let addr = SocketAddr::new(ip, port);
         engine.ops.push(Op {
             job: job as usize,
             uri,

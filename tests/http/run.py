@@ -8,6 +8,7 @@ p.add_argument('--php', required=True)
 p.add_argument('--extension', required=True)
 p.add_argument('--output', required=True)
 p.add_argument('--php-only', action='store_true')
+p.add_argument('--hyper', action='store_true', help='Also require and test the optional Hyper prototype')
 a = p.parse_args()
 out = pathlib.Path(a.output).resolve()
 out.mkdir(parents=True, exist_ok=False)
@@ -80,6 +81,10 @@ for backend in ['epoll', 'poll']:
     run(backend + '-streaming', php + ['tests/http_streaming.php'], env)
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
+    if a.hyper:
+        for test in ['hyper_uri', 'hyper', 'buffered_owner']:
+            run(backend + '-prototype-' + test, php + ['tests/http/' + test + '.php'],
+                env | {'ASYNCARA_HTTP_BACKEND': 'hyper-prototype'})
 assert sha(module) == identity['moduleSha256']
 assert all(sha(ROOT / name) == digest for name, digest in manifest.items())
 (out / 'report.json').write_text(json.dumps({'status': 'PASS', 'wallSeconds': time.monotonic() - start,
