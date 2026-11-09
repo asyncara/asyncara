@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <poll.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -220,6 +221,7 @@ unsupported:
 }
 #endif
 void ar_http_start(ar_engine *e, ar_job *j) {
+    bool head_request = false;
     if (e->hyper_requested) {
 #ifdef HAVE_ASYNCARA_HYPER
         hyper_start(e, j);
@@ -289,7 +291,17 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             if (!key)
                 continue;
             if (!strcmp(key, "method")) {
-                if (!strcmp(v->string, "HEAD")) SET(CURLOPT_NOBODY, 1L);
+                if (!strcmp(v->string, "HEAD")) {
+                    /* Enforce this boundary for non-Zend native callers too.
+                     * No handle has been added to curl multi at this point. */
+                    if (j->stream_upload || j->b_len) {
+                        snprintf(j->error, sizeof(j->error), "HEAD does not support request content or uploads");
+                        ar_done(e, j);
+                        return;
+                    }
+                    head_request = true;
+                    SET(CURLOPT_NOBODY, 1L);
+                }
                 else if (!strcmp(v->string, "POST")) SET(CURLOPT_POST, 1L);
                 else if (strcmp(v->string, "GET") || j->b) SET(CURLOPT_CUSTOMREQUEST, v->string);
             } else if (!strcmp(key, "connectTimeoutMs")) {
@@ -311,7 +323,7 @@ void ar_http_start(ar_engine *e, ar_job *j) {
                 }
             }
         }
-    if (j->b) {
+    if (j->b && !head_request) {
         SET(CURLOPT_POSTFIELDS, j->b);
         SET(CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)j->b_len);
     }
