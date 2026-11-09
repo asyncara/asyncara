@@ -13,11 +13,11 @@ is an exception; applications should stop submitting work or reduce concurrency.
 | Native jobs / descriptor registrations | 1,024 / 16,384 | REJECT_NEW_ITEM |
 | Asyncara native allocations | 256 MiB (`nativeMemoryLimit`) | Reject allocation; atomic ledger includes allocation headers and mapped page rounding |
 | HTTP streaming native response / upload | 64 KiB each per transfer; two PHP response chunks queued | BLOCK_PRODUCER using curl pause/resume; other per-transfer chunk copies are documented in HTTP_STREAMING.md |
-| HTTP multipart fields | 64 fields, 64 KiB each / 1 MiB total | Reject invalid input; one streamed file, no unbounded field copies |
+| HTTP multipart fields | 64 fields, 64 KiB each / 1 MiB total | Reject invalid input; 1..16 streamed files via multipartFiles, shared 64 KiB native upload slot |
 | HTTP buffered body / headers | 16 MiB / 64 KiB per transfer | Fail transfer and release native buffers |
 | SQLite values/rows and SQL text | 16 MiB; 10,000 bind variables | SQLite rejects construction before result conversion; Asyncara also limits copied results |
 | SQLite open or opening connections | 128 per native request engine, fixed | REJECT_NEW_ITEM with ValueError; closing a connection releases admission |
-| Native curl connections | 64 total / 8 per host, fixed; HttpClient separately admits 32 requests by default | Queue transfers in curl; explicit client concurrency is configurable 1..256 and cannot raise the native caps |
+| Native curl connections | 64 total / 8 per host by default; HttpClient separately admits 32 requests by default | Queue transfers in curl; Runtime httpMaxConnections/httpMaxHostConnections configure 1..256 before native submission, per-host <= total |
 | PostgreSQL buffered query | 16 MiB conversion budget / 100,000 rows | Fail query and close connection; per-cell metadata charge reduces empty-cell amplification |
 | PostgreSQL notifications | 1,024 messages / 1 MiB channel+payload bytes | DISCONNECT_SLOW_CONSUMER with explicit exception; no silent drop |
 | Redis buffered reply or entire pipeline | 16 MiB wire bytes / 100,000 parser elements; depth 32 | Fail operation and close connection to avoid protocol desynchronization |
@@ -75,7 +75,7 @@ and reject one; closing/reopening recovers capacity. Independent HTTP peers see
 exactly8 concurrent requests at one host and64 across nine endpoints; all88
 requests complete. PHP8.3.36/8.4.27/8.5.12 pass epoll/poll, and fully instrumented
 GCC ASan/UBSan8.5.12 passes. These measure active requests, not all cached library
-allocations. The fixed native bounds are not advertised as configurable options.
+allocations. That historical test used fixed defaults. The HTTP completion checkpoint adds configurable limits without changing those defaults.
 Direct PostgreSQL/MySQL/Redis connections have no additional request-global
 connection admission cap. Use bounded ConnectionPool instances and deployment
 limits; creating unlimited independent pools is not covered by one pool's size.
@@ -160,3 +160,14 @@ watchers it adds a temporary, at-most 131,072-byte descriptor index to the
 existing mapping allocation. It is freed on every return, including allocation
 and wait errors. This control buffer, like the existing poll/epoll arrays, is
 outside the payload memory ledger and bounded by AR_MAX_WATCHERS.
+
+
+HTTP completion adds request-header limits: 256 entries / 64 KiB including CRLF;
+invalid input fails before transfer. At most 64 reset easy handles are retained
+per request. This is separate from the total connection limit and excludes
+libcurl/OpenSSL allocation sizes from the ledger. Inspect httpCachedHandles,
+httpHandlesCreated and httpHandlesReused; all handles are freed at RSHUTDOWN.
+Completed native response buffers transfer ownership to the result without a
+second full native copy; conversion to PHP still allocates a PHP string.
+Staged downloads consume one file and one parent-directory descriptor until
+publication/close. They use the existing 128-file owner limit and worker queue.

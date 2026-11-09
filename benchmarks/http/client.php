@@ -7,7 +7,26 @@ if ($count%$concurrency) throw new ValueError('Count must divide concurrency');
 $body=str_repeat('x',$size);$latencies=[];$elapsed=0;$cpu=0;
 function cpu():float{$r=getrusage();return $r['ru_utime.tv_sec']+$r['ru_utime.tv_usec']/1e6+$r['ru_stime.tv_sec']+$r['ru_stime.tv_usec']/1e6;}
 function verifyResponse(int $status,string $received):void {global $body;if($status!==200||$received!==$body)throw new RuntimeException('Response mismatch');}
-if ($mode==='asyncara') {
+if ($mode==='asyncara_raw') {
+ // Diagnostic control: native submission/collection only, no public Task/Fiber
+ // lifecycle. Never present this as HttpClient application throughput.
+ asyncara_http_limits($concurrency,$concurrency);
+ foreach([10,$count/$concurrency]as$phase=>$perWorker){
+  $pending=[];$times=[];$start=hrtime(true);$before=cpu();
+  $submit=static function(int $done)use($url,&$pending):void{$s=hrtime(true);$id=asyncara_submit('http',[$url,null,['method'=>'GET','headers'=>[]],10000]);$pending[$id]=[$done,$s];};
+  for($w=0;$w<$concurrency;$w++)$submit(0);
+  while($pending){
+   $batch=asyncara_poll([],[],-1);
+   foreach($batch['results']as$item){
+    [$done,$s]=$pending[$item['id']];unset($pending[$item['id']]);
+    if($item['error']!==null)throw new RuntimeException($item['error']);
+    verifyResponse($item['value']['status'],$item['value']['body']);$times[]=(hrtime(true)-$s)/1e6;
+    if(++$done<$perWorker)$submit($done);
+   }
+  }
+  if($phase){$elapsed=(hrtime(true)-$start)/1e9;$cpu=cpu()-$before;$latencies=$times;}
+ }
+} elseif ($mode==='asyncara') {
  if(function_exists('asyncara_http_limits')) Asyncara\Runtime::configure(['httpMaxConnections'=>$concurrency,'httpMaxHostConnections'=>$concurrency]);
  Asyncara\Async::run(function()use($url,$count,$concurrency,&$latencies,&$elapsed,&$cpu){
   $client=new Asyncara\HTTP\HttpClient(concurrency:$concurrency,timeout:10);
@@ -49,6 +68,7 @@ if ($mode==='asyncara') {
   foreach($clients as$c)$c->close();
  });
 }else throw new ValueError('Unknown mode');
+$processUsage=getrusage();
 sort($latencies);if(count($latencies)!==$count)throw new RuntimeException('Lost responses '.count($latencies));
 $percentile=static fn(float$p)=>$latencies[min($count-1,(int)ceil($p*$count)-1)];
-echo json_encode(['mode'=>$mode,'php'=>PHP_VERSION,'curl'=>function_exists('curl_version')?curl_version()['version']:null,'swoole'=>defined('SWOOLE_VERSION')?SWOOLE_VERSION:null,'operations'=>$count,'concurrency'=>$concurrency,'bytesPerBody'=>$size,'warmupRequests'=>10*$concurrency,'wallSeconds'=>$elapsed,'cpuSeconds'=>$cpu,'requestsPerSecond'=>$count/$elapsed,'medianMs'=>$percentile(.5),'p95Ms'=>$percentile(.95),'p99Ms'=>$percentile(.99),'rssPeakKiB'=>getrusage()['ru_maxrss'],'phpPeakBytes'=>memory_get_peak_usage(true),'native'=>function_exists('asyncara_info')?asyncara_info():null],JSON_THROW_ON_ERROR),"\n";
+echo json_encode(['mode'=>$mode,'php'=>PHP_VERSION,'curl'=>function_exists('curl_version')?curl_version()['version']:null,'swoole'=>defined('SWOOLE_VERSION')?SWOOLE_VERSION:null,'operations'=>$count,'concurrency'=>$concurrency,'bytesPerBody'=>$size,'warmupRequests'=>10*$concurrency,'wallSeconds'=>$elapsed,'cpuSeconds'=>$cpu,'requestsPerSecond'=>$count/$elapsed,'medianMs'=>$percentile(.5),'p95Ms'=>$percentile(.95),'p99Ms'=>$percentile(.99),'rssPeakKiB'=>getrusage()['ru_maxrss'],'phpPeakBytes'=>memory_get_peak_usage(true),'processUserCpuSeconds'=>$processUsage['ru_utime.tv_sec']+$processUsage['ru_utime.tv_usec']/1e6,'processSystemCpuSeconds'=>$processUsage['ru_stime.tv_sec']+$processUsage['ru_stime.tv_usec']/1e6,'scheduler'=>$mode==='asyncara'?Asyncara\Runtime::diagnostics():null,'native'=>function_exists('asyncara_info')?asyncara_info():null],JSON_THROW_ON_ERROR),"\n";

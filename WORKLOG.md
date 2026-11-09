@@ -1608,3 +1608,28 @@ passes. Final cross-version/instrumentation/gates/packaging pending at this chec
 4x curl_multi / 3x Swoole are requested targets, not established results. Initial
 matched HTTP/1.1 samples are slower than both controls. Final repeated comparisons
 will report exact scope and ratios, including any target shortfall. EXPERIMENTAL.
+
+## HTTP wait-boundary correction and Hyper experiment (2026-11-09)
+
+The first HTTP checkpoint `a410d58` passed PHP83/84/85 epoll/poll HTTP tests,
+full85 suites, DEBUG, scoped GCC ASan/UBSan, native/DEBUG Valgrind, allocation
+checks and HTTP callback fuzzing. Gate A passed152.448s; B passed with350,004
+kernel waits/210,000 worker jobs and9,544 FPM responses/600.022s. Independent
+review found minimum10 pending-I/O ticks and idle6FD/1thread for all four workers.
+These results belong to that source, not automatically to the follow-up patch.
+
+A focused real-kernel negative control found buffered admission manufactured an
+unnecessary zero-time poll. `ext/backend.c` now distinguishes a batched start kick
+from streaming producer/consumer dispatch. The original fails `start_wait.c`;
+the correction passes with a positive buffered timeout and zero streaming timeout
+on epoll/poll. No scheduler semantics or original acceptance assertions changed.
+The follow-up HTTP gate and separate new-feature FPM lifecycle test pass. Final
+cross-version gates for this follow-up are next; historical evidence is retained.
+
+Rust Hyper1.12.0 was compiled in an isolated toolchain and measured as a standalone
+HTTP/1.1 engine, without a PHP bridge. Matched nginx tests do not justify replacing
+curl multi: it did not reach the requested4x curl_multi/3x Swoole advantage even
+before PHP integration costs. Public Asyncara remains slower than both controls.
+The benchmark is retained under `benchmarks/http/hyper/`, with locked dependencies;
+it adds no production build dependency. Detailed repeated results and syscall
+counts are in the evidence root. No fastest-PHP claim or release promotion.

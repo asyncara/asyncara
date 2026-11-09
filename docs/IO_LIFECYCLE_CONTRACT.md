@@ -286,3 +286,35 @@ empty values retain their existing meaning. This changes error handling, not
 the worker-backed model, transaction ordering or cancellation authority.
 See [the scoped ownership matrix](NATIVE_OWNERSHIP_AUDIT.md) and
 [executed native reliability evidence](NATIVE_RELIABILITY_PROGRAM.md).
+
+
+## HTTP completion checkpoint: publication and handle reuse
+
+`multipartFiles()` opens each owned file source only when its turn starts and
+closes it on completion, failure or cancellation. The native MIME callbacks share
+one 64 KiB upload slot; no Zend callbacks run inside curl. Upload cancellation
+cannot undo server-visible bytes. Redirect replay is unavailable for streamed
+bodies. Curl multi submission is eager at Task admission; newly admitted handles
+are kicked together at the next normal scheduler poll. No await is needed to
+start an admitted task.
+
+`download(atomic: true)` owns a worker-created `File::stage()` handle, pins its
+parent directory, writes bounded chunks, and calls `File::publish()` only after
+the complete response. `close()` discards unpublished temporary files. Accepted
+close remains mandatory even if the waiter cancels. Request shutdown joins
+workers before closing staged files/directories. This does not recover fatal PHP
+requests or guarantee cleanup after SIGKILL/host failure. A failed unlink is an
+error, not a promise that the temporary entry disappeared.
+
+Publication changes namespace visibility atomically within the pinned directory;
+it does not preserve old file permissions (new mode 0600), undo publication on
+late cancellation, or guarantee crash durability by itself. Durable publication
+fsyncs data before rename and the parent directory afterward. Failure after
+rename retains `committed=true` in the filesystem exception. `publish()` does not
+close the underlying file descriptor; it may still be read/written until close.
+Repeated publication is rejected, repeated public close is harmless.
+
+Easy handles enter a request-owned bounded cache only after detachment/collection;
+all callbacks/options reset before job buffers are freed. This cache is not a
+cross-request pool. Source/result owners, cancellation authority and client
+permits keep their existing rules. No timer hook is needed by any HTTP API.

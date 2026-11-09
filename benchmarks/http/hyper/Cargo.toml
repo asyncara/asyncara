@@ -1,0 +1,18 @@
+[package]
+name = "asyncara-hyper-evaluation"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license-file = "../../../LICENSE"
+
+[dependencies]
+hyper = { version = "1", features = ["client", "http1"] }
+hyper-util = { version = "0.1", features = ["tokio"] }
+http-body-util = "0.1"
+tokio = { version = "1", features = ["rt", "net", "time", "sync"] }
+libc = "0.2"
+serde_json = "1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

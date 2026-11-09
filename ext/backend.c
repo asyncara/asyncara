@@ -283,8 +283,10 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     }
     if (curl_multi_add_handle(e->multi, j->curl) != CURLM_OK)
         goto error;
-    /* One kick at the next poll starts all admitted handles together. */
-    e->http_wakeup = 1;
+    /* One kick starts all admitted handles together. Only streamed data needs
+     * an immediate producer/consumer dispatch; buffered admission may wait for
+     * actual readiness. Preserve an already requested streaming dispatch. */
+    e->http_wakeup |= (j->stream_response || j->stream_upload) ? 1 : 2;
 #undef SET
     return;
 error:
@@ -420,12 +422,13 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     if (deadline_for(timeout, &deadline)) return -1;
     ar_trace_emit(e, AR_TRACE_WAIT, 10, e->wait_id, timeout, n, deadline);
     if (e->http_wakeup) {
+        int dispatch = e->http_wakeup & 1;
         e->http_wakeup = 0;
         if (e->multi) http_action(e, CURL_SOCKET_TIMEOUT, 0);
         /* New application data can consume an upload buffer immediately, or
          * resume can redeliver response bytes. Dispatch those state changes to
          * Fibers before blocking on another network event. */
-        deadline = 0;
+        if (dispatch) deadline = 0;
     }
     ar_http_progress(e);
     pthread_mutex_lock(&e->mutex);

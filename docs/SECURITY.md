@@ -174,3 +174,24 @@ The distribution-PHP memory workload still reports losses. Matched PHP cycle
 controls explain shutdown behavior but not every rich-workload retention
 difference. Scoped clean DEBUG/native results are not a universal clean-memory
 claim. DEPENDENCY_FINDINGS.md retains full unsuppressed evidence.
+
+
+## HTTP completion boundaries
+
+Multi-file MIME rejects NUL/CR/LF and bounds metadata, fields, part counts and
+request headers. TLS peer and hostname verification remain mandatory in native
+HTTP; the local CONNECT proxy regression verifies rejection of an untrusted
+certificate after a trusted pooled request. Explicit proxies override NO_PROXY.
+Do not treat redirects/proxies as an SSRF policy: applications must validate
+allowed destinations and network access for untrusted URLs.
+
+Atomic downloads require a trusted destination directory. A pinned directory
+descriptor and random O_EXCL/O_NOFOLLOW staging name prevent path reopening and
+accidental overwrite; they do not protect against an attacker authorized to
+replace entries inside that directory. Temporary permissions are 0600. Abnormal
+process termination can leave unpublished temporary files. Optional fsync is
+scoped to successful filesystem calls, not universal storage-device durability.
+
+No production-readiness or universal memory-safety claim follows from the new
+HTTP tests; historical distribution-PHP Valgrind losses and FPM zero-tick failure
+remain separately recorded in RESOURCE_PROVENANCE_PROGRAM.md.
