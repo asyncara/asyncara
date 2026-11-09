@@ -136,6 +136,7 @@ typedef struct ar_socket {
     curl_socket_t fd;
     CURL *owner;
     int events;
+    int wait_events;
     struct ar_socket *next;
 } ar_socket;
 typedef struct ar_engine {

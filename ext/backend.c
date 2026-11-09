@@ -35,6 +35,28 @@ static int socket_changed(CURL *easy, curl_socket_t fd, int action, void *ctx, v
     (*p)->owner = easy;
     return 0;
 }
+/* Snapshot curl's interests on the interpreter thread. Only paused transfers
+ * need owner matching. The common buffered path is O(sockets + jobs), rather
+ * than scanning every job for every socket on each unrelated kernel wakeup.
+ * Keep curl's original interests intact: unpause must restore them next wait.
+ * No job/handle pointer is retained beyond this calculation. */
+static size_t http_wait_interests(ar_engine *e) {
+    size_t count = 0;
+    for (ar_socket *s = e->sockets; s; s = s->next) {
+        s->wait_events = s->events;
+        count++;
+    }
+    if (!count) return 0;
+    for (ar_job *j = e->jobs; j; j = j->next) {
+        if (j->op != OP_HTTP || j->done || (!j->receive_paused && !j->send_paused)) continue;
+        for (ar_socket *s = e->sockets; s; s = s->next) {
+            if (j->curl != s->owner) continue;
+            if (j->receive_paused) s->wait_events &= ~POLLIN;
+            if (j->send_paused) s->wait_events &= ~POLLOUT;
+        }
+    }
+    return count;
+}
 static size_t receive_buffer(char *data, size_t size, size_t count, void *ctx, int header) {
     ar_job *j = ctx;
     if (size && count > SIZE_MAX / size)
@@ -502,9 +524,7 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
             if (deadline < 0 || curl_deadline < deadline) deadline = curl_deadline;
         }
     }
-    size_t ns = 0;
-    for (ar_socket *s = e->sockets; s; s = s->next)
-        ns++;
+    size_t ns = http_wait_interests(e);
     size_t nh = 0;
 #ifdef HAVE_ASYNCARA_HYPER
     if (e->hyper) nh = ar_hyper_fds(e->hyper, NULL, 0);
@@ -554,19 +574,12 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     }
     size_t curl_start = count;
     for (ar_socket *s = e->sockets; s; s = s->next) {
-        int events = s->events;
+        int events = s->wait_events;
         /* curl 8.5 can retain its read interest while a write callback is
          * paused. A readable peer would then wake epoll forever. Streaming
          * responses force HTTP/1.1, so their active socket is not multiplexed.
          * Do not watch a fully paused socket: HUP also wakes a zero-event poll.
          * Completion/cancellation deadlines and worker wakeups still apply. */
-        for (ar_job *job = e->jobs; job; job = job->next) {
-            if (job->op != OP_HTTP || job->done) continue;
-            if (job->curl == s->owner) {
-                if (job->receive_paused) events &= ~POLLIN;
-                if (job->send_paused) events &= ~POLLOUT;
-            }
-        }
         if (!events) continue;
         fds[count].fd = s->fd;
         fds[count++].events = events;

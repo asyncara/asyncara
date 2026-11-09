@@ -12,6 +12,21 @@ CURLMcode __wrap_curl_multi_socket_action(CURLM *m,curl_socket_t fd,int events,i
 int main(void) {
     assert(curl_global_init(CURL_GLOBAL_DEFAULT)==CURLE_OK);
     ar_engine *e=ar_engine_new();assert(e);
+    /* Pausing never overwrites curl's interests or suppresses an unrelated
+     * owner. No pointer from this snapshot survives into the next wait. */
+    CURL *first=curl_easy_init(), *second=curl_easy_init();assert(first && second);
+    ar_socket s2={.fd=-1,.owner=second,.events=POLLIN|POLLOUT};
+    ar_socket s1={.fd=-1,.owner=first,.events=POLLIN|POLLOUT,.next=&s2};
+    ar_job paused={.op=OP_HTTP,.curl=first,.receive_paused=1};
+    e->sockets=&s1;e->jobs=&paused;
+    assert(http_wait_interests(e)==2 && s1.wait_events==POLLOUT && s2.wait_events==(POLLIN|POLLOUT));
+    paused.send_paused=1;assert(http_wait_interests(e)==2 && !s1.wait_events);
+    paused.receive_paused=0;assert(http_wait_interests(e)==2 && s1.wait_events==POLLIN);
+    paused.send_paused=0;assert(http_wait_interests(e)==2 && s1.wait_events==(POLLIN|POLLOUT));
+    paused.receive_paused=1;paused.done=1;
+    assert(http_wait_interests(e)==2 && s1.wait_events==(POLLIN|POLLOUT));
+    assert(s1.events==(POLLIN|POLLOUT) && s2.events==(POLLIN|POLLOUT));
+    e->sockets=NULL;e->jobs=NULL;curl_easy_cleanup(first);curl_easy_cleanup(second);
     ar_job *j=ar_job_new(e,OP_HTTP);assert(j);
     char bytes[65536];memset(bytes,'a',sizeof(bytes));
     for (int i=0;i<32;i++)assert(receive_body(bytes,1,sizeof(bytes),j)==sizeof(bytes));
