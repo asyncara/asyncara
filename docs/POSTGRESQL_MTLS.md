@@ -118,3 +118,14 @@ memory-r3/r4. Memory-r3 also exposes a test-fixture Unix-socket path overflow,
 before PHP execution: the corrected fixture owns a short `/tmp` socket directory,
 records it, and removes it only after its PostgreSQL child exits. Both deeply
 nested r4 outputs pass, with original runtime and assertions unchanged.
+
+## Independent source distribution
+
+Packaged source `1968d0a9c2ecddcf903995d3601fb69ae6b65421`,631 files, byte-reproducible archive
+`build/asyncara-0.1.0-dev-postgresql-mtls-r1.tar.gz`, SHA256
+`1dc6334d3fa9c5fc0481c4b42129e3306e280f47d00e1f0aff27b37139030bcf`. Every file matches the Git tree.
+Fresh Cargo/C compilation and10 extracted-source checks PASS, including both
+FPM mTLS backends, prepared operations, credential redaction and Hyper codec/streams.
+[Build and test attestation](phase7/postgresql-mtls-package.json). Native binary SHA256
+`0fd3a61c8bac9ee16a82cafa26517f4011675afb9e9b999ff3679279ba87a040`.
+This package has not been published as a GitHub release.
