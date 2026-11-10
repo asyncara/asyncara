@@ -1,8 +1,9 @@
-//! Server-only TLS transport. Socket readiness and the connection's single
+//! Shared TLS transport; verified client/server configuration stays separate. Socket readiness and the connection's single
 //! driver waker are owned by the existing Asyncara reactor, not an executor.
 use super::{Context, Io, Poll};
 use hyper::rt::{Read as HyperRead, Write as HyperWrite};
-use rustls::{ServerConfig, ServerConnection};
+use rustls::{ClientConfig, ClientConnection, Connection, ServerConfig, ServerConnection};
+use std::{cell::Cell, rc::Rc};
 use std::{
     io::{self, Read, Write},
     pin::Pin,
@@ -73,7 +74,8 @@ impl Write for Wire<'_, '_> {
 
 pub(super) struct TlsIo {
     io: Io,
-    tls: ServerConnection,
+    tls: Connection,
+    established: Option<Rc<Cell<bool>>>,
     closing: bool,
 }
 impl TlsIo {
@@ -82,7 +84,23 @@ impl TlsIo {
         tls.set_buffer_limit(Some(65536));
         Ok(Self {
             io,
-            tls,
+            tls: Connection::Server(tls),
+            established: None,
+            closing: false,
+        })
+    }
+    pub(super) fn client(
+        io: Io,
+        config: Arc<ClientConfig>,
+        name: rustls::pki_types::ServerName<'static>,
+        established: Rc<Cell<bool>>,
+    ) -> io::Result<Self> {
+        let mut tls = ClientConnection::new(config, name).map_err(io::Error::other)?;
+        tls.set_buffer_limit(Some(65536));
+        Ok(Self {
+            io,
+            tls: Connection::Client(tls),
+            established: Some(established),
             closing: false,
         })
     }
@@ -118,6 +136,9 @@ impl TlsIo {
         for _ in 0..16 {
             std::task::ready!(self.flush_tls(cx))?;
             if !self.tls.is_handshaking() {
+                if let Some(established) = &self.established {
+                    established.set(true);
+                }
                 return Poll::Ready(Ok(()));
             }
             std::task::ready!(self.read_tls(cx))?;
@@ -135,22 +156,36 @@ impl HyperRead for TlsIo {
         std::task::ready!(self.handshake(cx))?;
         // Bounded initialized stack buffer: rustls Read cannot accept uninitialized bytes.
         let mut plain = [0u8; 16384];
-        let size = buf.remaining().min(plain.len());
+        let mut received = 0usize;
         for _ in 0..16 {
+            let size = buf.remaining().min(plain.len());
+            if size == 0 {
+                return Poll::Ready(Ok(()));
+            }
             match self.tls.reader().read(&mut plain[..size]) {
+                Ok(0) => return Poll::Ready(Ok(())),
                 Ok(n) => {
                     buf.put_slice(&plain[..n]);
-                    return Poll::Ready(Ok(()));
+                    received += n;
+                    continue; // coalesce already-ready records into the caller's bounded buffer
                 }
                 Err(e) if e.kind() == io::ErrorKind::WouldBlock => (),
                 Err(e) => return Poll::Ready(Err(e)),
             }
-            // Process post-handshake output too (e.g. key updates); preserve
-            // both directions' registrations when the peer is a slow reader.
+            // Never wait for a later record after delivering available plaintext.
+            // Both socket directions still register the canonical driver waker.
             if let Poll::Ready(Err(e)) = self.flush_tls(cx) {
                 return Poll::Ready(Err(e));
             }
-            std::task::ready!(self.read_tls(cx))?;
+            match self.read_tls(cx) {
+                Poll::Ready(Ok(())) => (),
+                Poll::Ready(Err(e)) => return Poll::Ready(Err(e)),
+                Poll::Pending if received > 0 => return Poll::Ready(Ok(())),
+                Poll::Pending => return Poll::Pending,
+            }
+        }
+        if received > 0 {
+            return Poll::Ready(Ok(()));
         }
         cx.waker().wake_by_ref();
         Poll::Pending
@@ -182,4 +217,32 @@ impl HyperWrite for TlsIo {
         std::task::ready!(self.flush_tls(cx))?;
         Pin::new(&mut self.io).poll_shutdown(cx)
     }
+}
+
+// Only supplied trust anchors are used: never a permissive verifier or fallback.
+pub(super) fn client_config(pem: &[u8]) -> io::Result<Arc<ClientConfig>> {
+    if pem.is_empty() || pem.len() > 1048576 {
+        return Err(io::ErrorKind::InvalidInput.into());
+    }
+    let mut roots = rustls::RootCertStore::empty();
+    for cert in rustls_pemfile::certs(&mut &*pem) {
+        if roots.len() >= 512 {
+            return Err(io::ErrorKind::InvalidInput.into());
+        }
+        roots.add(cert?).map_err(io::Error::other)?;
+    }
+    if roots.is_empty() {
+        return Err(io::ErrorKind::InvalidInput.into());
+    }
+    let mut config = ClientConfig::builder_with_provider(Arc::new(
+        rustls::crypto::aws_lc_rs::default_provider(),
+    ))
+    .with_protocol_versions(&[&rustls::version::TLS13, &rustls::version::TLS12])
+    .map_err(io::Error::other)?
+    .with_root_certificates(roots)
+    .with_no_client_auth();
+    config.alpn_protocols = vec![b"http/1.1".to_vec()];
+    config.resumption = rustls::client::Resumption::disabled();
+    config.enable_early_data = false;
+    Ok(Arc::new(config))
 }

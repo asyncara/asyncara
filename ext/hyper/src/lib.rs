@@ -1,4 +1,4 @@
-//! Experimental HTTP/1.1 bridge. Plain-HTTP GET; DNS supplied by Asyncara's
+//! Experimental HTTP/1.1 bridge. HTTP(S) GET; DNS and trust files use Asyncara's
 //! existing resolver workers. No Tokio executor or blocking socket calls. Asyncara owns readiness,
 //! request deadlines and response buffers. No Zend API crosses this boundary.
 #[cfg(not(target_os = "linux"))]
@@ -6,8 +6,9 @@ compile_error!("The Asyncara Hyper prototype currently supports Linux only");
 use http_body_util::{BodyExt, Full};
 use hyper::{body::Bytes, Request, Uri};
 mod server;
+mod tls;
 use std::{
-    cell::RefCell,
+    cell::{Cell, RefCell},
     ffi::c_void,
     future::Future,
     io,
@@ -51,7 +52,7 @@ type Setup = Pin<
             Output = Result<
                 (
                     Sender,
-                    hyper::client::conn::http1::Connection<Io, Full<Bytes>>,
+                    hyper::client::conn::http1::Connection<ClientTransport, Full<Bytes>>,
                 ),
                 hyper::Error,
             >,
@@ -211,11 +212,60 @@ impl Addresses {
         }
     }
 }
+#[derive(Clone)]
+struct TlsSettings {
+    id: usize,
+    config: Arc<rustls::ClientConfig>,
+    name: rustls::pki_types::ServerName<'static>,
+}
+enum ClientTransport {
+    Plain(Io),
+    Tls(Box<tls::TlsIo>),
+}
+impl hyper::rt::Read for ClientTransport {
+    fn poll_read(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: hyper::rt::ReadBufCursor<'_>,
+    ) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_read(cx, buf),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
+        }
+    }
+}
+impl hyper::rt::Write for ClientTransport {
+    fn poll_write(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        data: &[u8],
+    ) -> Poll<io::Result<usize>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_write(cx, data),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, data),
+        }
+    }
+    fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_flush(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
+        }
+    }
+    fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_shutdown(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
+        }
+    }
+}
 struct Conn {
     addr: SocketAddr,
     origin: Origin,
     io: Io,
     connecting: bool,
+    transport: Option<ClientTransport>,
+    tls_pending: Option<Rc<Cell<bool>>>,
+    trust_id: usize,
     connect_deadline: Instant,
     setup: Option<Setup>,
     sender: Option<Sender>,
@@ -225,7 +275,12 @@ struct Conn {
     closed: bool,
 }
 impl Conn {
-    fn new(addr: SocketAddr, origin: Origin, deadline: Instant) -> io::Result<Self> {
+    fn new(
+        addr: SocketAddr,
+        origin: Origin,
+        deadline: Instant,
+        tls: Option<TlsSettings>,
+    ) -> io::Result<Self> {
         let fd = unsafe {
             libc::socket(
                 if addr.is_ipv4() {
@@ -297,7 +352,26 @@ impl Conn {
             #[cfg(test)]
             owner_waker: Waker::from(wake.clone()),
         })));
+        let (transport, tls_pending, trust_id) = match tls {
+            Some(settings) => {
+                let ready = Rc::new(Cell::new(false));
+                (
+                    ClientTransport::Tls(Box::new(tls::TlsIo::client(
+                        io.clone(),
+                        settings.config,
+                        settings.name,
+                        ready.clone(),
+                    )?)),
+                    Some(ready),
+                    settings.id,
+                )
+            }
+            None => (ClientTransport::Plain(io.clone()), None, 0),
+        };
         Ok(Self {
+            transport: Some(transport),
+            tls_pending,
+            trust_id,
             addr,
             origin,
             io,
@@ -310,6 +384,9 @@ impl Conn {
             busy: true,
             closed: false,
         })
+    }
+    fn connecting(&self) -> bool {
+        self.connecting || self.tls_pending.as_ref().is_some_and(|ready| !ready.get())
     }
     fn poll(&mut self) {
         let w = Waker::from(self.wake.clone());
@@ -332,7 +409,9 @@ impl Conn {
             b.max_buf_size(131072)
                 .max_header_size(65536)
                 .max_headers(256);
-            self.setup = Some(Box::pin(b.handshake(self.io.clone())));
+            self.setup = Some(Box::pin(
+                b.handshake(self.transport.take().expect("one transport owner")),
+            ));
         }
         if let Some(setup) = &mut self.setup {
             match setup.as_mut().poll(&mut cx) {
@@ -356,6 +435,7 @@ impl Conn {
     }
 }
 struct Op {
+    tls: Option<TlsSettings>,
     job: usize,
     uri: Uri,
     origin: Origin,
@@ -369,6 +449,7 @@ struct Op {
     wake: Arc<Flag>,
 }
 struct Engine {
+    trust: Vec<(Vec<u8>, Arc<rustls::ClientConfig>)>,
     poisoned: bool,
     conns: Vec<Option<Conn>>,
     ops: Vec<Op>,
@@ -487,7 +568,7 @@ impl Engine {
                 || op
                     .conn
                     .and_then(|c| self.conns[c].as_ref())
-                    .is_some_and(|c| c.connecting && c.connect_deadline <= now)
+                    .is_some_and(|c| c.connecting() && c.connect_deadline <= now)
             {
                 self.finish(i, Some("HTTP operation timed out"))
             } else {
@@ -518,6 +599,7 @@ impl Engine {
                         !c.busy
                             && !c.closed
                             && &c.origin == origin
+                            && c.trust_id == self.ops[i].tls.as_ref().map_or(0, |t| t.id)
                             && self.ops[i].addresses.as_slice().contains(&c.addr)
                     })
                 });
@@ -548,7 +630,7 @@ impl Engine {
                         self.finish(i, Some("HTTP operation timed out"));
                         return 1;
                     }
-                    match Conn::new(addr, op.origin.clone(), deadline) {
+                    match Conn::new(addr, op.origin.clone(), deadline, op.tls.clone()) {
                         Ok(conn) => {
                             self.conns[slot] = Some(conn);
                             slot
@@ -667,6 +749,7 @@ pub extern "C" fn ar_hyper_new(total: usize, host: usize) -> *mut c_void {
         }
         Box::into_raw(Box::new(Engine {
             poisoned: false,
+            trust: Vec::new(),
             conns: Vec::new(),
             ops: Vec::new(),
             total,
@@ -713,7 +796,54 @@ pub unsafe extern "C" fn ar_hyper_submit(
     addresses: *const Address,
     count: usize,
 ) -> i32 {
+    submit(
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        std::ptr::null(),
+        0,
+        false,
+    )
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_request(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+) -> i32 {
+    submit(
+        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true,
+    )
+}
+unsafe fn submit(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    allow_tls: bool,
+) -> i32 {
     engine_ffi(ptr, -2, |engine| {
+        if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
+            return -1;
+        }
         if ptr.is_null()
             || job.is_null()
             || url.is_null()
@@ -736,9 +866,11 @@ pub unsafe extern "C" fn ar_hyper_submit(
         let Ok(uri) = text.parse::<Uri>() else {
             return -1;
         };
-        if uri.scheme_str() != Some("http") {
-            return -1;
-        }
+        let encrypted = match uri.scheme_str() {
+            Some("http") if ca_len == 0 => false,
+            Some("https") if allow_tls && ca_len > 0 => true,
+            _ => return -1,
+        };
         let Some(authority) = uri.authority() else {
             return -1;
         };
@@ -751,7 +883,13 @@ pub unsafe extern "C" fn ar_hyper_submit(
         // here so its internal colons are not confused with the port separator.
         let raw_host = authority.host();
         let port = match authority.as_str().strip_prefix(raw_host) {
-            Some("") => 80,
+            Some("") => {
+                if encrypted {
+                    443
+                } else {
+                    80
+                }
+            }
             Some(suffix) => {
                 let Some(digits) = suffix.strip_prefix(':') else {
                     return -1;
@@ -800,7 +938,37 @@ pub unsafe extern "C" fn ar_hyper_submit(
                 Origin::Name(authority.as_str().to_ascii_lowercase()),
             )
         };
+        let tls = if encrypted {
+            let roots = std::slice::from_raw_parts(ca, ca_len);
+            let index = if let Some(i) = engine
+                .trust
+                .iter()
+                .position(|(pem, _)| pem.as_slice() == roots)
+            {
+                i
+            } else {
+                if engine.trust.len() >= 16 {
+                    return -1;
+                }
+                let Ok(config) = tls::client_config(roots) else {
+                    return -1;
+                };
+                engine.trust.push((roots.to_vec(), config));
+                engine.trust.len() - 1
+            };
+            let Ok(name) = rustls::pki_types::ServerName::try_from(host.to_owned()) else {
+                return -1;
+            };
+            Some(TlsSettings {
+                id: index + 1,
+                config: engine.trust[index].1.clone(),
+                name,
+            })
+        } else {
+            None
+        };
         engine.ops.push(Op {
+            tls,
             job: job as usize,
             uri,
             origin,
@@ -846,7 +1014,7 @@ pub unsafe extern "C" fn ar_hyper_timeout(ptr: *mut c_void) -> i32 {
                 e.conns
                     .iter()
                     .flatten()
-                    .filter(|c| c.connecting)
+                    .filter(|c| c.connecting())
                     .map(|c| c.connect_deadline),
             )
             .min();

@@ -202,11 +202,12 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     /* Deliberately narrow evaluation scope. Never silently bypass a proxy,
      * discard options, or mix independently bounded connection pools. */
     if (j->stream_response || j->stream_upload || j->b) goto unsupported;
-    const char *proxy[] = {"http_proxy", "HTTP_PROXY", "all_proxy", "ALL_PROXY"};
+    const char *proxy[] = {"http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"};
     for (size_t i = 0; i < sizeof(proxy)/sizeof(*proxy); i++) {
         const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
     }
     uint64_t connect = 10000;
+    const unsigned char *ca = NULL; size_t ca_len = 0;
     ar_hyper_address addresses[16]; size_t count = 0;
     if (j->params) for (size_t i = 0; i < j->params->count; i++) {
         const char *key = j->params->keys[i]; ar_value *v = j->params->items[i];
@@ -215,6 +216,10 @@ static void hyper_start(ar_engine *e, ar_job *j) {
         else if (!strcmp(key, "headers")) { if (v->count) goto unsupported; }
         else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
         else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
+        else if (!strcmp(key, "caPem")) {
+            if (v->type != V_STRING || !v->length || v->length > 1048576) goto unsupported;
+            ca = (const unsigned char *)v->string; ca_len = v->length;
+        }
         else if (!strcmp(key, "resolvedAddresses")) {
             if (v->type != V_ARRAY || !v->count || v->count > 16) goto unsupported;
             count = v->count;
@@ -230,7 +235,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     if (!e->hyper) goto unsupported;
     /* Rust copies validated addresses synchronously; no borrowed PHP options
      * or resolver buffers survive this call. */
-    int submitted = ar_hyper_submit(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count);
+    int submitted = ar_hyper_submit_request(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */
@@ -242,7 +247,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     j->http_hyper = 1; e->hyper_submitted++;
     return;
 unsupported:
-    snprintf(j->error, sizeof(j->error), "Hyper prototype requires plain HTTP GET and numeric or resolved addresses, without proxies, redirects, custom headers or streaming");
+    snprintf(j->error, sizeof(j->error), "Hyper requires HTTP(S) GET, verified roots for TLS, numeric or resolved addresses; no proxies, redirects, custom headers or streaming");
     ar_done(e, j);
 }
 #endif
@@ -343,6 +348,8 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             } else if (!strcmp(key, "proxy")) {
                 SET(CURLOPT_PROXY, v->string);
                 SET(CURLOPT_NOPROXY, "");
+            } else if (!strcmp(key, "caPem")) {
+                snprintf(j->error, sizeof(j->error), "caPem is internal to the Hyper backend"); ar_done(e, j); return;
             } else if (!strcmp(key, "caFile")) {
                 SET(CURLOPT_CAINFO, v->string);
             } else if (!strcmp(key, "followRedirects")) {

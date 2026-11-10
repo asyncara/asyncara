@@ -122,8 +122,7 @@ impl Drop for StreamingBody {
         }
     }
 }
-#[path = "server_tls.rs"]
-mod tls;
+use super::tls;
 type Connection = hyper::server::conn::http1::Connection<Transport, Dispatch>;
 enum Transport {
     Plain(ServerIo),

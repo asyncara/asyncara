@@ -42,6 +42,13 @@ jobs:
           ./scripts/prepare-test-certs.sh
       - name: HTTP gate on epoll and poll
         run: python3 tests/http/run.py --php php --extension build/hyper.so --output build/hyper-http --hyper
+      - name: Verified Hyper TLS and bounded trust policies
+        run: |
+          for backend in epoll poll; do
+            python3 tests/http/hyper_tls.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-client-tls/"$backend"
+            python3 tests/http/hyper_tls_memory.py --php php --module build/hyper.so --backend "$backend" --certs build/hyper-client-tls/"$backend"/certs --out build/hyper-client-tls/"$backend-lifetime"
+          done
+          ASYNCARA_TLS_TEST_CERT_DIR="$PWD/build/hyper-client-tls/epoll/certs" CARGO_TARGET_DIR="$PWD/build/hyper-production" cargo test --release --locked --manifest-path ext/hyper/Cargo.toml --lib tls_uses_only_the_canonical_driver_waker -- --ignored
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
           for backend in epoll poll; do
@@ -65,5 +72,7 @@ jobs:
             build/hyper-ffi/*.json
             build/hyper-ffi/*.log
             build/hyper-http/
+            build/hyper-client-tls/**/*.json
+            build/hyper-client-tls/**/*.log
             build/hyper-server/**/*.json
             build/hyper-server/**/*.log

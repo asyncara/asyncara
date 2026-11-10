@@ -246,3 +246,90 @@ fn resolved_addresses_are_copied_bounded_and_keep_origin_identity() {
         ar_hyper_free(engine);
     }
 }
+
+#[test]
+#[ignore = "requires ASYNCARA_TLS_TEST_CERT_DIR from the isolated TLS peer fixture"]
+fn tls_uses_only_the_canonical_driver_waker() {
+    const REQUESTS: usize = 32;
+    let root = std::path::PathBuf::from(
+        std::env::var("ASYNCARA_TLS_TEST_CERT_DIR").expect("test certificates"),
+    );
+    let cert = std::fs::read(root.join("server.pem")).unwrap();
+    let key = std::fs::read(root.join("server.key")).unwrap();
+    let ca = std::fs::read(root.join("ca.pem")).unwrap();
+    let config = tls::config(&cert, &key, &[]).unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let url = format!("https://{}/", listener.local_addr().unwrap());
+    RESULTS.with(|r| r.borrow_mut().clear());
+    IO_POLLS.with(|n| n.set(0));
+    let peer = thread::spawn(move || {
+        let (stream, _) = listener.accept().unwrap();
+        stream
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        stream
+            .set_write_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        let mut stream =
+            rustls::StreamOwned::new(rustls::ServerConnection::new(config).unwrap(), stream);
+        for _ in 0..REQUESTS {
+            let mut head = Vec::new();
+            let mut byte = [0u8; 1];
+            while !head.ends_with(b"\r\n\r\n") {
+                stream.read_exact(&mut byte).unwrap();
+                head.push(byte[0]);
+                assert!(head.len() <= 8192);
+            }
+            stream
+                .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 65536\r\n\r\n")
+                .unwrap();
+            stream.write_all(&[b'x'; 65536]).unwrap();
+            stream.flush().unwrap();
+        }
+        // Keep the transport alive until the owner completes every collection.
+        let mut byte = [0u8; 1];
+        let _ = stream.read(&mut byte);
+    });
+    unsafe {
+        let engine = ar_hyper_new(1, 1);
+        assert!(!engine.is_null());
+        for id in 1..=REQUESTS {
+            assert_eq!(
+                ar_hyper_submit_request(
+                    engine,
+                    id as *mut c_void,
+                    url.as_ptr(),
+                    url.len(),
+                    5000,
+                    1000,
+                    std::ptr::null(),
+                    0,
+                    ca.as_ptr(),
+                    ca.len()
+                ),
+                0
+            );
+        }
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while RESULTS.with(|r| r.borrow().values().filter(|r| r.1).count()) < REQUESTS {
+            assert!(Instant::now() < deadline, "TLS wakeup lost");
+            let progress = ar_hyper_drive(engine);
+            assert!(progress >= 0);
+            let mut fd = libc::pollfd {
+                fd: -1,
+                events: 0,
+                revents: 0,
+            };
+            let n = ar_hyper_fds(engine, &mut fd, 1);
+            assert!(n <= 1);
+            assert!(libc::poll(&mut fd, n as _, if progress == 0 { 10 } else { 0 }) >= 0);
+            if n == 1 && fd.revents != 0 {
+                assert_eq!(ar_hyper_ready(engine, fd.fd, fd.revents as _), 0);
+            }
+        }
+        ar_hyper_free(engine);
+    }
+    peer.join().unwrap();
+    assert!(IO_POLLS.with(|n| n.get()) >= REQUESTS * 2);
+    RESULTS.with(|r| assert_eq!(r.borrow().len(), REQUESTS));
+}
