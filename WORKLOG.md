@@ -2321,3 +2321,15 @@ Final ten-combination protocol repetition also proves keep-alive request-count
 closure at the fixture's original50-response limit. Composer metadata validates.
 Preparing the first server source archive and independent extracted build; no
 GitHub release or stability promotion.
+
+### Independent server package validation complete
+
+server-r1 packages b1dc5b21bd5b175ddb33077a267b73f2684ad553,557 files; SHA256
+6839e7cac6ef6e6526389fca00db7640e17c816335850d1826bea25c8cec7dbb. A second
+archive is byte-identical. Every entry matches the source Git tree. Clean
+extraction, a fresh Cargo target and new C build passed all7 build/protocol/body/
+API commands on PHP85 with epoll and poll. Independent module SHA256:
+62ddf656bc50753289ea07e9625100435c6de45ff348f950421c1e3b36022b4b.
+The archive's source and measured binary are distinguished in its attestation.
+The following commit only records delivery evidence; it changes no runtime.
+Performance target remains NOT_MET; release EXPERIMENTAL; no release publication.

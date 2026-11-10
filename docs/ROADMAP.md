@@ -15,6 +15,14 @@ Final scoped validation and full PHP85 suites pass. The matched server
 [benchmark](LATEST_SERVER_BENCHMARK.md) does not meet the all-cases Go target;
 large-body median wins do not establish universal superiority.
 
+Server source archive: `build/asyncara-0.1.0-dev-server-r1.tar.gz`,557 files,
+packaged commit `b1dc5b21bd5b175ddb33077a267b73f2684ad553`, native `195f088`.
+SHA-256: `6839e7cac6ef6e6526389fca00db7640e17c816335850d1826bea25c8cec7dbb`.
+Byte-reproducible and Git-tree matched; a fresh extracted Rust/C PHP85 build passes
+server protocol, body lifetime and API tests on epoll/poll.
+[Independent build attestation](phase7/server-r1-package.json). Not published;
+performance acceptance remains NOT_MET and release remains EXPERIMENTAL.
+
 ## Previous HTTP-client checkpoint
 
 Current runtime: `922a02459774df98191937cbc1f3ffacc80c975d`; test follow-up
