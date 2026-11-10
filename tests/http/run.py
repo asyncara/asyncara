@@ -73,6 +73,11 @@ if not a.php_only:
         run(name, [out / name] + (['--compact'] if name == 'capacity' else []))
         if name == 'start-wait':
             run(name + '-logical-clock', [out / name, '--logical-clock'])
+    if a.hyper:
+        run('hyper-codec-build', cc + flags + ['-DHAVE_ASYNCARA_HYPER=1',
+            'tests/http/hyper_decode.c', 'ext/hyper_decode.c', 'ext/memory.c',
+            '-pthread', '-lz', '-Wl,--wrap=malloc', '-o', out / 'hyper-codec'])
+        run('hyper-codec', [out / 'hyper-codec'])
 php = [a.php, '-n', '-d', 'memory_limit=128M', '-d', 'extension=' + str(module)]
 run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
@@ -86,6 +91,12 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
+        run(backend + '-prototype-compression', ['python3', 'tests/http/hyper_compression.py',
+            '--php', a.php, '--module', module, '--backend', backend,
+            '--out', out / (backend + '-prototype-compression')], env)
+        run(backend + '-prototype-compression-bounds', ['python3', 'tests/http/hyper_compression.py',
+            '--php', a.php, '--module', module, '--backend', backend, '--bounds',
+            '--out', out / (backend + '-prototype-compression-bounds')], env)
         run(backend + '-prototype-streaming', ['python3', 'tests/http/hyper_streaming.py',
             '--php', a.php, '--module', module, '--backend', backend,
             '--out', out / (backend + '-prototype-streaming')], env, timeout=150)

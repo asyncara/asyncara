@@ -20,7 +20,7 @@ try {
                     $client->get($base.'/encoding/'.$mode)->await();
                     throw new RuntimeException('Unsupported coding accepted: '.$mode);
                 } catch (OperationException $error) {
-                    check(str_contains($error->getMessage(), 'does not decode compressed responses'), 'Wrong rejection');
+                    check(str_contains($error->getMessage(), 'Unsupported HTTP content encoding'), 'Wrong rejection');
                 }
                 check($client->get($base.'/body/1')->await()->body === "\0", 'Recovery after rejected coding');
             }

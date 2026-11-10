@@ -17,6 +17,9 @@ if test "$PHP_ASYNCARA" != "no"; then
     ASYNCARA_SHARED_LIBADD="$ASYNCARA_SHARED_LIBADD $PHP_ASYNCARA_HYPER/libasyncara_hyper_bridge.a"
     PHP_ADD_LIBRARY([dl], [1], [ASYNCARA_SHARED_LIBADD])
     PHP_ADD_LIBRARY([m], [1], [ASYNCARA_SHARED_LIBADD])
+    AC_CHECK_HEADER([zlib.h], [], [AC_MSG_ERROR([zlib development headers required for Hyper content decoding])])
+    PHP_CHECK_LIBRARY([z], [inflateInit2_], [], [AC_MSG_ERROR([zlib library required for Hyper content decoding])])
+    PHP_ADD_LIBRARY([z], [1], [ASYNCARA_SHARED_LIBADD])
     AC_DEFINE([HAVE_ASYNCARA_HYPER], [1], [Enable the Rust HTTP bridge])
     dnl workers/backend are standalone C units and do not include PHP config.h.
     ASYNCARA_HYPER_CFLAGS="-DHAVE_ASYNCARA_HYPER=1"
@@ -43,5 +46,5 @@ if test "$PHP_ASYNCARA" != "no"; then
   PHP_ADD_LIBRARY([sqlite3], [1], [ASYNCARA_SHARED_LIBADD])
   PHP_ADD_LIBRARY([curl], [1], [ASYNCARA_SHARED_LIBADD])
   PHP_SUBST([ASYNCARA_SHARED_LIBADD])
-  PHP_NEW_EXTENSION([asyncara], [php_asyncara.c workers.c backend.c memory.c], [$ext_shared],, [-std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -Wno-unused-parameter $ASYNCARA_HYPER_CFLAGS])
+  PHP_NEW_EXTENSION([asyncara], [php_asyncara.c workers.c backend.c memory.c hyper_decode.c], [$ext_shared],, [-std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -Wno-unused-parameter $ASYNCARA_HYPER_CFLAGS])
 fi

@@ -117,6 +117,7 @@ typedef struct ar_job {
     struct ar_engine *engine;
     struct ar_job *next, *queue_next, *done_next, *lifetime_next;
     int http_hyper;
+    struct ar_http_decoder *http_decoder;
     CURL *curl;
     curl_mime *mime;
     struct curl_slist *headers;
@@ -177,6 +178,15 @@ void *ar_calloc(ar_engine *e, size_t count, size_t bytes);
 void *ar_realloc(ar_engine *e, void *ptr, size_t bytes);
 char *ar_strdup(ar_engine *e, const char *string);
 void ar_free(void *ptr);
+#ifdef HAVE_ASYNCARA_HYPER
+/* Buffered Hyper content decoding. All codec state uses the native ledger.
+ * Feed borrows input only until return and never calls PHP or suspends. */
+struct ar_http_decoder *ar_http_decoder_new(ar_engine *e, int coding);
+int ar_http_decoder_feed(struct ar_http_decoder *d, const unsigned char *data, size_t n,
+                        int (*sink)(void *, const unsigned char *, size_t), void *context);
+int ar_http_decoder_finished(const struct ar_http_decoder *d);
+void ar_http_decoder_free(struct ar_http_decoder *d);
+#endif
 ar_value *ar_value_new(ar_engine *e, ar_type type);
 ar_value *ar_string(ar_engine *e, const char *p, size_t n);
 int ar_add(ar_value *array, const char *key, ar_value *value);

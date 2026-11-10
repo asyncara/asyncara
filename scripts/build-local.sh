@@ -33,6 +33,6 @@ fi
   -O2 -g -Wall -Wextra -Werror -Wno-unused-parameter ${EXTRA_CFLAGS:-} \
   -I"$inc" -I"$inc/main" -I"$inc/Zend" -I"$inc/TSRM" -I"$inc/ext" \
   "${curl_inc[@]}" -I.local/sysroot/usr/include -I.local/sysroot/usr/include/x86_64-linux-gnu \
-  ext/php_asyncara.c ext/workers.c ext/backend.c ext/memory.c -o "${ASYNCARA_OUTPUT:-build/asyncara.so}" -pthread \
+  ext/php_asyncara.c ext/workers.c ext/backend.c ext/memory.c ext/hyper_decode.c -o "${ASYNCARA_OUTPUT:-build/asyncara.so}" -pthread \
   -l:libsqlite3.so.0 "${curl_lib[@]}" "${pq_flags[@]}" ${EXTRA_LDFLAGS:-}
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_OUTPUT:-build/asyncara.so}" --ri asyncara

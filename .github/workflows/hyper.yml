@@ -28,7 +28,7 @@ jobs:
           FPM_PACKAGE: php${{ matrix.php }}-fpm
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 cmake "$FPM_PACKAGE"
+          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 zlib1g-dev cmake "$FPM_PACKAGE"
           ./scripts/bootstrap-local.sh
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
           rustc --version
@@ -58,6 +58,7 @@ jobs:
         run: |
           for backend in epoll poll; do
             python3 tests/http/hyper_fpm.py --requests --backend "$backend" --extension build/hyper.so --output build/hyper-fpm/"$backend"
+            python3 tests/http/hyper_fpm.py --compression --backend "$backend" --extension build/hyper.so --output build/hyper-fpm/"$backend-compression"
           done
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
