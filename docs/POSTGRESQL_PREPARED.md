@@ -186,3 +186,21 @@ python3 tests/database/prepared_pg.py --php /path/to/php --module build/asyncara
 
 Local PostgreSQL 16.15 only. No remote WAN/mTLS/rotation certification, explicit
 server-cancellation acknowledgement, automatic replay, or performance claim.
+
+## Independent PostgreSQL source distribution
+
+Source: `891a1761cf73cd1814b02a99b4609c5e10d3ef7f`. Archive:
+`build/asyncara-0.1.0-dev-postgresql-r1.tar.gz`, 606 files. SHA-256:
+`3a7aff2d2a6f43b2ff7c9426b772731b335b059d1ade2fe3c1dc4b4969fde0da`.
+Two archives are byte-identical; all entries match the Git source tree. A fresh
+Rust/C build succeeds, followed by15 validation commands including locked Composer
+installation, PostgreSQL plain/TLS/FPM, full PHP85 suites, Hyper requests and
+server protocol/API on both epoll and poll. Independent module SHA-256:
+`2b97c8d10211d9b9b22f1d4fd0e3836a4c78a87418a3549fdca58cb8d8fa5a6e`.
+
+The first full-suite run failed because the clean extraction lacked the declared
+Nyholm development dependency. That report remains FAIL. Installing unchanged
+composer.lock dependencies fixed the test environment; the module and all tracked
+source remained byte-identical. [Build attestation](phase7/postgresql-r1-package.json)
+retains both reports. The fatal-bailout memory finding is unchanged and separately
+reported above. No release or universal performance/endurance claim.

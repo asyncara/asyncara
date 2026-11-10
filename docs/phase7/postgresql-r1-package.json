@@ -1,0 +1,554 @@
+{
+  "status": "SCOPED_PACKAGE_BUILD_AND_VALIDATION_PASS",
+  "sourceCommit": "891a1761cf73cd1814b02a99b4609c5e10d3ef7f",
+  "archiveSha256": "3a7aff2d2a6f43b2ff7c9426b772731b335b059d1ade2fe3c1dc4b4969fde0da",
+  "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-postgresql-r1.tar.gz",
+  "files": 606,
+  "byteReproducible": true,
+  "allEntriesMatchGit": true,
+  "nativeModuleSha256": "2b97c8d10211d9b9b22f1d4fd0e3836a4c78a87418a3549fdca58cb8d8fa5a6e",
+  "initialReport": {
+    "status": "FAIL",
+    "sourceCommit": "891a1761cf73cd1814b02a99b4609c5e10d3ef7f",
+    "nativeCheckpoint": "891a1761cf73cd1814b02a99b4609c5e10d3ef7f",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-postgresql-r1.tar.gz",
+    "archiveSha256": "3a7aff2d2a6f43b2ff7c9426b772731b335b059d1ade2fe3c1dc4b4969fde0da",
+    "sourceFiles": 606,
+    "gitTreeVerified": true,
+    "byteReproducible": true,
+    "commands": [
+      {
+        "name": "independent-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 164.54283405514434,
+        "logSha256": "061f3369ba9d5d89ff33a00879fcbaa1d19d072f1313d2d84db47b0045e40c67"
+      },
+      {
+        "name": "epoll-pg-plain",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/epoll-pg-plain"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 6.398907357128337,
+        "logSha256": "e646537ae2dbe96bf0c97482967e2fc02a28bc555c384329b6a5db028682d3ae"
+      },
+      {
+        "name": "epoll-pg-tls",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/epoll-pg-tls",
+          "--tls"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 5.662467819871381,
+        "logSha256": "96cc4c2d339e2e3ac55af9bcca35e8412f5fcf4c24e695bef190c1d3ca90c209"
+      },
+      {
+        "name": "epoll-pg-fpm",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/epoll-pg-fpm",
+          "--fpm",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 13.56029085512273,
+        "logSha256": "3ec55710f3214cd560cb33ad4c21f0a987311793664348708a6bc8b6b05ce954"
+      },
+      {
+        "name": "epoll-full",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll",
+          "ASYNCARA_EXTENSION": "build/asyncara-server.so"
+        },
+        "exit": 1,
+        "wallSeconds": 6.194291063817218,
+        "logSha256": "946e523d2ffef90b6ef4bce2d63c6eb7eea3df60d8402625ee41a549cc15b8da"
+      }
+    ],
+    "buildEnvironment": {
+      "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+      "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+      "CARGO_TARGET_DIR": "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/cargo-target",
+      "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+      "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "PHP_INCLUDE_DIR": "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+    }
+  },
+  "initialReportSha256": "c299f49574b6bb16dc7651cb694025e8fcc0587863737ea743c4e31a97abc994",
+  "finalReport": {
+    "status": "PASS",
+    "sourceCommit": "891a1761cf73cd1814b02a99b4609c5e10d3ef7f",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-postgresql-r1.tar.gz",
+    "archiveSha256": "3a7aff2d2a6f43b2ff7c9426b772731b335b059d1ade2fe3c1dc4b4969fde0da",
+    "sourceFiles": 606,
+    "originalBuildReport": "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/report.json",
+    "originalBuildReportSha256": "c299f49574b6bb16dc7651cb694025e8fcc0587863737ea743c4e31a97abc994",
+    "preservedFailure": "package-r1 full suite missing Composer dev dependencies; build and PG checks passed",
+    "moduleSha256": "2b97c8d10211d9b9b22f1d4fd0e3836a4c78a87418a3549fdca58cb8d8fa5a6e",
+    "commands": [
+      {
+        "name": "locked-composer-install",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=phar",
+          "-d",
+          "extension=iconv",
+          "-d",
+          "extension=mbstring",
+          "-d",
+          "extension=curl",
+          "-d",
+          "extension=zip",
+          "-d",
+          "extension=/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "/usr/local/bin/composer",
+          "install",
+          "--no-interaction",
+          "--no-plugins",
+          "--no-scripts",
+          "--prefer-dist"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 2.8316900699865073,
+        "logSha256": "895919eabb560970b117897b24c5cf88c43f42de25964c0148469b231110df53"
+      },
+      {
+        "name": "epoll-pg-plain",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/epoll-pg-plain"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 5.881063026143238,
+        "logSha256": "648acd289b32c450273ec67b5249c2ba206fa562d5ade95b24148c0188c99832"
+      },
+      {
+        "name": "epoll-pg-tls",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/epoll-pg-tls",
+          "--tls"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 5.566077144118026,
+        "logSha256": "451e35a85ebb51efa29007733ee839ac3efcc18874f5694b074d71bcccb86184"
+      },
+      {
+        "name": "epoll-pg-fpm",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/epoll-pg-fpm",
+          "--fpm",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 16.42004582984373,
+        "logSha256": "1a7332c705720f00e54e6b071e833bb09a0bdf1115640038346aeef779c4e3df"
+      },
+      {
+        "name": "epoll-full",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "seconds": 55.47781557193957,
+        "logSha256": "a0bd1d045438562e403620e7fd1f9323d738e209c109e1ab4bac53986bd23f4d"
+      },
+      {
+        "name": "epoll-hyper-requests",
+        "command": [
+          "python3",
+          "tests/http/hyper_requests.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/epoll-hyper-requests"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 3.4961803478654474,
+        "logSha256": "27a4f513e1f407670e5fa14eb361cab1ea65b6fe8bb9593da3df7ce85b44e17c"
+      },
+      {
+        "name": "epoll-server-protocol",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/epoll-server-protocol"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 2.843570465920493,
+        "logSha256": "838fcfcf42e708b787fce2d2e687b2b7b93db3bae24aafeaa6a182a56302cff9"
+      },
+      {
+        "name": "epoll-server-api",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "tests/server/api.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "seconds": 0.11198503291234374,
+        "logSha256": "0ea164a3668cb0dec0a3323474849eff7b1be72575960c8947de6d42144b9c23"
+      },
+      {
+        "name": "poll-pg-plain",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/poll-pg-plain"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 8.134847840992734,
+        "logSha256": "a437ea4103ef6d343989599a643b48a10336b0a10ce7e90269d0ba80db91ab33"
+      },
+      {
+        "name": "poll-pg-tls",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/poll-pg-tls",
+          "--tls"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 9.70645387400873,
+        "logSha256": "0f479ee3299bf4758c77794eaa7a1e0a32cd422b1f0ee25c33cd7b97ce674154"
+      },
+      {
+        "name": "poll-pg-fpm",
+        "command": [
+          "python3",
+          "tests/database/prepared_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/poll-pg-fpm",
+          "--fpm",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 18.959403447108343,
+        "logSha256": "7dd1ad90e603c054de5dfc956d1544b1dc4ff0d5971e8fb3b3521f2aaa7e656a"
+      },
+      {
+        "name": "poll-full",
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "seconds": 41.827501288149506,
+        "logSha256": "a507b67f886369a8fefd43803f14359b5994a76561425c5c2a456bfe146d9278"
+      },
+      {
+        "name": "poll-hyper-requests",
+        "command": [
+          "python3",
+          "tests/http/hyper_requests.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/poll-hyper-requests"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 2.30026415316388,
+        "logSha256": "087c33b501d0305652a07a6e0b6955bed662d470150ce8f88dd1aeb6395a8750"
+      },
+      {
+        "name": "poll-server-protocol",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-pg-cache-20261110T061903Z/package-validation-r2/poll-server-protocol"
+        ],
+        "environment": {},
+        "exit": 0,
+        "seconds": 2.3942614330444485,
+        "logSha256": "d80e6135a447817093aff9b2cfcdc12be64d32bb2581af3bf7cefe185b7fed08"
+      },
+      {
+        "name": "poll-server-api",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-pg-cache-20261110T061903Z/package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+          "tests/server/api.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "seconds": 0.07634863816201687,
+        "logSha256": "37e8bd7384eb95714546f1ecfd256cc691ea0ca8cc9d3bee1e40169daba166f5"
+      }
+    ],
+    "trackedSourceUnchanged": true,
+    "moduleUnchanged": true,
+    "composerLockSha256": "4459b4295249ae7da673c0f7c5601ee7ce44151427ff1977bd514e867d03c250",
+    "composerVersion": "2.10.3",
+    "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7"
+  },
+  "finalReportSha256": "91f123f48b49d5e18e24cf2a3dd7cf2c1ce327fa7388a87e8d0739a5510a5beb",
+  "rawRoot": "/home/coder/Asyncara-pg-cache-20261110T061903Z",
+  "logHashes": {
+    "package-r1/epoll-pg-plain.log": "e646537ae2dbe96bf0c97482967e2fc02a28bc555c384329b6a5db028682d3ae",
+    "package-r1/epoll-pg-tls.log": "96cc4c2d339e2e3ac55af9bcca35e8412f5fcf4c24e695bef190c1d3ca90c209",
+    "package-r1/independent-build.log": "061f3369ba9d5d89ff33a00879fcbaa1d19d072f1313d2d84db47b0045e40c67",
+    "package-r1/epoll-full.log": "946e523d2ffef90b6ef4bce2d63c6eb7eea3df60d8402625ee41a549cc15b8da",
+    "package-r1/epoll-pg-fpm.log": "3ec55710f3214cd560cb33ad4c21f0a987311793664348708a6bc8b6b05ce954",
+    "package-r1/epoll-pg-plain/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-r1/epoll-pg-plain/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-r1/epoll-pg-plain/init.log": "298b3db11943387d01837582ed4a5f060e7b847b6eb912876905d8f8600c6dbf",
+    "package-r1/epoll-pg-plain/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-r1/epoll-pg-plain/postgres.log": "e14703976d48c9130a9312dfe61e896a059b7fa8796d26a7cbe364639616f2ab",
+    "package-r1/epoll-pg-plain/php.log": "db888944ac7afabe27f76d1bf7e697fc3ed34297105f7f5b341918201af6db69",
+    "package-r1/epoll-pg-fpm/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-r1/epoll-pg-fpm/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-r1/epoll-pg-fpm/init.log": "026cc5a58992e29ec8f7405c479b45d560acfb22e274e755120754b6ac4e2697",
+    "package-r1/epoll-pg-fpm/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-r1/epoll-pg-fpm/postgres.log": "9808b234b1e2bd174e15d14272859f591ef43de86c19148073a257088ef139a1",
+    "package-r1/epoll-pg-fpm/php.log": "2642e572910cc1bf4c648b7d5031c18d744f352f4478dd2d1fb65129f22bce0b",
+    "package-r1/epoll-pg-tls/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-r1/epoll-pg-tls/cert.log": "b5c065aabcd64c7778eab92a42c8869015771d71263b837cb5b36cf0e9f8b17e",
+    "package-r1/epoll-pg-tls/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-r1/epoll-pg-tls/init.log": "89bb7ef3c016bd071bb06f4b1b7a814100112e6787171217a4b6ffad68ced8f6",
+    "package-r1/epoll-pg-tls/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-r1/epoll-pg-tls/postgres.log": "51acbfb7fd70e09d0b57298436b7cef53423d606167d699970d3b76f6101f6d2",
+    "package-r1/epoll-pg-tls/php.log": "a462ff6851b332ce7535694aeffb072cf2c583ba4fcaf10cc88998fcd9e2bcc5",
+    "package-r1/asyncara-0.1.0-dev/build/http-completion-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/budget-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/capacity-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/options-lifetime-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/http-stream-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/pool-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/proxy.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/gate-protocol-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/http-fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/proxy-origin.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/buffered-owner-server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/asyncara-0.1.0-dev/build/test-certs/generation.log": "cb703880eb1d68bf3c97276c186b0946e30472bbde19e798bb2785049fbb6b3b",
+    "package-r1/epoll-pg-fpm/fpm/A-lifecycle/error.log": "2dff4a3b956ab62c0bf1605da5663c7f53c6b487bdaafd01bbaa6e6ead708ea7",
+    "package-r1/epoll-pg-fpm/fpm/A-lifecycle/php-errors.log": "6f54492e664b1eae9a2ea9d13ab705cef105dc2ef1f46df40eada916d59aa9c6",
+    "package-r1/epoll-pg-fpm/fpm/A-lifecycle/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-r1/epoll-pg-fpm/fpm/PostgreSQL-four-workers/error.log": "5f523788d0b348cda205988bed18cedbfc00a7e53cc28ffeb357b4de4cf4caba",
+    "package-r1/epoll-pg-fpm/fpm/PostgreSQL-four-workers/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/poll-full.log": "a507b67f886369a8fefd43803f14359b5994a76561425c5c2a456bfe146d9278",
+    "package-validation-r2/epoll-pg-plain.log": "648acd289b32c450273ec67b5249c2ba206fa562d5ade95b24148c0188c99832",
+    "package-validation-r2/epoll-server-protocol.log": "838fcfcf42e708b787fce2d2e687b2b7b93db3bae24aafeaa6a182a56302cff9",
+    "package-validation-r2/poll-server-protocol.log": "d80e6135a447817093aff9b2cfcdc12be64d32bb2581af3bf7cefe185b7fed08",
+    "package-validation-r2/locked-composer-install.log": "895919eabb560970b117897b24c5cf88c43f42de25964c0148469b231110df53",
+    "package-validation-r2/poll-server-api.log": "37e8bd7384eb95714546f1ecfd256cc691ea0ca8cc9d3bee1e40169daba166f5",
+    "package-validation-r2/epoll-pg-tls.log": "451e35a85ebb51efa29007733ee839ac3efcc18874f5694b074d71bcccb86184",
+    "package-validation-r2/poll-pg-plain.log": "a437ea4103ef6d343989599a643b48a10336b0a10ce7e90269d0ba80db91ab33",
+    "package-validation-r2/epoll-hyper-requests.log": "27a4f513e1f407670e5fa14eb361cab1ea65b6fe8bb9593da3df7ce85b44e17c",
+    "package-validation-r2/epoll-full.log": "a0bd1d045438562e403620e7fd1f9323d738e209c109e1ab4bac53986bd23f4d",
+    "package-validation-r2/poll-hyper-requests.log": "087c33b501d0305652a07a6e0b6955bed662d470150ce8f88dd1aeb6395a8750",
+    "package-validation-r2/poll-pg-tls.log": "0f479ee3299bf4758c77794eaa7a1e0a32cd422b1f0ee25c33cd7b97ce674154",
+    "package-validation-r2/poll-pg-fpm.log": "7dd1ad90e603c054de5dfc956d1544b1dc4ff0d5971e8fb3b3521f2aaa7e656a",
+    "package-validation-r2/epoll-pg-fpm.log": "1a7332c705720f00e54e6b071e833bb09a0bdf1115640038346aeef779c4e3df",
+    "package-validation-r2/epoll-server-api.log": "0ea164a3668cb0dec0a3323474849eff7b1be72575960c8947de6d42144b9c23",
+    "package-validation-r2/epoll-server-protocol/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/epoll-server-protocol/stdout.log": "5a035dcb0dfb9cda33fcfba69fa0855f9ec4fc8a474359df0d6bb8a13f0e9243",
+    "package-validation-r2/epoll-pg-plain/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/epoll-pg-plain/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/epoll-pg-plain/init.log": "0be94df37b9f49c00f959badff889667b972ee57ec6ab149d31941d89c2b99a8",
+    "package-validation-r2/epoll-pg-plain/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/epoll-pg-plain/postgres.log": "41f849a7351aaa5434d0d8761978b445bf689cbe291c0f416c16516ea8c025a2",
+    "package-validation-r2/epoll-pg-plain/php.log": "c688caa9c519f05cd55f530abce69df6b37ffa0f102e027f20a582352b1e1878",
+    "package-validation-r2/epoll-hyper-requests/peer.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/epoll-hyper-requests/cert-generation.log": "b04e3ceec1c19d0e63d586286b1c02b2782509a239a04cbeb063c8b26dd35b76",
+    "package-validation-r2/epoll-hyper-requests/php.log": "2901df3d6a460eb031b7331156ac45670f99643f0e082f860c97ef0f770abe7c",
+    "package-validation-r2/poll-server-protocol/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/poll-server-protocol/stdout.log": "b9f5d89fbd7b98240e3403575027a8382315fb4c43e915ba5a68204548705e84",
+    "package-validation-r2/poll-pg-plain/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/poll-pg-plain/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/poll-pg-plain/init.log": "28bd144a5cee00ef1e6cdda003229bb949ceb7bad14eb99994104dffbf6182d6",
+    "package-validation-r2/poll-pg-plain/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/poll-pg-plain/postgres.log": "bb68a941de6e33c912cf640284f2af44d57edd30201aff50dbca96888d73e98c",
+    "package-validation-r2/poll-pg-plain/php.log": "f88321a30e69c1da6571f5e1ab562a973421b10304c8ba2e5ed0839067b49a60",
+    "package-validation-r2/poll-pg-tls/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/poll-pg-tls/cert.log": "86e1f25c6ea72a81a3c341f7e29c232982950844409f2c552619571076e29ed1",
+    "package-validation-r2/poll-pg-tls/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/poll-pg-tls/init.log": "94be71bfe6b9b261968d5a8e4849192d79202c58a40d83cd2438c2bfefd78bb3",
+    "package-validation-r2/poll-pg-tls/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/poll-pg-tls/postgres.log": "9144a96faa466ae17cb67bd721a1e78a971586f82ef916b0c1385df191ed87eb",
+    "package-validation-r2/poll-pg-tls/php.log": "fb20d64e08a70e1238b8e9ecfe8f079f8b4f1a46b0a3a0179c48080f94b86a6f",
+    "package-validation-r2/poll-pg-fpm/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/poll-pg-fpm/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/poll-pg-fpm/init.log": "0d257af7e1cca90cc709edc013df4d6d619cfaf98f3b5f829c5de59e05fce3d3",
+    "package-validation-r2/poll-pg-fpm/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/poll-pg-fpm/postgres.log": "9ab43e6872b055d3d9c5a595b99eda290c3d2a08f92073649b7f7d0f2026d848",
+    "package-validation-r2/poll-pg-fpm/php.log": "2642e572910cc1bf4c648b7d5031c18d744f352f4478dd2d1fb65129f22bce0b",
+    "package-validation-r2/epoll-pg-fpm/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/epoll-pg-fpm/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/epoll-pg-fpm/init.log": "2488563b506973debfe95261afcbad7beb7b3bf025f2e0b6179dcb3214129ef9",
+    "package-validation-r2/epoll-pg-fpm/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/epoll-pg-fpm/postgres.log": "5f7adfb9338b9f9b15aacce46eb846ab37e0247959f96170f91d217925e01693",
+    "package-validation-r2/epoll-pg-fpm/php.log": "2642e572910cc1bf4c648b7d5031c18d744f352f4478dd2d1fb65129f22bce0b",
+    "package-validation-r2/poll-hyper-requests/peer.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/poll-hyper-requests/cert-generation.log": "b04e3ceec1c19d0e63d586286b1c02b2782509a239a04cbeb063c8b26dd35b76",
+    "package-validation-r2/poll-hyper-requests/php.log": "697eff715070eb602d1e5ca5129ba7e275fcc1f489fb182b1d17ba64e6933cd2",
+    "package-validation-r2/epoll-pg-tls/fatal.log": "54426f7e850efc5c623c946a576e9e608c1ae8ea24c52e4912069a3a68e74a9a",
+    "package-validation-r2/epoll-pg-tls/cert.log": "33fb73eda5ffaf27d9845e6db34eb9217866855a41df302fc035570c618a4be4",
+    "package-validation-r2/epoll-pg-tls/pending.log": "a4c364adb54bb5065ee0ef3269bf19eed52cede58a3b537f39dcab2c602e0d57",
+    "package-validation-r2/epoll-pg-tls/init.log": "ad3e6d7edd5242202d2c88824dbf8627a5def893bfd1d738cb32f14d6bdd2186",
+    "package-validation-r2/epoll-pg-tls/oom.log": "187c6d58d6bfcaef768eb971be4f9087d8ad2c7c006082cefb3abd12a0ef7d0b",
+    "package-validation-r2/epoll-pg-tls/postgres.log": "00543786436f37302bbbd115afdc2460d1a4173e343e17a9a8b5fef8e3a212e1",
+    "package-validation-r2/epoll-pg-tls/php.log": "a4cae9efbbbe3fdc34269e2466534f840c64b210ee5d556c9c58c0f0dd8c4e97",
+    "package-validation-r2/poll-pg-fpm/fpm/A-lifecycle/error.log": "7054cef6f33443c617ccef8e44c523d17b23f6ce784dd816ea78139d6e040bc8",
+    "package-validation-r2/poll-pg-fpm/fpm/A-lifecycle/php-errors.log": "f01315c67c40a4882646ffcde950a5b9b06f52530de443aa4536e2a1acd588ed",
+    "package-validation-r2/poll-pg-fpm/fpm/A-lifecycle/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/poll-pg-fpm/fpm/PostgreSQL-four-workers/error.log": "536bb90c07ff99eff19b0dea3190cbd69402ba8348826f0c8854949b05a4805b",
+    "package-validation-r2/poll-pg-fpm/fpm/PostgreSQL-four-workers/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/epoll-pg-fpm/fpm/A-lifecycle/error.log": "23499707341e68e0a1d64bdb0132721ae581114b539246d9621c8cce4a616fad",
+    "package-validation-r2/epoll-pg-fpm/fpm/A-lifecycle/php-errors.log": "5f17afc8036fc83e8dad0edf8bfd098a5858451dd6ab544d34decd531db8f43c",
+    "package-validation-r2/epoll-pg-fpm/fpm/A-lifecycle/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "package-validation-r2/epoll-pg-fpm/fpm/PostgreSQL-four-workers/error.log": "599310cd14d8eff303b9c87babbaff6d1a708ff17bdd673df21ec80031499723",
+    "package-validation-r2/epoll-pg-fpm/fpm/PostgreSQL-four-workers/startup.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "preservedPhase4": {
+    "head": "6a7e0f45cb64577b3ba0cf30e160bd98901e4d90",
+    "moduleSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+    "status": "## phase4-endurance...origin/phase4-endurance\n?? tests/soak/campaign_review.py\n?? tests/soak/response_order.py\n?? tests/soak/test_campaign_review.py\n"
+  },
+  "historicalServerArchives": {
+    "r1": "6839e7cac6ef6e6526389fca00db7640e17c816335850d1826bea25c8cec7dbb",
+    "r2": "d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd",
+    "r3": "7d4ac74d7ee36c8d39ac620312d0a3aaaa69f17b8a36789e163a71660146e17c",
+    "r4": "5592b3e7b37cbcb0aae6373710489d0b743e91457eee324ecaa01f35c05594f5",
+    "r5": "721fa8b8e6139d56ba79b8496dac69dba5102964c3f78f3886f719e48c3438b0"
+  },
+  "limitations": [
+    "Fresh build plus15validation commands pass after installing declared locked Composer dependencies",
+    "Initial missing Nyholm dependency FAIL preserved; native binary/archive and all tracked source unchanged",
+    "Original fatal-bailout Valgrind remainsFAIL; package validation does not replace memory report",
+    "Local PHP85 package check, broader targeted matrix belongs to identical runtime manifest in postgresql-prepared.json",
+    "No push/release/performance/endurance certification; EXPERIMENTAL"
+  ]
+}
