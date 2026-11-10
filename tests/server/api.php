@@ -16,6 +16,7 @@ $app=new App();$app->get('/x',fn()=>Response::text('ok'));rejects(fn()=>$app->ge
 rejects(fn()=>new Route('GET','/{x}/{x}',fn()=>Response::text('bad')));
 rejects(fn()=>Response::text('bad',204));
 $bad=new App();$bad->get('/x',fn()=>Response::text('no'))->middleware('unregistered');rejects(fn()=>$bad->listen('127.0.0.1:0'));
+$badLimit=new App();rejects(fn()=>$badLimit->listen('127.0.0.1:0',['connections'=>16384],fn()=>$badLimit->stop()));
 $fds = null;
 for($i=0;$i<50;$i++) {
     $server=new App();$server->get('/',fn()=>Response::text('ok'));
