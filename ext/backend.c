@@ -172,10 +172,39 @@ static void http_action(ar_engine *e, curl_socket_t fd, int events) {
  * No Zend API or application callback is invoked while Rust owns a borrow. */
 int ar_hyper_head(void *job, int status, const unsigned char *p, size_t n) {
     ar_job *j = job; if (status) j->status = status;
-    return receive_buffer((char *)p, 1, n, j, 1) == n ? 0 : -1;
+    if (receive_buffer((char *)p, 1, n, j, 1) != n) return -1;
+    if (j->stream_response && status >= 200) {
+        j->headers_ready = 1;
+        j->engine->http_wakeup |= 1;
+    }
+    return 0;
 }
 int ar_hyper_chunk(void *job, const unsigned char *p, size_t n) {
-    return receive_buffer((char *)p, 1, n, job, 0) == n ? 0 : -1;
+    ar_job *j = job;
+    size_t accepted = receive_buffer((char *)p, 1, n, j, 0);
+    if (accepted == CURL_WRITEFUNC_PAUSE) return 1;
+    if (accepted != n) return -1;
+    if (j->stream_response) j->engine->http_wakeup |= 1;
+    return 0;
+}
+/* A borrowed upload view is copied by Rust before this callback's caller
+ * returns. No Zend/application code or suspension runs across this boundary. */
+int ar_hyper_upload(void *job, const unsigned char **data, size_t *length) {
+    ar_job *j = job;
+    if (!j->stream_upload || atomic_load(&j->cancelled)) return -1;
+    size_t available = j->upload_len - j->upload_offset;
+    if (!available) {
+        if (j->upload_eof) return 2;
+        j->send_paused = 1;
+        ar_trace_emit(j->engine, AR_TRACE_IO, 57, j->id, 1, 0, 0);
+        return 1;
+    }
+    *data = (const unsigned char *)j->upload + j->upload_offset;
+    *length = available;
+    j->upload_sent += (int64_t)available;
+    j->upload_len = j->upload_offset = 0;
+    j->engine->http_wakeup |= 1;
+    return 0;
 }
 void ar_hyper_complete(void *job, const unsigned char *error, size_t n) {
     ar_job *j = job;
@@ -201,7 +230,6 @@ static int hyper_progress(ar_engine *e) {
 static void hyper_start(ar_engine *e, ar_job *j) {
     /* Deliberately narrow evaluation scope. Never silently bypass a proxy,
      * discard options, or mix independently bounded connection pools. */
-    if (j->stream_response || j->stream_upload) goto unsupported;
     const char *proxy[] = {"http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"};
     for (size_t i = 0; i < sizeof(proxy)/sizeof(*proxy); i++) {
         const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
@@ -229,6 +257,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
             }
         }
         else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
+        else if (!strcmp(key, "streamResponse") || !strcmp(key, "uploadSize")) { /* validated at submission */ }
         else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
         else if (!strcmp(key, "caPem")) {
             if (v->type != V_STRING || !v->length || v->length > 1048576) goto unsupported;
@@ -249,7 +278,8 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     if (!e->hyper) goto unsupported;
     /* Rust copies validated addresses synchronously; no borrowed PHP options
      * or resolver buffers survive this call. */
-    int submitted = ar_hyper_submit_http(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request);
+    unsigned streams = (j->stream_response ? 1u : 0u) | (j->stream_upload ? 2u : 0u);
+    int submitted = ar_hyper_submit_http_stream(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request, streams, j->upload_size);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */
@@ -259,9 +289,10 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     }
     if (submitted) goto unsupported;
     j->http_hyper = 1; e->hyper_submitted++;
+    if (streams) e->http_wakeup |= 1;
     return;
 unsupported:
-    snprintf(j->error, sizeof(j->error), "Hyper requires bounded HTTP(S) requests and verified TLS; no caller-owned framing, proxies, redirects or streaming");
+    snprintf(j->error, sizeof(j->error), "Hyper requires bounded HTTP(S) requests and verified TLS; no caller-owned framing, proxies, redirects or multipart");
     ar_done(e, j);
 }
 #endif
@@ -650,6 +681,9 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     ar_http_progress(e);
 #ifdef HAVE_ASYNCARA_HYPER
     if (hyper_progress(e)) deadline = 0;
+    /* Hyper can publish stream headers/data or consume an upload while its
+     * drive reaches quiescence. Return those transitions to PHP before waiting. */
+    if (e->http_wakeup & 1) deadline = 0;
     int hyper_timeout = e->hyper ? ar_hyper_timeout(e->hyper) : -1;
     if (hyper_timeout == -2) { ar_hyper_failed(e); deadline = 0; }
     if (hyper_timeout >= 0 && deadline != 0) {

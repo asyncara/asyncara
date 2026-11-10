@@ -1056,8 +1056,8 @@ PHP_FUNCTION(asyncara_http_head) {
         RETURN_THROWS();
     }
     if (!j->headers_ready && !j->body_len) RETURN_NULL();
-    long status = 0;
-    curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &status);
+    long status = j->status;
+    if (!j->http_hyper) curl_easy_getinfo(j->curl, CURLINFO_RESPONSE_CODE, &status);
     array_init(return_value);
     add_assoc_long(return_value, "status", status);
     zend_string *headers = ar_php_string_init(j->response_headers ? j->response_headers : "", j->headers_len);
@@ -1083,6 +1083,12 @@ PHP_FUNCTION(asyncara_http_read) {
     if (j->receive_paused && !j->done) {
         engine->http_wakeup = 1;
         j->receive_paused = 0;
+#ifdef HAVE_ASYNCARA_HYPER
+        if (j->http_hyper) {
+            if (ar_hyper_resume(engine->hyper, j)) ar_hyper_failed(engine);
+            return;
+        }
+#endif
         CURLcode result = curl_easy_pause(j->curl, j->send_paused ? CURLPAUSE_SEND : CURLPAUSE_CONT);
         if (result != CURLE_OK) {
             curl_multi_remove_handle(engine->multi, j->curl);
@@ -1126,6 +1132,13 @@ PHP_FUNCTION(asyncara_http_write) {
     j->upload_len = length;
     j->upload_eof = eof;
     engine->http_wakeup = 1;
+#ifdef HAVE_ASYNCARA_HYPER
+    if (j->http_hyper) {
+        j->send_paused = 0;
+        if (ar_hyper_resume(engine->hyper, j)) ar_hyper_failed(engine);
+        RETURN_TRUE;
+    }
+#endif
     if (j->send_paused) {
         j->send_paused = 0;
         int receive = j->receive_paused ? CURLPAUSE_RECV : 0;

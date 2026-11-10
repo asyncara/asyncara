@@ -3,7 +3,9 @@
 //! request deadlines and response buffers. No Zend API crosses this boundary.
 #[cfg(not(target_os = "linux"))]
 compile_error!("The Asyncara Hyper prototype currently supports Linux only");
-use http_body_util::{BodyExt, Full};
+use http_body_util::BodyExt;
+mod body;
+use body::ClientBody;
 use hyper::{body::Bytes, Request, Uri};
 mod request;
 use request::{RequestData, RequestSpec};
@@ -46,7 +48,7 @@ fn fault(point: u32) {
     #[cfg(not(feature = "ffi-fault-tests"))]
     let _ = point;
 }
-type Sender = hyper::client::conn::http1::SendRequest<Full<Bytes>>;
+type Sender = hyper::client::conn::http1::SendRequest<ClientBody>;
 type Driver = Pin<Box<dyn Future<Output = Result<(), hyper::Error>>>>;
 type Setup = Pin<
     Box<
@@ -54,7 +56,7 @@ type Setup = Pin<
             Output = Result<
                 (
                     Sender,
-                    hyper::client::conn::http1::Connection<ClientTransport, Full<Bytes>>,
+                    hyper::client::conn::http1::Connection<ClientTransport, ClientBody>,
                 ),
                 hyper::Error,
             >,
@@ -496,7 +498,7 @@ async fn transfer(
             .uri(uri.path_and_query().map(|p| p.as_str()).unwrap_or("/"))
             .header("Host", uri.authority().ok_or("Missing authority")?.as_str())
             .header("Accept-Encoding", "identity")
-            .body(Full::new(spec.body))
+            .body(ClientBody::new(job, spec.body, spec.upload_size))
             .map_err(|_| "Invalid request")?;
         request.headers_mut().extend(spec.headers);
         let response = sender
@@ -517,11 +519,12 @@ async fn transfer(
                         .split(|b| *b == b',')
                         .any(|token| token.trim_ascii().eq_ignore_ascii_case(b"close"))
                 });
-        if response
-            .headers()
-            .get_all("content-encoding")
-            .iter()
-            .any(|v| v.as_bytes() != b"identity")
+        if !spec.stream_response
+            && response
+                .headers()
+                .get_all("content-encoding")
+                .iter()
+                .any(|v| v.as_bytes() != b"identity")
         {
             return Err("Hyper prototype does not decode compressed responses".into());
         }
@@ -555,8 +558,25 @@ async fn transfer(
         while let Some(frame) = body.frame().await {
             let frame = frame.map_err(|_| "Hyper partial transfer")?;
             if let Some(data) = frame.data_ref() {
-                if unsafe { ar_hyper_chunk(job as *mut c_void, data.as_ptr(), data.len()) } != 0 {
-                    return Err("HTTP body buffer rejected".into());
+                // Hyper may produce frames larger than the C stream slot. A
+                // paused chunk stays owned by this future; resume retries it
+                // exactly once, after PHP frees space. Never drop partial data.
+                let size = if spec.stream_response {
+                    65536
+                } else {
+                    data.len().max(1)
+                };
+                for chunk in data.chunks(size) {
+                    std::future::poll_fn(|_| {
+                        match unsafe {
+                            ar_hyper_chunk(job as *mut c_void, chunk.as_ptr(), chunk.len())
+                        } {
+                            0 => Poll::Ready(Ok(())),
+                            1 => Poll::Pending,
+                            _ => Poll::Ready(Err("HTTP body buffer rejected".to_string())),
+                        }
+                    })
+                    .await?;
                 }
             }
             if let Some(trailers) = frame.trailers_ref() {
@@ -898,6 +918,8 @@ pub unsafe extern "C" fn ar_hyper_submit(
         0,
         false,
         std::ptr::null(),
+        0,
+        -1,
     )
 }
 #[no_mangle]
@@ -926,6 +948,8 @@ pub unsafe extern "C" fn ar_hyper_submit_request(
         ca_len,
         true,
         std::ptr::null(),
+        0,
+        -1,
     )
 }
 #[no_mangle]
@@ -943,7 +967,40 @@ pub unsafe extern "C" fn ar_hyper_submit_http(
     request: *const RequestData,
 ) -> i32 {
     submit(
-        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true, request,
+        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true, request, 0, -1,
+    )
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_http_stream(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    request: *const RequestData,
+    streams: u32,
+    upload_size: i64,
+) -> i32 {
+    submit(
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        true,
+        request,
+        streams,
+        upload_size,
     )
 }
 unsafe fn submit(
@@ -959,6 +1016,8 @@ unsafe fn submit(
     ca_len: usize,
     allow_tls: bool,
     request: *const RequestData,
+    streams: u32,
+    upload_size: i64,
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
@@ -980,9 +1039,19 @@ unsafe fn submit(
         if engine.ops.len() >= 1024 {
             return -1;
         }
-        let Ok(request) = RequestSpec::copy(request) else {
+        let Ok(mut request) = RequestSpec::copy(request) else {
             return -1;
         };
+        if streams & !3 != 0
+            || (streams & 2 != 0
+                && (upload_size < -1
+                    || !request.body.is_empty()
+                    || request.method == hyper::Method::HEAD))
+        {
+            return -1;
+        }
+        request.stream_response = streams & 1 != 0;
+        request.upload_size = (streams & 2 != 0).then_some(upload_size);
         let Ok(text) = std::str::from_utf8(std::slice::from_raw_parts(url, len)) else {
             return -1;
         };
@@ -1122,6 +1191,19 @@ pub unsafe extern "C" fn ar_hyper_cancel(ptr: *mut c_void, job: *mut c_void) -> 
     engine_ffi(ptr, -2, |e| {
         if let Some(i) = e.ops.iter().position(|op| op.job == job as usize) {
             e.finish(i, Some("Operation cancelled"));
+        }
+        0
+    })
+}
+// Called only between drive calls, after C has consumed or filled its slot.
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_resume(ptr: *mut c_void, job: *mut c_void) -> i32 {
+    engine_ffi(ptr, -2, |engine| {
+        if let Some(op) = engine.ops.iter().find(|op| op.job == job as usize) {
+            op.wake.set();
+            if let Some(conn) = op.conn.and_then(|index| engine.conns[index].as_ref()) {
+                conn.wake.set();
+            }
         }
         0
     })

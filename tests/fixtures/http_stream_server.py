@@ -7,6 +7,7 @@ BLOCK = bytes(range(256)) * 256
 # Clearing an Event on request arrival lost an earlier release on another
 # connection and produced a spurious truncated response after the 15s guard.
 HEADER_GATE = threading.Semaphore(0)
+REJECT_GATE = threading.Semaphore(0)
 
 class Handler(http.server.BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
@@ -20,6 +21,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def do_PUT(self): self.do_POST()
     def do_POST(self):
         try:
+            if self.path == '/reject-held':
+                self.send_response(413);self.send_header('Content-Length','0');self.send_header('Connection','close');self.end_headers();self.wfile.flush()
+                REJECT_GATE.acquire(timeout=15);self.close_connection=True;return
             if self.path == '/reject':
                 self.send_response(413);self.send_header('Content-Length','0');self.send_header('Connection','close');self.end_headers();self.close_connection=True;return
             digest=hashlib.sha256();total=0;multipart=[]
@@ -83,6 +87,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200);self.send_header('Content-Length','1');self.end_headers();self.wfile.flush()
                 if not HEADER_GATE.acquire(timeout=15):self.close_connection=True;return
                 self.wfile.write(b'x');return
+            if path == '/release-reject':
+                REJECT_GATE.release();self.send_response(200);self.send_header('Content-Length','0');self.end_headers();return
             if path == '/release-body':
                 HEADER_GATE.release();self.send_response(200);self.send_header('Content-Length','0');self.end_headers();return
             if path == '/empty':

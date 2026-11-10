@@ -19,6 +19,8 @@ pub(super) struct RequestSpec {
     pub method: Method,
     pub headers: HeaderMap,
     pub body: Bytes,
+    pub stream_response: bool,
+    pub upload_size: Option<i64>,
 }
 impl Default for RequestSpec {
     fn default() -> Self {
@@ -26,6 +28,8 @@ impl Default for RequestSpec {
             method: Method::GET,
             headers: HeaderMap::new(),
             body: Bytes::new(),
+            stream_response: false,
+            upload_size: None,
         }
     }
 }
@@ -109,6 +113,8 @@ impl RequestSpec {
             method,
             headers,
             body,
+            stream_response: false,
+            upload_size: None,
         })
     }
 }
