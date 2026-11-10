@@ -2262,3 +2262,62 @@ client Waker ownership control. Found configuration-only over-admission: a
 watchers. The prior module accepts this invalid configuration (failure retained);
 PHP admission now reserves three watcher slots. Added explicit server MINFO and
 build dependency checks for the new C headers. Full final validation follows.
+
+## Native server validation follow-up (2026-11-10)
+
+Native checkpoint 3a9a31d builds and passes API/protocol checks on PHP83/84/85,
+DEBUG and GCC ASan/UBSan with epoll and poll. Gate A passed in233.240066s; all47
+command expectations held. Complete PHP85 suites now pass on both backends
+after installing unchanged Composer.lock dependencies in this isolated worktree.
+Four-worker normal/abnormal exits reap owned children. The initial worker-failure
+oracle looked only at stderr; PHP emitted its expected failure on stdout. Both
+that failed observation and the corrected review are preserved.
+DEBUG Valgrind server API50-cycle tests: zero errors and lost bytes;4066 reachable.
+Rust ownership/panic/bounds unit tests under Valgrind: zero definite/indirect,
+48 possibly lost and548 reachable retained, not suppressed. Six Rust tests pass.
+See docs/phase7/server-validation.json for fingerprints and original logs.
+The server test reporter also supports extracted packages using a manifest-only
+identity instead of failing when Git metadata is absent; no acceptance assertion
+is removed. Final multi-sample matched Go comparisons are in progress.
+
+### Follow-up defects caught before delivery
+
+The persistent connection Closure captured its first request by value, retaining
+its completed body until disconnect. Independent real HTTP reproduction with
+eight512KiB first bodies fails before the fix (PHP delta4,413,344 bytes) and passes
+after (179,936 bytes), keeping all connections open and native payload bytes0.
+App now delivers the first request through the same single-slot Inbox as later
+requests; the persistent Closure captures only the Inbox and connection ID.
+
+Host validation incorrectly treated a URI Authority as a Host field, accepting
+user@localhost with200. New raw protocol regression preserves this FAIL. Rust
+valid_host rejects userinfo and nonnumeric port suffixes; RFC9110 section7.2 and
+RFC9112 section3.2 define the narrower Host requirements. New unit controls
+preserve numeric-IP/domain/IPv6 Host handling. Rebuild/revalidation in progress.
+The previous benchmarks remain evidence for the preceding3a9a31d checkpoint.
+
+### Corrected server checkpoint validation
+
+195f088 passes the35-command matrix on PHP83/84/85, DEBUG and GCC ASan/UBSan,
+epoll/poll. Seven Rust tests pass. Gate A:333.776514s,47 expected results. Full85
+suites pass on both backends; native EINTR negative controls and four-worker
+normal/abnormal shutdown pass. DEBUG Valgrind exercises real512KiB body requests
+without errors or lost bytes;4066 reachable. Rust server unit controls and a pure
+Host parser control both retain the same48 possibly lost bytes in Rust thread
+initialization; this is recorded, not suppressed or confused with older PHP
+shutdown findings. Corrected-source three-sample Go comparisons are in progress.
+
+### Server performance and package preparation
+
+The corrected195f088 checkpoint completes42 response-validated benchmark runs
+(three independent samples per configuration),2,405,803 measured responses across
+both engines. Epoll six-worker medians:12,772.56/s (10B),13,972.86/s (1KiB),
+4,805.69/s (64KiB); corresponding Go:18,598.56/19,520.51/3,076.44. Poll and5ms
+delay results are retained separately in docs/LATEST_SERVER_BENCHMARK.md.
+The requested all-cases Go performance target remains NOT_MET. Host CPU pressure
+and spread prevent a universal capacity claim. No complete-response cache was
+used. All runtime changes remain isolated from Phase4.
+Final ten-combination protocol repetition also proves keep-alive request-count
+closure at the fixture's original50-response limit. Composer metadata validates.
+Preparing the first server source archive and independent extracted build; no
+GitHub release or stability promotion.

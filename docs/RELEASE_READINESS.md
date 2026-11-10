@@ -1,5 +1,22 @@
 # Release readiness
 
+## Native HTTP server development (2026-11-10)
+
+The isolated `phase7-native-server-20261109T231953Z` branch adds
+`Asyncara\App` with Hyper HTTP/1 transport, bounded bodies, routed Fiber handlers,
+groups, middleware and optional prefork workers. Native checkpoint `195f088`
+passes the focused PHP83/84/85, DEBUG and scoped GCC sanitizer matrix on epoll
+and poll, plus Gate A. See [SERVER.md](SERVER.md) for the API, exact namespace
+compatibility decision, build commands, ownership boundaries and evidence.
+This is **PARTIALLY_IMPLEMENTED / EXPERIMENTAL**, not a production server or a
+claim of outperforming Go. TLS, HTTP/2/3 and server streaming are unavailable.
+Historical HTTP-client and Phase4 failures remain separate and preserved.
+Final scoped validation and full PHP85 suites pass. The matched server
+[benchmark](LATEST_SERVER_BENCHMARK.md) does not meet the all-cases Go target;
+large-body median wins do not establish universal superiority.
+
+## Previous HTTP-client checkpoint
+
 See [HYPER_DNS.md](HYPER_DNS.md) for runtime922a024 and the isolated curl repair.
 DNS tests are scoped; HTTPS/decompression and speed targets remain incomplete.
 System libcurl is unchanged, prior FAIL remains, and final broad acceptance is

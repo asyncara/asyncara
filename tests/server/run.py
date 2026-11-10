@@ -41,6 +41,12 @@ async def checks(port):
         w.write(b'GET /set-context HTTP/1.1\r\nHost: localhost\r\n\r\nGET /get-context HTTP/1.1\r\nHost: localhost\r\n\r\n'); await w.drain()
         assert (await response(r))[2]==b'ok'
         assert json.loads((await response(r))[2])=={'value':None}
+    # The fixture caps keep-alive at fifty responses. Twenty-three completed.
+    for i in range(27):
+        w.write(b'GET /status HTTP/1.1\r\nHost: localhost\r\n\r\n'); await w.drain()
+        s,h,b=await response(r); assert s==200
+        if i==26:assert h.get(b'connection')==b'close',h
+    assert await asyncio.wait_for(r.read(),5)==b''
     w.close(); await w.wait_closed(); completed.append('pipeline')
     r,w=await connect()
     w.write(b'POST /data HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n3\r\n{"x\r\n4\r\n":1}\r\n0\r\n\r\n')

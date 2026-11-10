@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "release": "EXPERIMENTAL",
+  "createdUtc": "2026-11-10T00:34:03.333890+00:00",
+  "worktree": "/home/coder/Asyncara-server-20261109T231953Z",
+  "branch": "phase7-native-server-20261109T231953Z",
+  "base": "4abe8fd0b9bf0ba368a3b395ca5362d61bb06943",
+  "nativeCheckpoint": "195f0888f6559ca80a72e637d551c5344f5cd5f4",
+  "nativeManifest": {
+    "ext/backend.c": "e3f21771419884592db2b9c579a454d4fb0613976683c6b36bcf29de4e5f1d50",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/config.m4": "a28c590b94657a2ad1fa6080c331f3f4d303695608b5e08336fd61793ae701fb",
+    "ext/driver_arginfo.h": "4b32dbd57df55a5fb663c9c9d0bc8836c05cd62956348100879a1a8569fbd9c5",
+    "ext/hyper/Cargo.lock": "ba9343805ea1b126aa3d70c6b9cdd89394b2cea1bc4e076b19887f2ed419941c",
+    "ext/hyper/Cargo.toml": "d9f33fbcbd1a76ac567725377ec930f0cad6405f35ca07ff62c7816cfd6a70b5",
+    "ext/hyper/src/lib.rs": "c9596f6501282a68bb584f8297a239f413be65747536f96b0bb8aa687975c2a4",
+    "ext/hyper/src/server.rs": "29deb59aaa5c3d51d76862b3981fd8bf92f9a7d855b1b59eeb2e64d3f3b882cb",
+    "ext/hyper/src/tests.rs": "14c70c5a1ff779739c831ef5d816f011461319be9eab335c80ef9bebf5cc7396",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/mysql.c": "37ed75827c06030152cff4fe340ec4445277105a78623cf5c9f80c3a166d70c9",
+    "ext/native.h": "31332a8816ac2966e69298ff51a8735c0e995ce63f1056bd172b766ad0d31f92",
+    "ext/php_asyncara.c": "08f9ce1f2b8bc24f6c75d06ef5bff2f94f65c3618de9eb616671df4abae15b76",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/postgresql.c": "4693dacf0ca759dc69812b23487823abbec38d621abcacdc3063270694b234b3",
+    "ext/server.h": "3770b2a38cb77845a6c4542092934ecc1a880314ee11e0149fc9a4ecc349fea6",
+    "ext/server_php.h": "2bc85425bb2fa6cad71b01effc591c947f4aaa7d0c22ad205647a503cad1353a",
+    "ext/workers.c": "71a48572091246a07a3fa56f25e3d27586c8520f3c9168e6ca93481e10ed5dad",
+    "src/Asyncara/App.php": "ac76efe46cdd3bd580624278e665517705123d13d23c49a8c92b1f2cfbbdce5a",
+    "src/Asyncara/Async.php": "6aef31a17e744b9ebb5d337b030ea19ff98f0932be82cb6a04ab52be7c821797",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "785f6ee3395beefcd6e75d7230f442eb4fdcd43ce17f4d53406031b3824259b8",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Semaphore.php": "c0430983dcc0891a22edeb45c7a618609148f73d01bcf5609b0fd2b76560c2d0",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Database/Database.php": "dfb3c4862bfea48558c1013473f79c7a026402dc925fb4bcbc512cf350e8275d",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Future.php": "9effeb81391634304ad8d6adf47a2e70299b11fa319d908312a733b389df7344",
+    "src/Asyncara/HTTP/BufferedRequest.php": "2cc04b1415cf698139a8b6edfbaefb2e37de31ac694ee3b6fd82598b3019fa0a",
+    "src/Asyncara/HTTP/HttpClient.php": "50f332dfd9388cd1b1fb7414ad3ce4a77fd2f2c43e6e960318b06cacde1307bc",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Response.php": "bcde814234d4222422e2b710ba9fe6ad815da027af4bc3fb2a75bb38681b8a65",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/File.php": "8bb76689242c3725719cfd04b377e16cb22c4f647d7a63811ff59e23bad9e5a9",
+    "src/Asyncara/IO/Files.php": "8e1217f97a14e2243922f9880bc556a245e1a760d3a60175e698805b4c27578a",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/TcpStream.php": "f84e528510d3c42600f763f2fdcf1d5eefceb4bf822d4d871e3491edf41d7390",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/MySQL/Connection.php": "9239bfd821b90045f4d5f9ce193c69b6c18daccc2f20b2952105a40f60f3ecd2",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/Pool/ConnectionPool.php": "1daed3f3fd359c2cb9fc3bfbbceed6eba2d70d81496f6726867e3a53cee934fb",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/PostgreSQL/Connection.php": "ad2b9bee18bbecc701adf753258ea12932a221978fd095e63c349cecc79c5b10",
+    "src/Asyncara/PostgreSQL/Statement.php": "153bf69d38cf6da5b72ca800f2fc04a0d6ee6e7cabb0cb7217230c0f87fa57d8",
+    "src/Asyncara/Redis/Connection.php": "8279ec69970c735f64712cf8fbaeafa19b50e9db0fc1265055cb1c950e23eb6d",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/SQLite/Connection.php": "a223f275e74f00fc1837ec94972c70a1869e59d2ef734f67f2a058d3e1e125f8",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Scheduler.php": "9916570ffa28578d2b77b44881fbe3dbd466e4ad123ef2dcfa196f94cc6ef8c0",
+    "src/Asyncara/Server/Inbox.php": "63374f8c892252298acc11d30ba47566a35095de8411e8049a63965e13c39e4a",
+    "src/Asyncara/Server/Request.php": "ea7bf47c5c9f9dc7e66dcba3c014d119b804e8081f20dc9faebc78ac501b1a67",
+    "src/Asyncara/Server/Response.php": "ef364528f45ff43ff06ffe88cc6d4b8ab5e274c732bb808d4d34410617eeff1f",
+    "src/Asyncara/Server/Route.php": "b0a35214f456bace5fece05b2cdfba3a80c3738585313bc2122e0d06d3d62b33",
+    "src/Asyncara/Server/Workers.php": "ae0f050c33cb7918c1e422a1cce4c05bfbc6894274f5b584f1a354de7b7773fd",
+    "src/Asyncara/Stream/AsyncStream.php": "348d72208df8c4071053a2d582344b2aef68c2416174dcfd0cfd2e91e6f0b111",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Task.php": "ab33113f1f598877f765256b0d0d2977c9cdca760f76535a475e2fd0ae773249",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara.php": "a5d1a7689b606a10395fd28d325ef2f492cbbe000e0cc9889bf19add9a1d95cc"
+  },
+  "binaries": {
+    "server-r3-84.so": "d8b6e522bf901eb4e44f8e91748e0cd6ddf627287ede90e5e81aab2d70e8bf67",
+    "server-r3-85.so": "0b4b43be8bbe02a742277a8e8e706065855b29df6a67258f2c4325dfa45bb423",
+    "server-r3-debug.so": "aa9cd6e0297c6427db3887bb3d4d04deadd9c79512efc55964bf980a4310f71b",
+    "server-r3-gcc.so": "266eadac4d3e6d8254fd38621b0e23675d31e12fb7ed504730b1df1df781b664",
+    "server-r3-83.so": "dc94297b7d7682793fb7528e2eccb27e947b79240bf179aad1c05c7fcee02bca"
+  },
+  "evidence": {
+    "matrix-r2/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/matrix-r2/report.json",
+      "sha256": "f28776d947c1d5b5c970ab128d210bf5902a696a10287749dc24075ee036e3c2"
+    },
+    "gate-a-final/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/gate-a-final/report.json",
+      "sha256": "76d637933d08fe85fde9a65c600ba4c252e107a6b4c62217797486f30dc72011"
+    },
+    "validation-final/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-final/report.json",
+      "sha256": "8e00d969e094f6b749484a5a616b9cf38ff16471acfdac4a747de17de863553d"
+    },
+    "validation-final-r2/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-final-r2/report.json",
+      "sha256": "409318a8fdaa227740fe688c1bfa3e977404e1d648063d46043864f7c7c57d3b"
+    },
+    "wait-errno-r3/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/wait-errno-r3/report.json",
+      "sha256": "3068304573e6b81ebd7a209128513c47b8e6f57938cfa3e7fcd0264cb2f5fa7e"
+    },
+    "rust-tests.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/rust-tests.log",
+      "sha256": "b7178a7dee4248dce98704f4e7b92742d99ca374b722a52711cf411f90283c05"
+    },
+    "composer-install-r3.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/composer-install-r3.log",
+      "sha256": "60a2d6f969cacb2a518648c5ac92d51e8467ecbeca9dd1617c6afe1b43d6733d"
+    },
+    "matrix-r3/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/matrix-r3/report.json",
+      "sha256": "ea7107995be1cfba543d1ba92e1fe4efd1b7e08b1872b79c6b2f502c00f56848"
+    },
+    "rust-tests-r2.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/rust-tests-r2.log",
+      "sha256": "03f9b086e507b1095166a8b0dc8454a1155533b0dcdb6dabf24a4eb08bd9a0f4"
+    },
+    "body-retention-before/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/body-retention-before/report.json",
+      "sha256": "97a8141173914489a0e5dd68278d2aab4831ee037d074d40b8fdedc6430e8025"
+    },
+    "body-retention-after/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/body-retention-after/report.json",
+      "sha256": "d15e6ccb93ba1f73186890a7ce6a590f97f2cd5439d9cecb0e74da6658d01aa3"
+    },
+    "host-before/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/host-before/report.json",
+      "sha256": "f7e8905be853d40178e57e320ebe9c773aeb8ee3aeadf2e39691624f2b696f2e"
+    },
+    "gate-a-r3/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/gate-a-r3/report.json",
+      "sha256": "422f50a85f38ca779ba42f8f3fb9ce86046102f4c19b25510d0c36f23ec1b94c"
+    },
+    "wait-errno-final/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/wait-errno-final/report.json",
+      "sha256": "3068304573e6b81ebd7a209128513c47b8e6f57938cfa3e7fcd0264cb2f5fa7e"
+    },
+    "validation-r3/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-r3/report.json",
+      "sha256": "c0d9e5c7cd0ffa366a100c96d981f8a4b93db1b429f52dd43f8fda0219c4dbe6"
+    },
+    "validation-r3/valgrind-rust.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-r3/valgrind-rust.log",
+      "sha256": "3718ce997579e340c7d488724a8c6f3f2f025eacb3a9912c685d659cb3f49ebc"
+    },
+    "validation-r3/valgrind-rust-control.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-r3/valgrind-rust-control.log",
+      "sha256": "164839cde8a95d1cf9868f0c1bd957d4a68746928a814b2a647305d2d3863b6f"
+    },
+    "validation-r3/valgrind-body-epoll/stderr.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-r3/valgrind-body-epoll/stderr.log",
+      "sha256": "4e4fe00f9458109fcd14c95779cba4af58234c4da13e53e13621ab586337bed4"
+    },
+    "validation-r3/valgrind-body-poll/stderr.log": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/validation-r3/valgrind-body-poll/stderr.log",
+      "sha256": "fe2986a8f72e4cf6beb94278966b5c66bd9fef44218b5d35cee45f8a3e352375"
+    },
+    "protocol-final/report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/protocol-final/report.json",
+      "sha256": "33308c537c0e3c2ebd5a6a742e78a26880f01044b4a4a3436f25975c980ab8a5"
+    },
+    "benchmark-r3-report.json": {
+      "path": "/home/coder/Asyncara-server-evidence-20261109T232945Z/benchmark-r3-report.json",
+      "sha256": "74eca2e3746d949674aaff24101b0434afaac51e73438768eb9379bbc287989f"
+    }
+  },
+  "results": {
+    "matrix-r2": "PASS: 5 builds + 20 API/protocol commands; PHP83/84/85, DEBUG, GCC ASan/UBSan; epoll/poll",
+    "gate-a": "PASS: 233.240066 seconds, 47 commands including expected negative controls",
+    "full-suites": {
+      "suite-epoll": {
+        "exit": 0,
+        "wallSeconds": 80.83999048615806
+      },
+      "suite-poll": {
+        "exit": 0,
+        "wallSeconds": 58.37890434684232
+      }
+    },
+    "allocation-audit": "PASS",
+    "workers": "PASS: four workers, fresh Context, normal and abnormal shutdown, own child reaping on epoll/poll",
+    "rust": "PASS: 6 tests including client regressions",
+    "debug-valgrind": "PASS scoped server API cycles: zero errors/definite/indirect/possible losses; reachable 4066 bytes",
+    "rust-valgrind": "PASS configured error gate: 0 errors/definite/indirect; 48 possibly lost, 548 reachable retained in report",
+    "matrix-r3": "PASS: five builds and thirty API/protocol/body-lifetime commands; PHP83/84/85/DEBUG/GCC, epoll/poll",
+    "rust-r2": "PASS: seven tests",
+    "body-lifetime": {
+      "beforeBytes": 4413344,
+      "afterBytes": 179936,
+      "connectionsKeptOpen": 9,
+      "bodyRequests": 8,
+      "bodyBytesEach": 524288
+    },
+    "gate-a-r3": "PASS: 333.776514305966 seconds, 47 commands",
+    "wait-errno-final": "PASS: vulnerable controls fail on epoll/poll, corrected implementation passes both",
+    "validation-r3": "PASS: Gate A, vulnerable/corrected native wait, worker normal/abnormal lifecycle, full PHP85 epoll/poll suites, live-body DEBUG Valgrind, Rust controls",
+    "valgrind-r3": "DEBUG live request bodies: zero errors, zero definite/indirect/possible loss;4066 reachable. Rust server unit tests and Host-parser-only control both have48 possibly lost/548 reachable from std::thread::current::init_current; neither has definite/indirect loss. No suppression.",
+    "protocol-final": "PASS: all10 PHP/backend combinations also verify the fiftieth keep-alive response closes the connection",
+    "benchmark": "42 response-validated runs; performance target NOT_MET; see server-benchmark.json"
+  },
+  "retainedFailures": {
+    "protocol-r1/r2": "oversized complete headers accepted; fixed explicit Hyper and application head bounds",
+    "workers-r1": "EINTR overwritten by post-wait accept errno; fixed native wait errno capture",
+    "wait-errno/r2": "early test did not wrap fortified __poll_chk; r3 fixes injection coverage",
+    "protocol-r7": "test expected wrong SQLite result structure; corrected fixture",
+    "validation-final": "worker oracle assumed stderr, but PHP fatal is stdout; full suites missing locked vendor dependency",
+    "composer-install/r2": "isolated interpreter needed explicit Phar and iconv extensions for Composer",
+    "body-retention-before": "first request captured by long-lived connection Closure; corrected in195f088",
+    "host-before": "generic Authority accepts userinfo in Host; narrowed in195f088"
+  },
+  "limitations": [
+    "No inference about historical Phase4 zero-tick cause",
+    "Known distribution-PHP and system-libcurl findings are separate and not erased",
+    "No full Rust compiler ASan instrumentation",
+    "No server TLS/HTTP2/HTTP3/streaming/upgrades",
+    "No long-duration server certification",
+    "Benchmark performance acceptance is separate"
+  ],
+  "previousNativeCheckpoint": "3a9a31d3d142d183ee9bf1cb400bf015597882d1",
+  "previousBinaries": {
+    "server-final-gcc.so": "6a3d80dd77103d5e332e8d56537da43b51065fdebe229e3eead38ae947a8c25a",
+    "server-final-85.so": "363ade1be347de6e82e3a423a7d5d9643373680bbe3cb98279dece24cb3e4846",
+    "server-final-debug.so": "dd4850dfa9f26d2bda6a9590af566a5e36ca3183bcb94aa0a79299f598ced98a",
+    "server-final-83.so": "21cf0bea98b77658b93308175ccd1e4874a31d865eae9005678370cb9c4fafc1",
+    "server-final-84.so": "09ee805b350f90626b73527e1a89487da132a9a2c416fa99ae045db7c85bd193"
+  }
+}
