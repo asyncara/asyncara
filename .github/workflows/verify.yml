@@ -130,6 +130,12 @@ jobs:
         run: |
           MARIADB_PREFIX="$PWD/build/tls-connector/install" ASYNCARA_OUTPUT=build/tls.so ./scripts/build-local.sh
       - run: ./scripts/ci-run.sh build/ci-step-27.log bash -c 'ASYNCARA_EXTENSION=build/tls.so ASYNCARA_TLS_ITERATIONS=100 python3 scripts/test-database-tls.py --output build/database-tls'
+      - name: MariaDB client certificates and encrypted keys
+        run: |
+          for backend in epoll poll; do
+            python3 tests/database/mtls_mysql.py --php "$(command -v php)" --module build/tls.so --backend "$backend" --out build/mysql-mtls/"$backend"
+            python3 tests/database/mtls_mysql.py --mismatch --php "$(command -v php)" --module build/tls.so --backend "$backend" --out build/mysql-mtls/"$backend-mismatch"
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -146,5 +152,7 @@ jobs:
             build/pg-prepared/**/*.log
             build/pg-mtls/**/*.json
             build/pg-mtls/**/*.log
+            build/mysql-mtls/**/report.json
+            build/mysql-mtls/**/*.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
