@@ -1,5 +1,18 @@
 # Current isolated HTTP development state
 
+## Hyper bounded gzip/deflate continuation (2026-11-10)
+
+Native checkpoint `23e652f` implements buffered gzip and RFC1950 deflate through
+zlib with Asyncara-tracked allocations and independent16MiB encoded/decoded
+limits. HTTP/1.1 and verified HTTPS, cancellation, malformed-input rejection,
+streaming preservation and two ticks before peer release pass the PHP83/84/85,
+DEBUG and GCC epoll/poll matrix. The full HTTP gate passes84 commands; Gate A
+passes183.667s and both full PHP85 suites pass. Short compressed-response FPM
+checks pass on both backends. [Exact scope](HYPER_COMPRESSION.md) records memory,
+negative controls and packaging separately. This does not certify broad proxies,
+HTTP/2/3, Brotli/zstd or historical zero-tick causes. EXPERIMENTAL is unchanged.
+
+
 ## Hyper bounded streaming continuation (2026-11-10)
 
 IMPLEMENTED_AND_TESTED for HTTP/1.1 response streams, fixed/chunked iterable

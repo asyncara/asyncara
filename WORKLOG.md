@@ -2636,3 +2636,8 @@ That launch remains preserved; corrected same-binary runs are separate.
 Hyper streaming independent package verification:260f67d,614 files,SHA256109e754410e3b85c89c48283507d7f73c001c9ecbb62926fae2f81baade9f692; fresh build +14 scoped checks PASS. Evidence docs/phase7/hyper-stream-package.json; original artifacts unchanged.
 
 Connection credential trace disclosure fixed at1b58ce9;11-case PHP83/84/85/DEBUG/GCC epoll/poll matrix, Gate A224.319s, full PHP85 epoll/poll and scoped DEBUG Valgrind PASS. Initial wrong native attribute offset and captured Closure disclosures retained in credential-matrix-r1. docs/phase7/credential-traces.json contains commands/hashes; no arbitrary payload-redaction guarantee.
+
+
+## Bounded Hyper decoding (2026-11-10)
+
+Native23e652f adds ledger-backed Hyper gzip/deflate with strict framing and16MiB input/output limits. Matrix45 PASS; scoped native/DEBUG Valgrind zero lost/error; phpize12 PASS; GateA47 PASS183.667s and fullPHP85 epoll/poll PASS. HTTP first run failed its historical unsupported-gzip assertion; preserved and corrected to exact bytes. HTTP84 successor, compressed four-worker FPM, server protocol/TLS and allocation controls PASS. See HYPER_COMPRESSION.md; independent packaging and remaining priority capabilities retain separate status.

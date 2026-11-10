@@ -315,3 +315,8 @@ Scoped DEBUG Valgrind ownership controls report zero errors/loss,5306bytes
 reachable. These results do not close broad protocol/proxy certification,
 historical memory findings, client mTLS, decompression, redirects or HTTP/2/3.
 Release remains EXPERIMENTAL; older rows retain their original source scope.
+
+
+## Bounded Hyper decoding (2026-11-10)
+
+Bounded Hyper gzip/deflate, credential-trace redaction and worker-fed Hyper streaming have source-backed tests. These additions do not close broad HTTP2/3/proxy certification, client mTLS, all database deployments, crash durability or historical memory/endurance findings. See [HYPER_COMPRESSION.md](HYPER_COMPRESSION.md). Release remains EXPERIMENTAL.

@@ -21,7 +21,8 @@ try{
   foreach($jobs as$j)check(strlen($j->await()->body)===65536,'Queued or partial response');
   check(asyncara_info()['hyperConnections']<=4,'Connection bound');
   $chunks=$c->get($url.'/chunks')->await();check(strlen($chunks->body)===67653&&$chunks->headers['trailer']===['value'],'Chunk/trailer parsing');
-  rejects(fn()=>$c->get($url.'/gzip')->await());
+  $decoded=$c->get($url.'/gzip')->await();
+  check($decoded->body===str_repeat(implode('',array_map('chr',range(0,255))),256),'Buffered gzip decoding');
   rejects(fn()=>$c->get($url.'/large')->await());
   rejects(fn()=>$c->get($url.'/broken')->await());
   rejects(fn()=>(new HttpClient(timeout:.02))->get($url.'/stall')->await());

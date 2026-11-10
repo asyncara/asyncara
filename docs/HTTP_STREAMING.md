@@ -328,3 +328,8 @@ FPM on both backends. Independent module SHA256
 `38f7bf28c5815381ac436e20599e7da80aaaa1dab5d367ccb55067d26cbee24f`.
 [Attestation](phase7/hyper-stream-package.json). No release publication or broad
 protocol/performance/endurance certification. Historical failures remain intact.
+
+
+## Bounded Hyper decoding (2026-11-10)
+
+Buffered Hyper responses now decode bounded gzip/deflate; ResponseStream still exposes encoded bytes if a peer ignores identity. Its64KiB slots/backpressure remain unchanged. See [HYPER_COMPRESSION.md](HYPER_COMPRESSION.md) for the separate buffered limit and executed regression matrix.

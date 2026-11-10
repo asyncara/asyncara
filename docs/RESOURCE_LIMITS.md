@@ -251,3 +251,8 @@ are separate layers, not a precise total-allocation ceiling. Native accounting
 does not include all Rust, PHP, TLS, allocator or kernel memory. Operation and
 connection limits remain required. No critical bytes are dropped on overflow;
 consumer close/owner cancellation explicitly terminates the transfer.
+
+
+## Bounded Hyper decoding (2026-11-10)
+
+The optional Hyper buffered decoder caps encoded input and decoded output independently at16MiB. zlib state/internal allocations use ar_calloc/ar_free and the aggregate native limit;32KiB output scratch is stack memory. Failed allocation rejects the operation and collects the owning job. Response streams retain64KiB raw-byte backpressure. [Executed expansion/allocation/cancellation controls](HYPER_COMPRESSION.md) establish this scope without accounting for all foreign libraries.

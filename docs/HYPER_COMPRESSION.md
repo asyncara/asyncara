@@ -1,7 +1,7 @@
 # Hyper buffered response decoding
 
-Current scope: IMPLEMENTED_BUT_NOT_FULLY_TESTED while the compatibility and
-memory campaign completes. Release remains EXPERIMENTAL.
+Current scope: IMPLEMENTED_AND_TESTED for the bounded buffered gzip/deflate
+behavior and configurations documented below. Release remains EXPERIMENTAL.
 
 The optional Hyper HTTP/1.1 client advertises `gzip, deflate` for buffered
 responses. gzip (including concatenated members) and RFC1950-wrapped deflate
@@ -58,3 +58,41 @@ deadlines, empty bodies, recovery, raw stream identity and final collection.
 
 These tests are not broad proxy/HTTP2/3 certification, a latency SLA, a historical
 zero-tick explanation or a universal memory-safety guarantee.
+
+## Executed evidence
+
+Native source `23e652f`; the following checks use that runtime. The later
+`tests/http/hyper.php` expectation update replaces obsolete gzip rejection with
+an exact decoded-byte comparison. Every unrelated rejection assertion remains.
+The initial HTTP gate FAIL remains preserved; its passing successor is distinct.
+
+Raw root: `/home/coder/Asyncara-priority-20261110T205459Z`.
+
+- `compression-matrix-r1/report.json`:45 build/test commands PASS,317.721s;
+  PHP8.3.36/8.4.27/8.5.12/DEBUG/GCC ASan+UBSan, epoll and poll.
+- `compression-memory-r1/report.json`: nine scoped native/PHP memory checks
+  PASS. Native codec peak tracked allocation40,152bytes. Unsuppressed DEBUG
+  Valgrind reports zero errors/definite/indirect/possible losses. Functional
+  controls retain5,306bytes/19blocks; capacity controls4,066bytes/14blocks.
+  Release Rust/AWS-LC is not compiler-instrumented by these GCC C/PHP builds.
+- `compression-phpize-r1/report.json`: isolated phpize/configure/make and scoped
+  server/client protocol/TLS/stream checks PASS,12commands. This build links
+  the existing Rust library; fresh Rust packaging is separate.
+- `compression-regressions-r1`: Gate A PASS47commands/183.667s; fullPHP85
+  epoll34.536s and poll36.593s PASS. HTTP stopped at the obsolete gzip rejection.
+- `compression-regressions-r2`: HTTP84checks PASS131.137s; server protocol/TLS,
+  allocation audit and compressed-response FPM PASS on both backends.
+  Each FPM run has20 sequential plus40 four-worker main responses (240 HTTP
+  operations). Minimum ticks:epoll28/22, poll24/23; idle workers6fds/1thread.
+  Raw request records, isolated FPM logs and fixture/module hashes are retained.
+  These are short functional controls, not endurance certification. The fatal
+  fixture leaves a request pending but does not prove the decoder was active
+  at the exact fatal instruction.
+
+The failure artifacts include the original unsupported-codec negative control,
+invalid checksum-oracle trial, post-start memory-reconfiguration test rejection
+and obsolete gzip-rejection assertion. None is overwritten or counted as PASS.
+Historical distribution-PHP/fatal-bailout, libpq and libcurl findings remain open
+in their original scope. This codec's scoped results do not erase those findings.
+
+Rust13units (zero ignored) and16 native FFI failure controls pass in `compression-extra-r1`; their fault-enabled library is isolated from the PHP module. C-only build and ordinary curl streaming pass on both backends. [Durable commands/fingerprints](phase7/hyper-compression.json) retain the failed first HTTP gate and its successful successor separately.

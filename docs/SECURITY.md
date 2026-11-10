@@ -327,3 +327,8 @@ Redaction is not memory erasure or protection against explicit application
 logging, inspecting SensitiveParameterValue, dumping captured objects, caller
 frames, SQL/Redis command payloads or messages received from external servers.
 Historical memory findings remain separate; no universal secret/memory guarantee.
+
+
+## Bounded Hyper decoding (2026-11-10)
+
+Hyper buffered gzip/deflate decoding uses zlib public APIs with all codec allocations charged to the native ledger. Encoded and decoded bodies are independently bounded to16MiB; malformed/checksum/truncation failures prevent connection reuse. Unsupported coding chains fail explicitly. CPU decoding occurs on the event-loop thread; Rust/TLS/kernel allocations remain outside this ledger. Scoped sanitizer/Valgrind results and historical failures are separated in [HYPER_COMPRESSION.md](HYPER_COMPRESSION.md).
