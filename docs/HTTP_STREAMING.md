@@ -210,6 +210,14 @@ are described in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and
 their curl multi and worker-backed disk paths. The prototype explicitly rejects
 these operations instead of claiming support or silently mixing pools.
 
+The later [Hyper buffered-request continuation](HYPER_REQUESTS.md) adds bounded
+methods, headers and bodies over HTTP/verified HTTPS. This is **buffered request
+input**, not the iterable/file upload API: requestStream, upload, multipart,
+getStream and download still use the curl backend and reject explicit Hyper
+selection. An early complete response does not release a keep-alive upload until
+its local transport flush; a closing response discards unsent data. Existing
+default curl streaming and worker-backed disk behavior is preserved.
+
 
 ## Buffer-capacity accounting correction
 

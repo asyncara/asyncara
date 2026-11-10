@@ -168,3 +168,34 @@ python3 benchmarks/http/nginx.py \
 
 Preserve all output, including slower samples and failures. A new run gets its
 own source/binary identities; it must not overwrite these observations.
+
+## Buffered-request continuation screen (2026-11-10)
+
+This separate three-sample screen uses the final request-lifecycle module
+`d2b69ffa46c9528d7babe219cbb752f9838ef67be60df8a4516d653ec3f16fe6`.
+The historical five-sample table above is unchanged. All30 samples pass full
+status/body/cleanup checks; performance acceptance is **NOT_MET**.
+
+| Client | 1KiB median req/s | 1KiB minimum | 64KiB median req/s | 64KiB minimum |
+|---|---:|---:|---:|---:|
+| Asyncara By C | 3,885.38 | 3,722.47 | 2,663.12 | 2,233.83 |
+| Asyncara By Rust | 4,763.23 | 4,745.46 | 3,060.37 | 2,516.72 |
+| PHP multi curl | 5,943.08 | 4,758.08 | 3,046.55 | 2,895.54 |
+| Swoole | 6,175.26 | 4,443.06 | 3,330.77 | 3,271.52 |
+| Earlier Hyper native module | 5,824.49 | 5,543.07 | 2,563.48 | 2,020.20 |
+
+Same PHP8.5.12/JIT, matching reference modules,32rolling connections, four nginx
+workers,8000responses/sample plus320warmups. Total240000measured responses and
+9600warmups. HTTP/1.1 plaintext GET only; new upload/TLS throughput is not measured.
+Old/new modules use the same current PHP wrapper; this is a native comparison,
+not a rerun of the old source archive. Earlier module source8e67aeb and SHA256
+`bf69457299d10a86932d5e3aea6f0740c1cba19b356aaeec1c968be01bfef209`.
+The current GET median decreased for1KiB and increased for64KiB versus that
+control. These three variable samples do not isolate causality or establish a
+general speed improvement. Unrelated host services remained untouched.
+
+Raw reports: `/home/coder/Asyncara-hyper-requests-20261110T042002Z/comparison-r1/report.json`.
+SHA256: `d1172de9d3e06f9277030a00834e305042490716244a73ae736967fcf81627ef`.
+Exact commands, module/source manifests and all samples are preserved in
+[request attestation](phase7/hyper-requests.json). No throughput floor,4x/3x
+claim, release promotion or server-throughput conclusion is supported.

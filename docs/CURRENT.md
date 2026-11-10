@@ -1,6 +1,20 @@
 # Current isolated HTTP development state
 
-## Hyper HTTPS and bounded TLS input continuation (2026-11-10)
+## Hyper buffered request continuation (2026-11-10)
+
+The isolated server branch now implements bounded HTTP(S) request methods,
+ordinary headers, JSON/form and binary bodies through the existing HttpClient
+API. Closing responses dispose unfinished uploads; keep-alive completion retains
+upload ownership until the local transport flush. Shared-waiter cancellation is
+distinct from owner cancellation. [HYPER_REQUESTS.md](HYPER_REQUESTS.md) records
+the reproduced defects, corrections, preserved failures and validation scope.
+Final functional/lifecycle validation passes on both backends, including the
+95-command compatibility matrix, HTTP74, short real FPM POST checks and scoped
+DEBUG Valgrind. The compilation-watchdog failure remains recorded separately;
+independent packaging and performance have separate identities.
+This does not complete all project PARTIALLY_IMPLEMENTED entries.
+
+## Previous Hyper HTTPS and bounded TLS input checkpoint (2026-11-10)
 
 The current optional Hyper client adds verified TLS1.2/1.3 buffered GET, DNS/IP
 certificate checks, bounded trust snapshots, pool trust isolation and handshake

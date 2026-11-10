@@ -2,11 +2,21 @@
 
 ## Current completion work (2026-11-10)
 
-HTTPS/mTLS and bounded response streaming are implemented and tested on the
-existing server branch, including scoped memory checks with the AWS-LC provider.
-[Current inventory and validation](COMPLETION_STATUS.md) separates active gaps
-from historical PARTIALLY_IMPLEMENTED records. The preceding server-r1 archive
-is unchanged; its results do not certify new code. Release remains EXPERIMENTAL.
+Server HTTPS/mTLS, bounded input/output streaming and the optional Hyper client's
+verified HTTPS plus bounded methods/headers/bodies are implemented and tested in
+their documented scopes. The request continuation passes95 matrix commands,
+Gate A252.652s, full PHP85 epoll/poll suites,74 HTTP checks and short four-worker
+POST lifecycle controls. Unsuppressed DEBUG Valgrind reports zero errors/loss
+with5306bytes reachable. Separate C-only build/HTTP checks pass. The old aggregate
+integration failure (a compile watchdog) remains preserved beside the successful
+separate compilation and runtime checks. See [request evidence](HYPER_REQUESTS.md)
+and [current inventory](COMPLETION_STATUS.md).
+
+These are functional and scoped memory results, not universal performance,
+endurance or foreign-allocation certification. Independent package identities
+are recorded separately. Historical archives and failure reports are unchanged.
+Hyper still lacks streaming, decompression, redirects/proxies, client mTLS and
+HTTP/2/3. Release remains EXPERIMENTAL.
 
 The dated checkpoints below retain their original source scope.
 

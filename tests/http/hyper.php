@@ -29,9 +29,11 @@ try{
   try{$p->await();throw new RuntimeException('Cancel not delivered');}catch(CancelledException){}
   rejects(fn()=>$c->get('http://localhost:1/')->await());
   rejects(fn()=>$c->get('https://127.0.0.1:1/')->await());
-  rejects(fn()=>$c->get($url.'/small',['X-Test: value'])->await());
+  check($c->get($url.'/echo-headers',['X-Marker: value'])->await()->json()['marker']==='value','Custom header');
+  rejects(fn()=>$c->get($url.'/small',['Host: attacker.invalid'])->await());
   rejects(fn()=>$c->get($url.'/small',followRedirects:true)->await());
-  rejects(fn()=>$c->post($url.'/small','body')->await());
+  $post=$c->post($url.'/small',body:'body')->await()->json();
+  check($post['method']==='POST'&&$post['bytes']===4&&$post['sha256']===hash('sha256','body'),'Buffered POST');
   rejects(fn()=>(new HttpClient(proxy:'http://127.0.0.1:1'))->get($url)->await());
   check($c->get($url.'/empty')->await()->status===204,'Recovery after failures');
  });

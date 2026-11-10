@@ -19,7 +19,15 @@ void __wrap_ar_hyper_free(void *ptr) { if (ptr) frees++; __real_ar_hyper_free(pt
 static ar_job *submit(ar_engine *e, const char *url) {
     ar_job *j = ar_job_new(e, OP_HTTP); assert(j);
     j->a = ar_strdup(e, url); j->length = 3000; assert(j->a);
-    assert(!ar_submit(e, j)); return j;
+    ar_value method = {.type = V_STRING, .string = "POST", .length = 4};
+    ar_value *items[] = {&method}; char *keys[] = {"method"};
+    ar_value options = {.type = V_ARRAY, .count = 1, .items = items, .keys = keys};
+    if (!(j->id & 1)) {
+        j->b = ar_strdup(e, "owned request body"); assert(j->b);
+        j->b_len = strlen(j->b); j->params = &options;
+    }
+    /* Same synchronous borrowed option view as the PHP submission boundary. */
+    assert(!ar_submit(e, j)); j->params = NULL; return j;
 }
 int main(int argc, char **argv) {
     assert(argc == 3);

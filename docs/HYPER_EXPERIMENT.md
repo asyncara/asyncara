@@ -19,12 +19,13 @@ wait; it does not start a Tokio executor or native network worker. Rust never
 calls Zend. Existing public HttpClient/Future APIs and cancellation ownership
 remain in place. No change to optional PHP hooks is involved.
 
-## Current verified TLS continuation
+## Current verified TLS and buffered-request continuation
 
-The active continuation adds verified HTTP/1.1 HTTPS GET using the existing
-rustls/AWS-LC transport and reactor. Compatibility/memory validation is in
-progress; see HYPER_TLS.md. The plaintext-only text below describes the earlier
-922a024 checkpoint, not a claim that default curl lacks TLS.
+Verified HTTP/1.1 HTTPS uses the existing rustls/AWS-LC transport and reactor;
+see HYPER_TLS.md for the completed scope. The subsequent bounded method/header/
+body implementation and its final validation are in HYPER_REQUESTS.md. The
+plaintext-only text below describes the earlier922a024 checkpoint, not current
+feature parity or a claim that default curl lacks TLS.
 
 ## Historical 922a024 scope
 

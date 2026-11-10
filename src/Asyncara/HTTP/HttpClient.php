@@ -202,7 +202,7 @@ final class HttpClient
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options, $host): Response {
             $tls = parse_url($url, PHP_URL_SCHEME) === 'https';
             $numeric = inet_pton(trim($host, '[]')) !== false;
-            if ($body !== null || $options['method'] !== 'GET' || $options['headers'] || $options['followRedirects'] ||
+            if ($options['followRedirects'] ||
                 isset($options['proxy']) || (!$tls && isset($options['caFile'])) ||
                 parse_url($url, PHP_URL_USER) !== null || (!$numeric &&
                 (strlen($host) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $host)))) {

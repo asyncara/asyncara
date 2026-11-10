@@ -1,6 +1,17 @@
 # Implementation status
 
-## Hyper HTTPS and bounded TLS input continuation (2026-11-10)
+## Hyper buffered request continuation (2026-11-10)
+
+Bounded methods, ordinary headers, JSON/form/binary bodies and post-response
+upload ownership are implemented. The final matrix passes95 commands across
+PHP83/84/85, DEBUG and GCC ASan/UBSan on epoll/poll. Affected integration and
+memory checks now pass in their stated scope: IMPLEMENTED_AND_TESTED for these
+bounded requests. Independent packaging is separate. [HYPER_REQUESTS.md](HYPER_REQUESTS.md)
+records failing-before controls, corrections and retained failures. Hyper remains
+partial for decompression, proxies/redirects, streaming and HTTP/2/3. Existing
+curl and all historical checkpoint labels keep their original scope.
+
+## Previous Hyper HTTPS and bounded TLS input checkpoint (2026-11-10)
 
 The current optional Hyper client adds verified TLS1.2/1.3 buffered GET, DNS/IP
 certificate checks, bounded trust snapshots, pool trust isolation and handshake

@@ -25,9 +25,10 @@ jobs:
       - name: Prepare disposable runner dependencies
         env:
           PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
+          FPM_PACKAGE: php${{ matrix.php }}-fpm
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 cmake
+          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 cmake "$FPM_PACKAGE"
           ./scripts/bootstrap-local.sh
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
           rustc --version
@@ -47,8 +48,17 @@ jobs:
           for backend in epoll poll; do
             python3 tests/http/hyper_tls.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-client-tls/"$backend"
             python3 tests/http/hyper_tls_memory.py --php php --module build/hyper.so --backend "$backend" --certs build/hyper-client-tls/"$backend"/certs --out build/hyper-client-tls/"$backend-lifetime"
+            python3 tests/http/hyper_requests.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-requests/"$backend"
           done
           ASYNCARA_TLS_TEST_CERT_DIR="$PWD/build/hyper-client-tls/epoll/certs" CARGO_TARGET_DIR="$PWD/build/hyper-production" cargo test --release --locked --manifest-path ext/hyper/Cargo.toml --lib tls_uses_only_the_canonical_driver_waker -- --ignored
+          ASYNCARA_TLS_TEST_CERT_DIR="$PWD/build/hyper-client-tls/epoll/certs" CARGO_TARGET_DIR="$PWD/build/hyper-production" cargo test --release --locked --manifest-path ext/hyper/Cargo.toml --lib established_tls_reads_while_application_writes_are_blocked -- --ignored
+      - name: Buffered POST ownership across real FPM requests
+        env:
+          FPM_BIN: php-fpm${{ matrix.php }}
+        run: |
+          for backend in epoll poll; do
+            python3 tests/http/hyper_fpm.py --requests --backend "$backend" --extension build/hyper.so --output build/hyper-fpm/"$backend"
+          done
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
           for backend in epoll poll; do
@@ -76,3 +86,7 @@ jobs:
             build/hyper-client-tls/**/*.log
             build/hyper-server/**/*.json
             build/hyper-server/**/*.log
+            build/hyper-requests/**/*.json
+            build/hyper-requests/**/*.log
+            build/hyper-fpm/**/*.json
+            build/hyper-fpm/**/*.log

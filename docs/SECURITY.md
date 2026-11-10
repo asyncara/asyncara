@@ -243,8 +243,8 @@ Server response streaming enforces64KiB chunks, total responseBytes, and native
 payload admission. Hyper/TLS/kernel/PHP memory is additional. A failed producer
 after headers aborts the connection; application effects are not rolled back.
 Do not assume a yielded chunk has reached the remote application. Arbitrary PHP
-producer code can block a worker. Streaming inputs remain unavailable, so request
-bodies continue to use the existing bodyBytes bound. Historical memory findings
+producer code can block a worker. Opt-in streaming inputs are handler-owned and
+half-duplex; bodyBytes still bounds the total input. Historical memory findings
 and endurance failures are unchanged. See SERVER.md and COMPLETION_STATUS.md.
 
 The native server key parameter is marked SensitiveParameter during MINIT,
@@ -270,3 +270,12 @@ retain their trust snapshot; create a new client to load changed roots, subject
 to the request-local 16-policy bound. This is not automatic certificate rotation
 or revocation checking. Proxy environments are explicitly rejected by Hyper.
 See [HYPER_TLS.md](HYPER_TLS.md) for the tested scope and allocator limitations.
+
+The subsequent buffered-request adapter validates and copies method/header/body
+views before returning across FFI. Caller-owned HTTP framing and proxy headers,
+CONNECT/TRACE and nonempty HEAD bodies are rejected. Upload completion, peer
+rejection and cancellation have distinct ownership paths; local flush is not
+remote application acknowledgement. An early final response cannot erase the
+native accounting of a still-buffered keep-alive upload. The extra Rust body
+copy and foreign library allocations are outside complete C-ledger accounting.
+See HYPER_REQUESTS.md for proven defects, corrections and scoped validation.

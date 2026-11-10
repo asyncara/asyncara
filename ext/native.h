@@ -205,6 +205,14 @@ int ar_hyper_submit(void *engine, void *job, const unsigned char *url, size_t le
                     const ar_hyper_address *addresses, size_t count);
 int ar_hyper_submit_request(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
                             const ar_hyper_address *, size_t, const unsigned char *, size_t);
+typedef struct {
+    const unsigned char *method; size_t method_len;
+    const unsigned char *body; size_t body_len;
+    const ar_hyper_address *headers; size_t header_count;
+} ar_hyper_request;
+int ar_hyper_submit_http(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
+                        const ar_hyper_address *, size_t, const unsigned char *, size_t,
+                        const ar_hyper_request *);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);
 int ar_hyper_timeout(void *engine);

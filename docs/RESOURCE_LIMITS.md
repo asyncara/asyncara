@@ -217,3 +217,14 @@ adapter uses a 16 KiB initialized scratch buffer with at most 16 read iterations
 per call. Caller read capacity still limits returned plaintext. No full-memory
 accounting claim follows from these bounds. See [Hyper TLS](HYPER_TLS.md) and
 `tests/http/hyper_tls_bounds.php` for rejection/recovery controls.
+
+## Hyper buffered request bounds
+
+Request bodies are limited to16MiB, header lines to256 entries/64KiB combined,
+and methods to1..32 uppercase ASCII letters. Invalid framing, unsupported
+CONNECT/TRACE and nonempty HEAD bodies are rejected before connection admission.
+There is an additional owned Rust body copy outside the existing C memory
+ledger; this is not zero-copy or a complete process-memory ceiling. Connection
+admission and per-operation bounds remain necessary. Early keep-alive responses
+retain the C body's accounting until local upload flush or connection disposal;
+timeouts/cancellation still terminate that ownership. See HYPER_REQUESTS.md.

@@ -243,3 +243,17 @@ closure. External PHP references to already-delivered chunks remain caller-owned
 
 The trust cache is request-local, not per HttpClient, and a new HttpClient alone
 does not reset native pool state. See [TLS evidence and memory scope](HYPER_TLS.md).
+
+## Hyper buffered request continuation
+
+| Resource | Owner/sharing | Cancellation/release | Evidence and limits |
+|---|---|---|---|
+| Borrowed C request descriptor | C submission stack; never retained | synchronous Rust validation/copy | request-copy unit plus native FFI fault tests;16MiB body/64KiB headers |
+| RequestSpec body/headers | Rust operation, then Hyper request driver | owner cancellation/engine drop; shared immutable Bytes do not duplicate descriptor ownership | 8MiB real HTTP/TLS barriers; Rust copy outside C ledger |
+| Post-response upload | native Op plus canonical Conn; no additional socket poller | retained until successful local transport flush or closure; ordinary deadline/cancellation still apply | early keep-alive response must not release C accounting; two pending ticks |
+| Completed Hyper Driver | canonical Conn | drop immediately on Ready, releasing dispatch Receiver and notifying Sender waiter | real-kernel EOF unit fails before correction; original geometry regression preserved |
+
+This slice keeps waiter authority separate from operation ownership. The fixed
+window peer and the independent Python-only reproduction distinguish a fixture
+TCP stall from runtime ownership defects. No universal lifecycle guarantee or
+historical zero-tick attribution follows from these tests. See HYPER_REQUESTS.md.

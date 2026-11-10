@@ -9,6 +9,11 @@ buffered GET through the existing HttpClient API. Default curl remains unchanged
 This does not add general methods, custom headers, decompression, redirects,
 proxies, uploads, response streaming, HTTP/2 or HTTP/3 to Hyper.
 
+This document records the TLS checkpoint. The subsequent bounded methods,
+ordinary headers and request bodies are described in [HYPER_REQUESTS.md](HYPER_REQUESTS.md),
+with their own source, failure and validation identities. They do not add the
+iterable/file streaming APIs or the other unsupported protocols above.
+
 ## Usage
 
 Select the optional backend before request initialization with

@@ -5,6 +5,8 @@
 compile_error!("The Asyncara Hyper prototype currently supports Linux only");
 use http_body_util::{BodyExt, Full};
 use hyper::{body::Bytes, Request, Uri};
+mod request;
+use request::{RequestData, RequestSpec};
 mod server;
 mod tls;
 use std::{
@@ -59,7 +61,7 @@ type Setup = Pin<
         >,
     >,
 >;
-type Transfer = Pin<Box<dyn Future<Output = (Sender, Result<(), String>)>>>;
+type Transfer = Pin<Box<dyn Future<Output = (Sender, bool, Result<(), String>)>>>;
 extern "C" {
     fn ar_hyper_head(job: *mut c_void, status: i32, p: *const u8, n: usize) -> i32;
     fn ar_hyper_chunk(job: *mut c_void, p: *const u8, n: usize) -> i32;
@@ -218,9 +220,13 @@ struct TlsSettings {
     config: Arc<rustls::ClientConfig>,
     name: rustls::pki_types::ServerName<'static>,
 }
-enum ClientTransport {
+enum ClientIo {
     Plain(Io),
     Tls(Box<tls::TlsIo>),
+}
+struct ClientTransport {
+    io: ClientIo,
+    pending_write: Rc<Cell<bool>>,
 }
 impl hyper::rt::Read for ClientTransport {
     fn poll_read(
@@ -228,9 +234,9 @@ impl hyper::rt::Read for ClientTransport {
         cx: &mut Context<'_>,
         buf: hyper::rt::ReadBufCursor<'_>,
     ) -> Poll<io::Result<()>> {
-        match self.get_mut() {
-            Self::Plain(io) => Pin::new(io).poll_read(cx, buf),
-            Self::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
+        match &mut self.get_mut().io {
+            ClientIo::Plain(io) => Pin::new(io).poll_read(cx, buf),
+            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
         }
     }
 }
@@ -240,21 +246,30 @@ impl hyper::rt::Write for ClientTransport {
         cx: &mut Context<'_>,
         data: &[u8],
     ) -> Poll<io::Result<usize>> {
-        match self.get_mut() {
-            Self::Plain(io) => Pin::new(io).poll_write(cx, data),
-            Self::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, data),
+        let this = self.get_mut();
+        if !data.is_empty() {
+            this.pending_write.set(true);
+        }
+        match &mut this.io {
+            ClientIo::Plain(io) => Pin::new(io).poll_write(cx, data),
+            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, data),
         }
     }
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match self.get_mut() {
-            Self::Plain(io) => Pin::new(io).poll_flush(cx),
-            Self::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
+        let this = self.get_mut();
+        let result = match &mut this.io {
+            ClientIo::Plain(io) => Pin::new(io).poll_flush(cx),
+            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
+        };
+        if matches!(result, Poll::Ready(Ok(()))) {
+            this.pending_write.set(false);
         }
+        result
     }
     fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match self.get_mut() {
-            Self::Plain(io) => Pin::new(io).poll_shutdown(cx),
-            Self::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
+        match &mut self.get_mut().io {
+            ClientIo::Plain(io) => Pin::new(io).poll_shutdown(cx),
+            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
         }
     }
 }
@@ -262,6 +277,7 @@ struct Conn {
     addr: SocketAddr,
     origin: Origin,
     io: Io,
+    pending_write: Rc<Cell<bool>>,
     connecting: bool,
     transport: Option<ClientTransport>,
     tls_pending: Option<Rc<Cell<bool>>>,
@@ -356,7 +372,7 @@ impl Conn {
             Some(settings) => {
                 let ready = Rc::new(Cell::new(false));
                 (
-                    ClientTransport::Tls(Box::new(tls::TlsIo::client(
+                    ClientIo::Tls(Box::new(tls::TlsIo::client(
                         io.clone(),
                         settings.config,
                         settings.name,
@@ -366,10 +382,15 @@ impl Conn {
                     settings.id,
                 )
             }
-            None => (ClientTransport::Plain(io.clone()), None, 0),
+            None => (ClientIo::Plain(io.clone()), None, 0),
         };
+        let pending_write = Rc::new(Cell::new(false));
         Ok(Self {
-            transport: Some(transport),
+            transport: Some(ClientTransport {
+                io: transport,
+                pending_write: pending_write.clone(),
+            }),
+            pending_write,
             tls_pending,
             trust_id,
             addr,
@@ -429,12 +450,18 @@ impl Conn {
         }
         if let Some(driver) = &mut self.driver {
             if driver.as_mut().poll(&mut cx).is_ready() {
-                self.closed = true
+                self.closed = true;
+                // Completion does not drop Hyper's dispatch receiver. Release
+                // it now so a response owner waiting for Sender::ready is
+                // notified of EOF instead of waiting until its request deadline.
+                self.driver = None;
             }
         }
     }
 }
 struct Op {
+    response_complete: bool,
+    request: Option<RequestSpec>,
     tls: Option<TlsSettings>,
     job: usize,
     uri: Uri,
@@ -456,18 +483,40 @@ struct Engine {
     total: usize,
     host: usize,
 }
-async fn transfer(mut sender: Sender, uri: Uri, job: usize) -> (Sender, Result<(), String>) {
+async fn transfer(
+    mut sender: Sender,
+    uri: Uri,
+    job: usize,
+    spec: RequestSpec,
+) -> (Sender, bool, Result<(), String>) {
+    let mut reusable = false;
     let outcome = async {
-        let request = Request::builder()
+        let mut request = Request::builder()
+            .method(spec.method)
             .uri(uri.path_and_query().map(|p| p.as_str()).unwrap_or("/"))
             .header("Host", uri.authority().ok_or("Missing authority")?.as_str())
             .header("Accept-Encoding", "identity")
-            .body(Full::new(Bytes::new()))
+            .body(Full::new(spec.body))
             .map_err(|_| "Invalid request")?;
+        request.headers_mut().extend(spec.headers);
         let response = sender
             .send_request(request)
             .await
             .map_err(|_| "Hyper request failed")?;
+        // A final response may arrive while its request body is still being
+        // written. Do not return an explicitly closing transport to the pool
+        // or retain the remaining upload waiting for a peer that rejected it.
+        reusable = response.version() == hyper::Version::HTTP_11
+            && !response
+                .headers()
+                .get_all("connection")
+                .iter()
+                .any(|value| {
+                    value
+                        .as_bytes()
+                        .split(|b| *b == b',')
+                        .any(|token| token.trim_ascii().eq_ignore_ascii_case(b"close"))
+                });
         if response
             .headers()
             .get_all("content-encoding")
@@ -526,10 +575,17 @@ async fn transfer(mut sender: Sender, uri: Uri, job: usize) -> (Sender, Result<(
                 }
             }
         }
+        // A keep-alive peer can send its final response before the upload is
+        // flushed. Keep this operation (and its C buffer accounting) alive
+        // until Hyper is ready for another request. Closing responses instead
+        // drop the connection and cancel the remaining upload at collection.
+        if reusable {
+            reusable = sender.ready().await.is_ok();
+        }
         Ok(())
     }
     .await;
-    (sender, outcome)
+    (sender, reusable, outcome)
 }
 impl Engine {
     // Retry only before a request future is created, so no bytes are replayed.
@@ -598,6 +654,7 @@ impl Engine {
                     c.as_ref().is_some_and(|c| {
                         !c.busy
                             && !c.closed
+                            && c.sender.as_ref().is_some_and(Sender::is_ready)
                             && &c.origin == origin
                             && c.trust_id == self.ops[i].tls.as_ref().map_or(0, |t| t.id)
                             && self.ops[i].addresses.as_slice().contains(&c.addr)
@@ -668,6 +725,16 @@ impl Engine {
                     i += 1;
                     continue;
                 };
+                if self.ops[i].response_complete {
+                    let conn = self.conns[at].as_ref().unwrap();
+                    if conn.closed || !conn.pending_write.get() {
+                        self.finish(i, None);
+                        progress = true;
+                    } else {
+                        i += 1;
+                    }
+                    continue;
+                }
                 if self.ops[i].future.is_none() {
                     let conn = self.conns[at].as_mut().unwrap();
                     if conn.closed {
@@ -681,7 +748,12 @@ impl Engine {
                     }
                     if let Some(sender) = conn.sender.take() {
                         let op = &mut self.ops[i];
-                        op.future = Some(Box::pin(transfer(sender, op.uri.clone(), op.job)));
+                        op.future = Some(Box::pin(transfer(
+                            sender,
+                            op.uri.clone(),
+                            op.job,
+                            op.request.take().expect("one request owner"),
+                        )));
                         op.wake.set();
                         progress = true
                     }
@@ -694,9 +766,26 @@ impl Engine {
                         let result = f.as_mut().poll(&mut cx);
                         progress = true;
                         budget -= 1;
-                        if let Poll::Ready((sender, result)) = result {
+                        if let Poll::Ready((sender, reusable, result)) = result {
                             if let Some(conn) = &mut self.conns[at] {
-                                conn.sender = Some(sender)
+                                conn.sender = Some(sender);
+                                conn.closed |= !reusable;
+                            }
+                            // Sender readiness permits dispatch, not necessarily
+                            // a completed wire flush. Retain the job/accounting
+                            // until Hyper's flush reaches the actual transport.
+                            if result.is_ok()
+                                && self.conns[at]
+                                    .as_ref()
+                                    .is_some_and(|c| !c.closed && c.pending_write.get())
+                            {
+                                op.response_complete = true;
+                                op.future = None;
+                                if budget == 0 {
+                                    return 1;
+                                }
+                                i += 1;
+                                continue;
                             }
                             self.finish(i, result.as_ref().err().map(String::as_str));
                             if budget == 0 {
@@ -808,6 +897,7 @@ pub unsafe extern "C" fn ar_hyper_submit(
         std::ptr::null(),
         0,
         false,
+        std::ptr::null(),
     )
 }
 #[no_mangle]
@@ -824,7 +914,36 @@ pub unsafe extern "C" fn ar_hyper_submit_request(
     ca_len: usize,
 ) -> i32 {
     submit(
-        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true,
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        true,
+        std::ptr::null(),
+    )
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_http(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    request: *const RequestData,
+) -> i32 {
+    submit(
+        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true, request,
     )
 }
 unsafe fn submit(
@@ -839,6 +958,7 @@ unsafe fn submit(
     ca: *const u8,
     ca_len: usize,
     allow_tls: bool,
+    request: *const RequestData,
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
@@ -860,6 +980,9 @@ unsafe fn submit(
         if engine.ops.len() >= 1024 {
             return -1;
         }
+        let Ok(request) = RequestSpec::copy(request) else {
+            return -1;
+        };
         let Ok(text) = std::str::from_utf8(std::slice::from_raw_parts(url, len)) else {
             return -1;
         };
@@ -968,6 +1091,8 @@ unsafe fn submit(
             None
         };
         engine.ops.push(Op {
+            response_complete: false,
+            request: Some(request),
             tls,
             job: job as usize,
             uri,

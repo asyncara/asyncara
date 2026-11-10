@@ -458,3 +458,21 @@ policies is a hard admission bound, not unlimited certificate rotation.
 `tests/http/hyper_tls.php` independently holds body/handshake completion until
 two timer ticks, tests cancellation/recovery and verifies trust isolation.
 See [trust limits and unsupported features](HYPER_TLS.md).
+
+## Hyper buffered request and flush ownership
+
+The method/header/body view passed by C is borrowed only during synchronous
+submission. Rust validates and copies it before returning. The C job and its
+native-memory charge remain alive through the response and any still-pending
+keep-alive upload flush. A complete final response is not proof that the request
+body left local buffers. Sender channel readiness is also not a wire-flush
+guarantee. The transport flush marker supplies that distinction; it does not
+acknowledge remote application consumption.
+
+An explicitly closing response cancels the remaining upload by dropping its
+connection. A completed driver is dropped immediately to release Hyper's
+dispatch receiver and notify pending sender waiters. No body replay or automatic
+retry is introduced. Owner cancellation and deadlines remain active during the
+post-response flush state; an unrelated waiter's cancellation does not acquire
+that authority. Request teardown drops all request-local engine/pool owners.
+See [reproductions and scoped tests](HYPER_REQUESTS.md).

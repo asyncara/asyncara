@@ -2465,3 +2465,46 @@ SHA2565592b3e7b37cbcb0aae6373710489d0b743e91457eee324ecaa01f35c05594f5. Fresh ex
 passes21 independent client/server checks on both readiness backends. Source
 archive is byte-reproducible. Phase4 and earlier packages/LICENSE unchanged.
 This follow-up records packaging only; broader partial capabilities remain open.
+# Buffered Hyper request continuation (validation in progress)
+
+Base26196e4, isolated phase7 worktree. Added bounded request methods/headers/body
+copies through the native bridge. A GET-only negative control rejects the new
+POST workload as expected. Subsequent validation exposed early-response pool
+reuse, established TLS read/write coupling, and premature upload-owner release.
+The failures and attempted corrections remain under
+`/home/coder/Asyncara-hyper-requests-20261110T042002Z`; see
+[exact scope and commands](docs/HYPER_REQUESTS.md). The real-kernel TLS regression
+fails before the handshake latch and passes afterward. The final transport-flush
+ownership correction passes 60-request focused validation and six repetitions.
+Final matrix-r3 passes 95/95 commands; remaining gates are in progress; no completed-package or universal-memory claim.
+Phase4 checkout/module, LICENSE and previous archives remain untouched.
+
+Final request validation first exposed an independent fixture fault: shrinking
+TCP receive windows after bytes were in flight caused30s upload stalls. A native
+deadline snapshot retains registered canonical wakers and shows real kernel
+backpressure; a Python/OpenSSL-only client reproduces write/read timeouts without
+Asyncara. Set held-listener windows before SYN instead. Original8MiB payload,
+two ticks, deadlines and cleanup assertions unchanged. Python control12PASS;
+fixed-window request matrix30PASS including20DEBUG repetitions. Old failures kept.
+
+The broader HTTP gate then exposed an EOF regression introduced by the new
+Sender.ready wait: a completed Hyper Driver retained its dispatch Receiver.
+Independent real-kernel unit FAIL3.01s before, PASS0.01s after immediate driver
+drop in Conn::poll. Existing transfer_geometry now passes both backends. The new
+matrix-r4 passes95/95 with identical recorded native/API/test files. Full affected
+regressions, FPM, fault injection and memory are being revalidated on this module;
+the previous matrix-r3/gates are not substituted for final-source results.
+
+### Buffered Hyper final component review
+
+Final native matrix95PASS; regressions17PASS including GateA252.651866s and
+full85epoll/poll. HTTP74PASS; independent short FPM review120main responses/
+480POST operations, original barrier/two-tick assertions, idle6fds/1thread.
+DEBUG Valgrind epoll/poll full62-request fixture: zeroerrors/loss,5306reachable.
+Fresh FFI20commandsPASS after separating compile600s/runtime180s budgets; old
+180s compilation failure retained. C-only six checksPASS after correcting the
+caller's relative output path; original failed loader check retained.
+Matched three-sample comparison30samples/240000responses functionalPASS, speed
+NOT_MET. Current Rust medians4763.23/3060.37req/s for1KiB/64KiB. No general
+speed-up claim; old module uses same current wrapper. Source manifest, logs and
+all earlier failures remain in Asyncara-hyper-requests-20261110T042002Z.
