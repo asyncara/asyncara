@@ -45,8 +45,8 @@ Native Hyper 1.12.0 HTTP/1 transport uses Asyncara epoll/poll, with PHP handlers
 running as Asyncara Fibers on the interpreter thread. There is no Tokio executor
 and no cross-thread Zend access. This is a new opt-in server, not an HTTP-client
 replacement. Linux only. Optional HTTPS termination and response streaming are described below.
-HTTP/2, HTTP/3, WebSocket upgrades, streaming request bodies and production
-deployment certification remain unavailable.
+HTTP/2, HTTP/3, WebSocket upgrades and production deployment certification remain unavailable.
+Request streaming is opt-in as described below.
 
 Use `Asyncara\App`, `Asyncara\Server\Request`, and
 `Asyncara\Server\Response`. PHP class names are case-insensitive:
@@ -59,7 +59,7 @@ to the existing Fiber timer; `Asyncara\Async::sleep()` still takes seconds.
 Routes support exact paths, `{name}` parameters, nested groups, and registered
 named/callable middleware. Static routes take precedence; dynamic routes are
 matched in registration order. Undefined named middleware fails before listening.
-JSON decoding uses PHP ext-json's C parser. Request bodies and ordinary Response bodies are bounded and buffered.
+JSON decoding uses PHP ext-json's C parser. Request bodies are buffered by default; ordinary Response bodies are bounded and buffered.
 Response::stream selects the separate bounded, demand-driven response path.
 
 `Request::param(name, default)` reads a named route parameter. `query(name,
@@ -248,7 +248,7 @@ does not mean the remote application consumed those bytes.
 `bufferBytes` bounds Asyncara-owned payload, and at most one chunk occupies the
 native producer slot. Hyper/TLS buffers and application-held input are additional.
 HTTP/1.1 uses chunked framing; framing headers remain server-owned. Response
-trailers, unbounded bodies, streaming request input and HTTP/2 are not advertised.
+trailers, unbounded bodies and HTTP/2 are not advertised.
 A producer failure or limit violation after headers closes that connection;
 it cannot replace an already-started response with500. Disconnect/deadline cancels
 the handler and releases its producer. External references to the producer remain
@@ -268,3 +268,64 @@ The TLS/streaming continuation is packaged separately as server-r2 from
 `d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd`.
 Its independent clean build and 13 checks pass on PHP85 epoll/poll.
 [Package attestation](phase7/server-r2-package.json). Server-r1 above is unchanged.
+
+## Streaming incoming requests
+
+`listen(..., ['streamRequests' => true])` dispatches validated request headers
+before collecting the whole body. The default remains buffered, preserving
+`Request::$body`. In the opt-in mode `body` is an empty string; use `stream()` or
+`json()` explicitly. `json()` collects the bounded body on demand, calls ext-json,
+and caches the bytes for repeated decoding. It is not a streaming JSON parser.
+
+```php
+$app->post('/upload', function (Request $request) {
+    $hash = hash_init('sha256');
+    $size = 0;
+    foreach ($request->stream() as $chunk) {
+        hash_update($hash, $chunk);
+        $size += strlen($chunk);
+        // Explicit async I/O can suspend here without reading the next chunk.
+    }
+    return Response::json(['bytes' => $size, 'sha256' => hash_final($hash)]);
+});
+$app->listen('127.0.0.1:8080', [
+    'streamRequests' => true,
+    'bodyBytes' => 8388608,
+    'bufferBytes' => 262144,
+]);
+```
+
+The native service Future owns Hyper Incoming; PHP's single-use,
+non-copyable RequestBodyStream requests at most one 1..65536-byte event at a time.
+No new producer Task, executor, thread or whole-body buffer is introduced.
+When the handler awaits another operation, incoming application-data polling
+stops until it requests its next chunk. Hyper, TLS and kernel buffers may still
+hold additional bytes; bufferBytes is the owned payload budget, not total RSS.
+Total input is limited by bodyBytes even when chunked Content-Length is unknown.
+
+Only the current request handler may consume or close input. Assignment and a
+Request metadata clone share that canonical input; cloning/serializing the input
+is rejected. Do not hand it to a child Task or Files::writeStream (which owns a
+producer Task); instead await File::write for each chunk in the handler. Input
+is closed when the handler returns, throws, is cancelled, or finishes iteration.
+Close stops further consumption and releases PHP Task/Inbox references. The
+native service still owns Incoming until the reply or connection teardown; it
+does not force-drain a rejected upload. This is a **half-duplex** API: finish input
+before returning a streamed response. A response generator cannot continue
+reading that request body after the handler returns.
+
+A fully consumed valid body permits keep-alive. An early response, malformed or
+oversized body closes the connection, preventing unread body bytes from becoming
+a subsequent request. Parsed body failures map to400,413 or503 when a reply is
+still possible; a peer/parser disconnect can instead terminate the transport.
+Trailers are consumed by Hyper but not exposed to PHP. Cancellation and the
+existing cycle deadline cannot retract already-read bytes. Timeout semantics
+and all default limits are unchanged.
+
+`tests/server/input.py` uses independent real peers to hold body bytes pending,
+verify two timer ticks before release, transfer8MiB through256KiB payload budget,
+exercise slow consumption, chunked limits, malformed input, early rejection,
+foreign-consumer rejection, repeated JSON decoding and zero final runtime counts.
+It runs against plain/TLS epoll/poll. Detailed results and qualified sanitizer
+failures are recorded in the request-stream continuation evidence, separately
+from server-r2.

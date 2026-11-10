@@ -215,3 +215,18 @@ ReadableStream producer, even when no iteration began. The failing-before contro
 retained a blocked producer; `StreamResponse::close()` now cancels/joins it and
 releases the response reference. A caller-retained arbitrary Generator has its
 ordinary PHP lifetime; no global Future cancellation policy is introduced.
+
+## Request streaming ownership continuation
+
+| Resource | Copy/sharing | Owner/release | Cancellation and evidence |
+|---|---|---|---|
+| Hyper Incoming/InputState | NON_COPYABLE; Weak registry | Native Pending service Future; drop on response or connection teardown | Demand-only reads; EOF/invalid/limit events; real peer disconnect/deadline checks |
+| RequestBodyStream | NON_COPYABLE; assignment shares identity | Handler Task; close clears Task and Inbox references | Foreign Task consumption/close rejected before mutation; owner can still read; input.py/api.php |
+| Request metadata | VALUE_COPY when buffered; SHARED_REFERENCE to input when streaming | PHP values; copied metadata does not duplicate native ownership | Input remains handler-scoped and single-use; serialization traversing it is rejected |
+| Input event/tail | One demanded owned event plus Hyper Bytes remainder | Shared payload accounting until event pop; native tail until next demand/drop | <=64KiB event, bodyBytes cumulative bound; Hyper/TLS allocations remain outside full accounting |
+
+The first close implementation retained Inbox after closing: an independent weak
+reference control failed before the correction and passes after it. API tests
+retain this regression. Closing input is not the same as cancelling the whole
+connection; App/native response ownership decides when unread framing requires
+closure. External PHP references to already-delivered chunks remain caller-owned.

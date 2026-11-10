@@ -306,6 +306,7 @@ struct Shared {
     events: VecDeque<Event>,
     pending: HashMap<u64, Weak<RefCell<Ticket>>>,
     streams: HashMap<u64, Weak<RefCell<StreamState>>>,
+    inputs: HashMap<u64, Weak<RefCell<InputState>>>,
     next: u64,
     notify: OwnedFd,
     notified: Cell<bool>,
@@ -357,7 +358,87 @@ impl Shared {
         self.notified.set(false);
     }
 }
+// One Incoming owner, polled only on application demand by the connection driver.
+struct InputState {
+    incoming: Incoming,
+    tail: Bytes,
+    demand: bool,
+    done: bool,
+    failed: bool,
+    total: usize,
+    limit: usize,
+    wake: Option<Waker>,
+}
+impl InputState {
+    fn emit(&mut self, id: u64, connection: u64, kind: i32, body: Data, shared: &mut Shared) {
+        self.demand = false;
+        if kind != 6 {
+            self.done = true;
+            self.failed = kind != 7;
+        }
+        shared.events.push_back(Event {
+            id,
+            connection,
+            kind,
+            method: String::new(),
+            target: String::new(),
+            headers: Vec::new(),
+            body,
+        });
+        shared.signal();
+    }
+    fn poll(
+        &mut self,
+        id: u64,
+        connection: u64,
+        shared: &Rc<RefCell<Shared>>,
+        cx: &mut Context<'_>,
+    ) {
+        self.wake = Some(cx.waker().clone());
+        if !self.demand || self.done {
+            return;
+        }
+        for _ in 0..16 {
+            let mut kind = 6;
+            if self.tail.is_empty() {
+                match hyper::body::Body::poll_frame(Pin::new(&mut self.incoming), cx) {
+                    Poll::Pending => return,
+                    Poll::Ready(None) => kind = 7,
+                    Poll::Ready(Some(Err(_))) => kind = 8,
+                    Poll::Ready(Some(Ok(frame))) => {
+                        if let Ok(data) = frame.into_data() {
+                            if data.len() > self.limit.saturating_sub(self.total) {
+                                kind = 9;
+                            } else {
+                                self.total += data.len();
+                                self.tail = data;
+                            }
+                        }
+                        if kind == 6 && self.tail.is_empty() {
+                            continue;
+                        }
+                    }
+                }
+            }
+            let mut shared = shared.borrow_mut();
+            let mut body = Data::new(&shared.used);
+            if kind == 6 {
+                let bytes = self.tail.split_to(self.tail.len().min(65536));
+                if !body.append(&bytes, shared.limit) {
+                    kind = 10;
+                }
+            }
+            if kind != 6 {
+                self.tail = Bytes::new();
+            }
+            self.emit(id, connection, kind, body, &mut shared);
+            return;
+        }
+        cx.waker().wake_by_ref(); // bounded runnable metadata/empty-frame work
+    }
+}
 struct Pending {
+    input: Option<Rc<RefCell<InputState>>>,
     id: u64,
     connection: u64,
     ticket: Rc<RefCell<Ticket>>,
@@ -367,16 +448,34 @@ impl Future for Pending {
     type Output = Reply;
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Reply> {
         let mut ticket = self.ticket.borrow_mut();
-        if let Some(response) = ticket.response.take() {
+        if let Some(mut response) = ticket.response.take() {
+            if self.input.as_ref().is_some_and(|i| {
+                let i = i.borrow();
+                !i.done || i.failed
+            }) {
+                // No implicit draining or pipeline reuse after unconsumed/failed input.
+                response.headers_mut().insert(
+                    header::CONNECTION,
+                    header::HeaderValue::from_static("close"),
+                );
+            }
             Poll::Ready(response)
         } else {
             ticket.wake = Some(cx.waker().clone());
+            if let Some(input) = &self.input {
+                input
+                    .borrow_mut()
+                    .poll(self.id, self.connection, &self.shared, cx);
+            }
             Poll::Pending
         }
     }
 }
 impl Drop for Pending {
     fn drop(&mut self) {
+        if self.input.is_some() {
+            self.shared.borrow_mut().inputs.remove(&self.id);
+        }
         if !self.ticket.borrow().answered {
             let mut shared = self.shared.borrow_mut();
             let body = Data::new(&shared.used);
@@ -396,6 +495,7 @@ impl Drop for Pending {
 }
 #[derive(Clone)]
 struct Dispatch {
+    stream_requests: bool,
     connection: u64,
     shared: Rc<RefCell<Shared>>,
     body_limit: usize,
@@ -480,19 +580,34 @@ impl Service<Request<Incoming>> for Dispatch {
                 (s.used.clone(), s.limit)
             };
             let mut body = Data::new(&used);
-            while let Some(frame) = incoming.frame().await {
-                let Ok(frame) = frame else {
-                    return Ok(error(400));
-                };
-                if let Ok(data) = frame.into_data() {
-                    if data.len() > dispatch.body_limit.saturating_sub(body.bytes.len()) {
-                        return Ok(error(413));
-                    }
-                    if !body.append(&data, limit) {
-                        return Ok(error(503));
+            let input = if dispatch.stream_requests {
+                let done = hyper::body::Body::is_end_stream(&incoming);
+                Some(Rc::new(RefCell::new(InputState {
+                    incoming,
+                    tail: Bytes::new(),
+                    demand: false,
+                    done,
+                    failed: false,
+                    total: 0,
+                    limit: dispatch.body_limit,
+                    wake: None,
+                })))
+            } else {
+                while let Some(frame) = incoming.frame().await {
+                    let Ok(frame) = frame else {
+                        return Ok(error(400));
+                    };
+                    if let Ok(data) = frame.into_data() {
+                        if data.len() > dispatch.body_limit.saturating_sub(body.bytes.len()) {
+                            return Ok(error(413));
+                        }
+                        if !body.append(&data, limit) {
+                            return Ok(error(503));
+                        }
                     }
                 }
-            }
+                None
+            };
             let ticket = Rc::new(RefCell::new(Ticket {
                 response: None,
                 wake: None,
@@ -516,10 +631,13 @@ impl Service<Request<Incoming>> for Dispatch {
                     headers.extend_from_slice(b"\r\n");
                 }
                 shared.pending.insert(id, Rc::downgrade(&ticket));
+                if let Some(input) = &input {
+                    shared.inputs.insert(id, Rc::downgrade(input));
+                }
                 shared.events.push_back(Event {
                     id,
                     connection: dispatch.connection,
-                    kind: 1,
+                    kind: if input.is_some() { 11 } else { 1 },
                     method: parts.method.to_string(),
                     target: parts.uri.to_string(),
                     headers,
@@ -529,6 +647,7 @@ impl Service<Request<Incoming>> for Dispatch {
                 id
             };
             let mut reply = Pending {
+                input,
                 id,
                 connection: dispatch.connection,
                 ticket,
@@ -556,6 +675,7 @@ struct Peer {
     deadline: Rc<Cell<Instant>>,
 }
 struct Server {
+    stream_requests: bool,
     tls: Option<Arc<rustls::ServerConfig>>,
     listener: Option<TcpListener>,
     address: String,
@@ -673,6 +793,7 @@ impl Server {
                         })));
                         let deadline = Rc::new(Cell::new(Instant::now() + self.timeout));
                         let service = Dispatch {
+                            stream_requests: self.stream_requests,
                             connection: id,
                             shared: self.shared.clone(),
                             body_limit: self.body_limit,
@@ -805,6 +926,7 @@ pub unsafe extern "C" fn ar_server_new(
             events: VecDeque::new(),
             pending: HashMap::new(),
             streams: HashMap::new(),
+            inputs: HashMap::new(),
             next: 0,
             notify: OwnedFd::from_raw_fd(fd),
             notified: Cell::new(false),
@@ -814,6 +936,7 @@ pub unsafe extern "C" fn ar_server_new(
         }));
         Some(
             Box::into_raw(Box::new(Server {
+                stream_requests: false,
                 tls: None,
                 listener: Some(listener),
                 address,
@@ -836,6 +959,38 @@ pub unsafe extern "C" fn ar_server_new(
     .ok()
     .flatten()
     .unwrap_or(std::ptr::null_mut())
+}
+// Setup-only request-body mode; the default buffered path is unchanged.
+#[no_mangle]
+pub unsafe extern "C" fn ar_server_stream_requests(ptr: *mut c_void) -> i32 {
+    with(ptr, -1, |s| {
+        if s.accepted != 0 {
+            return -1;
+        }
+        s.stream_requests = true;
+        0
+    })
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_server_input(ptr: *mut c_void, id: u64) -> i32 {
+    with(ptr, -1, |s| {
+        let input = s.shared.borrow().inputs.get(&id).and_then(Weak::upgrade);
+        let Some(input) = input else {
+            return 0;
+        };
+        let mut input = input.borrow_mut();
+        if input.done {
+            return if input.failed { 0 } else { 2 };
+        }
+        if input.demand {
+            return -2;
+        }
+        input.demand = true;
+        if let Some(wake) = input.wake.take() {
+            wake.wake();
+        }
+        1
+    })
 }
 // Setup-only: no accepted peers can observe a changed TLS identity.
 #[no_mangle]

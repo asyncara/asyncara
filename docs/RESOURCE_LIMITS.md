@@ -193,3 +193,14 @@ buffers are outside this ledger. rustls has a64KiB output-buffer target per
 connection; it is not a total TLS allocation cap. Connection admission and
 finite request deadlines are additional protections. See SERVER.md for exact
 options and the independent slow-reader/cancellation controls.
+
+## Incoming server streaming
+
+With streamRequests=true, bodyBytes remains the total input ceiling and each
+native-to-PHP demand yields at most64KiB. No entire upload is collected unless
+application code (including Request::json) asks to collect it. One InputState owns
+Hyper Incoming plus a retained frame remainder; one event is admitted per demand.
+Input errors/overflow reject the request rather than silently dropping data.
+Unconsumed input forces connection closure on reply. The existing deadline bounds
+slow readers/writers; this is not an unlimited idle timeout. PHP values, Hyper
+frame storage, TLS and kernel buffers remain outside the payload ledger.

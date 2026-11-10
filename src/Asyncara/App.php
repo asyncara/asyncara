@@ -45,7 +45,7 @@ final class App
     {
         foreach ([$this->static, $this->dynamic] as $methods) foreach ($methods as $routes) foreach ($routes as $route) yield $route;
     }
-    private function dispatch(array $event, bool $headFallback = false): Response|StreamResponse
+    private function dispatch(array $event, bool $headFallback = false, ?Server\RequestBodyStream $input = null): Response|StreamResponse
     {
         $path = explode('?', $event['target'], 2)[0]; $method = $headFallback ? 'GET' : $event['method']; $params = [];
         if (!str_starts_with($path, '/')) return Response::text('Bad Request', 400);
@@ -53,9 +53,9 @@ final class App
         if ($route === null) foreach ($this->dynamic[$method] ?? [] as $candidate) {
             if (preg_match($candidate->pattern, $path, $matches)) { $route = $candidate; foreach ($matches as $key => $value) if (is_string($key)) $params[$key] = rawurldecode($value); break; }
         }
-        if ($route === null && $method === 'HEAD') return $this->dispatch($event, true);
+        if ($route === null && $method === 'HEAD') return $this->dispatch($event, true, $input);
         if ($route === null) return Response::text('Not Found', 404);
-        $request = new Request($event['method'], $event['target'], $event['body'], $event['headers'], $params);
+        $request = new Request($event['method'], $event['target'], $event['body'], $event['headers'], $params, $input);
         $next = $route->handler;
         foreach (array_reverse($route->middleware) as $item) {
             $middleware = is_string($item) ? $this->middleware[$item] : $item;
@@ -71,6 +71,8 @@ final class App
         if (!function_exists('asyncara_server_listen')) throw new \RuntimeException('Build Asyncara with the Hyper server feature');
         $workers = $options['workers'] ?? 1; unset($options['workers']);
         $tls = $options['tls'] ?? null; unset($options['tls']);
+        $streamRequests = $options['streamRequests'] ?? false; unset($options['streamRequests']);
+        if (!is_bool($streamRequests)) throw new \ValueError('streamRequests must be boolean');
         if ($tls !== null && !is_array($tls)) throw new \ValueError('tls must be an array');
         if (!is_int($workers) || $workers < 1 || $workers > 64) throw new \ValueError('workers must be 1..64');
         $defaults = ['connections' => 1024, 'bodyBytes' => 1048576, 'responseBytes' => 8388608, 'bufferBytes' => 67108864, 'timeoutMs' => 30000, 'requestsPerConnection' => 10000];
@@ -81,9 +83,9 @@ final class App
             if (str_ends_with($address, ':0')) throw new \ValueError('Multiple workers require a fixed port');
             $this->workers = new Server\Workers();
             try {
-                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options, $tls): void {
+                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options, $tls, $streamRequests): void {
                     $this->workers = null; $this->workerProcess = true;
-                    $this->listen($address, $options + ($tls === null ? [] : ['tls' => $tls]), static fn() => $ready());
+                    $this->listen($address, $options + ['streamRequests' => $streamRequests] + ($tls === null ? [] : ['tls' => $tls]), static fn() => $ready());
                 }, $onReady === null ? null : static fn() => $onReady($address));
             } finally { $this->workers = null; }
             return;
@@ -101,7 +103,7 @@ final class App
                 $pem[$i] = $bytes;
             }
         }
-        $arguments = [...array_values($limits), $this->workerProcess, ...$pem];
+        $arguments = [...array_values($limits), $this->workerProcess, ...$pem, $streamRequests];
         $info = \asyncara_server_listen($address, ...$arguments);
         unset($arguments, $pem, $bytes); // Do not retain PEM/key strings in the listener frame.
         $this->running = true;
@@ -118,6 +120,7 @@ final class App
                     $processed = 0;
                     while ($event = \asyncara_server_next()) {
                         if ($event['kind'] === 3) return;
+                        if ($event['kind'] === 11) { $event['kind'] = 1; $event['streamed'] = true; }
                         $connection = $event['connection'];
                         if ($event['kind'] === 2 || $event['kind'] === 4) {
                             ($this->tasks[$connection] ?? null)?->cancel();
@@ -135,9 +138,12 @@ final class App
                                         $id = $event['id'];
                                         $this->requestsHandled++;
                                         $streaming = false;
+                                        $input = isset($event['streamed']) ? new Server\RequestBodyStream($id, $inbox) : null;
                                         try {
-                                            try { $response = $this->dispatch($event); }
+                                            try { $response = $this->dispatch($event, false, $input); }
+                                            catch (Server\RequestBodyException $e) { $response = Response::text('Request body rejected', $e->status); }
                                             catch (\JsonException) { $response = Response::text('Invalid JSON', 400); }
+                                            finally { $input?->close(); }
                                             if ($response instanceof StreamResponse && $event['method'] !== 'HEAD') {
                                                 try {
                                                     $streaming = \asyncara_server_respond($id, $response->status, $response->headers, '', true);
@@ -152,7 +158,7 @@ final class App
                                             if ($streaming) { \asyncara_server_chunk($id, '', -1); return; }
                                             \asyncara_server_respond($id, 500, [], '');
                                         }
-                                        unset($response, $event);
+                                        unset($response, $event, $input);
                                         Scheduler::current()->task->context = [];
                                     }
                                 } catch (Exception\CancelledException) { /* owner disappeared */ }

@@ -11,6 +11,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_listen, 0, 8, IS_ARRAY, 0
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, certificatePem, IS_STRING, 0, "\"\"")
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, keyPem, IS_STRING, 0, "\"\"")
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, clientCaPem, IS_STRING, 0, "\"\"")
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, streamRequests, _IS_BOOL, 0, "false")
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_next, 0, 0, IS_ARRAY, 1)
 ZEND_END_ARG_INFO()
@@ -38,14 +39,14 @@ static void server_status(zval *value, ar_server_status *s) {
     add_assoc_long(value, "protocolErrors", s->errors);
 }
 PHP_FUNCTION(asyncara_server_listen) {
-    char *address; size_t len; zend_long connections, body, response, budget, timeout, requests; bool reuse_port;
+    char *address; size_t len; zend_long connections, body, response, budget, timeout, requests; bool reuse_port, stream_requests = false;
     char *cert = "", *key = "", *ca = ""; size_t cert_len = 0, key_len = 0, ca_len = 0;
-    ZEND_PARSE_PARAMETERS_START(8, 11)
+    ZEND_PARSE_PARAMETERS_START(8, 12)
         Z_PARAM_STRING(address, len) Z_PARAM_LONG(connections) Z_PARAM_LONG(body)
         Z_PARAM_LONG(response) Z_PARAM_LONG(budget) Z_PARAM_LONG(timeout) Z_PARAM_LONG(requests)
         Z_PARAM_BOOL(reuse_port)
         Z_PARAM_OPTIONAL
-        Z_PARAM_STRING(cert, cert_len) Z_PARAM_STRING(key, key_len) Z_PARAM_STRING(ca, ca_len)
+        Z_PARAM_STRING(cert, cert_len) Z_PARAM_STRING(key, key_len) Z_PARAM_STRING(ca, ca_len) Z_PARAM_BOOL(stream_requests)
     ZEND_PARSE_PARAMETERS_END();
     /* Reserve the engine wake pipe, PHP notification watcher and listener.
      * Other I/O shares AR_MAX_WATCHERS; applications must budget that too. */
@@ -59,6 +60,9 @@ PHP_FUNCTION(asyncara_server_listen) {
     if ((cert_len || key_len || ca_len) && ar_server_tls(e->server, (unsigned char *)cert, cert_len, (unsigned char *)key, key_len, (unsigned char *)ca, ca_len)) {
         ar_server_free(e->server); e->server = NULL;
         zend_value_error("Invalid TLS certificate, key or client CA configuration"); RETURN_THROWS();
+    }
+    if (stream_requests && ar_server_stream_requests(e->server)) {
+        ar_server_free(e->server); e->server = NULL; server_error(); RETURN_THROWS();
     }
     ar_server_status s;
     if (ar_server_info(e->server, &s)) { server_error(); RETURN_THROWS(); }
@@ -89,7 +93,7 @@ PHP_FUNCTION(asyncara_server_next) {
     add_assoc_long(return_value, "kind", view.kind);
     add_assoc_long(return_value, "id", view.id);
     add_assoc_long(return_value, "connection", view.connection);
-    if (view.kind == 1) {
+    if (view.kind == 1 || view.kind == 11) {
         /* A PHP OOM bailout leaves the original event owned by Rust until
          * RSHUTDOWN. No C buffer or Rust borrow spans Zend execution. */
         add_assoc_stringl(return_value, "method", (const char *)view.method, view.method_len);
@@ -97,6 +101,7 @@ PHP_FUNCTION(asyncara_server_next) {
         add_assoc_stringl(return_value, "headers", (const char *)view.headers, view.headers_len);
         add_assoc_stringl(return_value, "body", (const char *)view.body, view.body_len);
     }
+    if (view.kind == 6) add_assoc_stringl(return_value, "body", (const char *)view.body, view.body_len);
     if (ar_server_pop(engine->server)) { zval_ptr_dtor(return_value); ZVAL_NULL(return_value); server_error(); RETURN_THROWS(); }
 }
 PHP_FUNCTION(asyncara_server_respond) {
@@ -144,4 +149,18 @@ PHP_FUNCTION(asyncara_server_chunk) {
     if (rc == -3) { zend_throw_exception(zend_ce_exception, "Stream payload capacity exceeded", 0); RETURN_THROWS(); }
     if (rc < 0) { server_error(); RETURN_THROWS(); }
     RETURN_BOOL(rc);
+}
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_input, 0, 1, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_server_input) {
+    zend_long id;
+    ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_LONG(id) ZEND_PARSE_PARAMETERS_END();
+    if (!engine || !engine->server) { server_error(); RETURN_THROWS(); }
+    if (id < 1) { zend_value_error("Invalid request ID"); RETURN_THROWS(); }
+    int rc = ar_server_input(engine->server, id);
+    if (rc == -2) { zend_throw_exception(zend_ce_exception, "Request body already has a pending reader", 0); RETURN_THROWS(); }
+    if (rc < 0) { server_error(); RETURN_THROWS(); }
+    RETURN_LONG(rc);
 }

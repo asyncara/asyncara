@@ -10,6 +10,12 @@ is unchanged; its results do not certify new code. Release remains EXPERIMENTAL.
 
 The dated checkpoints below retain their original source scope.
 
+Request-body streaming is implemented and tested in the opt-in handler-owned,
+bounded half-duplex scope; see [SERVER.md](SERVER.md). Normal/DEBUG matrix,
+full suites, four-worker controls and scoped Valgrind pass. One GCC/poll/TLS
+slow-input reset remains unresolved despite four passing repeats; the original
+failure is preserved in [validation evidence](phase7/server-request-stream.json).
+
 ## Historical server-r1 checkpoint (2026-11-10)
 
 The isolated `phase7-native-server-20261109T231953Z` branch adds

@@ -58,7 +58,7 @@ provider decision. Historical PHP/libpq/libcurl findings remain separate.
 
 | Area | Actual remaining scope |
 |---|---|
-| Server | Streaming request bodies; HTTP/2/3; WebSocket upgrade integration; deployment/endurance certification; all-cases Go performance target |
+| Server | Duplex request/response streaming; HTTP/2/3; WebSocket upgrade integration; deployment/endurance certification; all-cases Go performance target |
 | Hyper client | HTTPS, decompression, general request methods/headers, redirects, proxies and streaming; default curl remains the comprehensive client |
 | WebSocket | Server-WSS, browser/Autobahn conformance and extensions are absent or unverified; existing independent Python client/server tests retained |
 | PostgreSQL | Prepared-statement caching, remote cancellation acknowledgement and broader remote compatibility |
@@ -68,9 +68,9 @@ provider decision. Historical PHP/libpq/libcurl findings remain separate.
 | FPM/history/performance | Original six-hour zero-tick FAIL remains; new short tests do not establish its exact cause or universal throughput |
 | Hooks/ZTS/platforms | Existing optional timer hooks retained. Universal hooks, userland ThreadPool and untested platforms are not made complete by changing labels |
 
-No claim that every PARTIALLY_IMPLEMENTED item is complete. The next source
-priority is incoming body streaming with the same bounded ownership rules, before
-adding multiplexed protocols. Wider database and certification gaps remain above.
+No claim that every PARTIALLY_IMPLEMENTED item is complete. Incoming streaming
+has the scoped implementation below; broader protocol, database and certification
+gaps remain above. Historical labels are not retroactively rewritten.
 
 ## Verified source distribution
 
@@ -83,3 +83,29 @@ protocol, API, body lifetime, TLS and plain/TLS streaming on epoll/poll.
 [Independent attestation](phase7/server-r2-package.json). The follow-up evidence
 commit changes documentation only; it is not a different native runtime.
 No GitHub release, performance acceptance or broad production certification.
+
+## Incoming request streaming continuation
+
+Base `2b04c7b`, new raw root `/home/coder/Asyncara-request-stream-20261110T030416Z`.
+Opt-in request input is IMPLEMENTED_AND_TESTED in the documented half-duplex
+scope. The native service owns Incoming, emits one <=64KiB demanded chunk, applies
+bodyBytes even to chunked input, and closes unread/error framing on early reply.
+Default buffered APIs are preserved. RequestBodyStream rejects copy/serialization
+and foreign-Task consumption/close; close releases its Task and Inbox references.
+The retained-Inbox negative control fails before that correction and passes after.
+
+Validation is **qualified**, not a universal clean matrix: matrix-r1 completed
+75 commands,74 PASS and1 FAIL. Normal PHP83/84/85, DEBUG and GCC epoll cases pass;
+the last GCC/poll/TLS8MiB slow-consumer case reset the connection. No ASan/UBSan
+error was recorded. Four repetitions with the original3s deadline pass, with
+slow transfers2.437..2.873s. Deadline sensitivity is a hypothesis; the exact first
+reset cause was not recorded, so the original failure remains unresolved.
+No assertions, limits or timeouts were relaxed.
+
+regressions-r1 passes15 commands: Gate A191.178s, complete PHP85 epoll/poll suites,
+Rust7 units, allocations, body ownership and eight four-worker plain/TLS
+normal/forced-exit cases, each with128 streamed uploads. memory-r1 passes actual
+TLS streamed-input/response DEBUG Valgrind3.22 controls on both backends: zero
+errors and zero definite/indirect/possible loss,5306bytes reachable, no suppression.
+[Exact commands, fingerprints and failures](phase7/server-request-stream.json).
+Neither these tests nor server-r2 certify broader deployment or old FPM failures.

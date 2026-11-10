@@ -2390,3 +2390,27 @@ C-only default build also passes. Phase4 checkout/module, original archives and
 LICENSE remain unchanged. This follow-up records evidence only. All remaining
 project-wide partial features are explicitly retained in COMPLETION_STATUS.md;
 release EXPERIMENTAL, no new benchmark or GitHub release claim.
+
+## 2026-11-10 — Request-body streaming continuation
+
+Continue from verified2b04c7b/server-r2; old package unchanged. Added opt-in
+streamRequests and handler-scoped Request::stream() using production Hyper
+Incoming polling, native demand events and bounded64KiB chunks. Default buffering
+is preserved. Focused PHP85 epoll and poll/TLS cases prove first data and2ticks
+before peer release,8MiB through256KiB payload budget, streamed/chunked size limits,
+early-response close, malformed input, cancellation and final zero runtime counts.
+Initial test-only clone exception/bytes-header mistakes are preserved, corrected
+to the existing trait/parser contracts. A separate WeakReference negative control
+proved closed input retained a connection Inbox; close now releases Inbox and Task
+references. Foreign consumers/close attempts cannot take the handler's ownership.
+Full compatibility, memory and regression validation has not yet completed.
+Evidence: /home/coder/Asyncara-request-stream-20261110T030416Z.
+
+Request streaming regression validation completes: Gate A191.178s, complete85
+suites epoll/poll,8 four-worker input runs (128uploads each), Rust7 and allocation
+checks PASS. DEBUG Valgrind actual TLS input/output reports zero errors or lost
+bytes,5306reachable. Matrix-r1 is preserved as FAIL74/75: last GCC/poll/TLS slow
+input reset without a sanitizer report. Four exact-threshold repetitions pass;
+2.437..2.873s transfers approach the3s deadline, but the first reset's cause is
+not proven. No deadline/assertion change. Evidence server-request-stream.json
+records the failure and all repeats. Preparing a new independent package.

@@ -41,5 +41,17 @@ for($i=0;$i<50;$i++) {
     $metrics=Runtime::diagnostics();
     foreach(['activeTasks','activeTimers','ioWatchers','pendingNative','pendingFutures'] as$key)check($metrics[$key]===0,$key);
 }
+Asyncara\Async::run(function (): void {
+    $inbox = new Inbox(); $weak = WeakReference::create($inbox);
+    $stream = new Asyncara\Server\RequestBodyStream(1, $inbox);
+    rejects(fn() => clone $stream); rejects(fn() => serialize($stream));
+    rejects(fn() => unserialize('O:'.strlen($stream::class).':"'.$stream::class.'":0:{}'));
+    Asyncara\Async::spawn(function () use ($stream): void {
+        rejects($stream->close(...));
+        rejects(fn() => $stream->consume(static fn($chunk) => null));
+    })->await();
+    $stream->close(); $stream->close(); unset($inbox);
+    check($weak->get() === null, 'Closed input retained connection Inbox');
+});
 check(!asyncara_server_can_fork(),'Initialized native runtime must reject unsafe prefork');
 echo json_encode(['status'=>'PASS','cycles'=>50,'descriptorsIncludingDotEntries'=>$fds,'runtime'=>$metrics]),"\n";

@@ -422,3 +422,18 @@ handshake and paused streaming time; cancellation does not roll back transmitted
 bytes. Setup PEM file reads happen before the runtime, not inside a callback.
 The transport sends close_notify during ordinary shutdown; abrupt disconnect,
 fatal process termination and expired deadlines may bypass graceful closure.
+
+## Opt-in server input stream ownership
+
+With App.streamRequests, Incoming is owned by the native service Future, and its
+registry entry is Weak. One demand produces one <=64KiB PHP chunk; PHP copying
+finishes before the native event is popped. A PHP allocation bailout leaves that
+event owned by Rust until request teardown. Cancellation removes the connection,
+drops the native service and cancels its PHP handler. No worker uses Zend state.
+RequestBodyStream is non-copyable and handler-scoped. Rejecting a foreign waiter
+must not consume, cancel or close the owner's input. Close releases its Task and
+Inbox references, is idempotent, and stops consumption; native cleanup occurs on
+reply/drop, without an implicit draining Task. Early responses force connection
+closure. Input must finish before response streaming starts; duplex is unavailable.
+`Request::json()` deliberately buffers bounded input; ordinary Request::$body
+behavior is unchanged unless streamRequests was explicitly enabled. See SERVER.md.
