@@ -228,3 +228,14 @@ ledger; this is not zero-copy or a complete process-memory ceiling. Connection
 admission and per-operation bounds remain necessary. Early keep-alive responses
 retain the C body's accounting until local upload flush or connection disposal;
 timeouts/cancellation still terminate that ownership. See HYPER_REQUESTS.md.
+
+## Optional PostgreSQL prepared cache
+
+Connection::connect adds preparedCacheLimit (0..256, default0 disabled) and
+preparedCacheByteLimit (1..1048576 retained SQL bytes, default262144). Cacheable
+misses evict least-recently-used owned server statements under the connection's
+operation gate. Oversize SQL uses the original unnamed path. No query result is
+dropped. SQL byte accounting excludes PHP metadata, libpq and server plan memory;
+a server-side plan can cost more than its SQL text. statistics exposes entries,
+SQL bytes, limits and cumulative hits/misses/evictions. See
+[implementation and evidence](POSTGRESQL_PREPARED.md).

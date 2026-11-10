@@ -257,3 +257,15 @@ This slice keeps waiter authority separate from operation ownership. The fixed
 window peer and the independent Python-only reproduction distinguish a fixture
 TCP stall from runtime ownership defects. No universal lifecycle guarantee or
 historical zero-tick attribution follows from these tests. See HYPER_REQUESTS.md.
+
+## PostgreSQL named statement ownership continuation
+
+The new optional prepared cache retains names and SQL in the canonical PHP
+Connection. Native PGconn/PGresult ownership stays in the existing registered
+Zend resource; the two new submission functions do not create a second resource
+or owning PGresult pointer. Statement cloning shares Connection; serialization
+remains forbidden. The existing gate spans DEALLOCATE/prepare/execute and drains
+each successful protocol command before submission of the next. Errors close
+the connection and release cache state; request/fatal tests inspect server-session
+disappearance independently. Foreign server plans/libpq buffers remain outside
+full memory accounting. [Scoped validation](POSTGRESQL_PREPARED.md).

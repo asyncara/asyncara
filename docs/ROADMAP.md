@@ -1,5 +1,18 @@
 # Implementation status
 
+## PostgreSQL prepared-cache continuation (2026-11-10)
+
+IMPLEMENTED_AND_TESTED: opt-in bounded per-connection server preparation and LRU
+reuse through PQsendPrepare/PQsendQueryPrepared. PHP 8.3/8.4/8.5, DEBUG and GCC
+epoll/poll functional matrix, Gate A, full PHP 8.5, database bounds and short
+four-worker FPM checks pass. Original query defaults and shared-waiter semantics
+are preserved. Fatal-bailout Valgrind is still FAIL; independent PHP-only and
+matched previous-source controls characterize it without suppression. Ordinary
+prepared-query and pending-exit memory checks pass. See
+[exact scope](POSTGRESQL_PREPARED.md). PostgreSQL remains partial for broader
+remote compatibility and acknowledged server cancellation. Historical rows below
+retain their original checkpoint scope. Release remains EXPERIMENTAL.
+
 ## Hyper buffered request continuation (2026-11-10)
 
 Bounded methods, ordinary headers, JSON/form/binary bodies and post-response

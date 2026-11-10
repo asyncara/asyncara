@@ -2522,3 +2522,41 @@ epoll/poll. Independent module SHA256:
 `e55adac75d0798a5408a080b926bffa22352876ea2860f858c136bd4574b5ca7`.
 [Build attestation](docs/phase7/server-r5-package.json). No release/push or universal
 performance/endurance certification. Historical archives remain unchanged.
+
+### PostgreSQL bounded server preparation continuation
+
+Base1e72546 after independently validated server-r5. Added native PQsendPrepare/
+PQsendQueryPrepared through existing registered-resource/pending/result loop; no
+blocking PQexec. Optional per-connection LRU retains0..256entries and bounded SQL
+bytes; default0 preserves existing statement behavior. Serial operation/transaction
+gates cover eviction/prepare/drain/execute. Clone keeps one connection owner;
+errors/cancellation close, waiter-only cancellation does not destroy shared work.
+
+Before-r1 confirms no named server statement on old source. First focused test
+FAIL retained: incorrect assumption that waiting timeout owns operation. Separate
+owned Async::await and shared waiter controls pass; no runtime workaround. New
+lock-held prepare cancellation and independent server-session shutdown controls
+pass. Matrix-r1 PASS15 build/test steps across83/84/85/DEBUG/GCC, epoll/poll.
+Broader GateA/regression/memory validation active; not yet a completed package.
+Evidence: /home/coder/Asyncara-pg-cache-20261110T061903Z.
+
+Prepared-cache final validation: Gate A 47 commands PASS / 209.591282s; full
+PHP85 epoll/poll, stock database/audit/bounds and allocation checks pass. The
+first long private output path exceeded Unix socket limits before PHP; failure
+preserved, runner now uses short owned sockets, unchanged workload passes.
+Six verify-full private-CA runs pass on PHP83/84/85 and both backends. Final
+GCC ASan/UBSan passes both. Short FPM60 main requests per backend passes original
+four-HTTP-operation overlap/two-tick assertion plus prepared-query progress,
+request isolation, fatal/post-fatal checks and independent session disappearance.
+Minimum SQL ticks4/7; HTTP ticks5/8; idle6fds/1thread. No long-term trend claim.
+
+DEBUG Valgrind full/pending/OOM cases have zero errors/lost bytes,4041reachable;
+OOM deliberately enables Zend allocation to trigger its8MiB limit. E_USER_ERROR
+inside Fiber retains FAIL/exit99:1160definite/6296indirect/872possible. PHP-only
+plain/Fiber fatal controls also fail, while exit/exception controls are clean.
+Identical query/fatal controls on new cache2/new cache0/previous module+source
+all report1104definite/5841indirect/872possible; no added loss detected for this
+cache in that matched scope. Native session cleanup independently passes.
+No suppressions, production GC workaround or universal memory claim. The test
+runner records all independent shutdown results and still fails on the fatal
+case. This is separate from the older PHP cycle and libpq TLS unload findings.

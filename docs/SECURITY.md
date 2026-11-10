@@ -279,3 +279,19 @@ remote application acknowledgement. An early final response cannot erase the
 native accounting of a still-buffered keep-alive upload. The extra Rust body
 copy and foreign library allocations are outside complete C-ledger accounting.
 See HYPER_REQUESTS.md for proven defects, corrections and scoped validation.
+
+## Opt-in PostgreSQL server preparation
+
+Prepared names and the LRU belong to one connection. Names use a reserved ASCII
+prefix plus an integer; application parameters remain protocol bindings. Entry
+and SQL-byte limits do not bound every server parse tree, libpq buffer or PHP
+metadata allocation. A closed connection clears its cache; failed/cancelled
+operations are not replayed. Explicit manual deallocation can invalidate the
+cache and is surfaced as an error rather than hidden by a retry.
+
+The new ordinary-query, pending-exit and native OOM cleanup checks pass, but
+E_USER_ERROR bailout under DEBUG PHP/Valgrind still reports Zend allocations.
+Matched old/new/cache-disabled controls have identical lost-byte totals; a
+PHP-only fatal control also fails. These observations do not certify arbitrary
+fatal cleanup or erase the report. See POSTGRESQL_PREPARED.md and
+DEPENDENCY_FINDINGS.md for the exact allocator and workload distinctions.

@@ -65,10 +65,19 @@ in DEPENDENCY_FINDINGS.md. This is not zero-leak TLS certification. No suppressi
 cleanup was added. ZEND_DONT_UNLOAD_MODULES=1 keeps library globals reachable for
 an additional diagnostic run; that run does not repair or erase the finding.
 
-Remaining: real remote deployment certification, PostgreSQL prepared statement
-cache and acknowledged cancellation, broader Oracle/MariaDB versions, certificate
+Remaining: real remote deployment certification, PostgreSQL acknowledged
+cancellation, broader Oracle/MariaDB versions, certificate
 rotation/mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
 streaming aggregates, cluster/sentinel and complete notification buffering policy.
+
+The 2026-11-10 continuation adds an opt-in bounded PostgreSQL server-preparation
+cache; [POSTGRESQL_PREPARED.md](POSTGRESQL_PREPARED.md) records its exact semantics.
+Local PostgreSQL 16.15, PHP 8.3/8.4/8.5 epoll/poll and private-CA verify-full cases
+pass. DEBUG/GCC controls, query ordering, shared waiters, cancellation, LRU/byte
+bounds and short four-worker FPM request isolation are tested. This does not
+expand the remote server/authentication matrix above. Fatal-bailout Valgrind
+still reports losses, reproduced independently in PHP and unchanged by this
+cache in matched controls. It is not a clean universal memory result.
 
 
 Phase 4 expanded mixed smoke separately exercises PostgreSQL16.15,

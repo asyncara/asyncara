@@ -1,5 +1,65 @@
 # Dependency diagnostics
 
+## 2026-11-10 PHP fatal bailout during prepared PostgreSQL work
+
+This is a new diagnostic scope, separate from distribution-PHP cyclic shutdown,
+libpq TLS unloading and TLS-provider reports below. The DEBUG PHP 8.5.12 build
+with Valgrind 3.22, `USE_ZEND_ALLOC=0`, full leak reporting and no suppressions
+reports lost Zend allocations after `E_USER_ERROR` inside a Fiber. It is a
+retained **FAIL**, not a clean memory pass.
+
+Raw root: `/home/coder/Asyncara-pg-cache-20261110T061903Z`.
+The complete commands, binary/source fingerprints, original reports, allocation
+stacks and PHP-only source controls are retained in
+[postgresql-prepared.json](phase7/postgresql-prepared.json).
+
+| Matched control | Exit | Definitely / indirectly / possibly lost bytes |
+|---|---:|---:|
+| PHP only, plain E_USER_ERROR | 99 | 256 / 620 / 0 |
+| PHP only, Fiber E_USER_ERROR | 99 | 640 / 1848 / 0 |
+| PHP only, Fiber exit(0) | 0 | 0 / 0 / 0 |
+| PHP only, uncaught Fiber exception | 255 | 0 / 0 / 0 |
+| New module/source, prepared cache2, pending query + fatal | 99 | 1104 / 5841 / 872 |
+| New module/source, cache0, identical pending query + fatal | 99 | 1104 / 5841 / 872 |
+| Previous d0c270a source/module, identical pending query + fatal | 99 | 1104 / 5841 / 872 |
+| Normal pending exit, each of the preceding three controls | 0 | 0 / 0 / 0 |
+
+The primary test fixture has a different local graph and reports
+1160 / 6296 / 872 bytes on both epoll and poll. Its normal full-cache workload,
+pending exit and PHP allocation-exhaustion cases report zero errors/lost bytes
+with4041 reachable. OOM uses `USE_ZEND_ALLOC=1` to exercise PHP's actual8MiB
+limit; that does not expose every PHP allocation as an individual malloc.
+All observed application PostgreSQL sessions disappear after each child exit.
+
+The independently failing PHP-only Fiber source is:
+
+```php
+<?php
+$fiber = new Fiber(function () {
+    $value = ["a" => str_repeat("x", 32)];
+    trigger_error("Intentional control fatal", E_USER_ERROR);
+});
+$fiber->start();
+```
+
+Run it without `-d extension=...` under the recorded Valgrind/allocator settings.
+The fatal stacks allocate in `__zend_malloc`, compiler argument structures,
+`zend_closure_new`, arrays and JSON-decoded PHP values. Inspection of the local
+PHP8.5.12 source finds `_zend_bailout` sets `CG(unclean_shutdown)`, protects GC,
+clears `EG(current_execute_data)` and longjmps. The Fiber bailout catch forwards
+that condition instead of performing the ordinary callback-return cleanup;
+DEBUG shutdown's cycle collection is guarded by `!CG(unclean_shutdown)`.
+These facts explain why ordinary exit/exception results cannot certify fatal
+bailout cleanup. The precise remaining PHP graph is not fully reconstructed.
+
+Conclusion: no added lost bytes were detected from prepared caching in the
+identical old/new/cache-disabled fatal workload. The broader fatal memory gate
+remains FAIL with a reproduced PHP bailout component; this is not proof that
+every Asyncara allocation path is leak-free, a harmless tool false positive,
+or an upstream fix. No suppression, private Zend-state modification or production
+GC workaround was introduced. The earlier distribution-PHP finding remains
+independently classified below.
+
 ## 2026-11-10 server TLS: rustls/ring AES definedness finding
 
 The new server TLS implementation was tested with rustls0.23.46 and

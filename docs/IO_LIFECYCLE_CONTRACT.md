@@ -476,3 +476,16 @@ retry is introduced. Owner cancellation and deadlines remain active during the
 post-response flush state; an unrelated waiter's cancellation does not acquire
 that authority. Request teardown drops all request-local engine/pool owners.
 See [reproductions and scoped tests](HYPER_REQUESTS.md).
+
+## PostgreSQL opt-in prepared ownership continuation
+
+The current optional cache is owned by the canonical Connection, not by its
+Statement descriptors. One operation gate covers LRU eviction, native preparation,
+result drain and execution; transaction affinity is unchanged. Statement clones
+share that connection. Only a successful preparation result publishes an entry.
+Normal owner cancellation/error closes the connection and clears its entries.
+A waiter-only timeout leaves shared work alive; Async::await expresses ownership
+and joins cancelled work. No server cancellation acknowledgement or automatic
+replay is implied. Default cache capacity0 preserves unnamed-query behavior.
+Exact bounds, server invalidation limitations and validation status are in
+[POSTGRESQL_PREPARED.md](POSTGRESQL_PREPARED.md).

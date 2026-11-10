@@ -1,5 +1,22 @@
 # Current isolated HTTP development state
 
+## PostgreSQL prepared-cache continuation (2026-11-10)
+
+The isolated branch now implements bounded opt-in server preparation through
+nonblocking libpq. Default behavior remains unchanged. The connection owns its
+LRU and serializes eviction, preparation, draining and execution; waiter-only
+cancellation remains distinct from operation cancellation. The PHP 8.3/8.4/8.5,
+DEBUG and GCC epoll/poll matrix, Gate A, full PHP 8.5 suites, database regressions
+and short four-worker FPM integration pass in their stated scope.
+
+Fatal-bailout Valgrind remains FAIL. PHP-only controls reproduce loss, and matched
+cache-enabled/disabled/previous-source controls report identical lost bytes.
+Normal execution, pending exit and the scoped OOM cleanup checks pass. No
+universal clean-memory or endurance result is claimed. See
+[POSTGRESQL_PREPARED.md](POSTGRESQL_PREPARED.md) and its durable evidence. This
+does not complete all project PARTIALLY_IMPLEMENTED entries or the performance
+target; the release remains EXPERIMENTAL.
+
 ## Hyper buffered request continuation (2026-11-10)
 
 The isolated server branch now implements bounded HTTP(S) request methods,
