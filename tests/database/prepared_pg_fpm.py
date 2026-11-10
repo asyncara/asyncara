@@ -16,6 +16,7 @@ p.add_argument('--module', required=True, type=Path)
 p.add_argument('--backend', choices=['epoll', 'poll'], required=True)
 p.add_argument('--options', required=True, type=Path)
 p.add_argument('--out', required=True, type=Path)
+p.add_argument('--observer-host', default='127.0.0.1', help='Observer only; a private Unix socket can inspect a certificate-only test cluster')
 a = p.parse_args()
 root = Path(__file__).resolve().parents[2]
 out = a.out.resolve()
@@ -50,7 +51,7 @@ try:
         pg = Path(os.environ.get('POSTGRES_BIN', '/usr/lib/postgresql/16/bin'))
         deadline = time.monotonic()+5
         while True:
-            remaining = subprocess.check_output([str(pg/'psql'), '-h', '127.0.0.1', '-p', options['port'],
+            remaining = subprocess.check_output([str(pg/'psql'), '-h', a.observer_host, '-p', options['port'],
                 '-d', options['dbname'], '-Atc', "SELECT count(*) FROM pg_stat_activity WHERE application_name='asyncara_cache_fpm'"], text=True, timeout=5).strip()
             if remaining == '0': break
             if time.monotonic() >= deadline: raise RuntimeError('FPM left a PostgreSQL session alive')

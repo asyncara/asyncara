@@ -112,6 +112,7 @@ jobs:
         run: |
           for backend in epoll poll; do
             python3 tests/database/prepared_pg.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-prepared/"$backend"
+            python3 tests/database/mtls_pg.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-mtls/"$backend"
           done
       - name: Build dependencies with their supported Valgrind stack annotations
         run: |
@@ -143,5 +144,7 @@ jobs:
             build/database-tls/report.json
             build/pg-prepared/**/*.json
             build/pg-prepared/**/*.log
+            build/pg-mtls/**/*.json
+            build/pg-mtls/**/*.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
