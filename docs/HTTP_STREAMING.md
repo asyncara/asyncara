@@ -227,3 +227,58 @@ header, pause, upload and queue limits are unchanged. Failed growth retains the
 original owner and bytes. The ledger is not a complete process memory limit.
 See [capacity evidence](HTTP_BUFFER_CAPACITY.md) for before/after real-I/O tests,
 scoped instruments and retained unrelated failures.
+
+## Hyper client streaming continuation (2026-11-10)
+
+Implementation exists; final integration/memory validation is in progress.
+The opt-in Hyper HTTP/1.1 transport now uses the same getStream, download,
+upload and requestStream APIs. HTTP/IP, worker-resolved HTTP/DNS and verified
+HTTPS share the original client permit and native operation owner. Network/TLS
+waits use the readiness driver; file uploads/downloads still use native workers.
+No curl fallback, Tokio executor or application callback inside Rust is added.
+
+`ar_hyper_head` publishes complete headers before body completion. The C response
+slot admits at most64KiB; a full slot returns a distinct pause result. Rust's
+transfer Future retains the unaccepted frame/chunk, suspends and retries after
+`asyncara_http_read` wakes that operation. It does not discard partial bytes or
+spin while the consumer is paused. An empty response still resolves its headers.
+The existing two-element PHP queue and consumer/producer chunks remain separate
+from the C slot. Hyper framing buffers, retained Bytes, TLS buffers and allocator
+metadata are outside the C aggregate ledger;64KiB is not a process-memory limit.
+
+`ClientBody` consumes an upload slot of at most64KiB and copies its borrowed C
+view before returning across FFI. The producer can then refill the slot without
+mutating the bytes already owned by the transport. An empty non-EOF slot returns
+Pending; C refill wakes the canonical connection driver. Known-length uploads
+use Content-Length; unknown lengths use HTTP/1.1 chunks. EOF, fixed-size mismatch,
+producer exceptions and owner cancellation retain the existing cleanup rules.
+No full-file materialization is introduced.
+
+A complete early closing response cancels/joins the remaining producer. A peer
+that resets a connection with unread upload bytes can lose its final response;
+that is a transfer error, not a guaranteed413. The held-peer regression proves
+413 delivery before peer release; a separate abrupt-reset control requires
+prompt explicit completion/error. Already-sent bytes cannot be rolled back.
+A timeout on a shared headers waiter does not cancel another waiter's stream.
+
+Streaming responses preserve encoded wire-body bytes, including gzip. Buffered
+Hyper decompression, redirect following, proxies, MIME, HTTP/2/3 and client mTLS
+remain unsupported by this continuation. Existing curl capabilities are retained.
+
+Reproduction (use a new evidence directory):
+
+```sh
+python3 tests/http/hyper_streaming.py --php /path/to/php \
+  --module /path/to/asyncara.so --backend epoll --out /path/to/new-run
+# Repeat with --backend poll. --memory selects a separate scoped ownership test.
+FPM_BIN=/path/to/php-fpm python3 tests/http/hyper_fpm.py \
+  --extension /path/to/asyncara.so --backend epoll --streams --output /path/to/new-fpm
+```
+
+The functional test retains two timer ticks while the peer independently keeps
+body I/O pending,32MiB streamed identity,64KiB buffer bounds, slow consumption,
+worker file I/O, early close, cancellation, upload rejection, deadlines, failed
+TLS trust and zero collected native resources. Runtime::diagnostics outside
+Async::run is a cached pre-GC snapshot; the test separately checks the live
+Future weak registry after collection. Neither this test nor a short FPM pass
+certifies the historical six-hour failure or universal deployment reliability.

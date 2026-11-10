@@ -634,3 +634,79 @@ fn established_tls_reads_while_application_writes_are_blocked() {
     end_tx.send(()).unwrap();
     peer.join().unwrap();
 }
+
+thread_local! {
+    static UPLOAD_SLOT: RefCell<(i32, Vec<u8>)> = const { RefCell::new((1, Vec::new())) };
+}
+#[no_mangle]
+unsafe extern "C" fn ar_hyper_upload(
+    _: *mut c_void,
+    data: *mut *const u8,
+    length: *mut usize,
+) -> i32 {
+    UPLOAD_SLOT.with(|slot| {
+        let mut slot = slot.borrow_mut();
+        let state = slot.0;
+        if state == 0 {
+            *data = slot.1.as_ptr();
+            *length = slot.1.len();
+            slot.0 = 1;
+        }
+        state
+    })
+}
+
+#[test]
+fn streamed_upload_slot_owns_copy_and_never_self_wakes_while_pending() {
+    use hyper::body::Body;
+    let wake = Flag::new();
+    wake.take();
+    let waker = Waker::from(wake.clone());
+    let mut cx = Context::from_waker(&waker);
+    let mut body = ClientBody::new(1, Bytes::new(), Some(-1));
+    UPLOAD_SLOT.with(|slot| *slot.borrow_mut() = (1, Vec::new()));
+    for _ in 0..100 {
+        assert!(Pin::new(&mut body).poll_frame(&mut cx).is_pending());
+    }
+    assert!(!wake.take(), "empty upload slot busy-wakes");
+    UPLOAD_SLOT.with(|slot| *slot.borrow_mut() = (0, vec![b'x'; 65536]));
+    let Poll::Ready(Some(Ok(frame))) = Pin::new(&mut body).poll_frame(&mut cx) else {
+        panic!("missing frame")
+    };
+    UPLOAD_SLOT.with(|slot| slot.borrow_mut().1.fill(b'y'));
+    assert!(
+        frame.data_ref().unwrap().iter().all(|&b| b == b'x'),
+        "borrow survived refill"
+    );
+    UPLOAD_SLOT.with(|slot| slot.borrow_mut().0 = 2);
+    assert!(matches!(
+        Pin::new(&mut body).poll_frame(&mut cx),
+        Poll::Ready(None)
+    ));
+    assert!(body.is_end_stream());
+}
+
+#[test]
+fn streamed_upload_checks_fixed_length_and_invalid_slots() {
+    use hyper::body::Body;
+    let waker = Waker::from(Flag::new());
+    let mut cx = Context::from_waker(&waker);
+    for (state, size) in [(2, 0), (0, 65537), (0, 11), (-1, 0)] {
+        let mut body = ClientBody::new(1, Bytes::new(), Some(10));
+        UPLOAD_SLOT.with(|slot| *slot.borrow_mut() = (state, vec![b'x'; size]));
+        assert!(matches!(
+            Pin::new(&mut body).poll_frame(&mut cx),
+            Poll::Ready(Some(Err(_)))
+        ));
+        assert!(body.is_end_stream());
+    }
+    let mut body = ClientBody::new(1, Bytes::new(), Some(10));
+    assert_eq!(body.size_hint().exact(), Some(10));
+    UPLOAD_SLOT.with(|slot| *slot.borrow_mut() = (0, vec![b'x'; 10]));
+    assert!(matches!(
+        Pin::new(&mut body).poll_frame(&mut cx),
+        Poll::Ready(Some(Ok(_)))
+    ));
+    assert_eq!(body.size_hint().exact(), Some(0));
+    assert!(body.is_end_stream());
+}

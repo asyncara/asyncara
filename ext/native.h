@@ -213,6 +213,10 @@ typedef struct {
 int ar_hyper_submit_http(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
                         const ar_hyper_address *, size_t, const unsigned char *, size_t,
                         const ar_hyper_request *);
+int ar_hyper_submit_http_stream(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
+                               const ar_hyper_address *, size_t, const unsigned char *, size_t,
+                               const ar_hyper_request *, unsigned, int64_t);
+int ar_hyper_resume(void *engine, void *job);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);
 int ar_hyper_timeout(void *engine);

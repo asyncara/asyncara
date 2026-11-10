@@ -2580,3 +2580,41 @@ composer.lock dependencies fixed the test environment; the module and all tracke
 source remained byte-identical. [Build attestation](docs/phase7/postgresql-r1-package.json)
 retains both reports. The fatal-bailout memory finding is unchanged and separately
 reported above. No release or universal performance/endurance claim.
+
+## 2026-11-10 — prioritized subsystem completion, Hyper streaming
+
+User priority: Rust Hyper backend, Native Server, HTTP Client, Hyper HTTP Client,
+broad HTTP protocol/proxy certification, PostgreSQL, MySQL/MariaDB, Redis,
+Native Filesystem and Memory Hardening. Base `2ce2e88558a7615d1f5e7e272cae97d042337667`
+on the existing isolated `phase7-native-server-20261109T231953Z` worktree. No
+blanket status replacement. Phase4 checkout, binaries and historical evidence
+remain separate. New evidence root `/home/coder/Asyncara-priority-20261110T205459Z`.
+
+First gap: Hyper rejected all response/upload streaming. Preserved
+`hyper-stream-before/report.json` FAIL exit255 against the preceding module.
+C now connects the existing bounded upload/response slots to Rust pause/resume;
+a production ClientBody consumes at most64KiB per producer slot, copies the
+borrowed view before returning across FFI and never calls PHP inside Rust.
+HTTP readiness publication returns to the scheduler before another kernel wait.
+The existing public API, semaphore, worker file I/O and TLS/DNS preparation are
+shared. Proxies, redirects, MIME and buffered decompression remain separate gaps.
+
+First epoll functional run passes in14.404s: three origins (IP/DNS HTTP and
+verified HTTPS),32MiB streams/uploads/downloads, backpressure, two ticks before
+independent peer release, cancellation, timeout, early-close and cleanup. Final
+native pending/managed memory/file handles/live Future registry are zero. This
+is not yet final matrix, FPM, memory or independent-package acceptance.
+Preserved r1/r2 failures exposed a test assumption about TLS unread-body reset;
+new held-peer rejection requires413 before peer release, while a separate reset
+control requires prompt explicit completion/error. Preserved r3 used the cached
+pre-GC Runtime snapshot as a live Future count; corrected test checks the actual
+live weak registry after collection. No production timer or limit was relaxed.
+PHP83/84/85/DEBUG/GCC epoll/poll validation is in progress. Exact command/process
+and next action are in the evidence state and matrix active records.
+
+Focused completion: matrix-r2 PASS35 commands/290.775s across the five builds
+and both readiness backends. DEBUG Valgrind streaming ownership controls pass
+on epoll/poll with zero errors and zero definite/indirect/possible loss;
+5306bytes/19blocks remain reachable, no suppressions. Gate A passes203.435s.
+The complete HTTP/core/server and four-worker FPM suites are still running;
+these focused results are not broad protocol certification or an endurance pass.

@@ -3,13 +3,13 @@
 This is separate from both the curl feature fixture and historical acceptance.
 """
 import argparse,hashlib,importlib.util,json,os,pathlib,sys,time
-p=argparse.ArgumentParser();p.add_argument('--extension',required=True);p.add_argument('--output',required=True);p.add_argument('--backend',choices=['epoll','poll']);modes=p.add_mutually_exclusive_group();modes.add_argument('--dns',action='store_true',help='Additional worker-resolved origin lifecycle fixture');modes.add_argument('--requests',action='store_true',help='Bounded POST bodies and request teardown');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--extension',required=True);p.add_argument('--output',required=True);p.add_argument('--backend',choices=['epoll','poll']);modes=p.add_mutually_exclusive_group();modes.add_argument('--dns',action='store_true',help='Additional worker-resolved origin lifecycle fixture');modes.add_argument('--requests',action='store_true',help='Bounded POST bodies and request teardown');modes.add_argument('--streams',action='store_true',help='Mixed streaming responses and uploads with original barrier/two ticks');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.output).resolve();out.mkdir(parents=True,exist_ok=False)
 os.environ['ASYNCARA_FPM_DIR']=str(out);os.environ['ASYNCARA_EXTENSION']=str(pathlib.Path(a.extension).resolve())
 spec=importlib.util.spec_from_file_location('audit',root/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
 sys.path.insert(0,str(root/'tests/fast'));from fpm_client import request
-fixture=root/('tests/http/hyper_post_fpm_request.php' if a.requests else 'tests/http/hyper_dns_fpm_request.php' if a.dns else 'tests/http/hyper_fpm_request.php')
-if a.requests:
+fixture=root/('tests/http/hyper_stream_fpm_request.php' if a.streams else 'tests/http/hyper_post_fpm_request.php' if a.requests else 'tests/http/hyper_dns_fpm_request.php' if a.dns else 'tests/http/hyper_fpm_request.php')
+if a.requests or a.streams:
  def post(self):
   size=int(self.headers.get('Content-Length','-1'))
   if size!=65536 or self.headers.get('Transfer-Encoding'):

@@ -239,3 +239,15 @@ dropped. SQL byte accounting excludes PHP metadata, libpq and server plan memory
 a server-side plan can cost more than its SQL text. statistics exposes entries,
 SQL bytes, limits and cumulative hits/misses/evictions. See
 [implementation and evidence](POSTGRESQL_PREPARED.md).
+
+## Hyper streaming slots
+
+The client continuation uses the existing64KiB C response/upload slots and
+BLOCK_PRODUCER pause/resume behavior. The public response stream queues at most
+two PHP chunks. Rust retains the pending response frame while paused and an
+owned upload Bytes copy while the transport uses it. Hyper's configured128KiB
+read/write buffering threshold, a current frame and rustls's64KiB output bound
+are separate layers, not a precise total-allocation ceiling. Native accounting
+does not include all Rust, PHP, TLS, allocator or kernel memory. Operation and
+connection limits remain required. No critical bytes are dropped on overflow;
+consumer close/owner cancellation explicitly terminates the transfer.

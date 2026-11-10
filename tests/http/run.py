@@ -86,6 +86,9 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
+        run(backend + '-prototype-streaming', ['python3', 'tests/http/hyper_streaming.py',
+            '--php', a.php, '--module', module, '--backend', backend,
+            '--out', out / (backend + '-prototype-streaming')], env, timeout=150)
         for test in ['transfer_geometry', 'hyper_wakeups', 'hyper_encoding', 'hyper_dns', 'capacity', 'gate_protocol', 'hyper_uri', 'hyper', 'buffered_owner']:
             run(backend + '-prototype-' + test, php + ['tests/http/' + test + '.php'],
                 env | {'ASYNCARA_HTTP_BACKEND': 'hyper-prototype'})
