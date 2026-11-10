@@ -109,9 +109,10 @@ final class App
                         } elseif (isset($this->inboxes[$connection])) { $this->inboxes[$connection]->put($event); }
                         else {
                             $inbox = new Server\Inbox();
-                            try { $this->tasks[$connection] = Async::spawn(function () use ($connection, $event, $inbox): void {
+                            try { $this->tasks[$connection] = Async::spawn(function () use ($connection, $inbox): void {
                                 try {
                                     while (true) {
+                                        $event = $inbox->take();
                                         // A Fiber is reused, request Context is not. PHP globals
                                         // remain explicitly process scoped, as documented.
                                         Scheduler::current()->task->context = [];
@@ -125,11 +126,10 @@ final class App
                                         catch (\Throwable) { \asyncara_server_respond($id, 500, [], ''); }
                                         unset($response, $event);
                                         Scheduler::current()->task->context = [];
-                                        $event = $inbox->take();
                                     }
                                 } catch (Exception\CancelledException) { /* owner disappeared */ }
                                 finally { unset($this->tasks[$connection], $this->inboxes[$connection]); }
-                            }, false); $this->inboxes[$connection] = $inbox; $this->handlerTasksCreated++; }
+                            }, false); $inbox->put($event); $this->inboxes[$connection] = $inbox; $this->handlerTasksCreated++; }
                             catch (Exception\CapacityException) { \asyncara_server_respond($event['id'], 503, [], ''); }
                         }
                         if (++$processed === 256) { Async::sleep(0); break; }

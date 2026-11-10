@@ -254,6 +254,28 @@ fn error(status: u16) -> Reply {
         .body(Full::new(Bytes::new()))
         .expect("constant response")
 }
+fn valid_host(value: &header::HeaderValue) -> bool {
+    let Ok(raw) = value.to_str() else {
+        return false;
+    };
+    // URI Authority also permits userinfo and nonnumeric port text. Host does
+    // not: RFC9110 7.2 is uri-host [ ":" port ], without a userinfo component.
+    if raw.contains('@') {
+        return false;
+    }
+    let Ok(authority) = raw.parse::<hyper::http::uri::Authority>() else {
+        return false;
+    };
+    let host = authority.host();
+    if host.is_empty() {
+        return false;
+    }
+    let suffix = &raw[host.len()..];
+    suffix.is_empty()
+        || suffix
+            .strip_prefix(':')
+            .is_some_and(|p| p.bytes().all(|b| b.is_ascii_digit()))
+}
 impl Service<Request<Incoming>> for Dispatch {
     type Response = Reply;
     type Error = Infallible;
@@ -264,11 +286,7 @@ impl Service<Request<Incoming>> for Dispatch {
             let (parts, mut incoming) = request.into_parts();
             if parts.version == hyper::Version::HTTP_11 {
                 let mut hosts = parts.headers.get_all(header::HOST).iter();
-                let valid = hosts
-                    .next()
-                    .and_then(|v| v.to_str().ok())
-                    .and_then(|v| v.parse::<hyper::http::uri::Authority>().ok());
-                if valid.is_none() || hosts.next().is_some() {
+                if !hosts.next().is_some_and(valid_host) || hosts.next().is_some() {
                     return Ok(error(400));
                 }
             }
@@ -970,6 +988,28 @@ pub unsafe extern "C" fn ar_server_shutdown(ptr: *mut c_void) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn host_is_not_a_general_uri_authority() {
+        for host in ["localhost", "127.0.0.1:8080", "[::1]:80", "example.com:"] {
+            assert!(
+                valid_host(&header::HeaderValue::from_str(host).unwrap()),
+                "{host}"
+            );
+        }
+        for host in [
+            "",
+            ":80",
+            "user@localhost",
+            "localhost:bad",
+            "localhost:12x",
+            "a/b",
+        ] {
+            assert!(
+                !valid_host(&header::HeaderValue::from_str(host).unwrap()),
+                "{host}"
+            );
+        }
+    }
     #[test]
     fn payload_budget_follows_last_transport_reference() {
         let used = Arc::new(AtomicUsize::new(0));
