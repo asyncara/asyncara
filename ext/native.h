@@ -154,6 +154,7 @@ typedef struct ar_engine {
     ar_db *dbs;
     ar_file *files;
     void *hyper;
+    void *server;
     int hyper_requested;
     CURLM *multi;
     CURL *http_idle[64];
@@ -196,6 +197,7 @@ void ar_http_start(ar_engine *e, ar_job *j);
 void ar_http_progress(ar_engine *e);
 #ifdef HAVE_ASYNCARA_HYPER
 struct pollfd;
+#include "server.h"
 void *ar_hyper_new(size_t total, size_t host);
 void ar_hyper_free(void *engine);
 typedef struct { const unsigned char *bytes; size_t length; } ar_hyper_address;

@@ -11,6 +11,7 @@
     "psr/http-message": "^2.0"
   },
   "autoload": {
+    "classmap": ["src/Asyncara.php"],
     "psr-4": {
       "Asyncara\\": "src/Asyncara/"
     }

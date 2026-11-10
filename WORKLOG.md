@@ -2211,3 +2211,20 @@ with zero ticks; trace-only repeat also fails. Separate1ms epoll waits overshoot
 post-wait intervals lack CPU attribution. Root cause remains unresolved. No test
 threshold was changed. Final Gate A/memory/FPM repeats and packaging remain
 INCOMPLETE. New server work proceeds separately; these failures remain retained.
+
+## 2026-11-09 — Isolated HTTP server development
+
+Created phase7-native-server-20261109T231953Z from 4abe8fd. Preserved the HTTP
+client continuation and its unresolved proxy ticker failures. Added a separate
+bounded Hyper HTTP/1 server integrated into the existing epoll/poll native wait,
+App routing/grouping/middleware, native JSON parsing through ext-json, response
+factories in Server namespace, millisecond sleep facade, and optional prefork
+workers with independent runtime ownership. Original client Response is unchanged.
+
+Early real-socket protocol checks pass on PHP 8.5 epoll/poll; four-worker Context
+isolation and graceful shutdown pass after preserving wait errno across native
+post-wait progress. The original worker shutdown failure is retained. Native
+fault regression and wider validation are in progress. Exploratory matched Go
+comparisons do not meet the requested performance target. Evidence is under
+/home/coder/Asyncara-server-evidence-20261109T232945Z; no Phase 4 files or binaries
+were modified. Server remains EXPERIMENTAL and is not production-certified.

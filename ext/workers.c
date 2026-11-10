@@ -1003,6 +1003,7 @@ void ar_engine_free(ar_engine *e) {
 #ifdef HAVE_ASYNCARA_HYPER
     /* Drop all Rust futures/socket owners before any C job is freed. */
     if (e->hyper) { ar_hyper_free(e->hyper); e->hyper = NULL; }
+    if (e->server) { ar_server_free(e->server); e->server = NULL; }
 #endif
     /* Includes collected results and not-yet-submitted jobs: Zend can bail out
      * during input validation or result conversion on PHP memory exhaustion. */

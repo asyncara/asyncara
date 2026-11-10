@@ -5,6 +5,7 @@
 compile_error!("The Asyncara Hyper prototype currently supports Linux only");
 use http_body_util::{BodyExt, Full};
 use hyper::{body::Bytes, Request, Uri};
+mod server;
 use std::{
     cell::RefCell,
     ffi::c_void,
