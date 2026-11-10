@@ -636,6 +636,16 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         if (deadline_for(hyper_timeout, &hyper_deadline)) return -1;
         if (deadline < 0 || hyper_deadline < deadline) deadline = hyper_deadline;
     }
+    if (e->server) {
+        if (ar_server_drive(e->server) < 0) { errno = EIO; return -1; }
+        int server_timeout = ar_server_timeout(e->server);
+        if (server_timeout == -2) { errno = EIO; return -1; }
+        if (server_timeout >= 0 && deadline != 0) {
+            int64_t server_deadline;
+            if (deadline_for(server_timeout, &server_deadline)) return -1;
+            if (deadline < 0 || server_deadline < deadline) deadline = server_deadline;
+        }
+    }
 #endif
     pthread_mutex_lock(&e->mutex);
     int done = e->done_head != NULL;
@@ -655,16 +665,18 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         }
     }
     size_t ns = http_wait_interests(e);
-    size_t nh = 0;
+    size_t nh = 0, nv = 0;
 #ifdef HAVE_ASYNCARA_HYPER
     if (e->hyper) nh = ar_hyper_fds(e->hyper, NULL, 0);
     if (nh == SIZE_MAX) { ar_hyper_failed(e); nh = 0; deadline = 0; }
+    if (e->server) nv = ar_server_fds(e->server, NULL, 0);
+    if (nv == SIZE_MAX) { errno = EIO; return -1; }
 #endif
-    if (nh > 256 || n + ns + nh + 1 > AR_MAX_WATCHERS) {
+    if (nh > 256 || nv > AR_MAX_WATCHERS || n + ns + nh + nv + 1 > AR_MAX_WATCHERS) {
         errno = EOVERFLOW;
         return -1;
     }
-    struct pollfd *fds = calloc(n + ns + nh + 1, sizeof(*fds));
+    struct pollfd *fds = calloc(n + ns + nh + nv + 1, sizeof(*fds));
     /* Preserve the small-set path. Larger sets previously compared every new
      * descriptor with every existing descriptor (quadratic setup each wait).
      * A <= half-full index merges interests without changing input/dispatch
@@ -722,8 +734,17 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
         if (actual > nh) { ar_hyper_failed(e); deadline = 0; }
         else count += actual;
     }
+    size_t server_start = count;
+    if (e->server) {
+        size_t actual = ar_server_fds(e->server, fds + count, nv);
+        if (actual > nv) { free(fds); free(indices); errno = EIO; return -1; }
+        count += actual;
+    }
 #endif
     int rc = wait_fds(e, fds, count, deadline);
+    /* Progress below may call recv/accept and replace errno with EAGAIN. Keep
+     * the actual wait result, especially EINTR from graceful stop signals. */
+    int wait_errno = rc < 0 ? errno : 0;
     if (rc >= 0) {
         for (size_t i = 0; i < n; i++)
             w[i].ready = w[i].buffered ||
@@ -749,15 +770,21 @@ static int wait_impl(ar_engine *e, ar_watch *w, size_t n, int timeout) {
     }
 #ifdef HAVE_ASYNCARA_HYPER
     if (e->hyper) {
-        for (size_t i = curl_end; i < count; i++) if (fds[i].revents) {
+        for (size_t i = curl_end; i < server_start; i++) if (fds[i].revents) {
             if (ar_hyper_ready(e->hyper, fds[i].fd, fds[i].revents)) {
                 ar_hyper_failed(e); break;
             }
         }
         hyper_progress(e);
     }
+    if (e->server) {
+        for (size_t i = server_start; i < count; i++) if (fds[i].revents) {
+            if (ar_server_ready(e->server, fds[i].fd, fds[i].revents)) { rc = -1; wait_errno = EIO; break; }
+        }
+        if (ar_server_drive(e->server)) { rc = -1; wait_errno = EIO; }
+    }
 #endif
-    int saved = errno;
+    int saved = rc < 0 ? wait_errno : errno;
     free(fds);
     free(indices);
     errno = saved;

@@ -34,6 +34,9 @@ static ar_engine *get_engine(void) {
         zend_throw_exception(zend_ce_exception, "Cannot initialize native runtime", 0);
     return engine;
 }
+#ifdef HAVE_ASYNCARA_HYPER
+#include "server_php.h"
+#endif
 static ar_value *copy_value(ar_engine *e, zval *z, unsigned depth, size_t *bytes) {
     ZVAL_DEREF(z);
     if (depth > 4 || *bytes > AR_LIMIT)
@@ -1216,6 +1219,15 @@ static const zend_function_entry functions[] = {
     PHP_FE(asyncara_trace_configure, arginfo_trace_configure)
     PHP_FE(asyncara_trace_event, arginfo_trace_event)
     PHP_FE(asyncara_trace_snapshot, arginfo_info)
+#ifdef HAVE_ASYNCARA_HYPER
+    PHP_FE(asyncara_server_listen, arginfo_server_listen)
+    PHP_FE(asyncara_server_info, arginfo_server_next)
+    PHP_FE(asyncara_server_next, arginfo_server_next)
+    PHP_FE(asyncara_server_respond, arginfo_server_respond)
+    PHP_FE(asyncara_server_shutdown, arginfo_server_void)
+    PHP_FE(asyncara_server_close, arginfo_server_void)
+    PHP_FE(asyncara_server_can_fork, arginfo_server_can_fork)
+#endif
 #ifdef HAVE_ASYNCARA_MYSQL
         PHP_FE(asyncara_mysql_open, arginfo_pg_open) PHP_FE(asyncara_mysql_query, arginfo_pg_query)
             PHP_FE(asyncara_mysql_step, arginfo_mysql_step) PHP_FE(asyncara_mysql_close, arginfo_pg_conn)
