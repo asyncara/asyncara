@@ -46,9 +46,9 @@ async def checks(port):
     w.write(b'POST /data HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n3\r\n{"x\r\n4\r\n":1}\r\n0\r\n\r\n')
     await w.drain(); s,h,b=await response(r); assert s==201 and json.loads(b)['received']=={'x':1}
     w.close(); await w.wait_closed(); completed.append('chunked')
-    for packet in [b'GET /status HTTP/1.1\r\n\r\n', b'GET /status HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n', b'POST /data HTTP/1.1\r\nHost: a\r\nContent-Length: 1\r\nContent-Length: 2\r\n\r\nx']:
+    for packet in [b'GET /status HTTP/1.1\r\n\r\n', b'GET /status HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n', b'POST /data HTTP/1.1\r\nHost: a\r\nContent-Length: 1\r\nContent-Length: 2\r\n\r\nx', b'GET /status HTTP/1.1\r\nHost: user@localhost\r\n\r\n', b'GET /status HTTP/1.1\r\nHost: localhost:bad\r\n\r\n']:
         r,w=await connect(); w.write(packet); await w.drain()
-        assert (await response(r))[0]==400
+        rejected=await response(r);assert rejected[0]==400,(packet,rejected)
         w.close(); await w.wait_closed()
     completed.append('invalid_host_and_framing')
     # Two timers must fire while this independently held request is incomplete.
@@ -117,10 +117,13 @@ def main():
     root=pathlib.Path(__file__).resolve().parents[2]
     cmd=[args.php,'-n','-d','extension='+str(pathlib.Path(args.module).resolve()),str(root/'tests/server/fixture.php')]
     env=os.environ|{'ASYNCARA_BACKEND':args.backend}
-    start=time.monotonic(); result={'command':cmd,'backend':args.backend,'moduleSha256':hashlib.sha256(pathlib.Path(args.module).read_bytes()).hexdigest(),'source':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()}
-    manifest={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for d in ['ext','src','tests/server'] for f in (root/d).rglob('*') if f.is_file()}
+    gitroot=subprocess.run(['git','rev-parse','--show-toplevel'],cwd=root,text=True,capture_output=True)
+    in_checkout=gitroot.returncode==0 and pathlib.Path(gitroot.stdout.strip()).resolve()==root.resolve()
+    source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip() if in_checkout else None
+    start=time.monotonic(); result={'command':cmd,'backend':args.backend,'moduleSha256':hashlib.sha256(pathlib.Path(args.module).read_bytes()).hexdigest(),'source':source,'sourceIdentity':'git+manifest' if in_checkout else 'manifest-only; see package attestation'}
+    manifest={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for d in ['ext','src','tests/server'] for f in (root/d).rglob('*') if f.is_file() and '__pycache__' not in f.parts}
     (out/'source-manifest.json').write_text(json.dumps(manifest,sort_keys=True,indent=2))
-    (out/'source.patch').write_bytes(subprocess.check_output(['git','diff','--binary','HEAD'],cwd=root))
+    (out/'source.patch').write_bytes(subprocess.check_output(['git','diff','--binary','HEAD'],cwd=root) if in_checkout else b'')
     with (out/'stderr.log').open('w') as stderr:
         proc=subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=stderr,env=env,text=True)
         (out/'launch.json').write_text(json.dumps(result|{'pid':proc.pid},indent=2))

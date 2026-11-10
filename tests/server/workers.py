@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse, concurrent.futures, hashlib, http.client, json, os, pathlib, signal, socket, subprocess, time, traceback
-p=argparse.ArgumentParser();p.add_argument('--php',required=True);p.add_argument('--module',required=True);p.add_argument('--posix',required=True);p.add_argument('--out',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--php',required=True);p.add_argument('--module',required=True);p.add_argument('--posix',required=True);p.add_argument('--out',required=True);p.add_argument('--failure',choices=['none','worker-exit'],default='none');a=p.parse_args()
 o=pathlib.Path(a.out);o.mkdir(parents=True,exist_ok=False);root=pathlib.Path(__file__).resolve().parents[2]
 with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
 cmd=[a.php,'-n','-d','extension='+a.posix,'-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/server/workers.php'),str(port)]
@@ -21,9 +21,18 @@ with (o/'stderr.log').open('w') as err:
    states=list(pool.map(lambda _:json.loads(req('/pid')),range(64)))
   assert all(r['state'] is None for r in states),states
   pids={r['pid'] for r in replies};result['workerPids']=sorted(pids)
-  child.send_signal(signal.SIGTERM);tail=child.communicate(timeout=10)[0];assert child.returncode==0,(child.returncode,tail)
+  if a.failure=='worker-exit':
+   # Kill only a child whose PID was returned by our isolated fixture.
+   victim=min(pids)
+   fields=pathlib.Path('/proc',str(victim),'stat').read_text().rsplit(')',1)[1].split()
+   assert int(fields[1])==child.pid,'Worker ownership changed'
+   os.kill(victim,signal.SIGKILL)
+  else:child.send_signal(signal.SIGTERM)
+  tail=child.communicate(timeout=10)[0];(o/'stdout.log').write_text(tail)
+  assert (child.returncode==0)==(a.failure=='none'),(child.returncode,tail)
+  if a.failure=='worker-exit':assert 'HTTP worker failed' in tail+(o/'stderr.log').read_text()
   assert all(not pathlib.Path('/proc',str(pid)).exists() for pid in pids)
-  result['status']='PASS'
+  result.update(status='PASS',failureMode=a.failure)
  except BaseException as e:result.update(status='FAIL',error=repr(e),traceback=traceback.format_exc())
  finally:
   if child.poll() is None:
