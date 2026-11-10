@@ -2380,3 +2380,13 @@ HTTP client gate passes74 commands in120.022s;
 phpize-r3 passes10 commands. Bounded response streaming, TLS/mTLS, ownership,
 redaction and timeout classification are covered. No new performance or long
 endurance claim. Preparing a new source archive; old server-r1 remains unchanged.
+
+Server-r2 source3991adc is committed, packaged twice byte-identically and matched
+to all575 Git-tree files. SHA256 d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd.
+Independent extracted source/fresh Cargo/native build passes13 commands including
+TLS and streaming on both readiness backends. Independent module SHA256
+a2250d811b55d8179fd666d88432b56ec40e1712a2537268bd8bff1db270e8bd.
+C-only default build also passes. Phase4 checkout/module, original archives and
+LICENSE remain unchanged. This follow-up records evidence only. All remaining
+project-wide partial features are explicitly retained in COMPLETION_STATUS.md;
+release EXPERIMENTAL, no new benchmark or GitHub release claim.

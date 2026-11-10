@@ -68,6 +68,18 @@ provider decision. Historical PHP/libpq/libcurl findings remain separate.
 | FPM/history/performance | Original six-hour zero-tick FAIL remains; new short tests do not establish its exact cause or universal throughput |
 | Hooks/ZTS/platforms | Existing optional timer hooks retained. Universal hooks, userland ThreadPool and untested platforms are not made complete by changing labels |
 
-No claim that every PARTIALLY_IMPLEMENTED item is complete. Current follow-up
-priority is to validate this native slice, then implement incoming body streaming
-with the same bounded ownership rules before adding multiplexed protocols.
+No claim that every PARTIALLY_IMPLEMENTED item is complete. The next source
+priority is incoming body streaming with the same bounded ownership rules, before
+adding multiplexed protocols. Wider database and certification gaps remain above.
+
+## Verified source distribution
+
+Implemented/tested/packaged source: `3991adc2b02b46f1525495cefde9c743d9c4e7a3`.
+Archive: `build/asyncara-0.1.0-dev-server-r2.tar.gz`, 575 files.
+SHA256: `d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd`.
+A second archive is byte-identical; every entry matches the Git tree. Clean
+extraction, a fresh Cargo target and native build pass 13 commands: PHP85
+protocol, API, body lifetime, TLS and plain/TLS streaming on epoll/poll.
+[Independent attestation](phase7/server-r2-package.json). The follow-up evidence
+commit changes documentation only; it is not a different native runtime.
+No GitHub release, performance acceptance or broad production certification.

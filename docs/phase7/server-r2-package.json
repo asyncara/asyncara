@@ -1,0 +1,275 @@
+{
+  "status": "PASS",
+  "sourceCommit": "3991adc2b02b46f1525495cefde9c743d9c4e7a3",
+  "nativeCheckpoint": "3991adc2b02b46f1525495cefde9c743d9c4e7a3",
+  "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-server-r2.tar.gz",
+  "archiveSha256": "d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd",
+  "sourceFiles": 575,
+  "gitTreeVerified": true,
+  "byteReproducible": true,
+  "commands": [
+    {
+      "name": "independent-build",
+      "command": [
+        "bash",
+        "scripts/build-hyper-local.sh"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 144.2909476698842,
+      "logSha256": "24f9eeeefd504149a36b25acf8b2cf883e1a26ecea3f86f0aaef133ba6b7668d"
+    },
+    {
+      "name": "epoll-protocol",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/epoll-protocol"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 2.2836906048469245,
+      "logSha256": "03ba4b9144ad09040da9736402e47ab57bb19affef10ee322e9c67810a2a95ad"
+    },
+    {
+      "name": "epoll-body",
+      "command": [
+        "python3",
+        "tests/server/body_lifetime.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/epoll-body"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.26705378596670926,
+      "logSha256": "130edf1b71a1adb9f537cdc07b1bbd4ba34d0075db212a0e3f30bb2c66bd7c5d"
+    },
+    {
+      "name": "epoll-api",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-completion-20261110T013405Z/package-r2/asyncara-0.1.0-dev/build/asyncara-server.so",
+        "tests/server/api.php"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.0638740099966526,
+      "logSha256": "ec8c58c349edc1d29a9f15bc2577ba1fd5b05f1faee70c9f099e13df16e73c42"
+    },
+    {
+      "name": "epoll-tls",
+      "command": [
+        "python3",
+        "tests/server/tls.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/epoll-tls"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 3.0129103411454707,
+      "logSha256": "dcaf55bf00cdded47a76758b6a6e136672720ebd3a8d2b667ade5cc32b63d959"
+    },
+    {
+      "name": "epoll-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/epoll-stream"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 0.535257067065686,
+      "logSha256": "625b62b5ba68555cacf957511f2e35376b20dc6652451a024089458eb21fa808"
+    },
+    {
+      "name": "epoll-tls-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--tls",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/epoll-tls-stream"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 1.158453379990533,
+      "logSha256": "02c7f2db98d6ca42e8c047e47dc7b9ce420ec689b3542916d4b72869cb656efd"
+    },
+    {
+      "name": "poll-protocol",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/poll-protocol"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 2.0528695969842374,
+      "logSha256": "5a5fd59f07eaec86777c0a714aef2a9e2c3a8799b24f40ff127e4970a2055cc5"
+    },
+    {
+      "name": "poll-body",
+      "command": [
+        "python3",
+        "tests/server/body_lifetime.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/poll-body"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.2903387830592692,
+      "logSha256": "ed14d031f8d94676309186f66697c16869836b391a0342044ad40ed52f5339bf"
+    },
+    {
+      "name": "poll-api",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-completion-20261110T013405Z/package-r2/asyncara-0.1.0-dev/build/asyncara-server.so",
+        "tests/server/api.php"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.07261799206025898,
+      "logSha256": "f5534e43542860b4b57e7b7e27ef80c40a073eafba96f2e0d679070494b5629c"
+    },
+    {
+      "name": "poll-tls",
+      "command": [
+        "python3",
+        "tests/server/tls.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/poll-tls"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 3.175288447877392,
+      "logSha256": "d35bddf0c37c60fd3905667c9bf4a64222fec80a112629c74e2054275e7c2f7e"
+    },
+    {
+      "name": "poll-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/poll-stream"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 0.7060096201021224,
+      "logSha256": "a3e617f0f1120f65ac4661d219e60e3214899a7f5cfc9af3887f4f882f135d96"
+    },
+    {
+      "name": "poll-tls-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--tls",
+        "--out",
+        "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/poll-tls-stream"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 1.33382329903543,
+      "logSha256": "0f71708394d1f23786c07f75e18e6c1f7239026fbc8c11623bc7614c939d0f3f"
+    }
+  ],
+  "buildEnvironment": {
+    "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+    "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+    "CARGO_TARGET_DIR": "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/cargo-target",
+    "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+    "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+    "PHP_INCLUDE_DIR": "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+  },
+  "independentModuleSha256": "a2250d811b55d8179fd666d88432b56ec40e1712a2537268bd8bff1db270e8bd",
+  "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7",
+  "rawReport": "/home/coder/Asyncara-completion-20261110T013405Z/package-r2/report.json",
+  "rawReportSha256": "2edbd08dce8dc342ab412fb456772ae1216cc215916dfad627a62c1b7e1e0826",
+  "finalEnvironmentObservation": {
+    "observedAtUtc": "2026-11-10T02:58:08.638410+00:00",
+    "os": "Linux-6.8.0-147-generic-x86_64-with-glibc2.39",
+    "uname": [
+      "Linux",
+      "vmi3676542.contaboserver.net",
+      "6.8.0-147-generic",
+      "#147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:33:16 UTC 2026",
+      "x86_64",
+      "x86_64"
+    ],
+    "python": "3.12.3",
+    "pythonOpenSSL": "OpenSSL 3.0.13 30 Jan 2024",
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "note": "Post-validation environment observation; reference test commands/binaries remain in individual reports. Host also runs unrelated work; no new performance claim."
+  }
+}

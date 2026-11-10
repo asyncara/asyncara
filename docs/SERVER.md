@@ -262,3 +262,9 @@ held, malformed trust/identity/authentication controls, slow-reader backpressure
 Validation status and remaining project-wide partial work are recorded in
 [COMPLETION_STATUS.md](COMPLETION_STATUS.md). Earlier package/test paragraphs above
 remain historical evidence for server-r1, not tests of this continuation.
+
+The TLS/streaming continuation is packaged separately as server-r2 from
+`3991adc2b02b46f1525495cefde9c743d9c4e7a3`; 575 files, SHA256
+`d06985c353f62a767d33e094baa57508a9b214c692836b23b59cdf93d7be76bd`.
+Its independent clean build and 13 checks pass on PHP85 epoll/poll.
+[Package attestation](phase7/server-r2-package.json). Server-r1 above is unchanged.
