@@ -14,7 +14,7 @@ final class Connection
     private Semaphore $gate;
     private bool $subscribed = false;
     private function __construct(private TcpStream $stream, private float $timeout) { $this->gate = new Semaphore(1); }
-    public static function connect(string $host = '127.0.0.1', int $port = 6379, ?string $password = null, ?string $user = null, bool $resp3 = false, float $timeout = 30, bool $tls = false, ?string $caFile = null): Future
+    public static function connect(string $host = '127.0.0.1', int $port = 6379, #[\SensitiveParameter] ?string $password = null, ?string $user = null, bool $resp3 = false, float $timeout = 30, bool $tls = false, ?string $caFile = null): Future
     {
         return Async::spawn(static function () use ($host,$port,$password,$user,$resp3,$timeout,$tls,$caFile): self {
             $connection = new self(TcpStream::connect($host,$port,$timeout,$tls,$caFile)->await(),$timeout);

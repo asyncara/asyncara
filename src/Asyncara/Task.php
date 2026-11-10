@@ -13,7 +13,7 @@ final class Task extends Future
     /** @internal */ public string $state = 'ready';
     /** @internal */ public array $context;
     /** @internal */
-    public function __construct(public readonly int $id, private Scheduler $scheduler, callable $body, array $context)
+    public function __construct(public readonly int $id, private Scheduler $scheduler, #[\SensitiveParameter] callable $body, array $context)
     {
         parent::__construct();
         $this->context = $context;

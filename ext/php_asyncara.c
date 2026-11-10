@@ -1275,6 +1275,18 @@ PHP_MINIT_FUNCTION(asyncara) {
         "asyncara_server_listen", sizeof("asyncara_server_listen") - 1),
         9, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
 #endif
+    /* Connection options contain credentials. PHP must redact them even when
+     * native validation fails before a resource is returned to userland. */
+#ifdef HAVE_ASYNCARA_PQ
+    zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table),
+        "asyncara_pg_open", sizeof("asyncara_pg_open") - 1),
+        0, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
+#endif
+#ifdef HAVE_ASYNCARA_MYSQL
+    zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table),
+        "asyncara_mysql_open", sizeof("asyncara_mysql_open") - 1),
+        0, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
+#endif
     if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK)
         return FAILURE;
 #ifdef HAVE_ASYNCARA_PQ
