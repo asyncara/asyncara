@@ -11,6 +11,7 @@ import os
 import pathlib
 import resource
 import shlex
+import signal
 import subprocess
 import time
 
@@ -31,18 +32,26 @@ rows = []
 start = time.monotonic()
 
 
-def run(name, command):
+def run(name, command, timeout=180):
     began = time.monotonic()
     log = out / (name + '.log')
     with log.open('xb') as f:
-        child = subprocess.Popen(list(map(str, command)), cwd=root, env=env, stdout=f, stderr=subprocess.STDOUT)
+        child = subprocess.Popen(list(map(str, command)), cwd=root, env=env, stdout=f, stderr=subprocess.STDOUT, start_new_session=True)
         (out / 'active.json').write_text(json.dumps({'pid': child.pid, 'command': list(map(str, command)), 'status': 'RUNNING'}))
         try:
-            code = child.wait(timeout=180)
+            code = child.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
-            child.terminate(); child.wait(timeout=10); code = 124
+            # Own the complete compiler/test group, not just Cargo's parent.
+            try: os.killpg(child.pid, signal.SIGTERM)
+            except ProcessLookupError: pass
+            try: child.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                try: os.killpg(child.pid, signal.SIGKILL)
+                except ProcessLookupError: pass
+                child.wait()
+            code = 124
     rows.append({'name': name, 'command': list(map(str, command)), 'exit': code,
-                 'wallSeconds': time.monotonic() - began, 'logSha256': sha(log)})
+                 'wallSeconds': time.monotonic() - began, 'timeoutSeconds': timeout, 'logSha256': sha(log)})
     (out / 'active.json').write_text(json.dumps({'pid': child.pid, 'status': 'TERMINAL', 'exit': code}))
     (out / 'report.json').write_text(json.dumps({'status': 'FAIL' if code else 'RUNNING', 'commands': rows}, indent=2) + '\n')
     print(name, code, flush=True)
@@ -51,8 +60,11 @@ def run(name, command):
 
 
 resource.setrlimit(resource.RLIMIT_CORE, (0, 0))  # This test process and its children only.
+# A fresh AWS-LC dependency build can exceed the test-execution watchdog before
+# any test starts. Keep compilation separate; runtime test deadlines stay180s.
+run('rust-test-build', ['cargo', 'test', '--release', '--locked', '--manifest-path', 'ext/hyper/Cargo.toml', '--lib', '--no-run'], timeout=600)
 run('rust-owners', ['cargo', 'test', '--release', '--locked', '--manifest-path', 'ext/hyper/Cargo.toml', '--lib', '--', '--nocapture'])
-run('rust-fault-build', ['cargo', 'build', '--release', '--locked', '--manifest-path', 'ext/hyper/Cargo.toml', '--features', 'ffi-fault-tests'])
+run('rust-fault-build', ['cargo', 'build', '--release', '--locked', '--manifest-path', 'ext/hyper/Cargo.toml', '--features', 'ffi-fault-tests'], timeout=600)
 library = out / 'cargo/release/libasyncara_hyper_bridge.a'
 binary = out / 'hyper-faults'
 run('native-fault-build', shlex.split(os.environ.get('CC', 'cc')) +

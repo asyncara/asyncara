@@ -76,6 +76,7 @@ pub(super) struct TlsIo {
     io: Io,
     tls: Connection,
     established: Option<Rc<Cell<bool>>>,
+    handshaken: bool,
     closing: bool,
 }
 impl TlsIo {
@@ -86,6 +87,7 @@ impl TlsIo {
             io,
             tls: Connection::Server(tls),
             established: None,
+            handshaken: false,
             closing: false,
         })
     }
@@ -101,6 +103,7 @@ impl TlsIo {
             io,
             tls: Connection::Client(tls),
             established: Some(established),
+            handshaken: false,
             closing: false,
         })
     }
@@ -133,9 +136,15 @@ impl TlsIo {
         }
     }
     fn handshake(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        // After the initial handshake, pending application writes must never
+        // gate reads. A peer can reject an upload without consuming its body.
+        if self.handshaken {
+            return Poll::Ready(Ok(()));
+        }
         for _ in 0..16 {
             std::task::ready!(self.flush_tls(cx))?;
             if !self.tls.is_handshaking() {
+                self.handshaken = true;
                 if let Some(established) = &self.established {
                     established.set(true);
                 }

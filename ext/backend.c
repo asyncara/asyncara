@@ -201,7 +201,7 @@ static int hyper_progress(ar_engine *e) {
 static void hyper_start(ar_engine *e, ar_job *j) {
     /* Deliberately narrow evaluation scope. Never silently bypass a proxy,
      * discard options, or mix independently bounded connection pools. */
-    if (j->stream_response || j->stream_upload || j->b) goto unsupported;
+    if (j->stream_response || j->stream_upload) goto unsupported;
     const char *proxy[] = {"http_proxy", "HTTP_PROXY", "https_proxy", "HTTPS_PROXY", "all_proxy", "ALL_PROXY"};
     for (size_t i = 0; i < sizeof(proxy)/sizeof(*proxy); i++) {
         const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
@@ -209,11 +209,25 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     uint64_t connect = 10000;
     const unsigned char *ca = NULL; size_t ca_len = 0;
     ar_hyper_address addresses[16]; size_t count = 0;
+    ar_hyper_address headers[256];
+    ar_hyper_request request = {(const unsigned char *)"GET", 3,
+        (const unsigned char *)j->b, j->b_len, headers, 0};
     if (j->params) for (size_t i = 0; i < j->params->count; i++) {
         const char *key = j->params->keys[i]; ar_value *v = j->params->items[i];
         if (!key) goto unsupported;
-        if (!strcmp(key, "method")) { if (strcmp(v->string, "GET")) goto unsupported; }
-        else if (!strcmp(key, "headers")) { if (v->count) goto unsupported; }
+        if (!strcmp(key, "method")) {
+            if (v->type != V_STRING) goto unsupported;
+            request.method = (const unsigned char *)v->string; request.method_len = v->length;
+        }
+        else if (!strcmp(key, "headers")) {
+            if (v->type != V_ARRAY || v->count > 256) goto unsupported;
+            request.header_count = v->count;
+            for (size_t k = 0; k < v->count; k++) {
+                ar_value *header = v->items[k];
+                if (header->type != V_STRING || header->length > 65536) goto unsupported;
+                headers[k] = (ar_hyper_address){(const unsigned char *)header->string, header->length};
+            }
+        }
         else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
         else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
         else if (!strcmp(key, "caPem")) {
@@ -235,7 +249,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     if (!e->hyper) goto unsupported;
     /* Rust copies validated addresses synchronously; no borrowed PHP options
      * or resolver buffers survive this call. */
-    int submitted = ar_hyper_submit_request(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len);
+    int submitted = ar_hyper_submit_http(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */
@@ -247,7 +261,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     j->http_hyper = 1; e->hyper_submitted++;
     return;
 unsupported:
-    snprintf(j->error, sizeof(j->error), "Hyper requires HTTP(S) GET, verified roots for TLS, numeric or resolved addresses; no proxies, redirects, custom headers or streaming");
+    snprintf(j->error, sizeof(j->error), "Hyper requires bounded HTTP(S) requests and verified TLS; no caller-owned framing, proxies, redirects or streaming");
     ar_done(e, j);
 }
 #endif
