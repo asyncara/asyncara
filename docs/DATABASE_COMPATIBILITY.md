@@ -3,20 +3,20 @@
 These are tested configurations, not universal server certification. Tests use
 isolated processes, private CA keys, loopback TCP and per-run credentials.
 TLS trust-file loading and cryptographic work run synchronously during connection setup; slow trust-store files can stall that thread. Verified nonblocking behavior covers socket waits and pending queries, not arbitrary library initialization.
-No real WAN, managed service, certificate rotation or mutual TLS deployment has
-been certified. Third-party allocations remain outside Asyncara's native ledger.
+No real WAN, managed service or certificate-rotation deployment is certified.
+Third-party allocations remain outside Asyncara's native ledger.
 
-Explicit client-certificate configuration is not currently exposed: PostgreSQL's
-option whitelist rejects `sslcert`/`sslkey`, and the Connector/C options expose
-CA verification but no client certificate/key pair. Implicit libpq environment
-or default-certificate behavior has not been certified as an Asyncara mTLS API.
-These are implementation gaps, not merely missing remote test results. No
-verification option was disabled to work around them.
+PostgreSQL now exposes paired sslcert/sslkey and optional nonempty sslpassword
+with verify-full, TCP and a per-connection noninteractive policy. Local private-CA
+certificate authentication and encrypted keys are tested; see
+[POSTGRESQL_MTLS.md](POSTGRESQL_MTLS.md). This does not certify implicit libpq
+environment/default files. Connector/C client certificate options remain an
+implementation gap at this checkpoint. No verification option was disabled.
 
 | Driver / server | Backend | Verified authentication / TLS | Cancellation |
 |---|---|---|---|
 | SQLite 3.45.1 | Native worker, ordered connection queue | Local temporary databases | Cooperative interrupt; queued work and handles drained |
-| PostgreSQL 16.15 / libpq 16 | Nonblocking libpq, descriptor readiness | SCRAM-SHA-256; verify-full; trusted private CA, wrong name/CA/password rejection | Discards connection; no server cancellation acknowledgement |
+| PostgreSQL 16.15 / libpq 16 | Nonblocking libpq, descriptor readiness | SCRAM-SHA-256; verify-full; explicit certificate authentication, encrypted keys; wrong name/CA/password rejection | Discards connection; no server cancellation acknowledgement |
 | MariaDB 11.8.9 / Connector/C 3.4.10 | Connector start/cont APIs | mysql_native_password over verified TLS; IP SAN, wrong name/CA/password rejection | Discards connection; no administrative KILL acknowledgement |
 | MariaDB11.8.9 / Ubuntu Connector/C3.3.17 | Native start/cont, plain Unix socket only | TLS/default TCP/CA fail closed: callback/status API absent | Connection discard; local query/cancellation suite tested |
 | Oracle MySQL 8.4.13 / Connector/C 3.4.10 | Same native driver, separately tested server | caching_sha2_password and legacy sha256_password over verified TLS; wrong identity/CA/password rejection | Discards connection, explicit fresh reconnect |
@@ -67,7 +67,7 @@ an additional diagnostic run; that run does not repair or erase the finding.
 
 Remaining: real remote deployment certification, PostgreSQL acknowledged
 cancellation, broader Oracle/MariaDB versions, certificate
-rotation/mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
+rotation and MySQL/MariaDB mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
 streaming aggregates, cluster/sentinel and complete notification buffering policy.
 
 The 2026-11-10 continuation adds an opt-in bounded PostgreSQL server-preparation

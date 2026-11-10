@@ -504,3 +504,13 @@ cancellation does not authorize transfer cancellation; explicit stream close
 cancels/joins its producer. Deadlines cover paused transfer time, and an unread
 peer reset need not deliver a final HTTP response. See HTTP_STREAMING.md for
 bounds, tests and distinctions from buffered request decoding and MIME.
+
+## PostgreSQL client TLS verification (2026-11-11)
+
+Explicit PostgreSQL sslcert/sslkey/sslpassword options belong to the existing
+connection, with no new operation owner or global password callback. Setup still
+uses nonblocking PQconnectPoll network waits; library key/trust-file reads and
+crypto can block setup. Local cancellation closes the connection without remote
+cancellation acknowledgement. The certificate-only lock test requires two timers
+before an independent owner releases the query, and FPM tests verify request
+cleanup. [Exact scope](POSTGRESQL_MTLS.md) includes ordinary unload loss.

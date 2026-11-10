@@ -9,6 +9,7 @@ from pathlib import Path
 import secrets
 import socket
 import subprocess
+import tempfile
 import time
 
 p = argparse.ArgumentParser()
@@ -30,7 +31,7 @@ manifest = {str(f.relative_to(root)): sha(f) for d in ['ext', 'src/Asyncara/Post
 report = {'status':'RUNNING','backend':a.backend,'sourceManifest':manifest,
           'moduleSha256':sha(module),'phpSha256':sha(a.php),
           'postgres':subprocess.check_output([str(pg/'postgres'),'--version'],text=True).strip()}
-server = None; start = time.monotonic()
+server = None; socket_directory = None; start = time.monotonic()
 try:
     with (out/'init.log').open('x') as log:
         subprocess.run([str(pg/'initdb'),'-D',str(out/'data'),'-A','trust','--no-locale'],stdout=log,stderr=log,check=True,timeout=30)
@@ -53,7 +54,11 @@ try:
     with socket.socket() as reserve:
         reserve.bind(('127.0.0.1',0)); port=reserve.getsockname()[1]
     (out/'data/pg_hba.conf').write_text('local all all trust\nhostssl all all 127.0.0.1/32 cert\nhostnossl all all 127.0.0.1/32 reject\n')
-    sock = out/'socket'; sock.mkdir(mode=0o700)
+    # Unix socket paths are limited to 107 bytes on Linux. Evidence paths may
+    # be arbitrarily deep; keep only the live, owned socket in a short directory.
+    socket_directory = tempfile.TemporaryDirectory(prefix='asyncara-pg-mtls-', dir='/tmp')
+    sock = Path(socket_directory.name)
+    report['observerSocketDirectory'] = str(sock)
     opts = {'host':'localhost','hostaddr':'127.0.0.1','port':str(port),'user':user,'dbname':'postgres',
             'application_name':'asyncara_mtls_test','sslmode':'verify-full','sslrootcert':str(certs/'ca.pem'),
             'sslcert':str(certs/'client.pem'),'sslkey':str(certs/'client.key')}
@@ -112,6 +117,8 @@ finally:
         if server.poll() is None:
             subprocess.run([str(pg/'pg_ctl'),'-D',str(out/'data'),'-m','fast','-w','stop'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True,timeout=20)
         report['serverExit']=server.wait(timeout=5)
+    if socket_directory is not None:
+        socket_directory.cleanup()
     report['seconds']=time.monotonic()-start
     report['logHashes']={f.name:sha(f) for f in out.glob('*.log')}
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n')

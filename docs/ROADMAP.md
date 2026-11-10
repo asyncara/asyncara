@@ -1,5 +1,15 @@
 # Implementation status
 
+## PostgreSQL verified client TLS continuation (2026-11-11)
+
+The explicit sslcert/sslkey/sslpassword API is IMPLEMENTED_AND_TESTED against
+PostgreSQL16.15/libpq16.15, PHP83/84/85 and both backends. Real lock-held timer
+progress, prepared queries, cancellation, encrypted-key rejection, FPM lifecycle
+and cleanup pass. [Exact evidence](POSTGRESQL_MTLS.md) separates ordinary unload
+FAIL109bytes from diagnostic retention PASS and a no-PHP reproduction. No
+universal memory-clean, remote cancellation acknowledgement or WAN/rotation
+certification is claimed. Other priority gaps remain open; EXPERIMENTAL stays.
+
 ## Hyper bounded gzip/deflate continuation (2026-11-10)
 
 Native checkpoint `23e652f` implements buffered gzip and RFC1950 deflate through

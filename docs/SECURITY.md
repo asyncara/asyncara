@@ -332,3 +332,13 @@ Historical memory findings remain separate; no universal secret/memory guarantee
 ## Bounded Hyper decoding (2026-11-10)
 
 Hyper buffered gzip/deflate decoding uses zlib public APIs with all codec allocations charged to the native ledger. Encoded and decoded bodies are independently bounded to16MiB; malformed/checksum/truncation failures prevent connection reuse. Unsupported coding chains fail explicitly. CPU decoding occurs on the event-loop thread; Rust/TLS/kernel allocations remain outside this ledger. Scoped sanitizer/Valgrind results and historical failures are separated in [HYPER_COMPRESSION.md](HYPER_COMPRESSION.md).
+
+## PostgreSQL client TLS verification (2026-11-11)
+
+Explicit PostgreSQL client certificates and encrypted keys now retain verify-full,
+TCP-only validation, native open_basedir prechecks and SensitiveParameter redaction.
+The per-connection default password marker prevents interactive key prompts; it is
+public and provides no secret-memory erasure. Keys/trust load synchronously inside
+libpq. Tests reject untrusted clients, wrong identities, mismatched/absent keys,
+wrong/missing passwords and downgrade. [Evidence](POSTGRESQL_MTLS.md). Ordinary
+unload remains FAIL109bytes, independently reproduced without PHP/Asyncara.

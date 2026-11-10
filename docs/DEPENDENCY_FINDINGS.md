@@ -407,3 +407,17 @@ and its previous FAIL remains valid. This experiment proves the trailer repair;
 it does **not** recommend deploying an otherwise unpatched old8.5.0 tarball or
 certify all TLS/proxy/security behavior. Use a maintained vendor/upstream build
 and revalidate the required configuration before deployment.
+
+## PostgreSQL client TLS verification (2026-11-11)
+
+Authenticated certificate-only control `tests/audit/libpq_mtls_unload.c` closes
+20 successful connections and dlcloses libpq16.15 without linking PHP or Asyncara.
+It reproduces109bytes (96direct+13indirect) in BIO_meth_new/CRYPTO_strdup. Current
+DEBUG PHP Valgrind3.22 ordinary unloading reports the same loss on epoll/poll,
+0possible,4041reachable and2 leak contexts. Module retention diagnostic reports
+0errors/loss,54295reachable137blocks. This repeats, rather than fixes, the earlier
+public cleanup/lifetime finding. [Full commands and hashes](phase7/postgresql-mtls.json).
+No additional invalid access appears in these scoped checks; this is not proof
+that every allocation path is leak-free. The distribution-PHP/fatal-cycle reports
+are separate. Earlier r1/r2 memcheck header log collisions are retained and
+replaced with distinct raw logs r3/r4; the no-PHP r2 log was unaffected.

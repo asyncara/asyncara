@@ -1,7 +1,9 @@
 # PostgreSQL client certificates
 
-Status: IMPLEMENTED_BUT_NOT_FULLY_TESTED while the scoped memory, FPM and
-regression checks finish. Release remains EXPERIMENTAL.
+Status: IMPLEMENTED_AND_TESTED for the explicit client-certificate API on the
+scoped PostgreSQL16.15/libpq16.15 configuration below. Ordinary library-unload
+memory checks remain FAIL; this is not whole-driver or memory certification.
+Release remains EXPERIMENTAL.
 
 The existing PostgreSQL driver accepts `sslcert`, `sslkey` and `sslpassword`
 through `Connection::connect()` and the existing SQL factory. This extends
@@ -83,3 +85,36 @@ diagnostic module retention is recorded separately. These results must not be
 described as universal memory-clean certification. Remote cancellation
 acknowledgement, WAN deployments, managed services and certificate rotation
 remain separate unverified capabilities.
+
+## Executed evidence (2026-11-11)
+
+Native source `cab3399698c898be570dd276122f570f9ccf952f`;
+[commands, binary identities and raw-log hashes](phase7/postgresql-mtls.json).
+All artifacts are under `/home/coder/Asyncara-priority-20261110T205459Z`.
+
+| Check | Actual result |
+|---|---|
+| Previous module, explicit certificate probe | FAIL: unsupported native option, preserved in pg-mtls-before |
+| PHP8.3/8.4/8.5 NTS, DEBUG, epoll/poll | PASS: certificate authentication, encrypted keys,17 negative cases, two ticks before independent lock release, cleanup |
+| GCC ASan/UBSan, ordinary unload | Functional PASS followed by FAIL109-byte library-unload leak |
+| GCC ASan/UBSan with module retention | Diagnostic PASS; no suppression, leak detection remains enabled |
+| Gate A | PASS47 commands,187.036s gate duration |
+| Full PHP8.5 suites | PASS epoll33.585s/poll34.365s |
+| Short FPM mTLS | PASS each backend:20 sequential+40 four-worker main requests; database sessions0 after cleanup |
+| FPM progress | Minimum HTTP ticks22/24 epoll,17/13 poll; DB ticks12/10 epoll,9/10 poll; idle6fds/1thread |
+| Resource bounds, separate Oracle/MariaDB integration, allocations | PASS; their plain Unix controls do not certify SQL mTLS outside PostgreSQL |
+| DEBUG Valgrind ordinary unload | FAIL96 direct+13 indirect bytes,0 possible,4041 reachable;2 leak contexts on each backend |
+| DEBUG Valgrind diagnostic retention | PASS0 errors/lost bytes;54295 reachable137blocks on each backend |
+| Independent no-PHP libpq probe |20 authenticated connections closed, same109-byte LSan loss on unload |
+
+No suppression, threshold change, production GC workaround or private-library
+pointer cleanup was introduced. The diagnostic retention result cannot replace
+ordinary unloading. Historical fatal-bailout/distribution-PHP findings remain
+separate from this libpq result.
+
+The interrupted matrix-r2 and malformed runner/memcheck log headers from
+memory-r1/r2 are retained. Complete raw Valgrind logs have separate filenames in
+memory-r3/r4. Memory-r3 also exposes a test-fixture Unix-socket path overflow,
+before PHP execution: the corrected fixture owns a short `/tmp` socket directory,
+records it, and removes it only after its PostgreSQL child exits. Both deeply
+nested r4 outputs pass, with original runtime and assertions unchanged.
