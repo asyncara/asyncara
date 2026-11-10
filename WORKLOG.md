@@ -2632,3 +2632,7 @@ Valgrind passes both backends: zero errors and lost bytes,4066bytes reachable.
 Default C-only extension compiles; the first stream test failed only in a child
 process because orchestration omitted ASYNCARA_EXTENSION (absent default module).
 That launch remains preserved; corrected same-binary runs are separate.
+
+Hyper streaming independent package verification:260f67d,614 files,SHA256109e754410e3b85c89c48283507d7f73c001c9ecbb62926fae2f81baade9f692; fresh build +14 scoped checks PASS. Evidence docs/phase7/hyper-stream-package.json; original artifacts unchanged.
+
+Connection credential trace disclosure fixed at1b58ce9;11-case PHP83/84/85/DEBUG/GCC epoll/poll matrix, Gate A224.319s, full PHP85 epoll/poll and scoped DEBUG Valgrind PASS. Initial wrong native attribute offset and captured Closure disclosures retained in credential-matrix-r1. docs/phase7/credential-traces.json contains commands/hashes; no arbitrary payload-redaction guarantee.

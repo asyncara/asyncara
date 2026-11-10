@@ -156,3 +156,17 @@ epoll/poll. Independent module SHA256:
 `e55adac75d0798a5408a080b926bffa22352876ea2860f858c136bd4574b5ca7`.
 [Build attestation](phase7/server-r5-package.json). No release/push or universal
 performance/endurance certification. Historical archives remain unchanged.
+
+## Independently verified Hyper streaming package
+
+Packaged source `260f67dcc950e70c3bba4dc4763130d607bf63e3`, native checkpoint
+`a0e3098be1fe8743a6e6b12dd9a8de048b7de513`. Archive
+`build/asyncara-0.1.0-dev-hyper-stream-r1.tar.gz` contains614 files; SHA256
+`109e754410e3b85c89c48283507d7f73c001c9ecbb62926fae2f81baade9f692`.
+A second archive is byte-identical and every file matches the packaged Git tree.
+Fresh extraction, fresh Cargo target and native build pass15 commands: build
+plus client streaming/bounds/TLS/requests, server protocol/TLS and mixed-stream
+FPM on both backends. Independent module SHA256
+`38f7bf28c5815381ac436e20599e7da80aaaa1dab5d367ccb55067d26cbee24f`.
+[Attestation](phase7/hyper-stream-package.json). No release publication or broad
+protocol/performance/endurance certification. Historical failures remain intact.

@@ -102,3 +102,23 @@ not database TLS evidence. Existing private-CA results above retain their origin
 scope. Hosted r4 mixed1h passes with PostgreSQL/MariaDB/Redis and no Oracle;
 its libpq18.6 dependency is recorded in the hosted environment, without implying
 a new remote TLS/version matrix. See phase4/endurance-r4.json and hosted-r4.json.
+
+## Database connection trace redaction (2026-11-10)
+
+IMPLEMENTED_AND_TESTED, scoped to connection and task-callback argument traces.
+Native `asyncara_pg_open` / `asyncara_mysql_open`, the SQL factory, public SQL
+connection options and Redis's password use PHP SensitiveParameter. Spawned
+callback arguments are also redacted: Closure debug output can reveal captured
+connection options even after the public password parameter is protected.
+No scheduling, connection, cancellation or result-ownership behavior changes.
+
+A synthetic-marker negative control exposed9 cases before the correction.
+The final11-case regression passes PHP8.3/8.4/8.5, DEBUG and GCC ASan/UBSan on
+both readiness backends. Gate A224.319s and both full PHP85 suites pass.
+Scoped unsuppressed DEBUG Valgrind reports zero errors and lost bytes.
+[Commands and retained failures](phase7/credential-traces.json).
+
+Redaction is not memory erasure or protection against explicit application
+logging, inspecting SensitiveParameterValue, dumping captured objects, caller
+frames, SQL/Redis command payloads or messages received from external servers.
+Historical memory findings remain separate; no universal secret/memory guarantee.

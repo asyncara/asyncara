@@ -314,3 +314,17 @@ there is no separate late-trailer Future in this API.
 The13 Rust units also pass with the private-CA-dependent tests enabled.
 Scoped aggregate-rejection Valgrind controls report zero errors/lost bytes and
 4066bytes reachable, separately from the TLS ownership control above.
+
+## Independently verified Hyper streaming package
+
+Packaged source `260f67dcc950e70c3bba4dc4763130d607bf63e3`, native checkpoint
+`a0e3098be1fe8743a6e6b12dd9a8de048b7de513`. Archive
+`build/asyncara-0.1.0-dev-hyper-stream-r1.tar.gz` contains614 files; SHA256
+`109e754410e3b85c89c48283507d7f73c001c9ecbb62926fae2f81baade9f692`.
+A second archive is byte-identical and every file matches the packaged Git tree.
+Fresh extraction, fresh Cargo target and native build pass15 commands: build
+plus client streaming/bounds/TLS/requests, server protocol/TLS and mixed-stream
+FPM on both backends. Independent module SHA256
+`38f7bf28c5815381ac436e20599e7da80aaaa1dab5d367ccb55067d26cbee24f`.
+[Attestation](phase7/hyper-stream-package.json). No release publication or broad
+protocol/performance/endurance certification. Historical failures remain intact.
