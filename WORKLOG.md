@@ -2459,3 +2459,9 @@ one3.004s timeout plus2.911/2.684s passes. New:131..132chunks, all three pass
 1.011/1.283/.940s. Original fixture and3s deadline unchanged. This is scoped
 shared-host evidence, not universal speed or old FPM root-cause attribution.
 Durable commands, fingerprints and preserved failures: docs/phase7/hyper-tls.json.
+
+Hyper TLS source8e67aebb3aa6cc2e4b346cf8004cfd88475c540a packaged as server-r4:590files,
+SHA2565592b3e7b37cbcb0aae6373710489d0b743e91457eee324ecaa01f35c05594f5. Fresh extraction/Cargo/native build
+passes21 independent client/server checks on both readiness backends. Source
+archive is byte-reproducible. Phase4 and earlier packages/LICENSE unchanged.
+This follow-up records packaging only; broader partial capabilities remain open.

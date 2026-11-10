@@ -147,3 +147,16 @@ client changes between matrix snapshots are only a module comment and cfg(test)
 coverage. The server fixture/thresholds are byte-identical. This is a shared-host
 local comparison, not a general throughput claim or a deterministic old failure.
 [Commands, fingerprints and retained failures](phase7/hyper-tls.json).
+
+## Independently verified source package
+
+Source: `8e67aebb3aa6cc2e4b346cf8004cfd88475c540a`. Archive: `build/asyncara-0.1.0-dev-server-r4.tar.gz`,
+590 files, SHA256 `5592b3e7b37cbcb0aae6373710489d0b743e91457eee324ecaa01f35c05594f5`.
+Two builds of the archive are byte-identical; every entry matches the Git tree.
+A fresh extraction, fresh Cargo target and native build pass21 checks covering
+server protocol, TLS, input/output streaming, ownership, and client verified TLS
+and lifetime controls on epoll/poll. Independent module SHA256:
+`9e0621ad0d9f66cdfb2e2394f4187cbe9a63a600a61e4b402f895c277daa6362`.
+[Independent attestation](phase7/server-r4-package.json). No GitHub release or
+broad performance/endurance certification. Original server-r1/r2/r3 and Phase4
+checkout/module/LICENSE remain unchanged.
