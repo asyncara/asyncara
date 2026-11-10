@@ -1,6 +1,7 @@
 /* Optional libpq driver. All calls use nonblocking connections on the PHP thread. */
 #include "php.h"
 #include "Zend/zend_exceptions.h"
+#include "main/fopen_wrappers.h"
 #include <arpa/inet.h>
 #include <libpq-fe.h>
 #include <stdlib.h>
@@ -42,8 +43,12 @@ PHP_FUNCTION(asyncara_pg_open) {
     HashTable *opts;
     ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_ARRAY_HT(opts) ZEND_PARSE_PARAMETERS_END();
     const char *allowed[] = {"host",     "hostaddr", "port",        "dbname",           "user",
-                             "password", "sslmode",  "sslrootcert", "application_name", NULL};
-    const char *keys[12], *values[12];
+                             "password", "sslmode",  "sslrootcert", "application_name",
+                             "sslcert", "sslkey", "sslpassword", NULL};
+    /* Every allowed key plus defaults, forced transport policy and terminator.
+     * Keep capacity derived from the whitelist when adding public options. */
+    const char *keys[sizeof(allowed) / sizeof(allowed[0]) + 3];
+    const char *values[sizeof(keys) / sizeof(keys[0])];
     size_t count = 0;
     zend_string *key;
     zval *v;
@@ -65,8 +70,58 @@ PHP_FUNCTION(asyncara_pg_open) {
         values[count++] = Z_STRVAL_P(v);
     }
     ZEND_HASH_FOREACH_END();
+    zval *cert = zend_hash_str_find(opts, "sslcert", 7),
+         *private_key = zend_hash_str_find(opts, "sslkey", 6),
+         *key_password = zend_hash_str_find(opts, "sslpassword", 11),
+         *mode = zend_hash_str_find(opts, "sslmode", 7);
+    if ((cert != NULL) != (private_key != NULL) ||
+        (cert && (!Z_STRLEN_P(cert) || !Z_STRLEN_P(private_key))) ||
+        (key_password && (!cert || !Z_STRLEN_P(key_password)))) {
+        zend_value_error("PostgreSQL client TLS requires a nonempty sslcert/sslkey pair; a supplied sslpassword must be nonempty");
+        RETURN_THROWS();
+    }
+    if (cert) {
+        /* libpq13 introduced per-connection sslpassword. Never install its
+         * process-global key callback: other PHP extensions may use libpq. */
+        if (PQlibVersion() < 130000) {
+            zend_value_error("PostgreSQL explicit client TLS requires libpq 13 or newer");
+            RETURN_THROWS();
+        }
+        if (mode && !zend_string_equals_literal(Z_STR_P(mode), "verify-full")) {
+            zend_value_error("PostgreSQL explicit client TLS requires sslmode=verify-full");
+            RETURN_THROWS();
+        }
+        if (strchr(Z_STRVAL_P(private_key), ':')) {
+            zend_value_error("PostgreSQL client TLS supports key files, not OpenSSL engines");
+            RETURN_THROWS();
+        }
+        if (php_check_open_basedir(Z_STRVAL_P(cert)) || php_check_open_basedir(Z_STRVAL_P(private_key))) {
+            zend_value_error("PostgreSQL client TLS path violates open_basedir");
+            RETURN_THROWS();
+        }
+        zval *ca = zend_hash_str_find(opts, "sslrootcert", 11);
+        if (ca && php_check_open_basedir(Z_STRVAL_P(ca))) {
+            zend_value_error("PostgreSQL client TLS CA path violates open_basedir");
+            RETURN_THROWS();
+        }
+        if (!key_password) {
+            /* A nonempty value prevents OpenSSL's interactive terminal prompt.
+             * This is a public non-secret marker, NOT an application password.
+             * Unencrypted PEM keys ignore it; encrypted keys need sslpassword. */
+            keys[count] = "sslpassword";
+            values[count++] = "asyncara:no-interactive-key-input";
+        }
+        /* GSS encryption may otherwise take precedence over sslmode. Explicit
+         * certificate authentication must actually negotiate TLS. */
+        keys[count] = "gssencmode";
+        values[count++] = "disable";
+    }
     zval *host = zend_hash_str_find(opts, "host", 4), *hostaddr = zend_hash_str_find(opts, "hostaddr", 8);
     char address[16];
+    if (cert && host && Z_STRVAL_P(host)[0] == '/') {
+        zend_value_error("PostgreSQL client TLS requires a TCP host");
+        RETURN_THROWS();
+    }
     if (hostaddr && inet_pton(AF_INET, Z_STRVAL_P(hostaddr), address) != 1 &&
         inet_pton(AF_INET6, Z_STRVAL_P(hostaddr), address) != 1) {
         zend_value_error("hostaddr must be numeric");

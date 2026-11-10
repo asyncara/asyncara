@@ -24,6 +24,7 @@ foreach(['postgres'=>'asyncara_pg_open','mysql'=>'asyncara_mysql_open']as$name=>
     $cases[$name.'-native-validation']=[ValueError::class,static fn()=>$native(options())];
     $cases[$name.'-native-type']=[TypeError::class,static fn()=>$native('asyncara-synthetic-trace-secret')];
 }
+if(function_exists('asyncara_pg_open'))$cases['postgres-key-password']=[ValueError::class,static fn()=>asyncara_pg_open(['host'=>'127.0.0.1','sslpassword'=>'asyncara-synthetic-trace-secret'])];
 $rows=[];
 foreach ($cases as $name=>[$expected,$call]) {
     $caught=null;
