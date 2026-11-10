@@ -1,0 +1,24 @@
+[package]
+name = "asyncara-server-crypto-controls"
+version = "0.0.0"
+edition = "2021"
+publish = false
+license-file = "../../../LICENSE"
+[features]
+default = ["ring"]
+ring = ["rustls/ring", "dep:ring"]
+aws = ["rustls/aws_lc_rs"]
+[dependencies]
+rustls = { version = "=0.23.46", default-features = false, features = ["std", "tls12"] }
+rustls-pemfile = "=2.2.0"
+ring = { version = "=0.17.14", optional = true }
+[[bin]]
+name = "rustls-control"
+path = "../rustls_control.rs"
+[[bin]]
+name = "rustls-aead-control"
+path = "../rustls_aead_control.rs"
+[[bin]]
+name = "ring-control"
+path = "../ring_control.rs"
+required-features = ["ring"]

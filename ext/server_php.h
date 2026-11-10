@@ -8,6 +8,9 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_listen, 0, 8, IS_ARRAY, 0
     ZEND_ARG_TYPE_INFO(0, timeoutMs, IS_LONG, 0)
     ZEND_ARG_TYPE_INFO(0, requestsPerConnection, IS_LONG, 0)
     ZEND_ARG_TYPE_INFO(0, reusePort, _IS_BOOL, 0)
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, certificatePem, IS_STRING, 0, "\"\"")
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, keyPem, IS_STRING, 0, "\"\"")
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, clientCaPem, IS_STRING, 0, "\"\"")
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_next, 0, 0, IS_ARRAY, 1)
 ZEND_END_ARG_INFO()
@@ -16,6 +19,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_respond, 0, 4, _IS_BOOL, 
     ZEND_ARG_TYPE_INFO(0, status, IS_LONG, 0)
     ZEND_ARG_TYPE_INFO(0, headers, IS_ARRAY, 0)
     ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, streaming, _IS_BOOL, 0, "false")
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_void, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
@@ -35,10 +39,13 @@ static void server_status(zval *value, ar_server_status *s) {
 }
 PHP_FUNCTION(asyncara_server_listen) {
     char *address; size_t len; zend_long connections, body, response, budget, timeout, requests; bool reuse_port;
-    ZEND_PARSE_PARAMETERS_START(8, 8)
+    char *cert = "", *key = "", *ca = ""; size_t cert_len = 0, key_len = 0, ca_len = 0;
+    ZEND_PARSE_PARAMETERS_START(8, 11)
         Z_PARAM_STRING(address, len) Z_PARAM_LONG(connections) Z_PARAM_LONG(body)
         Z_PARAM_LONG(response) Z_PARAM_LONG(budget) Z_PARAM_LONG(timeout) Z_PARAM_LONG(requests)
         Z_PARAM_BOOL(reuse_port)
+        Z_PARAM_OPTIONAL
+        Z_PARAM_STRING(cert, cert_len) Z_PARAM_STRING(key, key_len) Z_PARAM_STRING(ca, ca_len)
     ZEND_PARSE_PARAMETERS_END();
     /* Reserve the engine wake pipe, PHP notification watcher and listener.
      * Other I/O shares AR_MAX_WATCHERS; applications must budget that too. */
@@ -49,6 +56,10 @@ PHP_FUNCTION(asyncara_server_listen) {
     if (e->server) { zend_throw_exception(zend_ce_exception, "Only one HTTP listener per interpreter is supported", 0); RETURN_THROWS(); }
     e->server = ar_server_new((unsigned char *)address, len, connections, body, response, budget, timeout, requests, reuse_port);
     if (!e->server) { zend_throw_exception(zend_ce_exception, "Cannot bind HTTP server; use an available numeric IP:port", 0); RETURN_THROWS(); }
+    if ((cert_len || key_len || ca_len) && ar_server_tls(e->server, (unsigned char *)cert, cert_len, (unsigned char *)key, key_len, (unsigned char *)ca, ca_len)) {
+        ar_server_free(e->server); e->server = NULL;
+        zend_value_error("Invalid TLS certificate, key or client CA configuration"); RETURN_THROWS();
+    }
     ar_server_status s;
     if (ar_server_info(e->server, &s)) { server_error(); RETURN_THROWS(); }
     server_status(return_value, &s);
@@ -89,9 +100,10 @@ PHP_FUNCTION(asyncara_server_next) {
     if (ar_server_pop(engine->server)) { zval_ptr_dtor(return_value); ZVAL_NULL(return_value); server_error(); RETURN_THROWS(); }
 }
 PHP_FUNCTION(asyncara_server_respond) {
-    zend_long id, status; HashTable *headers; char *body; size_t len;
-    ZEND_PARSE_PARAMETERS_START(4, 4)
+    zend_long id, status; HashTable *headers; char *body; size_t len; bool streaming = false;
+    ZEND_PARSE_PARAMETERS_START(4, 5)
         Z_PARAM_LONG(id) Z_PARAM_LONG(status) Z_PARAM_ARRAY_HT(headers) Z_PARAM_STRING(body, len)
+        Z_PARAM_OPTIONAL Z_PARAM_BOOL(streaming)
     ZEND_PARSE_PARAMETERS_END();
     if (!engine || !engine->server) { server_error(); RETURN_THROWS(); }
     if (id < 1 || status < 200 || status > 599 || zend_hash_num_elements(headers) > 100) { zend_value_error("Invalid server response"); RETURN_THROWS(); }
@@ -100,7 +112,7 @@ PHP_FUNCTION(asyncara_server_respond) {
         if (!key || Z_TYPE_P(value) != IS_STRING) { zend_type_error("Server headers must map names to strings"); RETURN_THROWS(); }
         values[count++] = (ar_server_header){(unsigned char *)ZSTR_VAL(key), ZSTR_LEN(key), (unsigned char *)Z_STRVAL_P(value), Z_STRLEN_P(value)};
     } ZEND_HASH_FOREACH_END();
-    int rc = ar_server_respond(engine->server, id, status, values, count, (unsigned char *)body, len);
+    int rc = ar_server_respond(engine->server, id, status, values, count, (unsigned char *)body, len, streaming);
     if (rc == -2) { zend_value_error("Invalid or oversized response; framing headers are managed by the server"); RETURN_THROWS(); }
     if (rc == -3) { zend_throw_exception(zend_ce_exception, "HTTP server response buffer capacity exceeded", 0); RETURN_THROWS(); }
     if (rc < 0) { server_error(); RETURN_THROWS(); }
@@ -113,4 +125,23 @@ PHP_FUNCTION(asyncara_server_shutdown) {
 PHP_FUNCTION(asyncara_server_close) {
     ZEND_PARSE_PARAMETERS_NONE();
     if (engine && engine->server) { ar_server_free(engine->server); engine->server = NULL; }
+}
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_chunk, 0, 3, _IS_BOOL, 0)
+    ZEND_ARG_TYPE_INFO(0, id, IS_LONG, 0)
+    ZEND_ARG_TYPE_INFO(0, body, IS_STRING, 0)
+    ZEND_ARG_TYPE_INFO(0, finish, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_server_chunk) {
+    zend_long id, finish; char *body; size_t len;
+    ZEND_PARSE_PARAMETERS_START(3, 3)
+        Z_PARAM_LONG(id) Z_PARAM_STRING(body, len) Z_PARAM_LONG(finish)
+    ZEND_PARSE_PARAMETERS_END();
+    if (!engine || !engine->server) { server_error(); RETURN_THROWS(); }
+    if (id < 1 || finish < -1 || finish > 1) { zend_value_error("Invalid stream operation"); RETURN_THROWS(); }
+    int rc = ar_server_chunk(engine->server, id, (unsigned char *)body, len, finish);
+    if (rc == -2) { zend_value_error("Stream chunk must be demanded, 1..65536 bytes and within responseBytes"); RETURN_THROWS(); }
+    if (rc == -3) { zend_throw_exception(zend_ce_exception, "Stream payload capacity exceeded", 0); RETURN_THROWS(); }
+    if (rc < 0) { server_error(); RETURN_THROWS(); }
+    RETURN_BOOL(rc);
 }

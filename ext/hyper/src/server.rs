@@ -1,5 +1,5 @@
 //! Bounded HTTP/1 server; polled exclusively by Asyncara's interpreter thread.
-//! No PHP callbacks, executor threads, DNS, TLS, or synchronous log writes here.
+//! No PHP callbacks, executor threads, DNS, or synchronous log writes here.
 use super::{Bytes, Context, Flag, Future, Io, Poll, Rc, RefCell, Socket, Waker};
 use http_body_util::{BodyExt, Full};
 use hyper::{body::Incoming, header, service::Service, Request, Response};
@@ -21,8 +21,163 @@ use std::{
     time::{Duration, Instant},
 };
 
-type Reply = Response<Full<Bytes>>;
-type Connection = hyper::server::conn::http1::Connection<ServerIo, Dispatch>;
+type Reply = Response<ServerBody>;
+enum ServerBody {
+    Full(Full<Bytes>),
+    Stream(StreamingBody),
+}
+impl hyper::body::Body for ServerBody {
+    type Data = Bytes;
+    type Error = io::Error;
+    fn poll_frame(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+    ) -> Poll<Option<Result<hyper::body::Frame<Bytes>, io::Error>>> {
+        match self.get_mut() {
+            Self::Full(body) => Pin::new(body)
+                .poll_frame(cx)
+                .map(|x| x.map(|r| r.map_err(|never| match never {}))),
+            Self::Stream(body) => Pin::new(body).poll_frame(cx),
+        }
+    }
+    fn is_end_stream(&self) -> bool {
+        match self {
+            Self::Full(b) => hyper::body::Body::is_end_stream(b),
+            Self::Stream(b) => {
+                let s = b.state.borrow();
+                s.done && s.chunk.is_none()
+            }
+        }
+    }
+    fn size_hint(&self) -> hyper::body::SizeHint {
+        match self {
+            Self::Full(b) => hyper::body::Body::size_hint(b),
+            Self::Stream(_) => hyper::body::SizeHint::default(),
+        }
+    }
+}
+struct StreamState {
+    chunk: Option<Bytes>,
+    done: bool,
+    demand: bool,
+    total: usize,
+    wake: Option<Waker>,
+    connection: u64,
+}
+struct StreamingBody {
+    id: u64,
+    state: Rc<RefCell<StreamState>>,
+    shared: Rc<RefCell<Shared>>,
+}
+impl hyper::body::Body for StreamingBody {
+    type Data = Bytes;
+    type Error = io::Error;
+    fn poll_frame(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+    ) -> Poll<Option<Result<hyper::body::Frame<Bytes>, io::Error>>> {
+        let mut state = self.state.borrow_mut();
+        if let Some(bytes) = state.chunk.take() {
+            return Poll::Ready(Some(Ok(hyper::body::Frame::data(bytes))));
+        }
+        if state.done {
+            return Poll::Ready(None);
+        }
+        state.wake = Some(cx.waker().clone());
+        if !state.demand {
+            state.demand = true;
+            let mut shared = self.shared.borrow_mut();
+            let body = Data::new(&shared.used);
+            shared.events.push_back(Event {
+                id: self.id,
+                connection: state.connection,
+                kind: 5,
+                method: String::new(),
+                target: String::new(),
+                headers: Vec::new(),
+                body,
+            });
+            shared.signal();
+        }
+        Poll::Pending
+    }
+}
+impl Drop for StreamingBody {
+    fn drop(&mut self) {
+        let state = self.state.borrow();
+        let mut shared = self.shared.borrow_mut();
+        shared.streams.remove(&self.id);
+        if !state.done {
+            let body = Data::new(&shared.used);
+            shared.events.push_back(Event {
+                id: self.id,
+                connection: state.connection,
+                kind: 2,
+                method: String::new(),
+                target: String::new(),
+                headers: Vec::new(),
+                body,
+            });
+            shared.signal();
+        }
+    }
+}
+#[path = "server_tls.rs"]
+mod tls;
+type Connection = hyper::server::conn::http1::Connection<Transport, Dispatch>;
+enum Transport {
+    Plain(ServerIo),
+    Tls(Box<tls::TlsIo>),
+}
+impl hyper::rt::Read for Transport {
+    fn poll_read(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: hyper::rt::ReadBufCursor<'_>,
+    ) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_read(cx, buf),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
+        }
+    }
+}
+impl hyper::rt::Write for Transport {
+    fn poll_write(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: &[u8],
+    ) -> Poll<io::Result<usize>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_write(cx, buf),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, buf),
+        }
+    }
+    fn is_write_vectored(&self) -> bool {
+        matches!(self, Self::Plain(_))
+    }
+    fn poll_write_vectored(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: &[io::IoSlice<'_>],
+    ) -> Poll<io::Result<usize>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_write_vectored(cx, buf),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_write_vectored(cx, buf),
+        }
+    }
+    fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_flush(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
+        }
+    }
+    fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_shutdown(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
+        }
+    }
+}
 // Server-only vectored transport: preserve the independently validated client
 // transport while avoiding flattening a large response with its small head.
 struct ServerIo(Io);
@@ -136,6 +291,7 @@ struct Ticket {
     response: Option<Reply>,
     wake: Option<Waker>,
     answered: bool,
+    connection: u64,
 }
 struct Event {
     id: u64,
@@ -149,6 +305,7 @@ struct Event {
 struct Shared {
     events: VecDeque<Event>,
     pending: HashMap<u64, Weak<RefCell<Ticket>>>,
+    streams: HashMap<u64, Weak<RefCell<StreamState>>>,
     next: u64,
     notify: OwnedFd,
     notified: Cell<bool>,
@@ -251,7 +408,7 @@ fn error(status: u16) -> Reply {
     Response::builder()
         .status(status)
         .header(header::CONNECTION, "close")
-        .body(Full::new(Bytes::new()))
+        .body(ServerBody::Full(Full::new(Bytes::new())))
         .expect("constant response")
 }
 fn valid_host(value: &header::HeaderValue) -> bool {
@@ -340,6 +497,7 @@ impl Service<Request<Incoming>> for Dispatch {
                 response: None,
                 wake: None,
                 answered: false,
+                connection: dispatch.connection,
             }));
             let id = {
                 let mut shared = dispatch.shared.borrow_mut();
@@ -391,12 +549,14 @@ impl Service<Request<Incoming>> for Dispatch {
 }
 struct Peer {
     id: u64,
+    aborted: bool,
     io: Io,
     driver: Pin<Box<Connection>>,
     wake: Arc<Flag>,
     deadline: Rc<Cell<Instant>>,
 }
 struct Server {
+    tls: Option<Arc<rustls::ServerConfig>>,
     listener: Option<TcpListener>,
     address: String,
     peers: HashMap<i32, Peer>,
@@ -527,12 +687,19 @@ impl Server {
                             .max_buf_size(65536)
                             .max_header_size(65536)
                             .max_headers(100);
-                        let driver =
-                            Box::pin(builder.serve_connection(ServerIo(io.clone()), service));
+                        let transport = match &self.tls {
+                            Some(config) => Transport::Tls(Box::new(tls::TlsIo::new(
+                                io.clone(),
+                                config.clone(),
+                            )?)),
+                            None => Transport::Plain(ServerIo(io.clone())),
+                        };
+                        let driver = Box::pin(builder.serve_connection(transport, service));
                         self.peers.insert(
                             fd,
                             Peer {
                                 id,
+                                aborted: false,
                                 io,
                                 driver,
                                 wake,
@@ -549,8 +716,10 @@ impl Server {
         }
         let now = Instant::now();
         self.peers.retain(|_, peer| {
-            if now >= peer.deadline.get() {
-                self.timed_out += 1;
+            if peer.aborted || now >= peer.deadline.get() {
+                if !peer.aborted {
+                    self.timed_out += 1;
+                }
                 self.closed += 1;
                 self.shared.borrow_mut().connection_closed(peer.id);
                 return false;
@@ -635,6 +804,7 @@ pub unsafe extern "C" fn ar_server_new(
         let shared = Rc::new(RefCell::new(Shared {
             events: VecDeque::new(),
             pending: HashMap::new(),
+            streams: HashMap::new(),
             next: 0,
             notify: OwnedFd::from_raw_fd(fd),
             notified: Cell::new(false),
@@ -644,6 +814,7 @@ pub unsafe extern "C" fn ar_server_new(
         }));
         Some(
             Box::into_raw(Box::new(Server {
+                tls: None,
                 listener: Some(listener),
                 address,
                 peers: HashMap::new(),
@@ -665,6 +836,44 @@ pub unsafe extern "C" fn ar_server_new(
     .ok()
     .flatten()
     .unwrap_or(std::ptr::null_mut())
+}
+// Setup-only: no accepted peers can observe a changed TLS identity.
+#[no_mangle]
+pub unsafe extern "C" fn ar_server_tls(
+    ptr: *mut c_void,
+    cert: *const u8,
+    cert_len: usize,
+    key: *const u8,
+    key_len: usize,
+    ca: *const u8,
+    ca_len: usize,
+) -> i32 {
+    with(ptr, -1, |s| {
+        if s.accepted != 0
+            || s.tls.is_some()
+            || cert.is_null()
+            || key.is_null()
+            || ca.is_null()
+            || cert_len == 0
+            || key_len == 0
+            || cert_len > 262144
+            || key_len > 262144
+            || ca_len > 262144
+        {
+            return -1;
+        }
+        match tls::config(
+            std::slice::from_raw_parts(cert, cert_len),
+            std::slice::from_raw_parts(key, key_len),
+            std::slice::from_raw_parts(ca, ca_len),
+        ) {
+            Ok(config) => {
+                s.tls = Some(config);
+                0
+            }
+            Err(_) => -1, // No secrets or key bytes cross the error boundary.
+        }
+    })
 }
 #[no_mangle]
 pub unsafe extern "C" fn ar_server_free(ptr: *mut c_void) {
@@ -780,7 +989,8 @@ pub unsafe extern "C" fn ar_server_ready(ptr: *mut c_void, fd: i32, events: i32)
             }
             // HUP can arrive while the service is waiting for a PHP response.
             if events & i32::from(libc::POLLERR | libc::POLLHUP | libc::POLLNVAL) != 0 {
-                peer.deadline.set(Instant::now());
+                peer.aborted = true;
+                peer.wake.set();
             }
         }
         0
@@ -860,10 +1070,12 @@ pub unsafe extern "C" fn ar_server_respond(
     count: usize,
     body: *const u8,
     len: usize,
+    streaming: i32,
 ) -> i32 {
     with(ptr, -1, |s| {
         if !(200..=599).contains(&status)
-            || ([204, 205, 304].contains(&status) && len != 0)
+            || ([204, 205, 304].contains(&status) && (len != 0 || streaming != 0))
+            || (streaming != 0 && len != 0)
             || count > 100
             || len > s.response_limit
             || body.is_null()
@@ -922,7 +1134,28 @@ pub unsafe extern "C" fn ar_server_respond(
         }
         // Charge follows every cloned Bytes view until the final transport
         // reference drops, including a slow write or disconnected peer.
-        let Ok(response) = builder.body(Full::new(Bytes::from_owner(data))) else {
+        let body = if streaming == 0 {
+            ServerBody::Full(Full::new(Bytes::from_owner(data)))
+        } else {
+            let state = Rc::new(RefCell::new(StreamState {
+                chunk: None,
+                done: false,
+                demand: false,
+                total: 0,
+                wake: None,
+                connection: ticket.borrow().connection,
+            }));
+            s.shared
+                .borrow_mut()
+                .streams
+                .insert(id, Rc::downgrade(&state));
+            ServerBody::Stream(StreamingBody {
+                id,
+                state,
+                shared: s.shared.clone(),
+            })
+        };
+        let Ok(response) = builder.body(body) else {
             return -2;
         };
         let mut t = ticket.borrow_mut();
@@ -932,6 +1165,54 @@ pub unsafe extern "C" fn ar_server_respond(
             w.wake();
         }
         s.shared.borrow_mut().pending.remove(&id);
+        1
+    })
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_server_chunk(
+    ptr: *mut c_void,
+    id: u64,
+    body: *const u8,
+    len: usize,
+    finish: i32,
+) -> i32 {
+    with(ptr, -1, |s| {
+        let state = s.shared.borrow().streams.get(&id).and_then(Weak::upgrade);
+        let Some(state) = state else {
+            return 0;
+        };
+        let mut state = state.borrow_mut();
+        if finish < 0 {
+            if let Some(peer) = s.peers.values_mut().find(|p| p.id == state.connection) {
+                peer.aborted = true;
+                peer.wake.set();
+            }
+            return 1;
+        }
+        if !state.demand
+            || state.done
+            || body.is_null()
+            || len > 65536
+            || (len == 0 && finish == 0)
+            || (len != 0 && finish != 0)
+            || len > s.response_limit.saturating_sub(state.total)
+        {
+            return -2;
+        }
+        let shared = s.shared.borrow();
+        let mut data = Data::new(&shared.used);
+        if !data.append(std::slice::from_raw_parts(body, len), shared.limit) {
+            return -3;
+        }
+        state.total += len;
+        state.demand = false;
+        state.done = finish != 0;
+        if len != 0 {
+            state.chunk = Some(Bytes::from_owner(data));
+        }
+        if let Some(wake) = state.wake.take() {
+            wake.wake();
+        }
         1
     })
 }
@@ -960,7 +1241,7 @@ pub unsafe extern "C" fn ar_server_info(ptr: *mut c_void, out: *mut Info) -> i32
             notification_fd: shared.notify.as_raw_fd(),
             active: s.peers.len(),
             queued: shared.events.len(),
-            pending: shared.pending.len(),
+            pending: shared.pending.len() + shared.streams.len(),
             bytes: shared.used.load(Ordering::Relaxed),
             accepted: s.accepted,
             closed: s.closed,

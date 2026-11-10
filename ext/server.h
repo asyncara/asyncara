@@ -17,6 +17,7 @@ typedef struct {
     const unsigned char *address; size_t address_len;
 } ar_server_status;
 void *ar_server_new(const unsigned char *, size_t, size_t, size_t, size_t, size_t, uint64_t, size_t, int);
+int ar_server_tls(void *, const unsigned char *, size_t, const unsigned char *, size_t, const unsigned char *, size_t);
 void ar_server_free(void *);
 int ar_server_drive(void *);
 int ar_server_timeout(void *);
@@ -24,7 +25,8 @@ size_t ar_server_fds(void *, struct pollfd *, size_t);
 int ar_server_ready(void *, int, int);
 int ar_server_peek(void *, ar_server_view *);
 int ar_server_pop(void *);
-int ar_server_respond(void *, uint64_t, uint16_t, const ar_server_header *, size_t, const unsigned char *, size_t);
+int ar_server_respond(void *, uint64_t, uint16_t, const ar_server_header *, size_t, const unsigned char *, size_t, int);
+int ar_server_chunk(void *, uint64_t, const unsigned char *, size_t, int);
 int ar_server_info(void *, ar_server_status *);
 int ar_server_shutdown(void *);
 #endif

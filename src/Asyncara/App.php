@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara;
-use Asyncara\Server\{Request, Response, Route};
+use Asyncara\Server\{Request, Response, StreamResponse, Route};
 
 /** HTTP/1 server. PHP handlers run on this interpreter's Asyncara Fibers. */
 final class App
@@ -45,7 +45,7 @@ final class App
     {
         foreach ([$this->static, $this->dynamic] as $methods) foreach ($methods as $routes) foreach ($routes as $route) yield $route;
     }
-    private function dispatch(array $event, bool $headFallback = false): Response
+    private function dispatch(array $event, bool $headFallback = false): Response|StreamResponse
     {
         $path = explode('?', $event['target'], 2)[0]; $method = $headFallback ? 'GET' : $event['method']; $params = [];
         if (!str_starts_with($path, '/')) return Response::text('Bad Request', 400);
@@ -59,7 +59,7 @@ final class App
         $next = $route->handler;
         foreach (array_reverse($route->middleware) as $item) {
             $middleware = is_string($item) ? $this->middleware[$item] : $item;
-            $next = static fn(Request $req): Response => $middleware($req, $next);
+            $next = static fn(Request $req): Response|StreamResponse => $middleware($req, $next);
         }
         return $next($request);
     }
@@ -70,6 +70,8 @@ final class App
         if ($this->running || Scheduler::tryCurrent()) throw new \LogicException('listen owns a top-level runtime');
         if (!function_exists('asyncara_server_listen')) throw new \RuntimeException('Build Asyncara with the Hyper server feature');
         $workers = $options['workers'] ?? 1; unset($options['workers']);
+        $tls = $options['tls'] ?? null; unset($options['tls']);
+        if ($tls !== null && !is_array($tls)) throw new \ValueError('tls must be an array');
         if (!is_int($workers) || $workers < 1 || $workers > 64) throw new \ValueError('workers must be 1..64');
         $defaults = ['connections' => 1024, 'bodyBytes' => 1048576, 'responseBytes' => 8388608, 'bufferBytes' => 67108864, 'timeoutMs' => 30000, 'requestsPerConnection' => 10000];
         foreach ($options as $name => $value) if (!array_key_exists($name, $defaults) || !is_int($value)) throw new \ValueError('Unknown or non-integer server option: ' . $name);
@@ -79,15 +81,29 @@ final class App
             if (str_ends_with($address, ':0')) throw new \ValueError('Multiple workers require a fixed port');
             $this->workers = new Server\Workers();
             try {
-                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options): void {
+                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options, $tls): void {
                     $this->workers = null; $this->workerProcess = true;
-                    $this->listen($address, $options, static fn() => $ready());
+                    $this->listen($address, $options + ($tls === null ? [] : ['tls' => $tls]), static fn() => $ready());
                 }, $onReady === null ? null : static fn() => $onReady($address));
             } finally { $this->workers = null; }
             return;
         }
-        $arguments = [...array_values($limits), $this->workerProcess];
+        $pem = ['', '', ''];
+        if ($tls !== null) {
+            foreach ($tls as $name => $_) if (!in_array($name, ['certificate', 'privateKey', 'clientCa'], true)) throw new \ValueError('Unknown TLS option: ' . $name);
+            foreach (['certificate', 'privateKey', 'clientCa'] as $i => $name) {
+                if ($name === 'clientCa' && !isset($tls[$name])) continue;
+                $path = $tls[$name] ?? null;
+                if (!is_string($path) || $path === '' || str_contains($path, "\0") || str_contains($path, '://')) throw new \ValueError('TLS requires local certificate/privateKey paths');
+                // Setup only, before accepting or entering the runtime. PHP enforces open_basedir.
+                $bytes = file_get_contents($path, false, null, 0, 262145);
+                if ($bytes === false || $bytes === '' || strlen($bytes) > 262144) throw new \ValueError('TLS PEM file must contain 1..262144 bytes');
+                $pem[$i] = $bytes;
+            }
+        }
+        $arguments = [...array_values($limits), $this->workerProcess, ...$pem];
         $info = \asyncara_server_listen($address, ...$arguments);
+        unset($arguments, $pem, $bytes); // Do not retain PEM/key strings in the listener frame.
         $this->running = true;
         $signals = []; $asyncSignals = null;
         if (function_exists('pcntl_async_signals')) {
@@ -107,7 +123,7 @@ final class App
                             ($this->tasks[$connection] ?? null)?->cancel();
                             unset($this->tasks[$connection], $this->inboxes[$connection]);
                         } elseif (isset($this->inboxes[$connection])) { $this->inboxes[$connection]->put($event); }
-                        else {
+                        elseif ($event['kind'] === 1) {
                             $inbox = new Server\Inbox();
                             try { $this->tasks[$connection] = Async::spawn(function () use ($connection, $inbox): void {
                                 try {
@@ -118,12 +134,24 @@ final class App
                                         Scheduler::current()->task->context = [];
                                         $id = $event['id'];
                                         $this->requestsHandled++;
+                                        $streaming = false;
                                         try {
                                             try { $response = $this->dispatch($event); }
                                             catch (\JsonException) { $response = Response::text('Invalid JSON', 400); }
-                                            \asyncara_server_respond($id, $response->status, $response->headers, $response->body);
-                                        } catch (Exception\CancelledException $e) { throw $e; }
-                                        catch (\Throwable) { \asyncara_server_respond($id, 500, [], ''); }
+                                            if ($response instanceof StreamResponse && $event['method'] !== 'HEAD') {
+                                                try {
+                                                    $streaming = \asyncara_server_respond($id, $response->status, $response->headers, '', true);
+                                                    if ($streaming) $response->send($id, $inbox);
+                                                } finally { $response->close(); }
+                                            } else {
+                                                if ($response instanceof StreamResponse) $response->close();
+                                                \asyncara_server_respond($id, $response->status, $response->headers, $response instanceof Response ? $response->body : '');
+                                            }
+                                        } catch (Exception\CancelledException $e) { if ($streaming) \asyncara_server_chunk($id, '', -1); throw $e; }
+                                        catch (\Throwable) {
+                                            if ($streaming) { \asyncara_server_chunk($id, '', -1); return; }
+                                            \asyncara_server_respond($id, 500, [], '');
+                                        }
                                         unset($response, $event);
                                         Scheduler::current()->task->context = [];
                                     }
