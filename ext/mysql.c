@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include <mysql.h>
 #include <sys/socket.h>
+#include "main/fopen_wrappers.h"
 /* Distribution 3.3.x packages do not necessarily backport the callback/status
  * API. Test its public feature macro rather than inferring it from a version. */
 #if defined(MARIADB_TLS_VERIFY_ERROR)
@@ -52,12 +53,16 @@ static int my_verify_tls(MARIADB_TLS *tls, unsigned int flags) {
     return 1;
 }
 #endif
+static const char *const my_option_names[] = {
+    "host", "user", "password", "database", "socket", "caFile", "certFile", "keyFile", "keyPassword"
+};
+enum { MY_OPTION_COUNT = sizeof(my_option_names) / sizeof(my_option_names[0]) };
 typedef struct {
     MYSQL *conn, *connected;
     MYSQL_STMT *stmt;
     MYSQL_RES *metadata;
     MYSQL_BIND *input, *output;
-    char **values, *sql, *options[6];
+    char **values, *sql, *options[MY_OPTION_COUNT];
     unsigned long *lengths, *out_lengths;
     my_bool *nulls, *out_nulls, *out_errors, close_result;
     unsigned int columns;
@@ -121,7 +126,7 @@ static void my_close(ar_mysql *p) {
 static void my_destroy(zend_resource *resource) {
     ar_mysql *p = resource->ptr;
     my_close(p);
-    for (size_t i = 0; i < 6; i++)
+    for (size_t i = 0; i < MY_OPTION_COUNT; i++)
         if (p->options[i])
             efree(p->options[i]);
     efree(p);
@@ -144,7 +149,6 @@ ZEND_END_ARG_INFO()
 PHP_FUNCTION(asyncara_mysql_open) {
     HashTable *options;
     ZEND_PARSE_PARAMETERS_START(1, 1) Z_PARAM_ARRAY_HT(options) ZEND_PARSE_PARAMETERS_END();
-    const char *names[] = {"host", "user", "password", "database", "socket", "caFile"};
     ar_mysql *p = ecalloc(1, sizeof(*p));
     zend_resource *resource = zend_register_resource(p, mysql_resource_type);
     p->conn = mysql_init(NULL);
@@ -153,8 +157,8 @@ PHP_FUNCTION(asyncara_mysql_open) {
         zend_throw_exception(zend_ce_exception, "MariaDB allocation failed", 0);
         RETURN_THROWS();
     }
-    for (size_t i = 0; i < 6; i++) {
-        zval *v = zend_hash_str_find(options, names[i], strlen(names[i]));
+    for (size_t i = 0; i < MY_OPTION_COUNT; i++) {
+        zval *v = zend_hash_str_find(options, my_option_names[i], strlen(my_option_names[i]));
         if (v) {
             ZVAL_DEREF(v);
             if (Z_TYPE_P(v) != IS_STRING || Z_STRLEN_P(v) > 65536 ||
@@ -181,6 +185,20 @@ PHP_FUNCTION(asyncara_mysql_open) {
         goto error;
     }
     my_bool enforce = tls ? Z_TYPE_P(tls) == IS_TRUE : !p->options[4];
+    bool client_certificate = p->options[6] || p->options[7];
+    if (client_certificate && (!p->options[6] || !p->options[7] ||
+                               !p->options[6][0] || !p->options[7][0])) {
+        zend_value_error("MariaDB client TLS requires a nonempty certFile/keyFile pair");
+        goto error;
+    }
+    if (p->options[8] && (!client_certificate || !p->options[8][0])) {
+        zend_value_error("MariaDB keyPassword requires a client certificate/key pair and must be nonempty");
+        goto error;
+    }
+    if (client_certificate && (!enforce || p->options[4])) {
+        zend_value_error("MariaDB client certificates require verified TCP TLS");
+        goto error;
+    }
     p->tls_required = enforce;
     if (enforce) {
 #ifdef AR_MYSQL_STRICT_TLS
@@ -208,6 +226,14 @@ PHP_FUNCTION(asyncara_mysql_open) {
         zend_value_error("MariaDB CA configuration requires TLS with callback/status verification");
         goto error;
     }
+    /* Library file reads bypass PHP streams. Check explicit CA/cert/key paths
+     * before handing them to Connector/C; this is not an atomic sandbox. */
+    for (size_t i = 5; i <= 7; i++) {
+        if (p->options[i] && php_check_open_basedir(p->options[i])) {
+            zend_value_error("MariaDB TLS file violates open_basedir");
+            goto error;
+        }
+    }
     if (mysql_options(p->conn, MYSQL_OPT_NONBLOCK, NULL) ||
         mysql_options(p->conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &verify) ||
         mysql_options(p->conn, MYSQL_OPT_SSL_ENFORCE, &enforce)) {
@@ -217,6 +243,19 @@ PHP_FUNCTION(asyncara_mysql_open) {
     if (p->options[5] && mysql_options(p->conn, MYSQL_OPT_SSL_CA, p->options[5])) {
         my_error(p);
         goto error;
+    }
+    if (client_certificate) {
+        /* OpenSSL's default PEM callback can read the terminal for a NULL
+         * password. Supply a per-connection non-secret marker when omitted;
+         * plaintext keys ignore it, encrypted keys fail without prompting.
+         * Connector/C copies these values and releases them with MYSQL. */
+        const char *password = p->options[8] ? p->options[8] : "asyncara:no-interactive-key-input";
+        if (mysql_options(p->conn, MYSQL_OPT_SSL_CERT, p->options[6]) ||
+            mysql_options(p->conn, MYSQL_OPT_SSL_KEY, p->options[7]) ||
+            mysql_optionsv(p->conn, MARIADB_OPT_TLS_PASSPHRASE, password)) {
+            my_error(p);
+            goto error;
+        }
     }
     unsigned int timeout = 10;
     mysql_options(p->conn, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
