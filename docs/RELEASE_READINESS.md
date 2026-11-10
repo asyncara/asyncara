@@ -15,7 +15,8 @@ and [current inventory](COMPLETION_STATUS.md).
 These are functional and scoped memory results, not universal performance,
 endurance or foreign-allocation certification. Independent package identities
 are recorded separately. Historical archives and failure reports are unchanged.
-Hyper still lacks streaming, decompression, redirects/proxies, client mTLS and
+Hyper streaming is covered by the later continuation below. It still lacks
+decompression, redirects/proxies, client mTLS and
 HTTP/2/3. Release remains EXPERIMENTAL.
 
 The dated checkpoints below retain their original source scope.
@@ -299,3 +300,18 @@ The final attestation records archive-source comparisons and test commands.
 6. Add individual verified hooks, transaction APIs and framework/loop adapters;
    preserve unsupported reports. Interpreter-thread execution remains a separate
    architecture decision, not a prerequisite for the next experimental release.
+
+## Hyper bounded streaming continuation (2026-11-10)
+
+IMPLEMENTED_AND_TESTED for HTTP/1.1 response streams, fixed/chunked iterable
+uploads, worker-backed file upload/download, verified HTTPS, backpressure and
+owner cleanup. Native checkpoint `a0e3098`; no fallback to curl. The same public
+HttpClient, client permits and C buffer limits are retained. See
+[HTTP_STREAMING.md](HTTP_STREAMING.md#hyper-client-streaming-continuation-2026-11-10).
+The35-command PHP83/84/85/DEBUG/GCC epoll/poll matrix and10 additional aggregate
+memory-bound checks pass. Gate A203.435s and the76-command HTTP gate pass;
+complete PHP85 suites and short four-worker FPM controls pass on both backends.
+Scoped DEBUG Valgrind ownership controls report zero errors/loss,5306bytes
+reachable. These results do not close broad protocol/proxy certification,
+historical memory findings, client mTLS, decompression, redirects or HTTP/2/3.
+Release remains EXPERIMENTAL; older rows retain their original source scope.

@@ -14,7 +14,7 @@ The [Hyper safety review](docs/HYPER_SAFETY_REVIEW.md) records FFI panic contain
 the repeated Content-Encoding correction, tested wakeup ownership, and the separate
 system-libcurl trailer leak. The [DNS continuation](docs/HYPER_DNS.md) adds owned
 worker resolution and origin-safe fallback. The [TLS continuation](docs/HYPER_TLS.md)
-adds verified HTTPS; Hyper decompression, proxies, redirects, streaming and HTTP/2/3
+adds verified HTTPS. [Bounded streaming](docs/HTTP_STREAMING.md#hyper-client-streaming-continuation-2026-11-10) now covers responses, uploads and downloads. Hyper decompression, proxies, redirects and HTTP/2/3
 remain unavailable. The isolated curl repair does not update the host library.
 
 **Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).

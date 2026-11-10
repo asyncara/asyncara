@@ -230,7 +230,9 @@ scoped instruments and retained unrelated failures.
 
 ## Hyper client streaming continuation (2026-11-10)
 
-Implementation exists; final integration/memory validation is in progress.
+IMPLEMENTED_AND_TESTED in the functional/lifecycle scope below. Source
+checkpoint `a0e3098be1fe8743a6e6b12dd9a8de048b7de513`; independent packaging is
+separate. Release remains EXPERIMENTAL.
 The opt-in Hyper HTTP/1.1 transport now uses the same getStream, download,
 upload and requestStream APIs. HTTP/IP, worker-resolved HTTP/DNS and verified
 HTTPS share the original client permit and native operation owner. Network/TLS
@@ -282,3 +284,33 @@ TLS trust and zero collected native resources. Runtime::diagnostics outside
 Async::run is a cached pre-GC snapshot; the test separately checks the live
 Future weak registry after collection. Neither this test nor a short FPM pass
 certifies the historical six-hour failure or universal deployment reliability.
+
+Validation root: `/home/coder/Asyncara-priority-20261110T205459Z`.
+`matrix-r2/report.json`:35 commands, PHP83/84/85/DEBUG/GCC on epoll/poll;
+`bounds-matrix-r1/report.json`:10 native-capacity rejection/collection controls;
+`regressions-r1/gate-a/report.json`:47 commands/203.435s;
+`regressions-r1/http/report.json`:76 commands/118.006s;
+`regressions-r2/report.json`:15 full-suite/FPM/server/allocation checks.
+The separately added capacity commands are also part of the HTTP gate now.
+The first scripted full-suite launch passed an absolute module path to a legacy
+runner which prepends PWD; the resulting load failure is preserved. Corrected
+relative-path executions pass without changing runtime code or assertions.
+
+The FPM fixture completes60 main responses per backend, each with two response
+streams and two fixed-length uploads under the original four-operation barrier
+and two-tick assertion. Minimum ticks are10/25 (one/four workers) on epoll and
+18/18 on poll. All sampled idle workers have6 descriptors and1 thread. Fatal
+request cleanup and subsequent request isolation pass. This is a short local
+integration result, not a soak certification.
+
+Managed response-buffer peaks remain at or below64KiB;32MiB identity transfers
+are not fully buffered. The forced1MiB native-limit test admits32 operations,
+observes explicit allocation rejections and collects every completion with zero
+remaining managed bytes/operations/Futures. Rust/library/kernel allocations
+remain outside that1MiB limit. ResponseHead is an early immutable snapshot;
+there is no separate late-trailer Future in this API.
+
+[Durable command, manifest and failure records](phase7/hyper-streaming.json).
+The13 Rust units also pass with the private-CA-dependent tests enabled.
+Scoped aggregate-rejection Valgrind controls report zero errors/lost bytes and
+4066bytes reachable, separately from the TLS ownership control above.

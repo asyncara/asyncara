@@ -59,7 +59,7 @@ provider decision. Historical PHP/libpq/libcurl findings remain separate.
 | Area | Actual remaining scope |
 |---|---|
 | Server | Duplex request/response streaming; HTTP/2/3; WebSocket upgrade integration; deployment/endurance certification; all-cases Go performance target |
-| Hyper client | Decompression, redirects, proxies and streaming; bounded methods/headers/bodies are implemented and tested in the documented functional/lifecycle scope (HYPER_REQUESTS.md); default curl remains the comprehensive client |
+| Hyper client | Decompression, redirects and proxies; bounded response/upload streaming is now implemented and tested (HTTP_STREAMING.md); bounded methods/headers/bodies are implemented and tested in the documented functional/lifecycle scope (HYPER_REQUESTS.md); default curl remains the comprehensive client |
 | WebSocket | Server-WSS, browser/Autobahn conformance and extensions are absent or unverified; existing independent Python client/server tests retained |
 | PostgreSQL | Opt-in bounded prepared-statement caching is implemented and tested (POSTGRESQL_PREPARED.md); remote cancellation acknowledgement and broader remote compatibility remain open; fatal-bailout memory finding is separately retained |
 | MySQL/MariaDB, Redis | Broader independent server/auth matrices; RESP attributes/streaming aggregates/Cluster/Sentinel remain limited or absent |

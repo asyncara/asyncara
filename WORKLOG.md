@@ -2618,3 +2618,17 @@ on epoll/poll with zero errors and zero definite/indirect/possible loss;
 5306bytes/19blocks remain reachable, no suppressions. Gate A passes203.435s.
 The complete HTTP/core/server and four-worker FPM suites are still running;
 these focused results are not broad protocol certification or an endurance pass.
+
+Hyper streaming integration complete in its defined scope:76 HTTP commands,
+full85 suites on both backends,15 remaining full/FPM/server/allocation commands
+PASS. FPM60 requests/backend, minimum ticks10/25 epoll and18/18 poll; idle6fds/
+1thread. Additional forced1MiB native-limit tests pass all10 configurations;
+32 admitted transfers encounter explicit capacity errors and leave no live
+managed resource. No universal memory-accounting claim. Bounds Valgrind and
+explicit private-CA Rust units are being completed before final attestation.
+
+Rust private-CA suite completes13/13 (none ignored). Forced-capacity DEBUG
+Valgrind passes both backends: zero errors and lost bytes,4066bytes reachable.
+Default C-only extension compiles; the first stream test failed only in a child
+process because orchestration omitted ASYNCARA_EXTENSION (absent default module).
+That launch remains preserved; corrected same-binary runs are separate.

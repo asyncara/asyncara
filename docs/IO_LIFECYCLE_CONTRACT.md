@@ -489,3 +489,18 @@ and joins cancelled work. No server cancellation acknowledgement or automatic
 replay is implied. Default cache capacity0 preserves unnamed-query behavior.
 Exact bounds, server invalidation limitations and validation status are in
 [POSTGRESQL_PREPARED.md](POSTGRESQL_PREPARED.md).
+
+## Hyper stream ownership
+
+The optional Hyper transport now follows the existing streaming client owner:
+producer Task/permit -> request engine C job -> Rust transfer/connection driver.
+C publishes complete headers and bounded body/upload availability before another
+kernel wait. A paused Rust response Future owns its unaccepted Bytes until the
+C slot is drained; an upload driver copies its borrowed C slot before returning
+to PHP. Resume wakes the operation and canonical driver without invoking PHP
+while Rust borrows the engine. Cancellation drops Rust owners before the C job
+can be collected. File I/O still belongs to native workers. Shared header-waiter
+cancellation does not authorize transfer cancellation; explicit stream close
+cancels/joins its producer. Deadlines cover paused transfer time, and an unread
+peer reset need not deliver a final HTTP response. See HTTP_STREAMING.md for
+bounds, tests and distinctions from buffered request decoding and MIME.

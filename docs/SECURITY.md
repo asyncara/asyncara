@@ -295,3 +295,15 @@ Matched old/new/cache-disabled controls have identical lost-byte totals; a
 PHP-only fatal control also fails. These observations do not certify arbitrary
 fatal cleanup or erase the report. See POSTGRESQL_PREPARED.md and
 DEPENDENCY_FINDINGS.md for the exact allocator and workload distinctions.
+
+## Hyper bounded streaming
+
+Streaming enables no new verification bypass or proxy fallback. Verified TLS
+and worker-loaded trust policies apply to uploads/downloads as well as buffered
+requests. The64KiB C slots reject/pause safely and aggregate-limit failures are
+explicit. Rust frame/upload copies and TLS/kernel memory remain separate from
+the C ledger. Malformed or truncated transfers fail; prefixes already delivered
+to a consumer cannot be recalled. Atomic downloads publish only after complete
+success. Buffered decompression remains unsupported; streaming intentionally
+delivers encoded bytes. The new scoped memory checks do not erase historical
+PHP fatal-bailout, distribution-build, libpq or libcurl findings.
