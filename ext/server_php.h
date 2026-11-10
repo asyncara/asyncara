@@ -75,6 +75,7 @@ PHP_FUNCTION(asyncara_server_next) {
     if (rc == 2) { add_assoc_long(return_value, "kind", 3); return; }
     add_assoc_long(return_value, "kind", view.kind);
     add_assoc_long(return_value, "id", view.id);
+    add_assoc_long(return_value, "connection", view.connection);
     if (view.kind == 1) {
         /* A PHP OOM bailout leaves the original event owned by Rust until
          * RSHUTDOWN. No C buffer or Rust borrow spans Zend execution. */

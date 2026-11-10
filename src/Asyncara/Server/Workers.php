@@ -18,11 +18,13 @@ final class Workers
     {
         if (PHP_SAPI !== 'cli' || !function_exists('pcntl_fork') || !function_exists('posix_kill')) throw new \RuntimeException('Multiple server workers require CLI, pcntl and posix');
         if (!\asyncara_server_can_fork() || count(glob('/proc/self/task/*')) !== 1) throw new \LogicException('Start workers before initializing any native runtime or thread; open resources inside each worker');
+        if (pcntl_signal_get_handler(SIGCHLD) !== SIG_DFL) throw new \LogicException('Worker supervisor requires ownership of child reaping (default SIGCHLD handler)');
         $oldAsync = pcntl_async_signals(true); $handlers = [];
         foreach ([SIGINT, SIGTERM] as $signal) { $handlers[$signal] = pcntl_signal_get_handler($signal); pcntl_signal($signal, fn() => $this->stop()); }
         $error = null;
         try {
             for ($i = 0; $i < $count; $i++) {
+                if ($this->stopping) break;
                 $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
                 if (!$pair) throw new \RuntimeException('Worker readiness channel failed');
                 $pid = pcntl_fork();
@@ -58,7 +60,11 @@ final class Workers
             $stopAt = null;
             while ($this->children) {
                 foreach ($this->children as $pid => $stream) {
-                    if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) {
+                    $waited = pcntl_waitpid($pid, $status, WNOHANG);
+                    if ($waited === -1 && pcntl_get_last_error() === PCNTL_ECHILD) {
+                        unset($this->children[$pid]); if (is_resource($stream)) fclose($stream);
+                        $error = new \RuntimeException('Worker exit status was reaped outside its supervisor'); $this->stop();
+                    } elseif ($waited === $pid) {
                         unset($this->children[$pid]);
                         if (is_resource($stream)) fclose($stream);
                         if (!pcntl_wifexited($status) || pcntl_wexitstatus($status) !== 0) $error = new \RuntimeException('HTTP worker failed; PID ' . $pid);
@@ -79,7 +85,8 @@ final class Workers
             while ($this->children) {
                 foreach ($this->children as $pid => $stream) {
                     if (hrtime(true) >= $until) posix_kill($pid, SIGKILL);
-                    if (pcntl_waitpid($pid, $status, WNOHANG) === $pid) { if (is_resource($stream)) fclose($stream); unset($this->children[$pid]); }
+                    $waited = pcntl_waitpid($pid, $status, WNOHANG);
+                    if ($waited === $pid || ($waited === -1 && pcntl_get_last_error() === PCNTL_ECHILD)) { if (is_resource($stream)) fclose($stream); unset($this->children[$pid]); }
                 }
                 if ($this->children) usleep(10000);
             }

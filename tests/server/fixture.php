@@ -31,6 +31,16 @@ $app->get('/never', function () use (&$pending, &$cancelled) {
 $app->get('/metrics', function () use (&$ticks, &$pending, &$cancelled, $app) { return Response::json(['ticks'=>$ticks,'pending'=>$pending,'cancelled'=>$cancelled,'runtime'=>Scheduler::current()->statistics(),'native'=>$app->stats(),'fds'=>count(scandir('/proc/self/fd'))-2]); });
 $app->get('/error', fn() => throw new RuntimeException('secret test error'));
 $app->get('/bad-header', fn() => Response::text('unsafe', 200, ['x-test'=>"bad\r\ninjected: true"]));
+$app->get('/set-context', function () { Asyncara\Context::set('isolated', 'previous-request'); return Response::text('ok'); });
+$app->get('/get-context', fn() => Response::json(['value'=>Asyncara\Context::get('isolated')]));
+$app->get('/io', function () use ($app) {
+    $read = Asyncara\IO\Files::read(__FILE__);
+    $response = (new Asyncara\HTTP\HttpClient())->get('http://'.$app->stats()['address'].'/status');
+    $db = Asyncara\SQLite\Connection::open(':memory:')->await();
+    try { $rows = $db->query('SELECT 42 AS answer')->await(); }
+    finally { $db->close()->await(); }
+    return Response::json(['file'=>strlen($read->await())>0,'http'=>$response->await()->json()['status'],'db'=>$rows[0]['answer']]);
+});
 $app->get('/oversized', fn() => Response::text(str_repeat('x', 2097153)));
 $app->get('/large', fn() => Response::text(str_repeat('x', 2097152)));
 $app->get('/stop', function () use ($app) { $app->stop(); return Response::text('stopped'); });

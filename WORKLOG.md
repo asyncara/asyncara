@@ -2228,3 +2228,26 @@ fault regression and wider validation are in progress. Exploratory matched Go
 comparisons do not meet the requested performance target. Evidence is under
 /home/coder/Asyncara-server-evidence-20261109T232945Z; no Phase 4 files or binaries
 were modified. Server remains EXPERIMENTAL and is not production-certified.
+
+### Server connection ownership and measured iteration
+
+Reused one Fiber per HTTP/1 connection instead of one per request, with an explicit
+bounded one-consumer inbox, monotonic connection IDs and native close events.
+Context is reset between requests; repeated pipelined Context tests pass. Added
+server-only sendmsg vectored writes, payload ownership through the final Bytes
+reference, coalesced eventfd notifications, strict Host/head validation and
+signal-safe wait error preservation. No existing HTTP client transport rewrite.
+
+Focused PHP 8.5 integration passes on both backends, including real client HTTP,
+filesystem and SQLite inside a server handler, original two-tick-before-release
+condition, disconnect cancellation, 2 MiB responses, 64-connection admission and
+50 in-process listener lifecycle cycles. Four real worker processes pass Context
+isolation and graceful reaping. Native negative control fails before the EINTR
+correction and passes after on epoll and poll. Initial native test omitted
+fortified __poll_chk interception; those incomplete controls are retained and the
+corrected injection covers both symbols. Initial SQLite fixture used an incorrect
+nested result shape; retained failure corrected to the existing row-array API.
+
+Performance target is still not established: single-sample comparisons vary
+substantially with host scheduling. All response bodies in the comparison are
+validated. No claim of universal superiority or production readiness is made.

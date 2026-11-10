@@ -23,6 +23,7 @@ async def checks(port):
     s,h,b=await request('/status'); assert s==200 and json.loads(b)['engine']=='Asyncara/Rust'; completed.append('basic')
     s,h,b=await request('/work/42?payload_bytes=17'); assert json.loads(b)=={'worker_id':42,'payload':'x'*17}; completed.append('params_query')
     s,h,b=await request('/data','POST',b'{"a":[1,2]}'); assert s==201 and json.loads(b)['received']=={'a':[1,2]}; completed.append('json_native')
+    s,h,b=await request('/io'); assert s==200 and json.loads(b)=={'file':True,'http':'OK','db':42},(s,b); completed.append('client_files_sqlite_in_handler')
     assert (await request('/data','POST',b'{'))[0]==400
     assert (await request('/api/v1/users'))[0]==200
     assert (await request('/api/v1/upload','POST'))[0]==401
@@ -36,11 +37,20 @@ async def checks(port):
     r,w=await connect()
     w.write(b'GET /status HTTP/1.1\r\nHost: localhost\r\n\r\n'*3); await w.drain()
     for _ in range(3): assert (await response(r))[0]==200
+    for _ in range(10):
+        w.write(b'GET /set-context HTTP/1.1\r\nHost: localhost\r\n\r\nGET /get-context HTTP/1.1\r\nHost: localhost\r\n\r\n'); await w.drain()
+        assert (await response(r))[2]==b'ok'
+        assert json.loads((await response(r))[2])=={'value':None}
     w.close(); await w.wait_closed(); completed.append('pipeline')
     r,w=await connect()
     w.write(b'POST /data HTTP/1.1\r\nHost: localhost\r\nTransfer-Encoding: chunked\r\n\r\n3\r\n{"x\r\n4\r\n":1}\r\n0\r\n\r\n')
     await w.drain(); s,h,b=await response(r); assert s==201 and json.loads(b)['received']=={'x':1}
     w.close(); await w.wait_closed(); completed.append('chunked')
+    for packet in [b'GET /status HTTP/1.1\r\n\r\n', b'GET /status HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n', b'POST /data HTTP/1.1\r\nHost: a\r\nContent-Length: 1\r\nContent-Length: 2\r\n\r\nx']:
+        r,w=await connect(); w.write(packet); await w.drain()
+        assert (await response(r))[0]==400
+        w.close(); await w.wait_closed()
+    completed.append('invalid_host_and_framing')
     # Two timers must fire while this independently held request is incomplete.
     r,w=await connect(); w.write(b'GET /hold HTTP/1.1\r\nHost: localhost\r\n\r\n'); await w.drain()
     pending=asyncio.create_task(response(r)); observed=None
@@ -78,7 +88,26 @@ async def checks(port):
     w.close(); await w.wait_closed(); completed.append('partial_header_deadline')
     metrics=json.loads((await request('/metrics'))[2])
     assert metrics['pending']==0 and metrics['native']['bufferBytes']==0, metrics
+    assert metrics['native']['requestsHandled'] > metrics['native']['handlerTasksCreated']+20, metrics
     assert metrics['native']['timedOut']>=1 and metrics['native']['connections']<=4, metrics
+    s,h,b=await request('/large'); assert s==200 and b==b'x'*2097152
+    completed.append('vectored_large_response')
+    # Reserve a control connection, then fill all other native admission slots.
+    cr,cw=await connect()
+    async def control():
+        cw.write(b'GET /metrics HTTP/1.1\r\nHost: localhost\r\n\r\n'); await cw.drain()
+        return json.loads((await response(cr))[2])
+    await control()
+    idle=[await connect() for _ in range(63)]
+    snapshot=await control(); assert snapshot['native']['connections']==64,snapshot
+    er,ew=await connect();ew.write(b'GET /status HTTP/1.1\r\nHost: localhost\r\n\r\n');await ew.drain()
+    extra=asyncio.create_task(response(er))
+    snapshot=await control();assert snapshot['native']['connections']==64 and not extra.done(),snapshot
+    idle[0][1].close();await idle[0][1].wait_closed()
+    assert (await extra)[0]==200
+    for _,writer in idle[1:]:writer.close();await writer.wait_closed()
+    ew.close();await ew.wait_closed();cw.close();await cw.wait_closed()
+    completed.append('bounded_connection_admission')
     assert (await request('/stop'))[2]==b'stopped'; completed.append('graceful_stop')
     return {'checks':completed,'metrics':metrics,'progress':observed}
 
@@ -109,6 +138,7 @@ def main():
                 proc.terminate()
                 try: proc.wait(5)
                 except subprocess.TimeoutExpired: proc.kill(); proc.wait()
+            if not (out/'stdout.log').exists(): (out/'stdout.log').write_text(proc.stdout.read())
             result.update(exitCode=proc.returncode,wallSeconds=time.monotonic()-start)
             (out/'report.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2)); raise SystemExit(result['status']!='PASS')
