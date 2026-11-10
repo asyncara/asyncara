@@ -2508,3 +2508,17 @@ Matched three-sample comparison30samples/240000responses functionalPASS, speed
 NOT_MET. Current Rust medians4763.23/3060.37req/s for1KiB/64KiB. No general
 speed-up claim; old module uses same current wrapper. Source manifest, logs and
 all earlier failures remain in Asyncara-hyper-requests-20261110T042002Z.
+
+### server-r5 independent package
+
+## Independent buffered-request package
+
+Source: `d0c270a538c6d638149e4188f079dc3c2ae575bd`. Archive: `build/asyncara-0.1.0-dev-server-r5.tar.gz`,
+598 files, SHA256 `721fa8b8e6139d56ba79b8496dac69dba5102964c3f78f3886f719e48c3438b0`.
+Two archives are byte-identical and every entry matches the source commit. Fresh
+extraction, fresh Cargo target and native build pass23 commands: server protocol,
+API, TLS, input/output streaming, ownership and client TLS/buffered requests on
+epoll/poll. Independent module SHA256:
+`e55adac75d0798a5408a080b926bffa22352876ea2860f858c136bd4574b5ca7`.
+[Build attestation](docs/phase7/server-r5-package.json). No release/push or universal
+performance/endurance certification. Historical archives remain unchanged.
