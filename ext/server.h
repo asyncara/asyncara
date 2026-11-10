@@ -3,7 +3,7 @@
 /* Borrowed views remain valid until the next mutating server call. Zend copies
  * them after Rust returns, then acknowledges consumption. No Zend across Rust. */
 typedef struct {
-    uint64_t id; int kind;
+    uint64_t id, connection; int kind;
     const unsigned char *method; size_t method_len;
     const unsigned char *target; size_t target_len;
     const unsigned char *headers; size_t headers_len;

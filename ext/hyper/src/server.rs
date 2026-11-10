@@ -22,7 +22,84 @@ use std::{
 };
 
 type Reply = Response<Full<Bytes>>;
-type Connection = hyper::server::conn::http1::Connection<Io, Dispatch>;
+type Connection = hyper::server::conn::http1::Connection<ServerIo, Dispatch>;
+// Server-only vectored transport: preserve the independently validated client
+// transport while avoiding flattening a large response with its small head.
+struct ServerIo(Io);
+impl hyper::rt::Read for ServerIo {
+    fn poll_read(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: hyper::rt::ReadBufCursor<'_>,
+    ) -> Poll<io::Result<()>> {
+        Pin::new(&mut self.0).poll_read(cx, buf)
+    }
+}
+impl hyper::rt::Write for ServerIo {
+    fn poll_write(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        buf: &[u8],
+    ) -> Poll<io::Result<usize>> {
+        Pin::new(&mut self.0).poll_write(cx, buf)
+    }
+    fn is_write_vectored(&self) -> bool {
+        true
+    }
+    fn poll_write_vectored(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        bufs: &[io::IoSlice<'_>],
+    ) -> Poll<io::Result<usize>> {
+        let mut socket = self.0 .0.borrow_mut();
+        #[cfg(test)]
+        assert!(
+            cx.waker().will_wake(&socket.owner_waker),
+            "non-driver vectored waker"
+        );
+        if !socket.writable {
+            socket.write = Some(cx.waker().clone());
+            return Poll::Pending;
+        }
+        let mut vectors = [libc::iovec {
+            iov_base: std::ptr::null_mut(),
+            iov_len: 0,
+        }; 64];
+        let count = bufs.len().min(vectors.len());
+        for (v, b) in vectors.iter_mut().zip(bufs.iter()).take(count) {
+            v.iov_base = b.as_ptr().cast_mut().cast();
+            v.iov_len = b.len();
+        }
+        // Kernel only reads these borrowed slices during this call. Hyper retains
+        // all body owners across short writes/EAGAIN and advances the exact count.
+        let mut message: libc::msghdr = unsafe { std::mem::zeroed() };
+        message.msg_iov = vectors.as_mut_ptr();
+        message.msg_iovlen = count;
+        let n = unsafe { libc::sendmsg(socket.stream.as_raw_fd(), &message, libc::MSG_NOSIGNAL) };
+        if n >= 0 {
+            return Poll::Ready(Ok(n as usize));
+        }
+        let error = io::Error::last_os_error();
+        match error.kind() {
+            io::ErrorKind::WouldBlock => {
+                socket.writable = false;
+                socket.write = Some(cx.waker().clone());
+                Poll::Pending
+            }
+            io::ErrorKind::Interrupted => {
+                cx.waker().wake_by_ref();
+                Poll::Pending
+            }
+            _ => Poll::Ready(Err(error)),
+        }
+    }
+    fn poll_flush(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        Pin::new(&mut self.0).poll_flush(cx)
+    }
+    fn poll_shutdown(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        Pin::new(&mut self.0).poll_shutdown(cx)
+    }
+}
 struct Data {
     bytes: Vec<u8>,
     used: Arc<AtomicUsize>,
@@ -62,6 +139,7 @@ struct Ticket {
 }
 struct Event {
     id: u64,
+    connection: u64,
     kind: i32,
     method: String,
     target: String,
@@ -73,12 +151,30 @@ struct Shared {
     pending: HashMap<u64, Weak<RefCell<Ticket>>>,
     next: u64,
     notify: OwnedFd,
+    notified: Cell<bool>,
     used: Arc<AtomicUsize>,
     limit: usize,
     slots: usize,
 }
 impl Shared {
+    fn connection_closed(&mut self, connection: u64) {
+        self.events.push_back(Event {
+            id: 0,
+            connection,
+            kind: 4,
+            method: String::new(),
+            target: String::new(),
+            headers: Vec::new(),
+            body: Data::new(&self.used),
+        });
+        self.signal();
+    }
     fn signal(&self) {
+        // Same-thread producer/consumer: one outstanding eventfd token covers
+        // the whole queue until PHP drains it. No per-request syscall storm.
+        if self.notified.replace(true) {
+            return;
+        }
         let one = 1u64;
         loop {
             let rc =
@@ -101,10 +197,12 @@ impl Shared {
                 break;
             }
         }
+        self.notified.set(false);
     }
 }
 struct Pending {
     id: u64,
+    connection: u64,
     ticket: Rc<RefCell<Ticket>>,
     shared: Rc<RefCell<Shared>>,
 }
@@ -128,6 +226,7 @@ impl Drop for Pending {
             // One request plus at most one cancellation per admitted ticket.
             shared.events.push_back(Event {
                 id: self.id,
+                connection: self.connection,
                 kind: 2,
                 method: String::new(),
                 target: String::new(),
@@ -140,6 +239,7 @@ impl Drop for Pending {
 }
 #[derive(Clone)]
 struct Dispatch {
+    connection: u64,
     shared: Rc<RefCell<Shared>>,
     body_limit: usize,
     deadline: Rc<Cell<Instant>>,
@@ -162,6 +262,16 @@ impl Service<Request<Incoming>> for Dispatch {
         let dispatch = self.clone();
         Box::pin(async move {
             let (parts, mut incoming) = request.into_parts();
+            if parts.version == hyper::Version::HTTP_11 {
+                let mut hosts = parts.headers.get_all(header::HOST).iter();
+                let valid = hosts
+                    .next()
+                    .and_then(|v| v.to_str().ok())
+                    .and_then(|v| v.parse::<hyper::http::uri::Authority>().ok());
+                if valid.is_none() || hosts.next().is_some() {
+                    return Ok(error(400));
+                }
+            }
             // Hyper's max_buf_size controls buffer growth, not the exact size
             // of a complete head parsed from the final read. Enforce our public
             // head bound independently before allocating a PHP request event.
@@ -232,6 +342,7 @@ impl Service<Request<Incoming>> for Dispatch {
                 shared.pending.insert(id, Rc::downgrade(&ticket));
                 shared.events.push_back(Event {
                     id,
+                    connection: dispatch.connection,
                     kind: 1,
                     method: parts.method.to_string(),
                     target: parts.uri.to_string(),
@@ -243,6 +354,7 @@ impl Service<Request<Incoming>> for Dispatch {
             };
             let mut reply = Pending {
                 id,
+                connection: dispatch.connection,
                 ticket,
                 shared: dispatch.shared.clone(),
             }
@@ -260,6 +372,7 @@ impl Service<Request<Incoming>> for Dispatch {
     }
 }
 struct Peer {
+    id: u64,
     io: Io,
     driver: Pin<Box<Connection>>,
     wake: Arc<Flag>,
@@ -354,11 +467,19 @@ impl Server {
     fn drive(&mut self) -> io::Result<()> {
         if let Some(listener) = &self.listener {
             for _ in 0..64 {
-                if self.peers.len() >= self.max || self.shared.borrow().pending.len() >= self.max {
+                if self.peers.len() >= self.max
+                    || self.shared.borrow().pending.len() >= self.max
+                    || self.shared.borrow().events.len() >= self.max * 2
+                {
                     break;
                 }
                 match listener.accept() {
                     Ok((stream, _)) => {
+                        let id = self
+                            .accepted
+                            .checked_add(1)
+                            .filter(|n| *n <= i64::MAX as u64)
+                            .ok_or_else(|| io::Error::other("connection ID exhausted"))?;
                         stream.set_nonblocking(true)?;
                         stream.set_nodelay(true)?;
                         let fd = stream.as_raw_fd();
@@ -374,6 +495,7 @@ impl Server {
                         })));
                         let deadline = Rc::new(Cell::new(Instant::now() + self.timeout));
                         let service = Dispatch {
+                            connection: id,
                             shared: self.shared.clone(),
                             body_limit: self.body_limit,
                             deadline: deadline.clone(),
@@ -387,10 +509,12 @@ impl Server {
                             .max_buf_size(65536)
                             .max_header_size(65536)
                             .max_headers(100);
-                        let driver = Box::pin(builder.serve_connection(io.clone(), service));
+                        let driver =
+                            Box::pin(builder.serve_connection(ServerIo(io.clone()), service));
                         self.peers.insert(
                             fd,
                             Peer {
+                                id,
                                 io,
                                 driver,
                                 wake,
@@ -410,6 +534,7 @@ impl Server {
             if now >= peer.deadline.get() {
                 self.timed_out += 1;
                 self.closed += 1;
+                self.shared.borrow_mut().connection_closed(peer.id);
                 return false;
             }
             for _ in 0..8 {
@@ -422,6 +547,7 @@ impl Server {
                     peer.driver.as_mut().poll(&mut Context::from_waker(&waker))
                 {
                     self.closed += 1;
+                    self.shared.borrow_mut().connection_closed(peer.id);
                     if result.is_err() {
                         self.protocol_errors += 1;
                     }
@@ -493,6 +619,7 @@ pub unsafe extern "C" fn ar_server_new(
             pending: HashMap::new(),
             next: 0,
             notify: OwnedFd::from_raw_fd(fd),
+            notified: Cell::new(false),
             used: Arc::new(AtomicUsize::new(0)),
             limit: budget,
             slots: max,
@@ -574,7 +701,8 @@ pub unsafe extern "C" fn ar_server_fds(
     with(ptr, usize::MAX, |s| {
         let accept = s.listener.is_some()
             && s.peers.len() < s.max
-            && s.shared.borrow().pending.len() < s.max;
+            && s.shared.borrow().pending.len() < s.max
+            && s.shared.borrow().events.len() < s.max * 2;
         let count = s.peers.len() + usize::from(accept);
         if out.is_null() {
             return count;
@@ -643,6 +771,7 @@ pub unsafe extern "C" fn ar_server_ready(ptr: *mut c_void, fd: i32, events: i32)
 #[repr(C)]
 pub struct View {
     id: u64,
+    connection: u64,
     kind: i32,
     method: *const u8,
     method_len: usize,
@@ -663,6 +792,7 @@ pub unsafe extern "C" fn ar_server_peek(ptr: *mut c_void, view: *mut View) -> i3
         if let Some(e) = shared.events.front() {
             *view = View {
                 id: e.id,
+                connection: e.connection,
                 kind: e.kind,
                 method: e.method.as_ptr(),
                 method_len: e.method.len(),
@@ -715,6 +845,7 @@ pub unsafe extern "C" fn ar_server_respond(
 ) -> i32 {
     with(ptr, -1, |s| {
         if !(200..=599).contains(&status)
+            || ([204, 205, 304].contains(&status) && len != 0)
             || count > 100
             || len > s.response_limit
             || body.is_null()
@@ -834,4 +965,78 @@ pub unsafe extern "C" fn ar_server_shutdown(ptr: *mut c_void) -> i32 {
         s.shared.borrow().signal();
         0
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn payload_budget_follows_last_transport_reference() {
+        let used = Arc::new(AtomicUsize::new(0));
+        let mut first = Data::new(&used);
+        assert!(first.append(&[1; 64], 128));
+        let bytes = Bytes::from_owner(first);
+        let slice = bytes.slice(16..48);
+        let mut second = Data::new(&used);
+        assert!(!second.append(&[2; 65], 128));
+        assert!(second.append(&[2; 64], 128));
+        assert_eq!(used.load(Ordering::Relaxed), 128);
+        drop(bytes);
+        assert_eq!(used.load(Ordering::Relaxed), 128);
+        drop(slice);
+        assert_eq!(used.load(Ordering::Relaxed), 64);
+        drop(second);
+        assert_eq!(used.load(Ordering::Relaxed), 0);
+    }
+    #[test]
+    fn poisoned_server_never_reenters_mutated_state() {
+        unsafe {
+            let ptr = ar_server_new(
+                b"127.0.0.1:0".as_ptr(),
+                11,
+                4,
+                1024,
+                1024,
+                65536,
+                1000,
+                10,
+                0,
+            );
+            assert!(!ptr.is_null());
+            assert_eq!(
+                with(ptr, -7, |s| {
+                    s.listener.take();
+                    panic!("test-only boundary fault")
+                }),
+                -7
+            );
+            assert_eq!(ar_server_drive(ptr), -1);
+            assert_eq!(ar_server_fds(ptr, std::ptr::null_mut(), 0), usize::MAX);
+            assert_eq!(ar_server_shutdown(ptr), -1);
+            ar_server_free(ptr);
+        }
+    }
+    #[test]
+    fn rejected_bounds_do_not_open_listener() {
+        unsafe {
+            assert!(ar_server_new(
+                b"127.0.0.1:0".as_ptr(),
+                11,
+                0,
+                1024,
+                1024,
+                65536,
+                1000,
+                10,
+                0
+            )
+            .is_null());
+            assert!(
+                ar_server_new(b"host:80".as_ptr(), 7, 4, 1024, 1024, 65536, 1000, 10, 0).is_null()
+            );
+            assert!(
+                ar_server_new(std::ptr::null(), 0, 4, 1024, 1024, 65536, 1000, 10, 0).is_null()
+            );
+        }
+    }
 }

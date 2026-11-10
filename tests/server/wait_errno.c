@@ -7,6 +7,11 @@
 static int calls, armed;
 int __real_epoll_wait(int, struct epoll_event *, int, int);
 int __real_poll(struct pollfd *, nfds_t, int);
+int __real___poll_chk(struct pollfd *, nfds_t, int, size_t);
+int __wrap___poll_chk(struct pollfd *fds, nfds_t n, int timeout, size_t bytes) {
+    if (!armed) return __real___poll_chk(fds, n, timeout, bytes);
+    calls++; errno = EINTR; return -1;
+}
 int __wrap_epoll_wait(int ep, struct epoll_event *events, int max, int timeout) {
     if (!armed) return __real_epoll_wait(ep, events, max, timeout);
     calls++; errno = EINTR; return -1;

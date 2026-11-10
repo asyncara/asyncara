@@ -8,10 +8,12 @@ final class App
 {
     use Internal\NonCopyable;
     private array $static = [], $dynamic = [], $middleware = [], $tasks = [];
+    private array $inboxes = [];
     private string $prefix = '';
     private bool $running = false;
     private bool $workerProcess = false;
     private ?Server\Workers $workers = null;
+    private int $handlerTasksCreated = 0, $requestsHandled = 0;
     public function route(string $method, string $path, callable $handler): Route
     {
         if ($this->running) throw new \LogicException('Register routes before listen');
@@ -43,17 +45,17 @@ final class App
     {
         foreach ([$this->static, $this->dynamic] as $methods) foreach ($methods as $routes) foreach ($routes as $route) yield $route;
     }
-    private function dispatch(array $event): Response
+    private function dispatch(array $event, bool $headFallback = false): Response
     {
-        $path = explode('?', $event['target'], 2)[0]; $method = $event['method']; $params = [];
+        $path = explode('?', $event['target'], 2)[0]; $method = $headFallback ? 'GET' : $event['method']; $params = [];
         if (!str_starts_with($path, '/')) return Response::text('Bad Request', 400);
         $route = $this->static[$method][$path] ?? null;
         if ($route === null) foreach ($this->dynamic[$method] ?? [] as $candidate) {
             if (preg_match($candidate->pattern, $path, $matches)) { $route = $candidate; foreach ($matches as $key => $value) if (is_string($key)) $params[$key] = rawurldecode($value); break; }
         }
-        if ($route === null && $method === 'HEAD') { $event['method'] = 'GET'; return $this->dispatch($event); }
+        if ($route === null && $method === 'HEAD') return $this->dispatch($event, true);
         if ($route === null) return Response::text('Not Found', 404);
-        $request = new Request($method, $event['target'], $event['body'], $event['headers'], $params);
+        $request = new Request($event['method'], $event['target'], $event['body'], $event['headers'], $params);
         $next = $route->handler;
         foreach (array_reverse($route->middleware) as $item) {
             $middleware = is_string($item) ? $this->middleware[$item] : $item;
@@ -64,6 +66,7 @@ final class App
     /** Numeric IP:port. Limits are per process. onReady receives the bound address. */
     public function listen(string $address, array $options = [], ?callable $onReady = null): void
     {
+        if (PHP_SAPI !== 'cli') throw new \LogicException('App server requires the CLI runtime');
         if ($this->running || Scheduler::tryCurrent()) throw new \LogicException('listen owns a top-level runtime');
         if (!function_exists('asyncara_server_listen')) throw new \RuntimeException('Build Asyncara with the Hyper server feature');
         $workers = $options['workers'] ?? 1; unset($options['workers']);
@@ -99,19 +102,35 @@ final class App
                     $processed = 0;
                     while ($event = \asyncara_server_next()) {
                         if ($event['kind'] === 3) return;
-                        $id = $event['id'];
-                        if ($event['kind'] === 2) { ($this->tasks[$id] ?? null)?->cancel(); }
+                        $connection = $event['connection'];
+                        if ($event['kind'] === 2 || $event['kind'] === 4) {
+                            ($this->tasks[$connection] ?? null)?->cancel();
+                            unset($this->tasks[$connection], $this->inboxes[$connection]);
+                        } elseif (isset($this->inboxes[$connection])) { $this->inboxes[$connection]->put($event); }
                         else {
-                            try { $this->tasks[$id] = Async::spawn(function () use ($id, $event): void {
+                            $inbox = new Server\Inbox();
+                            try { $this->tasks[$connection] = Async::spawn(function () use ($connection, $event, $inbox): void {
                                 try {
-                                    try { $response = $this->dispatch($event); }
-                                    catch (\JsonException) { $response = Response::text('Invalid JSON', 400); }
-                                    \asyncara_server_respond($id, $response->status, $response->headers, $response->body);
+                                    while (true) {
+                                        // A Fiber is reused, request Context is not. PHP globals
+                                        // remain explicitly process scoped, as documented.
+                                        Scheduler::current()->task->context = [];
+                                        $id = $event['id'];
+                                        $this->requestsHandled++;
+                                        try {
+                                            try { $response = $this->dispatch($event); }
+                                            catch (\JsonException) { $response = Response::text('Invalid JSON', 400); }
+                                            \asyncara_server_respond($id, $response->status, $response->headers, $response->body);
+                                        } catch (Exception\CancelledException $e) { throw $e; }
+                                        catch (\Throwable) { \asyncara_server_respond($id, 500, [], ''); }
+                                        unset($response, $event);
+                                        Scheduler::current()->task->context = [];
+                                        $event = $inbox->take();
+                                    }
                                 } catch (Exception\CancelledException) { /* owner disappeared */ }
-                                catch (\Throwable) { \asyncara_server_respond($id, 500, [], ''); }
-                                finally { unset($this->tasks[$id]); }
-                            }, false); }
-                            catch (Exception\CapacityException) { \asyncara_server_respond($id, 503, [], ''); }
+                                finally { unset($this->tasks[$connection], $this->inboxes[$connection]); }
+                            }, false); $this->inboxes[$connection] = $inbox; $this->handlerTasksCreated++; }
+                            catch (Exception\CapacityException) { \asyncara_server_respond($event['id'], 503, [], ''); }
                         }
                         if (++$processed === 256) { Async::sleep(0); break; }
                     }
@@ -119,7 +138,7 @@ final class App
                 }
             });
         } finally {
-            \asyncara_server_close(); $this->tasks = []; $this->running = false;
+            \asyncara_server_close(); $this->tasks = $this->inboxes = []; $this->running = false;
             foreach ($signals as $signal => $handler) pcntl_signal($signal, $handler);
             if ($asyncSignals !== null) pcntl_async_signals($asyncSignals);
             foreach ($this->routes() as $route) $route->frozen = false;
@@ -127,5 +146,5 @@ final class App
     }
     /** Stop accepting, flush in-flight responses, then return from listen. */
     public function stop(): void { if ($this->workers) $this->workers->stop(); elseif ($this->running) \asyncara_server_shutdown(); }
-    public function stats(): ?array { return $this->running ? \asyncara_server_info() : null; }
+    public function stats(): ?array { return $this->running ? \asyncara_server_info() + ['handlerTasksCreated'=>$this->handlerTasksCreated, 'requestsHandled'=>$this->requestsHandled] : null; }
 }
