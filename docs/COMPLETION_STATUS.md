@@ -109,3 +109,15 @@ TLS streamed-input/response DEBUG Valgrind3.22 controls on both backends: zero
 errors and zero definite/indirect/possible loss,5306bytes reachable, no suppression.
 [Exact commands, fingerprints and failures](phase7/server-request-stream.json).
 Neither these tests nor server-r2 certify broader deployment or old FPM failures.
+
+## Verified request-stream source package
+
+Source: `f9c6f96b9f94a39cb4db834bd9be4640eb112fdc`. Archive: `build/asyncara-0.1.0-dev-server-r3.tar.gz`,
+581files, SHA256 `7d4ac74d7ee36c8d39ac620312d0a3aaaa69f17b8a36789e163a71660146e17c`.
+A second archive is byte-identical; all files match the source Git tree. A fresh
+extraction, fresh Cargo target and native build pass17 independent checks,
+including input/output streaming, TLS, protocol, API and body ownership on
+both backends. [Attestation](phase7/server-r3-package.json).
+Independent module SHA256: `2afda8b4316a4191ad8b9ec2d450986e854921ab2032e6d654afa4f146b2374a`.
+The earlier ASan slow-input failure remains qualified above; packaging does not
+erase it. No release publication or new performance acceptance.

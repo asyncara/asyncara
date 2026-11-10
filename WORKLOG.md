@@ -2414,3 +2414,8 @@ input reset without a sanitizer report. Four exact-threshold repetitions pass;
 2.437..2.873s transfers approach the3s deadline, but the first reset's cause is
 not proven. No deadline/assertion change. Evidence server-request-stream.json
 records the failure and all repeats. Preparing a new independent package.
+
+Request-stream sourcef9c6f96b9f94a39cb4db834bd9be4640eb112fdc packaged as server-r3,581files,
+SHA2567d4ac74d7ee36c8d39ac620312d0a3aaaa69f17b8a36789e163a71660146e17c.
+Fresh independent build passes17 checks on epoll/poll. Source and Phase4 files
+unchanged; release EXPERIMENTAL, broader partial scope remains.
