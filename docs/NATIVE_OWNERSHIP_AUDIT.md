@@ -230,3 +230,16 @@ reference control failed before the correction and passes after it. API tests
 retain this regression. Closing input is not the same as cancelling the whole
 connection; App/native response ownership decides when unread framing requires
 closure. External PHP references to already-delivered chunks remain caller-owned.
+
+## Hyper client TLS continuation
+
+| Resource | Owner/sharing | Cancellation/release | Evidence and limits |
+|---|---|---|---|
+| CA-file handle | owned HttpClient Task; Files worker acquisition | shielded using/close drains file operation | same bounded File lifecycle; caller cancellation cannot free an active worker handle |
+| Trust snapshot | HttpClient PHP string plus request-local native cache | immutable per-client snapshot; native cache released at PHP request shutdown | exact PEM comparison;16policy cap; new client reloads changed file bytes |
+| rustls ClientConfig | Arc shared only by matching native trust policy/connection | final Arc released when cache/connections drop | parsed roots/Rust state are outside complete native memory ledger |
+| TLS transport | canonical Conn driver owns TlsIo; Io descriptor remains shared by that driver | failure/owner cancellation drops transport before native completion callback | canonical-waker test32TLS requests; independent held-handshake/body and shared-waiter controls |
+| HTTP operation | existing native job plus owned Task/permit | one waiter cancels only its wait; explicit operation owner cancels and drains | final pendingTasks/Futures/watchers/timers/nativeJobs zero in TLS controls |
+
+The trust cache is request-local, not per HttpClient, and a new HttpClient alone
+does not reset native pool state. See [TLS evidence and memory scope](HYPER_TLS.md).

@@ -204,3 +204,16 @@ Input errors/overflow reject the request rather than silently dropping data.
 Unconsumed input forces connection closure on reply. The existing deadline bounds
 slow readers/writers; this is not an unlimited idle timeout. PHP values, Hyper
 frame storage, TLS and kernel buffers remain outside the payload ledger.
+
+## Hyper client trust and TLS buffers
+
+The optional Hyper client accepts at most 1 MiB of PEM trust input and 512
+certificates per policy. Its native PHP-request-local cache admits at most 16
+exact policies, then rejects new policies; existing policies remain usable.
+Connections match the exact policy identity before reuse. The 16 MiB PEM ceiling
+does not cover parsed roots, Rust allocations, TLS state, PHP values or kernel
+socket buffers. Rustls uses a 64 KiB outgoing-buffer limit and the shared TLS
+adapter uses a 16 KiB initialized scratch buffer with at most 16 read iterations
+per call. Caller read capacity still limits returned plaintext. No full-memory
+accounting claim follows from these bounds. See [Hyper TLS](HYPER_TLS.md) and
+`tests/http/hyper_tls_bounds.php` for rejection/recovery controls.

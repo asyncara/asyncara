@@ -1,5 +1,21 @@
 # Current isolated HTTP development state
 
+## Hyper HTTPS and bounded TLS input continuation (2026-11-10)
+
+The current optional Hyper client adds verified TLS1.2/1.3 buffered GET, DNS/IP
+certificate checks, bounded trust snapshots, pool trust isolation and handshake
+deadlines. DNS and CA-file reads use existing workers; HTTP/TLS uses the native
+readiness driver. Default curl remains the comprehensive HTTP client.
+[Exact scope and evidence](HYPER_TLS.md). Hyper remains PARTIALLY_IMPLEMENTED for
+general methods/headers, decompression, redirects/proxies, streaming and HTTP/2/3.
+
+Shared server/client TLS reads coalesce already-ready records without waiting
+for later data. The unchanged slow-input test now passes the 85-command PHP
+83/84/85/DEBUG/GCC epoll/poll matrix; the previous measured deadline failure is
+preserved. These local functional results do not resolve historical FPM zero-tick
+failures or certify broader performance/endurance. Release remains EXPERIMENTAL.
+
+
 ## Current completion work (2026-11-10)
 
 HTTPS/mTLS and bounded response streaming are implemented and tested on the

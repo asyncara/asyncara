@@ -2419,3 +2419,43 @@ Request-stream sourcef9c6f96b9f94a39cb4db834bd9be4640eb112fdc packaged as server
 SHA2567d4ac74d7ee36c8d39ac620312d0a3aaaa69f17b8a36789e163a71660146e17c.
 Fresh independent build passes17 checks on epoll/poll. Source and Phase4 files
 unchanged; release EXPERIMENTAL, broader partial scope remains.
+
+## 2026-11-10 — Verified Hyper HTTPS continuation
+
+Base5f984ea; isolated evidence /home/coder/Asyncara-hyper-tls-20261110T033522Z.
+Shared rustls/AWS-LC transport now supports verified client TLS1.2/1.3 buffered
+GET. CA files use existing filesystem workers; DNS uses resolver workers. Exact
+trust snapshots distinguish pooled connections and a request-local16-policy bound
+rejects new policies without discarding existing owners. Handshake time is inside
+the connect deadline. Native C validates/copies bounded trust bytes; no fallback
+verification, executor or network worker was added.
+
+The first test runner selected an invalid backend name and consequently curl;
+its failures are retained and excluded from Hyper evidence. A subsequent fixture
+shutdown waited on an idle TLS pool; controller EOF now aborts fixture-owned
+transports only. Production shutdown and original assertions are unchanged.
+
+Matrix-r1 retained a slow TLS server-input FAIL: measured3.021684s,6ticks and one
+recorded native timeout. The existing adapter returned one TLS record per PHP
+chunk. Bounded coalescing now returns already-ready records together, immediately
+returning partial data on would-block. It uses the same16KiB scratch buffer and
+at most16iterations; no timeout/limit change. Matrix-r2 passes85/85 commands on
+PHP83/84/85,DEBUG,GCC ASan/UBSan and both backends. The GCC/poll slow8MiB case
+now uses131 rather than514chunks and completed in0.866549s. This does not identify
+the historical Phase4 zero-tick cause. Broad regressions and memory validation
+are in progress; new TLS canonical-waker Rust control already passes32 requests.
+
+Hyper TLS final regression checks pass16 commands including Gate A193.188s and
+all PHP85/server worker paths; HTTP gate passes74. DEBUG server memory passes
+both backends. Original full-client acceptance under Valgrind remains FAIL due
+to its3s deadline. A separate default-deadline diagnostic memory workload measures
+first cold TLS1.2 at5.116563s and passes epoll/poll with zero errors/definite/
+indirect/possible loss,5306reachable. It retains actual TLS, trust failure, binary
+bodies, pending timer progress, cancellation and ownership checks; it is not an
+acceptance replacement. Repeated coalescing comparison and packaging are next.
+
+Three interleaved old/new GCC/poll slow-input comparisons complete. Old:514chunks,
+one3.004s timeout plus2.911/2.684s passes. New:131..132chunks, all three pass
+1.011/1.283/.940s. Original fixture and3s deadline unchanged. This is scoped
+shared-host evidence, not universal speed or old FPM root-cause attribution.
+Durable commands, fingerprints and preserved failures: docs/phase7/hyper-tls.json.

@@ -59,7 +59,7 @@ provider decision. Historical PHP/libpq/libcurl findings remain separate.
 | Area | Actual remaining scope |
 |---|---|
 | Server | Duplex request/response streaming; HTTP/2/3; WebSocket upgrade integration; deployment/endurance certification; all-cases Go performance target |
-| Hyper client | HTTPS, decompression, general request methods/headers, redirects, proxies and streaming; default curl remains the comprehensive client |
+| Hyper client | Decompression, general request methods/headers, redirects, proxies and streaming; default curl remains the comprehensive client |
 | WebSocket | Server-WSS, browser/Autobahn conformance and extensions are absent or unverified; existing independent Python client/server tests retained |
 | PostgreSQL | Prepared-statement caching, remote cancellation acknowledgement and broader remote compatibility |
 | MySQL/MariaDB, Redis | Broader independent server/auth matrices; RESP attributes/streaming aggregates/Cluster/Sentinel remain limited or absent |
@@ -121,3 +121,13 @@ both backends. [Attestation](phase7/server-r3-package.json).
 Independent module SHA256: `2afda8b4316a4191ad8b9ec2d450986e854921ab2032e6d654afa4f146b2374a`.
 The earlier ASan slow-input failure remains qualified above; packaging does not
 erase it. No release publication or new performance acceptance.
+
+## Hyper verified HTTPS continuation
+
+Verified TLS1.2/1.3 GET, bounded worker-loaded trust snapshots, pool isolation and
+connect deadlines are implemented and functionally tested on PHP83/84/85, DEBUG
+and GCC ASan/UBSan with epoll/poll. Matrix-r2 passes85 commands. The shared TLS
+read adapter now coalesces immediately available plaintext within existing bounds;
+the measured prior3s slow-input deadline failure is retained. Gate A passes
+193.188s. Broader regression, memory and independent-package checks are recorded
+in [HYPER_TLS.md](HYPER_TLS.md); this does not complete all Hyper protocol modes.

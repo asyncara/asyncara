@@ -12,6 +12,7 @@ final class HttpClient
 
     private Semaphore $slots;
     private ?bool $hyper = null;
+    private ?string $hyperCaPem = null;
     public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10)
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
@@ -166,8 +167,8 @@ final class HttpClient
         $options = $this->options($method, $url, $headers, $followRedirects);
         if ($this->hyper ??= asyncara_info()['httpBackend'] === 'hyper-prototype') {
             $host = parse_url($url, PHP_URL_HOST);
-            if (is_string($host) && inet_pton(trim($host, '[]')) === false) {
-                return $this->resolvedRequest($url, $body, $options, $host);
+            if (is_string($host) && (parse_url($url, PHP_URL_SCHEME) === 'https' || inet_pton(trim($host, '[]')) === false)) {
+                return $this->preparedRequest($url, $body, $options, $host);
             }
         }
         $scheduler = Scheduler::current();
@@ -195,32 +196,53 @@ final class HttpClient
             }
         }));
     }
-    /** Hyper uses the existing bounded native resolver workers, never blocking DNS on the loop. */
-    private function resolvedRequest(string $url, ?string $body, array $options, string $host): Future
+    /** Hyper resolves DNS and loads trust bytes using existing bounded native workers. */
+    private function preparedRequest(string $url, ?string $body, array $options, string $host): Future
     {
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options, $host): Response {
+            $tls = parse_url($url, PHP_URL_SCHEME) === 'https';
+            $numeric = inet_pton(trim($host, '[]')) !== false;
             if ($body !== null || $options['method'] !== 'GET' || $options['headers'] || $options['followRedirects'] ||
-                isset($options['proxy']) || isset($options['caFile']) ||
-                parse_url($url, PHP_URL_SCHEME) !== 'http' || parse_url($url, PHP_URL_USER) !== null ||
-                strlen($host) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $host)) {
+                isset($options['proxy']) || (!$tls && isset($options['caFile'])) ||
+                parse_url($url, PHP_URL_USER) !== null || (!$numeric &&
+                (strlen($host) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $host)))) {
                 throw new \Asyncara\Exception\OperationException('Invalid or unsupported Hyper origin');
             }
-            foreach (['http_proxy', 'HTTP_PROXY', 'all_proxy', 'ALL_PROXY'] as $name) {
+            foreach (['http_proxy', 'HTTP_PROXY', 'https_proxy', 'HTTPS_PROXY', 'all_proxy', 'ALL_PROXY'] as $name) {
                 if (($proxy = getenv($name)) !== false && $proxy !== '') throw new \Asyncara\Exception\OperationException('Hyper proxy is unsupported');
             }
             $start = Scheduler::now();
-            // Owned DNS cancellation drains the existing worker completion. A
-            // running getaddrinfo cannot be forcibly stopped; timers still run.
-            $addresses = Async::timeout(min($this->timeout, $this->connectTimeout),
-                static fn() => Async::await(\Asyncara\IO\Dns::resolve($host)));
+            $addresses = Async::timeout(min($this->timeout, $this->connectTimeout), function () use ($host, $numeric, $tls, &$options): array {
+                if ($tls) {
+                    if ($this->hyperCaPem === null) {
+                        // Linux system trust snapshot or explicit caFile. No blocking
+                        // trust-store load is performed by Rust's progress callbacks.
+                        $path = $this->caFile ?? (getenv('SSL_CERT_FILE') ?: '/etc/ssl/certs/ca-certificates.crt');
+                        if ($path === '' || str_contains($path, "\0") || str_contains($path, '://')) throw new \ValueError('CA file must be a local path');
+                        $pem = Async::using(static fn() => Files::open($path), static function ($file): string {
+                            $data = '';
+                            while (strlen($data) <= 1048576) {
+                                $chunk = Async::await($file->read(min(65536, 1048577 - strlen($data))));
+                                if ($chunk === '') break;
+                                $data .= $chunk;
+                            }
+                            return $data;
+                        }, static fn($file) => $file->close());
+                        if ($pem === '' || strlen($pem) > 1048576) throw new \Asyncara\Exception\OperationException('CA file must contain 1..1048576 bytes');
+                        $this->hyperCaPem = $pem;
+                    }
+                    unset($options['caFile']); $options['caPem'] = $this->hyperCaPem;
+                }
+                return $numeric ? [] : Async::await(\Asyncara\IO\Dns::resolve($host));
+            });
             Scheduler::current()->currentCancellation()?->throwIfRequested();
             $addresses = array_values(array_unique($addresses));
-            if (!$addresses || count($addresses) > 16) throw new \Asyncara\Exception\OperationException('Hyper DNS address limit (1..16)');
+            if (!$numeric && (!$addresses || count($addresses) > 16)) throw new \Asyncara\Exception\OperationException('Hyper DNS address limit (1..16)');
             $elapsed = Scheduler::now() - $start;
             $remaining = $this->timeout - $elapsed;
             $connect = $this->connectTimeout - $elapsed;
             if ($remaining <= 0 || $connect <= 0) throw new \Asyncara\Exception\TimeoutException('HTTP DNS deadline exceeded');
-            $options['resolvedAddresses'] = $addresses;
+            if (!$numeric) $options['resolvedAddresses'] = $addresses;
             $options['connectTimeoutMs'] = (int)ceil($connect * 1000);
             $result = Async::await(Scheduler::current()->native('http', [$url, $body, $options, (int)ceil($remaining * 1000)]));
             return new Response($result['status'], $result['body'], $result['headers']);

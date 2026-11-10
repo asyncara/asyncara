@@ -203,6 +203,8 @@ void ar_hyper_free(void *engine);
 typedef struct { const unsigned char *bytes; size_t length; } ar_hyper_address;
 int ar_hyper_submit(void *engine, void *job, const unsigned char *url, size_t len, uint64_t timeout, uint64_t connect,
                     const ar_hyper_address *addresses, size_t count);
+int ar_hyper_submit_request(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
+                            const ar_hyper_address *, size_t, const unsigned char *, size_t);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);
 int ar_hyper_timeout(void *engine);

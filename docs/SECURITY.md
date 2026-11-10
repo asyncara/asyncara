@@ -255,3 +255,18 @@ The initial rustls/ring AES-GCM Valgrind finding is retained separately in
 DEPENDENCY_FINDINGS.md. AWS-LC was selected only after matched controls and the
 actual server passed scoped unsuppressed memory tests. That does not certify
 every TLS or application allocation path.
+
+## Optional Hyper HTTPS client
+
+Verified TLS1.2/1.3 GET is implemented using rustls/AWS-LC with DNS/IP identity
+checks and HTTP/1.1 ALPN. Trust comes from explicit caFile, SSL_CERT_FILE or the
+documented Linux CA path; missing/invalid trust fails closed. No verify=false
+option, network trust fetch or implicit curl fallback exists. Private-CA tests
+reject an unrelated CA, hostname mismatch, expired leaf, wrong extended-key usage
+and a server requiring a client certificate. Client mTLS is not implemented.
+
+Exact trust bytes segregate pooled connections. Existing clients intentionally
+retain their trust snapshot; create a new client to load changed roots, subject
+to the request-local 16-policy bound. This is not automatic certificate rotation
+or revocation checking. Proxy environments are explicitly rejected by Hyper.
+See [HYPER_TLS.md](HYPER_TLS.md) for the tested scope and allocator limitations.

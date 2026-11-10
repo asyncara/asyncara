@@ -437,3 +437,24 @@ reply/drop, without an implicit draining Task. Early responses force connection
 closure. Input must finish before response streaming starts; duplex is unavailable.
 `Request::json()` deliberately buffers bounded input; ordinary Request::$body
 behavior is unchanged unless streamRequests was explicitly enabled. See SERVER.md.
+
+## Hyper HTTPS request ownership
+
+The optional Hyper backend supports verified buffered HTTPS GET using the same
+HttpClient API. Its owned Task holds the client permit through CA-file loading,
+DNS, network completion and cancellation drain. CA files and DNS use existing
+workers; TLS and HTTP use the event-driven connection driver. One waiter may
+cancel its wait without destroying the shared request owner. Explicit owner
+cancellation closes its native connection before completion collection; it
+cannot retract bytes already sent.
+
+The total/connect budgets begin after permit admission and include CA loading
+and DNS; the remaining connect budget includes the TLS handshake. Already-running
+worker operations drain on cancellation. Each HttpClient retains its first trust
+snapshot; a new client reloads changed file bytes. The native pool/cache is
+PHP-request-local, not owned by an individual HttpClient. Reuse requires the
+same origin, resolved endpoint and exact trust-policy identity. Sixteen cached
+policies is a hard admission bound, not unlimited certificate rotation.
+`tests/http/hyper_tls.php` independently holds body/handshake completion until
+two timer ticks, tests cancellation/recovery and verifies trust isolation.
+See [trust limits and unsupported features](HYPER_TLS.md).
