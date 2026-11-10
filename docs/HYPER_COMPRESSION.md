@@ -96,3 +96,16 @@ Historical distribution-PHP/fatal-bailout, libpq and libcurl findings remain ope
 in their original scope. This codec's scoped results do not erase those findings.
 
 Rust13units (zero ignored) and16 native FFI failure controls pass in `compression-extra-r1`; their fault-enabled library is isolated from the PHP module. C-only build and ordinary curl streaming pass on both backends. [Durable commands/fingerprints](phase7/hyper-compression.json) retain the failed first HTTP gate and its successful successor separately.
+
+
+## Independently built codec source distribution
+
+Packaged source `f254f236ca38e71f1573cb6a1f106605ae26e5f8`, native`23e652f`.
+`build/asyncara-0.1.0-dev-hyper-codec-r1.tar.gz` contains625 tracked files,
+SHA256 `bc02a73da12c9bfc972ec147a4186fea7f46e4da4b8759117eaad7d1fcc18468`.
+Repackaging is byte-identical and every extracted file matches its Git tree.
+An isolated fresh Cargo/C build and16 client/server/FPM checks pass (17commands
+total); PHP85 epoll/poll. No global installation or release publication occurred.
+[Build attestation](phase7/hyper-codec-package.json) records exact commands and
+independent module SHA256 `99f68c911b174027791636f0f340f6cad249ea93026615c7903c0439f2763b58`.
+This archive predates the subsequent PostgreSQL client-certificate work.

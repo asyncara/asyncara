@@ -2641,3 +2641,5 @@ Connection credential trace disclosure fixed at1b58ce9;11-case PHP83/84/85/DEBUG
 ## Bounded Hyper decoding (2026-11-10)
 
 Native23e652f adds ledger-backed Hyper gzip/deflate with strict framing and16MiB input/output limits. Matrix45 PASS; scoped native/DEBUG Valgrind zero lost/error; phpize12 PASS; GateA47 PASS183.667s and fullPHP85 epoll/poll PASS. HTTP first run failed its historical unsupported-gzip assertion; preserved and corrected to exact bytes. HTTP84 successor, compressed four-worker FPM, server protocol/TLS and allocation controls PASS. See HYPER_COMPRESSION.md; independent packaging and remaining priority capabilities retain separate status.
+
+Codec package625files/f254f23 independently built and17commands PASS; artifact and attestation in HYPER_COMPRESSION.md. PostgreSQL mTLS work remains separate/uncommitted.
