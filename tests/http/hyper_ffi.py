@@ -71,8 +71,8 @@ run('native-fault-build', shlex.split(os.environ.get('CC', 'cc')) +
     ['-std=c11', '-D_GNU_SOURCE', '-DHAVE_ASYNCARA_HYPER=1', '-O2', '-g', '-Wall', '-Wextra', '-Werror',
      '-I.local/sysroot/usr/include', '-I.local/sysroot/usr/include/x86_64-linux-gnu'] +
     shlex.split(os.environ.get('EXTRA_CFLAGS', '')) +
-    ['tests/http/hyper_faults.c', 'ext/backend.c', 'ext/workers.c', 'ext/memory.c', library,
-     '-pthread', '-l:libcurl.so.4', '-l:libsqlite3.so.0', '-ldl', '-lm', '-Wl,--wrap=ar_hyper_free'] +
+    ['tests/http/hyper_faults.c', 'ext/backend.c', 'ext/workers.c', 'ext/memory.c', 'ext/hyper_decode.c', library,
+     '-pthread', '-l:libcurl.so.4', '-l:libsqlite3.so.0', '-ldl', '-lm', '-lz', '-Wl,--wrap=ar_hyper_free'] +
     shlex.split(os.environ.get('EXTRA_LDFLAGS', '')) + ['-o', binary])
 for backend in [0, 1]:
     for point in range(11, 19):

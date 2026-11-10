@@ -3,6 +3,8 @@
 ## Requirements
 
 Supported source range: PHP 8.3–8.5, 64-bit Unix-like environment. Tested: Linux x86_64 NTS. Required libraries: pthreads, SQLite 3 and libcurl >= 7.85 with asynchronous DNS (threaded resolver or c-ares). Required PHP features: Fibers, streams, JSON, SPL, proc_open; OpenSSL for explicit TLS streams. Optional native drivers use libpq >= 12 and MariaDB Connector/C >= 3.1 plus OpenSSL >= 3.0 development libraries. Strict MariaDB TLS requires Connector/C with the TLS callback/status API (tested 3.4.10) and the OpenSSL 3 backend; older clients fail closed for TLS. See MYSQL_COMPATIBILITY.md. PostgreSQL/MariaDB PHP extensions are not required. ext-curl is not required by the runtime; benchmarks use it as a synchronous baseline.
+The optional Hyper client/server build additionally requires zlib development headers and library (for bounded buffered gzip/deflate decoding); the default curl-only build does not add this dependency.
+
 
 You need development headers matching your PHP interpreter. Do not load a binary built for a different PHP module API, ZTS mode or architecture. A downloaded PHP 8.5.12 pgsql extension failed to load in the host's 8.5.11 CLI; matching module API alone is not proof of compatibility. Asyncara itself was compiled and executed on the versions in COMPATIBILITY.md.
 

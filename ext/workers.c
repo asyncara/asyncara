@@ -838,6 +838,9 @@ void ar_job_free(ar_job *j) {
     if (*entry)
         *entry = j->lifetime_next;
     curl_mime_free(j->mime);
+#ifdef HAVE_ASYNCARA_HYPER
+    ar_http_decoder_free(j->http_decoder);
+#endif
     ar_free(j->upload_parts);
     if (j->curl) {
         /* Only detached handles reach collection. Reset all callbacks/options

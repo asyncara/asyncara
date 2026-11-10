@@ -11,6 +11,13 @@ thread_local! {
     static RESULTS: RefCell<BTreeMap<usize, (usize, bool)>> = const { RefCell::new(BTreeMap::new()) };
 }
 #[no_mangle]
+extern "C" fn ar_hyper_encoding(_: *mut c_void, coding: i32) -> i32 {
+    assert_eq!(coding, 0); // Real codec and compressed bodies use C integration tests.
+    0
+}
+#[no_mangle]
+extern "C" fn ar_hyper_decoded_end(_: *mut c_void) -> i32 { 0 }
+#[no_mangle]
 extern "C" fn ar_hyper_head(job: *mut c_void, status: i32, _: *const u8, n: usize) -> i32 {
     assert!(!job.is_null() && status == 200 && n < 65536);
     0

@@ -2,13 +2,37 @@
 """Short prototype FPM check: real peer barrier/two ticks and fatal teardown.
 This is separate from both the curl feature fixture and historical acceptance.
 """
-import argparse,hashlib,importlib.util,json,os,pathlib,sys,time
-p=argparse.ArgumentParser();p.add_argument('--extension',required=True);p.add_argument('--output',required=True);p.add_argument('--backend',choices=['epoll','poll']);modes=p.add_mutually_exclusive_group();modes.add_argument('--dns',action='store_true',help='Additional worker-resolved origin lifecycle fixture');modes.add_argument('--requests',action='store_true',help='Bounded POST bodies and request teardown');modes.add_argument('--streams',action='store_true',help='Mixed streaming responses and uploads with original barrier/two ticks');a=p.parse_args()
+import argparse,hashlib,importlib.util,json,os,pathlib,sys,time,threading,zlib
+from urllib.parse import parse_qs,urlparse
+p=argparse.ArgumentParser();p.add_argument('--extension',required=True);p.add_argument('--output',required=True);p.add_argument('--backend',choices=['epoll','poll']);modes=p.add_mutually_exclusive_group();modes.add_argument('--dns',action='store_true',help='Additional worker-resolved origin lifecycle fixture');modes.add_argument('--requests',action='store_true',help='Bounded POST bodies and request teardown');modes.add_argument('--streams',action='store_true',help='Mixed streaming responses and uploads with original barrier/two ticks');modes.add_argument('--compression',action='store_true',help='Buffered gzip with original barrier/two ticks');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.output).resolve();out.mkdir(parents=True,exist_ok=False)
 os.environ['ASYNCARA_FPM_DIR']=str(out);os.environ['ASYNCARA_EXTENSION']=str(pathlib.Path(a.extension).resolve())
 spec=importlib.util.spec_from_file_location('audit',root/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
 sys.path.insert(0,str(root/'tests/fast'));from fpm_client import request
-fixture=root/('tests/http/hyper_stream_fpm_request.php' if a.streams else 'tests/http/hyper_post_fpm_request.php' if a.requests else 'tests/http/hyper_dns_fpm_request.php' if a.dns else 'tests/http/hyper_fpm_request.php')
+fixture=root/('tests/http/hyper_compressed_fpm_request.php' if a.compression else 'tests/http/hyper_stream_fpm_request.php' if a.streams else 'tests/http/hyper_post_fpm_request.php' if a.requests else 'tests/http/hyper_dns_fpm_request.php' if a.dns else 'tests/http/hyper_fpm_request.php')
+if a.compression:
+ def compressed(self):
+  query=parse_qs(urlparse(self.path).query);request_id=query.get('id',[''])[0];count=int(query.get('parallel',['1'])[0])
+  with audit.active_lock:
+   audit.active_requests[request_id]=audit.active_requests.get(request_id,0)+1
+   barrier=audit.barriers.setdefault(request_id,threading.Barrier(count,timeout=5))
+  try:
+   start=time.time();codec=zlib.compressobj(wbits=31)
+   self.send_response(200);self.send_header('Transfer-Encoding','chunked');self.send_header('Content-Encoding','gzip');self.end_headers()
+   def chunk(data):
+    if data:self.wfile.write(f'{len(data):x}\r\n'.encode()+data+b'\r\n');self.wfile.flush()
+   chunk(codec.compress(b'')) # A real decoder/header can precede the pending body.
+   try:barrier.wait()
+   except threading.BrokenBarrierError:self.close_connection=True;return
+   time.sleep(.2) # Preserve the original peer wait, overlap and tick conditions.
+   chunk(codec.compress(json.dumps({'start':start,'end':time.time()}).encode())+codec.flush())
+   self.wfile.write(b'0\r\n\r\n')
+  except(BrokenPipeError,ConnectionResetError):self.close_connection=True
+  finally:
+   with audit.active_lock:
+    audit.active_requests[request_id]-=1
+    if not audit.active_requests[request_id]:del audit.active_requests[request_id];del audit.barriers[request_id]
+ audit.Handler.do_GET=compressed
 if a.requests or a.streams:
  def post(self):
   size=int(self.headers.get('Content-Length','-1'))

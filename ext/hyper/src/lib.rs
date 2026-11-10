@@ -67,6 +67,8 @@ type Transfer = Pin<Box<dyn Future<Output = (Sender, bool, Result<(), String>)>>
 extern "C" {
     fn ar_hyper_head(job: *mut c_void, status: i32, p: *const u8, n: usize) -> i32;
     fn ar_hyper_chunk(job: *mut c_void, p: *const u8, n: usize) -> i32;
+    fn ar_hyper_encoding(job: *mut c_void, coding: i32) -> i32;
+    fn ar_hyper_decoded_end(job: *mut c_void) -> i32;
     fn ar_hyper_complete(job: *mut c_void, error: *const u8, n: usize);
 }
 #[derive(Default)]
@@ -493,11 +495,12 @@ async fn transfer(
 ) -> (Sender, bool, Result<(), String>) {
     let mut reusable = false;
     let outcome = async {
+        let head = spec.method == hyper::Method::HEAD;
         let mut request = Request::builder()
             .method(spec.method)
             .uri(uri.path_and_query().map(|p| p.as_str()).unwrap_or("/"))
             .header("Host", uri.authority().ok_or("Missing authority")?.as_str())
-            .header("Accept-Encoding", "identity")
+            .header("Accept-Encoding", if spec.stream_response { "identity" } else { "gzip, deflate" })
             .body(ClientBody::new(job, spec.body, spec.upload_size))
             .map_err(|_| "Invalid request")?;
         request.headers_mut().extend(spec.headers);
@@ -519,14 +522,23 @@ async fn transfer(
                         .split(|b| *b == b',')
                         .any(|token| token.trim_ascii().eq_ignore_ascii_case(b"close"))
                 });
-        if !spec.stream_response
-            && response
-                .headers()
-                .get_all("content-encoding")
-                .iter()
-                .any(|v| v.as_bytes() != b"identity")
-        {
-            return Err("Hyper prototype does not decode compressed responses".into());
+        if !spec.stream_response && !head && response.status() != 204 && response.status() != 304 {
+            let values = response.headers().get_all("content-encoding");
+            let count = values.iter().count();
+            let mut coding = 0;
+            for value in values {
+                let value = value.as_bytes().trim_ascii();
+                if value.eq_ignore_ascii_case(b"identity") { continue; }
+                // Preserve repeated identity headers, but do not silently apply
+                // just one layer of a composite/duplicate encoding declaration.
+                if count != 1 { return Err("Unsupported HTTP content encoding chain".into()); }
+                coding = if value.eq_ignore_ascii_case(b"gzip") { 1 }
+                    else if value.eq_ignore_ascii_case(b"deflate") { 2 }
+                    else { return Err("Unsupported HTTP content encoding".into()); };
+            }
+            if unsafe { ar_hyper_encoding(job as *mut c_void, coding) } != 0 {
+                return Err("HTTP decoder initialization failed".into());
+            }
         }
         let mut headers = format!(
             "HTTP/1.1 {} {}\r\n",
@@ -594,6 +606,9 @@ async fn transfer(
                     return Err("HTTP trailer buffer rejected".into());
                 }
             }
+        }
+        if unsafe { ar_hyper_decoded_end(job as *mut c_void) } != 0 {
+            return Err("HTTP decoder did not reach the end of the body".into());
         }
         // A keep-alive peer can send its final response before the upload is
         // flushed. Keep this operation (and its C buffer accounting) alive

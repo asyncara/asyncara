@@ -179,13 +179,40 @@ int ar_hyper_head(void *job, int status, const unsigned char *p, size_t n) {
     }
     return 0;
 }
+int ar_hyper_encoding(void *job, int coding) {
+    ar_job *j = job;
+    if (!coding) return 0;
+    if (j->stream_response || j->http_decoder || (coding != 1 && coding != 2)) return -1;
+    j->http_decoder = ar_http_decoder_new(j->engine, coding);
+    if (!j->http_decoder) {
+        snprintf(j->error, sizeof(j->error), "Native memory limit or decoder allocation failure");
+        return -1;
+    }
+    return 0;
+}
+static int decoded_body(void *context, const unsigned char *p, size_t n) {
+    return receive_buffer((char *)p, 1, n, context, 0) == n ? 0 : -1;
+}
 int ar_hyper_chunk(void *job, const unsigned char *p, size_t n) {
     ar_job *j = job;
+    if (j->http_decoder) {
+        int result = ar_http_decoder_feed(j->http_decoder, p, n, decoded_body, j);
+        if (result && !j->error[0]) snprintf(j->error, sizeof(j->error), "%s",
+            result == -2 ? "HTTP compressed input limit exceeded" :
+            result == -3 ? "Native memory limit or decoder allocation failure" : "Invalid compressed HTTP body");
+        return result ? -1 : 0;
+    }
     size_t accepted = receive_buffer((char *)p, 1, n, j, 0);
     if (accepted == CURL_WRITEFUNC_PAUSE) return 1;
     if (accepted != n) return -1;
     if (j->stream_response) j->engine->http_wakeup |= 1;
     return 0;
+}
+int ar_hyper_decoded_end(void *job) {
+    ar_job *j = job;
+    if (ar_http_decoder_finished(j->http_decoder)) return 0;
+    if (!j->error[0]) snprintf(j->error, sizeof(j->error), "Truncated compressed HTTP body");
+    return -1;
 }
 /* A borrowed upload view is copied by Rust before this callback's caller
  * returns. No Zend/application code or suspension runs across this boundary. */
