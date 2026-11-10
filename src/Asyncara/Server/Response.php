@@ -18,4 +18,9 @@ final class Response
     {
         return new self($value, $status, ['content-type' => 'text/plain; charset=utf-8'] + $headers);
     }
+    /** Chunks are produced on demand; maximum chunk size is 64 KiB. */
+    public static function stream(iterable $chunks, int $status = 200, array $headers = []): StreamResponse
+    {
+        return new StreamResponse($chunks, $status, $headers);
+    }
 }

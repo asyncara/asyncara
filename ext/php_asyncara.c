@@ -4,6 +4,7 @@
 #include "php_asyncara.h"
 #include "Zend/zend_exceptions.h"
 #include "Zend/zend_fibers.h"
+#include "Zend/zend_attributes.h"
 #include "ext/standard/info.h"
 #include "main/fopen_wrappers.h"
 #include "main/php_streams.h"
@@ -1224,6 +1225,7 @@ static const zend_function_entry functions[] = {
     PHP_FE(asyncara_server_info, arginfo_server_next)
     PHP_FE(asyncara_server_next, arginfo_server_next)
     PHP_FE(asyncara_server_respond, arginfo_server_respond)
+    PHP_FE(asyncara_server_chunk, arginfo_server_chunk)
     PHP_FE(asyncara_server_shutdown, arginfo_server_void)
     PHP_FE(asyncara_server_close, arginfo_server_void)
     PHP_FE(asyncara_server_can_fork, arginfo_server_can_fork)
@@ -1249,6 +1251,13 @@ PHP_MINIT_FUNCTION(asyncara) {
         php_error_docref(NULL, E_WARNING, "Asyncara was built for PHP %s; runtime is %s. Rebuild with the exact matching PHP SDK", PHP_VERSION, runtime_version ? runtime_version : "unknown");
         return FAILURE;
     }
+#ifdef HAVE_ASYNCARA_HYPER
+    /* Never retain a TLS private key in exception argument traces, including
+     * failed initialization with zend.exception_ignore_args=0. */
+    zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table),
+        "asyncara_server_listen", sizeof("asyncara_server_listen") - 1),
+        9, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
+#endif
     if (curl_global_init(CURL_GLOBAL_DEFAULT) != CURLE_OK)
         return FAILURE;
 #ifdef HAVE_ASYNCARA_PQ
@@ -1293,7 +1302,7 @@ PHP_MINFO_FUNCTION(asyncara) {
     php_info_print_table_row(2, "Filesystem / SQLite / DNS", "bounded native pthread workers");
     php_info_print_table_row(2, "HTTP", "libcurl multi socket");
 #ifdef HAVE_ASYNCARA_HYPER
-    php_info_print_table_row(2, "HTTP server", "Hyper HTTP/1; CLI; experimental");
+    php_info_print_table_row(2, "HTTP server", "Hyper HTTP/1; TLS 1.2/1.3; response streaming; CLI; experimental");
 #else
     php_info_print_table_row(2, "HTTP server", "not built (requires optional Hyper bridge)");
 #endif

@@ -1,6 +1,16 @@
 # Release readiness
 
-## Native HTTP server development (2026-11-10)
+## Current completion work (2026-11-10)
+
+HTTPS/mTLS and bounded response streaming are implemented and tested on the
+existing server branch, including scoped memory checks with the AWS-LC provider.
+[Current inventory and validation](COMPLETION_STATUS.md) separates active gaps
+from historical PARTIALLY_IMPLEMENTED records. The preceding server-r1 archive
+is unchanged; its results do not certify new code. Release remains EXPERIMENTAL.
+
+The dated checkpoints below retain their original source scope.
+
+## Historical server-r1 checkpoint (2026-11-10)
 
 The isolated `phase7-native-server-20261109T231953Z` branch adds
 `Asyncara\App` with Hyper HTTP/1 transport, bounded bodies, routed Fiber handlers,
@@ -9,7 +19,7 @@ passes the focused PHP83/84/85, DEBUG and scoped GCC sanitizer matrix on epoll
 and poll, plus Gate A. See [SERVER.md](SERVER.md) for the API, exact namespace
 compatibility decision, build commands, ownership boundaries and evidence.
 This is **PARTIALLY_IMPLEMENTED / EXPERIMENTAL**, not a production server or a
-claim of outperforming Go. TLS, HTTP/2/3 and server streaming are unavailable.
+claim of outperforming Go. At that checkpoint TLS, HTTP/2/3 and server streaming were unavailable.
 Historical HTTP-client and Phase4 failures remain separate and preserved.
 Final scoped validation and full PHP85 suites pass. The matched server
 [benchmark](LATEST_SERVER_BENCHMARK.md) does not meet the all-cases Go target;

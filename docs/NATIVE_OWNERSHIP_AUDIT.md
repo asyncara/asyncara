@@ -192,3 +192,26 @@ request shutdown; it did not establish a post-shutdown native leak. The repair
 prevents this within-request retention without imposing a destructor-driven
 cancellation policy on arbitrary shared Futures. Library and kernel memory remain
 outside complete native-ledger accounting.
+
+
+## Native server TLS/stream ownership continuation
+
+| Resource | Copy/sharing policy | Owner and release | Cancellation |
+|---|---|---|---|
+| rustls ServerConfig | Immutable Arc shared within one worker; no cross-worker interpreter state | Listener and accepted TLS peers; final Arc releases parsed cert/key state | Listener close stops admission; peer shutdown releases its reference |
+| TlsIo/ServerConnection | NON_COPYABLE, one driver/waker with canonical shared Socket | Hyper connection; RAII on completion/abort/deadline/request teardown | Existing server owner; no PHP callback crosses a Rust borrow |
+| StreamResponse | NON_COPYABLE, single-use; assignment shares owner | PHP handler owns producer until completion or unwind; external references remain caller-owned | Owning connection/handler; not an unrelated shared waiter |
+| Native StreamingBody | NON_COPYABLE, one HTTP message | Hyper body owns StreamState; registry contains only Weak entries | Drop emits cancellation if unfinished and removes registry entry |
+| Stream chunk | Shared immutable Bytes | Data accounting survives until final transport reference drops | Cannot retract already-buffered/transmitted data |
+| Demand event | Request/connection generation IDs, no payload | Bounded one outstanding demand per stream; existing App Inbox | Closed-owner events are discarded; no new handler is created for stale demand |
+
+Tests include copy rejection, early output, independent timer progress, backpressure,
+producer failure, total/chunk limit failure, canceled generator cleanup, TLS
+handshake failures, mTLS rejection, and final zero payload accounting. These are
+scoped tests; foreign TLS allocations are not covered by the payload ledger.
+
+HEAD and rejected response headers must also close an eager Asyncara
+ReadableStream producer, even when no iteration began. The failing-before control
+retained a blocked producer; `StreamResponse::close()` now cancels/joins it and
+releases the response reference. A caller-retained arbitrary Generator has its
+ordinary PHP lifetime; no global Future cancellation policy is introduced.

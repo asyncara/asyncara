@@ -1,4 +1,57 @@
-# Dependency diagnostics, 2026-11-03
+# Dependency diagnostics
+
+## 2026-11-10 server TLS: rustls/ring AES definedness finding
+
+The new server TLS implementation was tested with rustls0.23.46 and
+ring0.17.14. Unsuppressed Valgrind3.22 reports undefined-value use in AES-GCM
+authentication and ciphertext writes. The functional exchanges return the exact
+expected bytes, but these memory-check runs are **FAIL**, not clean passes.
+This is separate from the PHP cycle-shutdown, libpq unload and curl trailer
+findings below.
+
+Evidence root: `/home/coder/Asyncara-completion-20261110T013405Z`.
+
+| Control | Observed result |
+|---|---|
+| DEBUG PHP server, TLS echo/stream/close, ring provider | exit99; undefined-value diagnostics; zero definitely/indirectly lost bytes |
+| Same server with origin tracking and expensive definedness checks | exit99; retained in `memory-origins/` |
+| Direct ring AES128/AES256/ChaCha seal/open, initialized and random keys, several payload layouts | exit0; zero errors/lost bytes |
+| In-memory rustls client/server, verified CA, AES128 or AES256 only | exit99; no PHP, Asyncara, Hyper or socket adapter involved |
+| Same rustls control with ChaCha20-Poly1305 | exit0; zero errors/lost bytes |
+| Public rustls TLS13 AES256 AEAD with fixed key, IV and plaintext; no handshake | exit99; seven undefined-value write errors, zero lost bytes |
+| Independently built Valgrind3.28, unchanged control binaries | Same AES failures; direct ring and rustls ChaCha controls pass |
+
+`tests/server/rustls_aead_control.rs` is the smallest retained reproducer.
+`rustls_control.rs` checks both directions and verifies plaintext; `ring_control.rs`
+tests the lower-level primitive separately. The AES finding is reproducible
+without the Asyncara adapter. That does **not** establish a harmless false
+positive, an upstream fix, or absence of additional Asyncara defects. A debug
+symbol build without LTO reproduces it as well. No suppression or allocator
+workaround was applied. Precise attribution between rustls buffer handling,
+generated code, the primitive and Valgrind definedness tracking remains open.
+
+Raw reports: `extra-r1/`, `memory-origins/`, `ring-control-r2/` through
+`ring-control-r5/`, `rustls-control-r3/`, `crypto-debug-control/`,
+`rustls-aead-control/`, and `valgrind-328-controls/report.json`.
+Valgrind3.28 was built in a private directory from the
+[official release archive](https://valgrind.org/downloads/current.html), with
+SHA256 `9f7a18d128f05d3a80fea53e6953f34aad7200a425ceaee46099a8a798a7dd9c`.
+The host installation was not changed. The alternative
+[official rustls crypto provider](https://docs.rs/rustls/0.23.46/rustls/crypto/index.html)
+was then tested independently: aws-lc-rs1.19.0/aws-lc-sys0.47.0 passes the same
+AES128/AES256/ChaCha exchange controls under Valgrind3.28, with zero errors or
+lost bytes (`aws-control/report.json`). The new server TLS implementation uses
+this provider. It retains rustls, the existing reactor, all ciphers and certificate
+verification; no provider change is made to preexisting curl/OpenSSL clients.
+The final server DEBUG PHP TLS echo/stream/close workload passes unsuppressed
+Valgrind3.22 on epoll and poll: zero errors/definite/indirect/possible loss,
+5,306 bytes still reachable. See `memory-aws-r1/report.json` and its full logs.
+This scoped result is the concrete reason for the provider choice. It does not
+resolve the historical ring finding, certify every crypto path, or imply FIPS
+certification. Pure-library controls are reproducible using the separate locked
+manifest in `tests/server/crypto-control/README.md`.
+
+## Historical 2026-11-03 investigations
 
 These are unresolved dependency findings, not clean sanitizer passes. No
 suppression, private-pointer cleanup, global allocator tuning or runtime change

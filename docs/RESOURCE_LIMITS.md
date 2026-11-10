@@ -180,3 +180,16 @@ Completed native response buffers transfer ownership to the result without a
 second full native copy; conversion to PHP still allocates a PHP string.
 Staged downloads consume one file and one parent-directory descriptor until
 publication/close. They use the existing 128-file owner limit and worker queue.
+
+
+## Optional HTTP/1 server TLS and response streaming
+
+Server response streaming admits one demanded chunk of1..65,536 bytes, applies
+responseBytes to the cumulative transfer (default8MiB, PHP bridge maximum16MiB),
+and charges retained payload Bytes until their final Hyper owner drops them.
+A full body is not assembled. bufferBytes covers request/response payload bytes;
+PHP strings, Hyper metadata/read buffers, TLS state, allocator slack and kernel
+buffers are outside this ledger. rustls has a64KiB output-buffer target per
+connection; it is not a total TLS allocation cap. Connection admission and
+finite request deadlines are additional protections. See SERVER.md for exact
+options and the independent slow-reader/cancellation controls.

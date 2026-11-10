@@ -2333,3 +2333,50 @@ API commands on PHP85 with epoll and poll. Independent module SHA256:
 The archive's source and measured binary are distinguished in its attestation.
 The following commit only records delivery evidence; it changes no runtime.
 Performance target remains NOT_MET; release EXPERIMENTAL; no release publication.
+
+
+## 2026-11-10 — Partial capability completion, native server
+
+Started from clean08f2258 on the existing isolated phase7 server branch. Main
+Phase4 checkout and all historical packages/campaigns remain untouched. Inventory
+separates historical partial status from current capability gaps. Implemented
+optional rustls TLS1.2/1.3/mTLS transport and bounded demand-driven response
+streaming through the existing Hyper/epoll/poll owner. No universal hook, new
+executor or blocking network wrapper added. Initial independent protocol tests
+pass. Preserved matrix-r1 DEBUG harness failure: that interpreter lacks the
+signal handler used by the test's terminate path; the peer now requests the
+existing /stop endpoint and checks clean exit. Preserved actual false timeout
+counter reproduction (5 aborts counted as deadlines in1.308s); separate Peer
+abort state corrects the classification without changing actual deadlines.
+Final source matrix is running in the new evidence directory:
+`/home/coder/Asyncara-completion-20261110T013405Z`. Status is not yet final.
+
+The final functional matrix-r3 passes55 commands including new eager-source
+HEAD/rejected-header cleanup and native SensitiveParameter key redaction.
+Negative controls are retained in head-owner-before and key-redaction-before.
+The broad regressions-r1 pass includes Gate A218.016s, full85 suites, four-worker
+TLS/plain normal/fault runs and allocation audit. Standard isolated phpize-r2
+also passes. TLS Valgrind3.22 remains FAIL despite zero lost bytes: independent
+rustls-only handshake and fixed-input AEAD controls reproduce undefined-value
+warnings without Asyncara. AES128/256 reproduce; ChaCha20 and direct ring controls
+do not. No cipher was disabled, no suppressions added, no upstream attribution
+beyond the isolated reproduction is claimed. Valgrind3.28 is being built in a
+new private evidence directory to compare the unchanged binary.
+
+The independent Valgrind3.28 build reproduces the ring/AES definedness finding;
+upgrading the tool does not resolve it. Matched AWS-LC AES128/AES256/ChaCha controls
+pass. Selected that official rustls provider for the new server TLS transport,
+without disabling ciphers or verification. Rebuilt matrix-r4 passes55 commands;
+DEBUG server TLS echo/stream/close passes unsuppressed Valgrind3.22 on epoll/poll,
+zero errors/lost bytes and5,306 reachable bytes. Historical ring reports remain
+FAIL and their precise attribution unresolved. A locked pure-library control
+project preserves both provider reproductions. Broader final regression and
+independent source-package validation are next.
+
+Final AWS-LC source validation: matrix-r4 passes55 commands; regressions-r3
+passes15 commands including Gate A277.158s, full85 epoll/poll,
+four-worker plain/TLS normal/forced-exit, allocation audit and Rust7 units.
+HTTP client gate passes74 commands in120.022s;
+phpize-r3 passes10 commands. Bounded response streaming, TLS/mTLS, ownership,
+redaction and timeout classification are covered. No new performance or long
+endurance claim. Preparing a new source archive; old server-r1 remains unchanged.

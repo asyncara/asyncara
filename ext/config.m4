@@ -4,7 +4,23 @@ PHP_ARG_WITH([asyncara-pq], [whether to include libpq],
   [AS_HELP_STRING([--with-asyncara-pq], [Enable PostgreSQL using libpq])], [no], [no])
 PHP_ARG_WITH([asyncara-mysql], [whether to include MariaDB Connector/C],
   [AS_HELP_STRING([--with-asyncara-mysql], [Enable MariaDB/MySQL using Connector/C])], [no], [no])
+PHP_ARG_WITH([asyncara-hyper], [prebuilt Rust HTTP bridge directory],
+  [AS_HELP_STRING([--with-asyncara-hyper=DIR], [Enable Linux Hyper client/server using DIR/libasyncara_hyper_bridge.a])], [no], [no])
 if test "$PHP_ASYNCARA" != "no"; then
+  ASYNCARA_HYPER_CFLAGS=""
+  if test "$PHP_ASYNCARA_HYPER" != "no"; then
+    AS_CASE([$host_os], [linux*], [], [AC_MSG_ERROR([Hyper transport is currently Linux-only])])
+    AS_CASE([$PHP_ASYNCARA_HYPER], [/*], [], [AC_MSG_ERROR([--with-asyncara-hyper requires an absolute library directory])])
+    if test ! -r "$PHP_ASYNCARA_HYPER/libasyncara_hyper_bridge.a"; then
+      AC_MSG_ERROR([Build the matching ext/hyper Cargo.lock with cargo build --release --locked first])
+    fi
+    ASYNCARA_SHARED_LIBADD="$ASYNCARA_SHARED_LIBADD $PHP_ASYNCARA_HYPER/libasyncara_hyper_bridge.a"
+    PHP_ADD_LIBRARY([dl], [1], [ASYNCARA_SHARED_LIBADD])
+    PHP_ADD_LIBRARY([m], [1], [ASYNCARA_SHARED_LIBADD])
+    AC_DEFINE([HAVE_ASYNCARA_HYPER], [1], [Enable the Rust HTTP bridge])
+    dnl workers/backend are standalone C units and do not include PHP config.h.
+    ASYNCARA_HYPER_CFLAGS="-DHAVE_ASYNCARA_HYPER=1"
+  fi
   if test "$PHP_ASYNCARA_PQ" != "no"; then
     PKG_CHECK_MODULES([ASYNCARA_PQ], [libpq >= 12])
     PHP_EVAL_INCLINE([$ASYNCARA_PQ_CFLAGS])
@@ -27,5 +43,5 @@ if test "$PHP_ASYNCARA" != "no"; then
   PHP_ADD_LIBRARY([sqlite3], [1], [ASYNCARA_SHARED_LIBADD])
   PHP_ADD_LIBRARY([curl], [1], [ASYNCARA_SHARED_LIBADD])
   PHP_SUBST([ASYNCARA_SHARED_LIBADD])
-  PHP_NEW_EXTENSION([asyncara], [php_asyncara.c workers.c backend.c memory.c], [$ext_shared],, [-std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -Wno-unused-parameter])
+  PHP_NEW_EXTENSION([asyncara], [php_asyncara.c workers.c backend.c memory.c], [$ext_shared],, [-std=c11 -D_GNU_SOURCE -Wall -Wextra -Werror -Wno-unused-parameter $ASYNCARA_HYPER_CFLAGS])
 fi

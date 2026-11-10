@@ -2,9 +2,9 @@ name: Optional Hyper backend verification
 on:
   workflow_dispatch:
   push:
-    paths: ['ext/**', 'src/**', 'tests/http/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
+    paths: ['ext/**', 'src/**', 'tests/http/**', 'tests/server/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
   pull_request:
-    paths: ['ext/**', 'src/**', 'tests/http/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
+    paths: ['ext/**', 'src/**', 'tests/http/**', 'tests/server/**', 'scripts/build-hyper-local.sh', '.github/workflows/hyper.yml']
 permissions:
   contents: read
 jobs:
@@ -27,7 +27,7 @@ jobs:
           PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5
+          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 cmake
           ./scripts/bootstrap-local.sh
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
           rustc --version
@@ -42,6 +42,15 @@ jobs:
           ./scripts/prepare-test-certs.sh
       - name: HTTP gate on epoll and poll
         run: python3 tests/http/run.py --php php --extension build/hyper.so --output build/hyper-http --hyper
+      - name: Server protocol, TLS and bounded streaming on epoll and poll
+        run: |
+          for backend in epoll poll; do
+            ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/hyper.so" tests/server/api.php
+            for test in run tls stream; do
+              python3 tests/server/"$test".py --php php --module build/hyper.so --backend "$backend" --out build/hyper-server/"$backend-$test"
+            done
+            python3 tests/server/stream.py --php php --module build/hyper.so --backend "$backend" --tls --out build/hyper-server/"$backend-tls-stream"
+          done
       - name: Controlled resolver ownership (separate test-only module)
         run: |
           CARGO_TARGET_DIR="$PWD/build/hyper-production" ASYNCARA_OUTPUT=build/hyper-dns-gated.so EXTRA_LDFLAGS='tests/http/dns_gate.c -Wl,--wrap=getaddrinfo' bash scripts/build-hyper-local.sh
@@ -55,3 +64,5 @@ jobs:
             build/hyper-ffi/*.json
             build/hyper-ffi/*.log
             build/hyper-http/
+            build/hyper-server/**/*.json
+            build/hyper-server/**/*.log

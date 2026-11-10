@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
+import ssl
+from tls import certificates
 import argparse, concurrent.futures, hashlib, http.client, json, os, pathlib, signal, socket, subprocess, time, traceback
-p=argparse.ArgumentParser();p.add_argument('--php',required=True);p.add_argument('--module',required=True);p.add_argument('--posix',required=True);p.add_argument('--out',required=True);p.add_argument('--failure',choices=['none','worker-exit'],default='none');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--php',required=True);p.add_argument('--module',required=True);p.add_argument('--posix',required=True);p.add_argument('--out',required=True);p.add_argument('--failure',choices=['none','worker-exit'],default='none');p.add_argument('--tls',action='store_true');a=p.parse_args()
 o=pathlib.Path(a.out);o.mkdir(parents=True,exist_ok=False);root=pathlib.Path(__file__).resolve().parents[2]
 with socket.socket() as s:s.bind(('127.0.0.1',0));port=s.getsockname()[1]
 cmd=[a.php,'-n','-d','extension='+a.posix,'-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/server/workers.php'),str(port)]
-result={'command':cmd,'moduleSha256':hashlib.sha256(pathlib.Path(a.module).read_bytes()).hexdigest()};began=time.monotonic()
+certs=certificates(o) if a.tls else None
+if certs:cmd.append(str(certs))
+ctx=ssl.create_default_context(cafile=str(certs/'ca.pem')) if certs else None
+result={'tls':a.tls,'command':cmd,'moduleSha256':hashlib.sha256(pathlib.Path(a.module).read_bytes()).hexdigest()};began=time.monotonic()
 with (o/'stderr.log').open('w') as err:
  child=subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=err,text=True,start_new_session=True)
  (o/'launch.json').write_text(json.dumps(result|{'pid':child.pid}))
  try:
   line=child.stdout.readline();assert line.startswith('READY '),line
   def req(path):
-   c=http.client.HTTPConnection('127.0.0.1',port,timeout=5)
+   c=http.client.HTTPSConnection('127.0.0.1',port,timeout=5,context=ctx) if ctx else http.client.HTTPConnection('127.0.0.1',port,timeout=5)
    try:c.request('GET',path);r=c.getresponse();b=r.read();assert r.status==200,(r.status,b);return b
    finally:c.close()
   with concurrent.futures.ThreadPoolExecutor(max_workers=16) as pool:

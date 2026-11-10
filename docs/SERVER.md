@@ -18,9 +18,9 @@ export ASYNCARA_OUTPUT=build/asyncara-server.so
 ```
 
 For four workers, load that interpreter's `posix` extension if it is not built
-in, and append `4` to the example command. `pcntl` is also required. The normal
-C-only/phpize build does not include the server; this experimental server uses
-the explicit `build-hyper-local.sh` path.
+in, and append `4` to the example command. `pcntl` is also required. The default C-only build does not include the server. The opt-in
+`--with-asyncara-hyper=DIR` phpize configuration and `build-hyper-local.sh` include
+it; see INSTALLATION.md for reproducible commands.
 
 ```php
 use Asyncara\App;
@@ -44,9 +44,9 @@ complete example includes groups and registered authentication middleware.
 Native Hyper 1.12.0 HTTP/1 transport uses Asyncara epoll/poll, with PHP handlers
 running as Asyncara Fibers on the interpreter thread. There is no Tokio executor
 and no cross-thread Zend access. This is a new opt-in server, not an HTTP-client
-replacement. Linux only. HTTPS termination, HTTP/2, HTTP/3, WebSocket upgrades,
-streaming request/response APIs and production deployment certification are not
-implemented by this server.
+replacement. Linux only. Optional HTTPS termination and response streaming are described below.
+HTTP/2, HTTP/3, WebSocket upgrades, streaming request bodies and production
+deployment certification remain unavailable.
 
 Use `Asyncara\App`, `Asyncara\Server\Request`, and
 `Asyncara\Server\Response`. PHP class names are case-insensitive:
@@ -59,8 +59,8 @@ to the existing Fiber timer; `Asyncara\Async::sleep()` still takes seconds.
 Routes support exact paths, `{name}` parameters, nested groups, and registered
 named/callable middleware. Static routes take precedence; dynamic routes are
 matched in registration order. Undefined named middleware fails before listening.
-JSON decoding uses PHP ext-json's C parser. Request bodies and response bodies are
-bounded and buffered; this API does not promise streaming.
+JSON decoding uses PHP ext-json's C parser. Request bodies and ordinary Response bodies are bounded and buffered.
+Response::stream selects the separate bounded, demand-driven response path.
 
 `Request::param(name, default)` reads a named route parameter. `query(name,
 default)` decodes flat query names/values lazily; repeated names use the last
@@ -70,7 +70,7 @@ decodes to arrays by default and throws for malformed JSON; App maps that error
 to 400. Request properties `method`, `target`, `path`, and `body` are readonly.
 Routing supports origin-form request targets, not a forward-proxy API.
 
-Middleware has the signature `(Request $request, callable $next): Response`.
+Middleware has the signature `(Request $request, callable $next): Response|StreamResponse`.
 Register names with `$app->middleware('auth', $handler)` before `listen()`, then
 attach them with `$app->post(...)->middleware('auth')`. Middleware may suspend
 using the same explicit Asyncara APIs as a route. Exceptions produce 500 without
@@ -192,3 +192,73 @@ Byte-reproducible and Git-tree matched; a fresh extracted Rust/C PHP85 build pas
 server protocol, body lifetime and API tests on epoll/poll.
 [Independent build attestation](phase7/server-r1-package.json). Not published;
 performance acceptance remains NOT_MET and release remains EXPERIMENTAL.
+
+
+## HTTPS and streamed responses (2026-11-10 continuation)
+
+```php
+use Asyncara\Server\Response;
+use Asyncara\IO\Files;
+$app->get('/file', fn() => Response::stream(
+    Files::readStream(__DIR__ . '/data.bin'),
+    200, ['content-type' => 'application/octet-stream']
+));
+$app->listen('127.0.0.1:8443', [
+    'tls' => ['certificate' => __DIR__.'/chain.pem', 'privateKey' => __DIR__.'/key.pem'],
+    'responseBytes' => 16777216,
+]);
+```
+
+The opt-in Rust build now includes rustls0.23.46 with the AWS-LC provider and
+TLS1.2/1.3. ALPN only advertises HTTP/1.1; a client offering exclusively h2 is
+rejected. Clients offering no ALPN can use HTTP/1.1. There is one configured
+certificate chain/key per listener; no SNI-based certificate routing or live
+certificate rotation. Optional `tls.clientCa` requires a verified client
+certificate from that PEM trust store. There is no verification-disable option.
+Session tickets, resumption cache, early data and TLS renegotiation are disabled
+or unavailable. This does not add HTTPS to the separate Hyper **client** backend.
+
+PEM files are local, limited to256KiB each, read during listener setup before
+entering the event loop; PHP enforces open_basedir. Encrypted private keys and
+remote stream wrappers are unsupported. Do not log private keys. The PHP setup
+frame releases its PEM strings after native configuration. Rustls/AWS-LC own the
+parsed key material. Prefork children configure their own transport after fork.
+
+Handshake, ciphertext reads and writes use the same connection-owned waker and
+real nonblocking sockets as the existing reactor. No Tokio executor or TLS worker
+pool is created. Handshake/output loops have a16-iteration dispatch bound and
+yield when not ready. The existing cycle deadline includes the handshake.
+`set_buffer_limit(65536)` bounds rustls application-data output; it is not a bound
+on all handshake, key, certificate, parser, PHP or kernel allocations. These
+allocations are outside Asyncara's payload ledger. See the
+[rustls connection documentation](https://docs.rs/rustls/0.23.46/rustls/server/struct.ServerConnection.html).
+
+`Response::stream(iterable $chunks, int $status=200, array $headers=[])` returns a
+non-copyable, single-use `Server\StreamResponse`. A producer yields strings of
+1..65536 bytes (empty strings are skipped). Hyper requests data through a bounded
+native event, App resumes the owning Fiber, and one chunk is supplied. The
+producer can suspend using explicit Asyncara APIs. Iterable advancement starts
+on demand; HEAD never iterates the body. An Asyncara ReadableStream may already
+have an eager producer Task before it is passed in: HEAD, rejected headers and
+connection cancellation close and join that owned producer. Transport buffering and kernel send buffers can
+accept several chunks before backpressure reaches the producer: yield completion
+does not mean the remote application consumed those bytes.
+
+`responseBytes` bounds the total generated body (default8MiB, maximum16MiB),
+`bufferBytes` bounds Asyncara-owned payload, and at most one chunk occupies the
+native producer slot. Hyper/TLS buffers and application-held input are additional.
+HTTP/1.1 uses chunked framing; framing headers remain server-owned. Response
+trailers, unbounded bodies, streaming request input and HTTP/2 are not advertised.
+A producer failure or limit violation after headers closes that connection;
+it cannot replace an already-started response with500. Disconnect/deadline cancels
+the handler and releases its producer. External references to the producer remain
+the application's responsibility. StreamResponse cannot be reused or cloned.
+Ordinary buffered Response remains a copyable value.
+
+Tests `tests/server/tls.py` and `tests/server/stream.py` use an independent Python
+TLS/socket peer, a private CA, two ticks while input/output remains independently
+held, malformed trust/identity/authentication controls, slow-reader backpressure,
+16MiB transfers through a256KiB payload budget, producer failure and cleanup.
+Validation status and remaining project-wide partial work are recorded in
+[COMPLETION_STATUS.md](COMPLETION_STATUS.md). Earlier package/test paragraphs above
+remain historical evidence for server-r1, not tests of this continuation.

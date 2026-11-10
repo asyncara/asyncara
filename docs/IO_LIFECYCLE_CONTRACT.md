@@ -399,3 +399,26 @@ After the native result is collected, Rust owns a copy of1..16 validated endpoin
 Retries occur only before a request future starts, with one connect budget and
 origin-specific pooling. No automatic replay after sending. DNS is not cached by
 Asyncara and this is not Happy Eyeballs. Detailed tests/limits: HYPER_DNS.md.
+
+
+## Server response streams and TLS
+
+`App` remains the server lifecycle owner. `Server\StreamResponse` is a single-use,
+non-copyable producer owner; assignment shares it. Hyper requests one chunk via a
+native demand event, delivered to that connection's existing Inbox/Fiber. Cancelling
+or losing that connection cancels its handler and releases the owned producer;
+external producer references remain owned by their caller. Native payload charges
+follow Bytes references until final transport release, not merely PHP yield.
+Producer errors or total/chunk bound violations after response headers abort the
+connection. No second error response is injected into an existing HTTP message.
+HEAD does not evaluate the stream. Empty chunks do not generate an HTTP terminal
+chunk; only producer completion does. Streamed responses cannot supply framing
+headers or trailers. Total responseBytes and the existing cycle deadline apply.
+
+TLS configuration is created before accepting connections. Each peer owns a
+rustls connection and shares immutable server configuration. Existing nonblocking
+socket/waker ownership remains canonical. The connection deadline includes the
+handshake and paused streaming time; cancellation does not roll back transmitted
+bytes. Setup PEM file reads happen before the runtime, not inside a callback.
+The transport sends close_notify during ordinary shutdown; abrupt disconnect,
+fatal process termination and expired deadlines may bypass graceful closure.

@@ -1,0 +1,185 @@
+//! Server-only TLS transport. Socket readiness and the connection's single
+//! driver waker are owned by the existing Asyncara reactor, not an executor.
+use super::{Context, Io, Poll};
+use hyper::rt::{Read as HyperRead, Write as HyperWrite};
+use rustls::{ServerConfig, ServerConnection};
+use std::{
+    io::{self, Read, Write},
+    pin::Pin,
+    sync::Arc,
+};
+
+pub(super) fn config(cert: &[u8], key: &[u8], ca: &[u8]) -> io::Result<Arc<ServerConfig>> {
+    let invalid = |e| io::Error::new(io::ErrorKind::InvalidInput, e);
+    let certs = rustls_pemfile::certs(&mut &*cert).collect::<Result<Vec<_>, _>>()?;
+    let key =
+        rustls_pemfile::private_key(&mut &*key)?.ok_or_else(|| invalid("missing private key"))?;
+    let builder = ServerConfig::builder_with_provider(Arc::new(
+        rustls::crypto::aws_lc_rs::default_provider(),
+    ))
+    .with_protocol_versions(&[&rustls::version::TLS13, &rustls::version::TLS12])
+    .map_err(io::Error::other)?;
+    let builder = if ca.is_empty() {
+        builder.with_no_client_auth()
+    } else {
+        let mut roots = rustls::RootCertStore::empty();
+        for cert in rustls_pemfile::certs(&mut &*ca) {
+            roots.add(cert?).map_err(io::Error::other)?;
+        }
+        let verifier = rustls::server::WebPkiClientVerifier::builder_with_provider(
+            Arc::new(roots),
+            Arc::new(rustls::crypto::aws_lc_rs::default_provider()),
+        )
+        .build()
+        .map_err(io::Error::other)?;
+        builder.with_client_cert_verifier(verifier)
+    };
+    let mut config = builder
+        .with_single_cert(certs, key)
+        .map_err(io::Error::other)?;
+    config.alpn_protocols = vec![b"http/1.1".to_vec()];
+    // Bound library state separately from Asyncara's payload accounting. No
+    // early data, session cache, ticket encryption or certificate auto-reload.
+    config.session_storage = Arc::new(rustls::server::NoServerSessionStorage {});
+    config.send_tls13_tickets = 0;
+    Ok(Arc::new(config))
+}
+
+struct Wire<'a, 'b> {
+    io: &'a Io,
+    cx: &'a mut Context<'b>,
+}
+impl Read for Wire<'_, '_> {
+    fn read(&mut self, bytes: &mut [u8]) -> io::Result<usize> {
+        let mut buf = hyper::rt::ReadBuf::new(bytes);
+        match Pin::new(&mut self.io.clone()).poll_read(self.cx, buf.unfilled()) {
+            Poll::Ready(Ok(())) => Ok(buf.filled().len()),
+            Poll::Ready(Err(e)) => Err(e),
+            Poll::Pending => Err(io::ErrorKind::WouldBlock.into()),
+        }
+    }
+}
+impl Write for Wire<'_, '_> {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        match Pin::new(&mut self.io.clone()).poll_write(self.cx, bytes) {
+            Poll::Ready(r) => r,
+            Poll::Pending => Err(io::ErrorKind::WouldBlock.into()),
+        }
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+
+pub(super) struct TlsIo {
+    io: Io,
+    tls: ServerConnection,
+    closing: bool,
+}
+impl TlsIo {
+    pub(super) fn new(io: Io, config: Arc<ServerConfig>) -> io::Result<Self> {
+        let mut tls = ServerConnection::new(config).map_err(io::Error::other)?;
+        tls.set_buffer_limit(Some(65536));
+        Ok(Self {
+            io,
+            tls,
+            closing: false,
+        })
+    }
+    fn flush_tls(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        for _ in 0..16 {
+            if !self.tls.wants_write() {
+                return Poll::Ready(Ok(()));
+            }
+            match self.tls.write_tls(&mut Wire { io: &self.io, cx }) {
+                Ok(0) => return Poll::Ready(Err(io::ErrorKind::WriteZero.into())),
+                Ok(_) => (),
+                Err(e) if e.kind() == io::ErrorKind::WouldBlock => return Poll::Pending,
+                Err(e) => return Poll::Ready(Err(e)),
+            }
+        }
+        cx.waker().wake_by_ref(); // bounded dispatch, still runnable
+        Poll::Pending
+    }
+    fn read_tls(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.tls.read_tls(&mut Wire { io: &self.io, cx }) {
+            Ok(0) if self.tls.is_handshaking() => {
+                Poll::Ready(Err(io::ErrorKind::UnexpectedEof.into()))
+            }
+            Ok(_) => match self.tls.process_new_packets() {
+                Ok(_) => Poll::Ready(Ok(())),
+                Err(e) => Poll::Ready(Err(io::Error::new(io::ErrorKind::InvalidData, e))),
+            },
+            Err(e) if e.kind() == io::ErrorKind::WouldBlock => Poll::Pending,
+            Err(e) => Poll::Ready(Err(e)),
+        }
+    }
+    fn handshake(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        for _ in 0..16 {
+            std::task::ready!(self.flush_tls(cx))?;
+            if !self.tls.is_handshaking() {
+                return Poll::Ready(Ok(()));
+            }
+            std::task::ready!(self.read_tls(cx))?;
+        }
+        cx.waker().wake_by_ref();
+        Poll::Pending
+    }
+}
+impl HyperRead for TlsIo {
+    fn poll_read(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        mut buf: hyper::rt::ReadBufCursor<'_>,
+    ) -> Poll<io::Result<()>> {
+        std::task::ready!(self.handshake(cx))?;
+        // Bounded initialized stack buffer: rustls Read cannot accept uninitialized bytes.
+        let mut plain = [0u8; 16384];
+        let size = buf.remaining().min(plain.len());
+        for _ in 0..16 {
+            match self.tls.reader().read(&mut plain[..size]) {
+                Ok(n) => {
+                    buf.put_slice(&plain[..n]);
+                    return Poll::Ready(Ok(()));
+                }
+                Err(e) if e.kind() == io::ErrorKind::WouldBlock => (),
+                Err(e) => return Poll::Ready(Err(e)),
+            }
+            // Process post-handshake output too (e.g. key updates); preserve
+            // both directions' registrations when the peer is a slow reader.
+            if let Poll::Ready(Err(e)) = self.flush_tls(cx) {
+                return Poll::Ready(Err(e));
+            }
+            std::task::ready!(self.read_tls(cx))?;
+        }
+        cx.waker().wake_by_ref();
+        Poll::Pending
+    }
+}
+impl HyperWrite for TlsIo {
+    fn poll_write(
+        mut self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        bytes: &[u8],
+    ) -> Poll<io::Result<usize>> {
+        std::task::ready!(self.handshake(cx))?;
+        std::task::ready!(self.flush_tls(cx))?;
+        let n = self.tls.writer().write(bytes)?;
+        if let Poll::Ready(Err(e)) = self.flush_tls(cx) {
+            return Poll::Ready(Err(e));
+        }
+        Poll::Ready(Ok(n))
+    }
+    fn poll_flush(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        std::task::ready!(self.handshake(cx))?;
+        self.flush_tls(cx)
+    }
+    fn poll_shutdown(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        if !self.closing {
+            self.tls.send_close_notify();
+            self.closing = true;
+        }
+        std::task::ready!(self.flush_tls(cx))?;
+        Pin::new(&mut self.io).poll_shutdown(cx)
+    }
+}

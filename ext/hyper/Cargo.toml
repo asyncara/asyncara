@@ -12,6 +12,8 @@ crate-type = ["staticlib"]
 hyper = { version = "=1.12.0", features = ["client", "server", "http1"] }
 http-body-util = "=0.1.5"
 libc = "0.2"
+rustls = { version = "=0.23.46", default-features = false, features = ["std", "aws_lc_rs", "tls12"] }
+rustls-pemfile = "=2.2.0"
 [profile.release]
 lto = "thin"
 codegen-units = 1

@@ -22,6 +22,34 @@ Add `--with-asyncara-pq --with-asyncara-mysql` to configure to include both opti
 
 No `make install` is needed to test. For a system installation, an administrator can run `make install` from `ext/` and add `extension=asyncara.so` to the selected SAPI's configuration. Choose this explicitly; Asyncara's scripts never do it automatically. CLI and FPM have separate configurations. An installation check is `php -m` and `php --ri asyncara`; check the actual configuration with `php --ini`.
 
+## Optional native HTTP server / Hyper build
+
+The default C/libcurl client build is preserved. To include the Linux native
+server (HTTP/1.1, optional TLS, response streaming) and experimental Hyper client,
+first build the pinned Rust static library, then use the matching PHP SDK.
+The AWS-LC provider also needs a C compiler, CMake and Perl during the Cargo
+build; no FIPS certification is claimed for this ordinary provider:
+
+```sh
+# From the source root; Cargo and a matching PHP development SDK are prerequisites.
+export CARGO_TARGET_DIR="$PWD/build/hyper-cargo"
+cargo build --release --locked --manifest-path ext/hyper/Cargo.toml
+cd ext
+phpize
+./configure --enable-asyncara --with-asyncara-hyper="$CARGO_TARGET_DIR/release"
+make -j2
+php -n -d extension="$PWD/modules/asyncara.so" --ri asyncara
+```
+
+`--with-asyncara-hyper` requires an absolute directory containing the library
+built from this checkout's Cargo.lock/source. It neither installs Cargo nor
+changes global PHP configuration. Normal SQL configure options remain optional.
+Run with an exact matching PHP patch/SDK, as required by the native loader.
+Alternatively `scripts/build-hyper-local.sh` remains available. Server TLS
+support does not add TLS to the separate experimental Hyper client backend.
+See [server contracts and limits](SERVER.md) and the [current validation
+record](COMPLETION_STATUS.md).
+
 ## Isolated build used on the development host
 
 ```sh

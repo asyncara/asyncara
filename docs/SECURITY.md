@@ -227,3 +227,31 @@ is not a general upper bound. Asyncara's native ledger does not contain this
 external allocation growth. The affected memory check remains FAIL pending a
 vetted dependency repair and rerun; see DEPENDENCY_FINDINGS.md. No global library
 was changed and no suppressions or pool-disabling workaround were introduced.
+
+
+## Native server TLS and streaming boundary (2026-11-10)
+
+Optional server TLS uses pinned rustls/AWS-LC, TLS1.2/1.3 and HTTP/1.1 ALPN. Keys
+and certificate chains are setup-time local PEM inputs, each at most256KiB.
+Client certificate authentication is mandatory when clientCa is configured;
+there is no insecure bypass. Certificate rotation/revocation, multi-certificate
+SNI routing and deployment-wide denial-of-service protection are not certified.
+Connection admission and the existing request-cycle deadline also cover TLS
+handshakes. TLS crypto and PHP application code consume interpreter-thread CPU.
+
+Server response streaming enforces64KiB chunks, total responseBytes, and native
+payload admission. Hyper/TLS/kernel/PHP memory is additional. A failed producer
+after headers aborts the connection; application effects are not rolled back.
+Do not assume a yielded chunk has reached the remote application. Arbitrary PHP
+producer code can block a worker. Streaming inputs remain unavailable, so request
+bodies continue to use the existing bodyBytes bound. Historical memory findings
+and endurance failures are unchanged. See SERVER.md and COMPLETION_STATUS.md.
+
+The native server key parameter is marked SensitiveParameter during MINIT,
+including invalid configuration with zend.exception_ignore_args=0. Synthetic-key
+negative/positive tests verify redaction and listener cleanup. This does not
+wipe all allocator copies of PEM data or hide application-owned configuration.
+The initial rustls/ring AES-GCM Valgrind finding is retained separately in
+DEPENDENCY_FINDINGS.md. AWS-LC was selected only after matched controls and the
+actual server passed scoped unsuppressed memory tests. That does not certify
+every TLS or application allocation path.
