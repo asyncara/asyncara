@@ -119,7 +119,35 @@ PHP_FUNCTION(asyncara_pg_poll) {
     add_assoc_long(return_value, "status", status);
     add_assoc_long(return_value, "fd", PQsocket(p->conn));
 }
-PHP_FUNCTION(asyncara_pg_query) {
+/* Preparation and execution use the same pending/result owner as ordinary
+ * queries. Callers must drain each command before submitting another one. */
+PHP_FUNCTION(asyncara_pg_prepare) {
+    zval *z;
+    char *name, *sql;
+    size_t name_len, sql_len;
+    zend_long count;
+    ZEND_PARSE_PARAMETERS_START(4, 4)
+    Z_PARAM_RESOURCE(z) Z_PARAM_STRING(name, name_len) Z_PARAM_STRING(sql, sql_len)
+    Z_PARAM_LONG(count) ZEND_PARSE_PARAMETERS_END();
+    asyncara_pg *p = pg_fetch(z);
+    if (!p) RETURN_THROWS();
+    if (p->pending) {
+        zend_value_error("PostgreSQL connection already has a pending query");
+        RETURN_THROWS();
+    }
+    if (!name_len || name_len > 63 || memchr(name, 0, name_len) ||
+        sql_len > PG_BUFFER_LIMIT || memchr(sql, 0, sql_len) || count < 0 || count > 10000) {
+        zend_value_error("PostgreSQL prepared statement limits exceeded");
+        RETURN_THROWS();
+    }
+    if (!PQsendPrepare(p->conn, name, sql, (int)count, NULL)) {
+        pg_error(p);
+        RETURN_THROWS();
+    }
+    p->pending = true;
+    RETURN_NULL();
+}
+static void pg_send(INTERNAL_FUNCTION_PARAMETERS, bool prepared) {
     zval *z;
     char *sql;
     size_t len;
@@ -134,7 +162,8 @@ PHP_FUNCTION(asyncara_pg_query) {
         RETURN_THROWS();
     }
     size_t n = zend_hash_num_elements(params);
-    if (n > 10000 || len > PG_BUFFER_LIMIT || memchr(sql, 0, len)) {
+    if (n > 10000 || len > (prepared ? 63u : PG_BUFFER_LIMIT) ||
+        (prepared && !len) || memchr(sql, 0, len)) {
         zend_value_error("PostgreSQL query limits exceeded");
         RETURN_THROWS();
     }
@@ -166,8 +195,10 @@ PHP_FUNCTION(asyncara_pg_query) {
     }
     ZEND_HASH_FOREACH_END();
     int sent = 0;
-    if (!invalid)
-        sent = PQsendQueryParams(p->conn, sql, (int)n, NULL, values, NULL, NULL, 0);
+    if (!invalid) {
+        sent = prepared ? PQsendQueryPrepared(p->conn, sql, (int)n, values, NULL, NULL, 0)
+                        : PQsendQueryParams(p->conn, sql, (int)n, NULL, values, NULL, NULL, 0);
+    }
     for (i = 0; i < n; i++) {
         if (strings[i])
             zend_string_release(strings[i]);
@@ -188,6 +219,12 @@ PHP_FUNCTION(asyncara_pg_query) {
         RETURN_THROWS();
     }
     RETURN_NULL();
+}
+PHP_FUNCTION(asyncara_pg_query) {
+    pg_send(INTERNAL_FUNCTION_PARAM_PASSTHRU, false);
+}
+PHP_FUNCTION(asyncara_pg_execute) {
+    pg_send(INTERNAL_FUNCTION_PARAM_PASSTHRU, true);
 }
 PHP_FUNCTION(asyncara_pg_read) {
     zval *z;

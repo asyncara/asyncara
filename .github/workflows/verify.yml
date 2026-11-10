@@ -108,6 +108,11 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-19.log bash -c 'make build'
       - run: ./scripts/ci-run.sh build/ci-step-20.log bash -c './scripts/prepare-test-certs.sh'
       - run: ./scripts/ci-run.sh build/ci-stock-databases.log ./scripts/test-databases.py
+      - name: Bounded PostgreSQL prepared statement ownership
+        run: |
+          for backend in epoll poll; do
+            python3 tests/database/prepared_pg.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-prepared/"$backend"
+          done
       - name: Build dependencies with their supported Valgrind stack annotations
         run: |
           ./scripts/ci-run.sh build/ci-php-debug-build.log ./scripts/build-test-php.sh "$PWD/build/php-valgrind"
@@ -136,5 +141,7 @@ jobs:
             build/http-fpm/
             build/database-tls/*client.log
             build/database-tls/report.json
+            build/pg-prepared/**/*.json
+            build/pg-prepared/**/*.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit

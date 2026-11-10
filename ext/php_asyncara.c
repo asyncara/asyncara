@@ -1239,6 +1239,7 @@ static const zend_function_entry functions[] = {
 #endif
 #ifdef HAVE_ASYNCARA_PQ
                 PHP_FE(asyncara_pg_open, arginfo_pg_open) PHP_FE(asyncara_pg_poll, arginfo_pg_conn)
+                    PHP_FE(asyncara_pg_prepare, arginfo_pg_prepare) PHP_FE(asyncara_pg_execute, arginfo_pg_execute)
                     PHP_FE(asyncara_pg_query, arginfo_pg_query) PHP_FE(asyncara_pg_read, arginfo_pg_conn)
                         PHP_FE(asyncara_pg_close, arginfo_pg_conn)
 #endif
