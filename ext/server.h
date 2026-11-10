@@ -17,6 +17,8 @@ typedef struct {
     const unsigned char *address; size_t address_len;
 } ar_server_status;
 void *ar_server_new(const unsigned char *, size_t, size_t, size_t, size_t, size_t, uint64_t, size_t, int);
+int ar_server_stream_requests(void *);
+int ar_server_input(void *, uint64_t);
 int ar_server_tls(void *, const unsigned char *, size_t, const unsigned char *, size_t, const unsigned char *, size_t);
 void ar_server_free(void *);
 int ar_server_drive(void *);

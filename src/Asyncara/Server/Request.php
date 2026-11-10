@@ -2,12 +2,13 @@
 declare(strict_types=1);
 namespace Asyncara\Server;
 
-/** Immutable request data, with lazy query/header/JSON decoding. No native owner. */
+/** Immutable metadata; opt-in body input shares a handler-scoped stream owner. */
 final class Request
 {
     private ?array $queryValues = null, $headerValues = null;
+    private ?string $collected = null;
     public readonly string $path;
-    public function __construct(public readonly string $method, public readonly string $target, public readonly string $body = '', private readonly string $rawHeaders = '', private readonly array $params = [])
+    public function __construct(public readonly string $method, public readonly string $target, public readonly string $body = '', private readonly string $rawHeaders = '', private readonly array $params = [], private readonly ?RequestBodyStream $input = null)
     {
         $this->path = explode('?', $target, 2)[0];
     }
@@ -37,5 +38,19 @@ final class Request
         return isset($this->headerValues[strtolower($name)]) ? implode(', ', $this->headerValues[strtolower($name)]) : $default;
     }
     /** ext-json's C parser. Invalid JSON throws JsonException (App returns 400). */
-    public function json(bool $associative = true): mixed { return json_decode($this->body, $associative, 512, JSON_THROW_ON_ERROR); }
+    public function json(bool $associative = true): mixed
+    {
+        if ($this->input !== null && $this->collected === null) {
+            $bytes = '';
+            foreach ($this->input as $chunk) $bytes .= $chunk;
+            $this->collected = $bytes;
+        }
+        return json_decode($this->collected ?? $this->body, $associative, 512, JSON_THROW_ON_ERROR);
+    }
+    /** Body bytes in native streaming mode, or one already-buffered value. */
+    public function stream(): iterable
+    {
+        if ($this->input !== null) return $this->input;
+        return (function (): \Generator { if ($this->body !== '') yield $this->body; })();
+    }
 }

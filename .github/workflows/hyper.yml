@@ -46,10 +46,11 @@ jobs:
         run: |
           for backend in epoll poll; do
             ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/hyper.so" tests/server/api.php
-            for test in run tls stream; do
+            for test in run tls stream input; do
               python3 tests/server/"$test".py --php php --module build/hyper.so --backend "$backend" --out build/hyper-server/"$backend-$test"
             done
             python3 tests/server/stream.py --php php --module build/hyper.so --backend "$backend" --tls --out build/hyper-server/"$backend-tls-stream"
+            python3 tests/server/input.py --php php --module build/hyper.so --backend "$backend" --tls --out build/hyper-server/"$backend-tls-input"
           done
       - name: Controlled resolver ownership (separate test-only module)
         run: |

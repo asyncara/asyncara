@@ -1226,6 +1226,7 @@ static const zend_function_entry functions[] = {
     PHP_FE(asyncara_server_next, arginfo_server_next)
     PHP_FE(asyncara_server_respond, arginfo_server_respond)
     PHP_FE(asyncara_server_chunk, arginfo_server_chunk)
+    PHP_FE(asyncara_server_input, arginfo_server_input)
     PHP_FE(asyncara_server_shutdown, arginfo_server_void)
     PHP_FE(asyncara_server_close, arginfo_server_void)
     PHP_FE(asyncara_server_can_fork, arginfo_server_can_fork)
