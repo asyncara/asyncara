@@ -2251,3 +2251,14 @@ nested result shape; retained failure corrected to the existing row-array API.
 Performance target is still not established: single-sample comparisons vary
 substantially with host scheduling. All response bodies in the comparison are
 validated. No claim of universal superiority or production readiness is made.
+
+### Server compatibility checkpoint
+
+80b1499 passed 25 build/API/protocol commands: PHP 8.3.36, 8.4.27, 8.5.12 NTS,
+DEBUG 8.5.12 and GCC ASan/UBSan, each with epoll and poll. Rust six-test suite also
+passed including response quota lifetime, fail-stop poisoning and the existing
+client Waker ownership control. Found configuration-only over-admission: a
+16384-connection server leaves no room for engine wake, listener and notification
+watchers. The prior module accepts this invalid configuration (failure retained);
+PHP admission now reserves three watcher slots. Added explicit server MINFO and
+build dependency checks for the new C headers. Full final validation follows.

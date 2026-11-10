@@ -55,3 +55,25 @@ Matched benchmark: `benchmarks/server/compare.py`; both servers perform real
 routing/query extraction and JSON response generation for every request. The Go
 reference uses an immutable prewarmed payload cache, fixing the unsafe concurrent
 map writes in the supplied example. No cached full HTTP replies are substituted.
+
+Connection reuse now keeps one PHP handler Fiber per HTTP/1 connection; it does
+not cache handler results. A single-slot inbox preserves HTTP/1 request ordering.
+Connection generation IDs distinguish fd reuse, and native close/cancel events
+retire that Fiber. Context is cleared between requests. Handlers must explicitly
+own/join any additional Tasks they spawn; automatic cleanup of arbitrary detached
+application Tasks is not promised. Global variables and statics are not request
+isolated. Server writes use `sendmsg` vectors; this avoids flattening head/body,
+but is not a kernel zero-copy guarantee.
+
+The configurable connection ceiling is 16381, reserving three slots from the
+16384 global readiness limit. Other Asyncara I/O consumes that same global limit;
+leave capacity for it. Rust payload limits and PHP's memory limit are separate.
+Server notifications are coalesced until the event queue is drained. Overflow is
+bounded by admitted connections; new acceptance stops until queued lifecycle
+events are collected.
+
+Matched PHP 8.3.36, 8.4.27, 8.5.12 NTS, PHP 8.5.12 DEBUG and GCC ASan/UBSan builds
+passed the focused server protocol/API checks on epoll and poll at checkpoint
+80b1499. Later configuration-bound validation is tracked separately. Scoped C/PHP
+sanitizer success does not mean the Rust library was compiler-instrumented with
+ASan or that arbitrary application handlers are nonblocking.

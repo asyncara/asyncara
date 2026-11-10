@@ -1292,6 +1292,11 @@ PHP_MINFO_FUNCTION(asyncara) {
     php_info_print_table_row(2, "Event loop", "epoll (Linux), poll fallback");
     php_info_print_table_row(2, "Filesystem / SQLite / DNS", "bounded native pthread workers");
     php_info_print_table_row(2, "HTTP", "libcurl multi socket");
+#ifdef HAVE_ASYNCARA_HYPER
+    php_info_print_table_row(2, "HTTP server", "Hyper HTTP/1; CLI; experimental");
+#else
+    php_info_print_table_row(2, "HTTP server", "not built (requires optional Hyper bridge)");
+#endif
     php_info_print_table_row(2, "PHP userland threads / io_uring", "unavailable / not implemented");
     php_info_print_table_end();
 }

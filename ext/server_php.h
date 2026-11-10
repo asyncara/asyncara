@@ -40,7 +40,9 @@ PHP_FUNCTION(asyncara_server_listen) {
         Z_PARAM_LONG(response) Z_PARAM_LONG(budget) Z_PARAM_LONG(timeout) Z_PARAM_LONG(requests)
         Z_PARAM_BOOL(reuse_port)
     ZEND_PARSE_PARAMETERS_END();
-    if (connections < 1 || connections > 16384 || body < 0 || body > AR_LIMIT || response < 0 || response > AR_LIMIT || budget < 65536 || budget > 1073741824 || timeout < 1 || timeout > 3600000 || requests < 1 || requests > 1000000) {
+    /* Reserve the engine wake pipe, PHP notification watcher and listener.
+     * Other I/O shares AR_MAX_WATCHERS; applications must budget that too. */
+    if (connections < 1 || connections > AR_MAX_WATCHERS - 3 || body < 0 || body > AR_LIMIT || response < 0 || response > AR_LIMIT || budget < 65536 || budget > 1073741824 || timeout < 1 || timeout > 3600000 || requests < 1 || requests > 1000000) {
         zend_value_error("Invalid HTTP server bounds"); RETURN_THROWS();
     }
     ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
