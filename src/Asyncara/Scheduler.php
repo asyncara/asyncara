@@ -22,7 +22,7 @@ final class Scheduler
     public static function current(): self { return self::$active ?? throw new \LogicException('Operation requires Async::run()'); }
     public function currentCancellation(): ?CancellationToken { return $this->task && !$this->task->shield ? $this->task->cancellation->token : null; }
     public static function now(): float { return hrtime(true) / 1e9; }
-    public function spawn(callable $body, bool $inherit = true): Task
+    public function spawn(#[\SensitiveParameter] callable $body, bool $inherit = true): Task
     {
         $this->checkTaskCapacity();
         $task = new Task(++$this->next, $this, $body, $inherit ? ($this->task?->context ?? []) : []);

@@ -24,7 +24,7 @@ final class Connection
     private int $preparedMisses = 0;
     private int $preparedEvictions = 0;
     private function __construct(private mixed $handle, private float $timeout, private int $notificationLimit, private int $notificationByteLimit, private int $preparedCacheLimit, private int $preparedCacheByteLimit) { $this->gate = new Semaphore(1); $this->operations = new Semaphore(1); }
-    public static function connect(array $options, float $timeout = 30, int $notificationLimit = 1024, int $notificationByteLimit = 1048576, int $preparedCacheLimit = 0, int $preparedCacheByteLimit = 262144): Future
+    public static function connect(#[\SensitiveParameter] array $options, float $timeout = 30, int $notificationLimit = 1024, int $notificationByteLimit = 1048576, int $preparedCacheLimit = 0, int $preparedCacheByteLimit = 262144): Future
     {
         if ($notificationLimit < 1 || $notificationLimit > 1024 || $notificationByteLimit < 1 || $notificationByteLimit > 1048576) throw new \ValueError('PostgreSQL notification limits must be 1..1024 messages and 1..1048576 payload bytes');
         if ($preparedCacheLimit < 0 || $preparedCacheLimit > 256 || $preparedCacheByteLimit < 1 || $preparedCacheByteLimit > 1048576) throw new \ValueError('PostgreSQL prepared cache limits must be 0..256 entries and 1..1048576 SQL bytes');

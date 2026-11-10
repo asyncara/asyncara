@@ -5,7 +5,7 @@ use Asyncara\Exception\TimeoutException;
 final class Async
 {
     public static function run(callable $body): mixed { return (new Scheduler(Runtime::configuration()['taskLimit']))->run($body); }
-    public static function spawn(callable $body, bool $inheritContext = true): Task { return Scheduler::current()->spawn($body, $inheritContext); }
+    public static function spawn(#[\SensitiveParameter] callable $body, bool $inheritContext = true): Task { return Scheduler::current()->spawn($body, $inheritContext); }
     /** Await an owned operation; cancellation also cancels and joins its unfinished work. */
     public static function await(Future $future): mixed
     {

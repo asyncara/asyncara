@@ -15,7 +15,7 @@ final class Connection
     private int $fd=-1;
     private ?Task $transactionOwner=null;
     private function __construct(private mixed $handle,private float $timeout){$this->gate=new Semaphore(1);$this->operations=new Semaphore(1);}
-    public static function connect(array $options,float $timeout=30):Future
+    public static function connect(#[\SensitiveParameter] array $options,float $timeout=30):Future
     {
         if(!function_exists('asyncara_mysql_open'))throw new \LogicException('Build Asyncara with MariaDB Connector/C');
         return Async::spawn(static fn()=>Async::timeout($timeout,static function()use($options,$timeout):self {

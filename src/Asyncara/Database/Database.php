@@ -5,7 +5,7 @@ use Asyncara\Future;
 use Asyncara\SQLite\Connection;
 final class Database
 {
-    public static function connectAsync(array $config): Future
+    public static function connectAsync(#[\SensitiveParameter] array $config): Future
     {
         return match ($config['driver'] ?? '') {
             'sqlite' => Connection::open($config['path'] ?? ':memory:'),
