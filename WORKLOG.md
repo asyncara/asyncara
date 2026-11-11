@@ -2672,3 +2672,7 @@ HTTPtrust package6ba0a71/646files/SHA2561d389145098cc2d4f1f0866a60b62be2b620d5c1
 ## Explicit HTTPS proxy trust (2026-11-11)
 
 The existing client had no proxyCaFile public option; preservedbefore-r1FAIL unknownnamedparameter. Nativebackend now exposes CURLOPT_PROXY_CAINFO separatelyfromoriginCA and explicitlyrequiresproxy peer/hostnamevalidation. Public/nativevalidation requiresanexplicitHTTPSproxy andcapture/checksboth ownedtrustpaths. Independent privateproxy/originCAs verifyGET/CONNECT, relativeCWDsnapshot, original2tickswhilepeerbodyheld, streamingupload,gzip,earlyclose,recovery,andwrongCA/hostname rejection. FirstPHP85epoll/pollchecksPASS; extendedopen_basedircontrolsPASS. Fullcompatibility/memory/gatespending. Hyperproxiesremainunsupported; nofallbackorverificationdisable.
+
+### HTTPS proxy request-lifecycle verification preparation
+
+Native checkpoint `2a5224f` passes the five-build epoll/poll matrix (35 commands). First private HTTPS-proxy FPM run passes 20 sequential and 40 four-worker requests, minimum 38/43 pending-I/O ticks, and idle six descriptors/one thread. Add the same workload to CI, snapshot source/test identities, and reject empty/NUL/CRLF proxy trust paths. Final regression and memory validation remain pending; no broad protocol certification claim.

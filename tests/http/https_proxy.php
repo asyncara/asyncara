@@ -39,6 +39,10 @@ try{
     rejected(fn()=>(new HttpClient(proxy:$config['proxy'],caFile:$config['originCA'],proxyCaFile:$config['originCA']))->get($tls.'/small')->await());
     rejected(fn()=>(new HttpClient(proxy:$config['proxy'],caFile:$config['proxyCA'],proxyCaFile:$config['proxyCA']))->get($tls.'/small')->await());
     rejected(fn()=>(new HttpClient(proxy:$config['mismatchProxy'],caFile:$config['originCA'],proxyCaFile:$config['proxyCA']))->get($tls.'/small')->await());
+    foreach(['',"bad\0path","bad\r\npath"]as$bad){
+        rejected(fn()=>new HttpClient(proxy:$config['proxy'],proxyCaFile:$bad),ValueError::class);
+        rejected(fn()=>Scheduler::current()->native('http',[$http,null,['method'=>'GET','headers'=>[],'proxy'=>$config['proxy'],'proxyCaFile'=>$bad],1000])->await(),ValueError::class);
+    }
     rejected(fn()=>new HttpClient(proxyCaFile:$config['proxyCA']),ValueError::class);
     rejected(fn()=>new HttpClient(proxy:'http://127.0.0.1:1',proxyCaFile:$config['proxyCA']),ValueError::class);
     rejected(fn()=>Scheduler::current()->native('http',[$http,null,['method'=>'GET','headers'=>[],'proxyCaFile'=>$config['proxyCA']],1000])->await(),ValueError::class);
