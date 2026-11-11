@@ -1,18 +1,18 @@
 # Release readiness
 
-Latest priority source package:707 verified files, fresh Rust/C build and29
-commands PASS; [current scope](PRIORITY_CAPABILITIES.md) and
-[package attestation](phase7/proxy-services-package.json). Historical failures
-remain separate; broad protocol certification remains partial.
+## Current overall priority status (2026-11-12)
 
-## Current priority scope (2026-11-12)
+[ROADMAP.md](ROADMAP.md#current-priority-status) is the canonical overall-status
+reference. All ten requested priority entities remain **PARTIALLY_IMPLEMENTED**.
+The earlier nine-complete summary incorrectly elevated tested subsets into
+entity-level completion and is withdrawn. [Capability evidence](PRIORITY_CAPABILITIES.md)
+and the [Arabic report](../dos/PRIORITY.md) now separate these two levels.
 
-The [priority capability contracts](PRIORITY_CAPABILITIES.md) distinguish tested
-APIs from broader deployment/protocol certification. New Basic proxy credentials,
-sensitive trace protections and pre-runtime lazy pool configuration are tested
-in real Native Server handlers. Historical sections below keep their source
-identities and failures. Neither these additions nor short passing gates promote
-the release: it remains **EXPERIMENTAL**.
+The 707-file source package, independent build and 29 passing commands retain
+their original [attestation](phase7/proxy-services-package.json). Those results
+and the dated entries below establish only their stated scopes. No runtime or
+test changed in this correction; no remaining gap was closed. Release remains
+**EXPERIMENTAL**, and all historical failures are preserved.
 
 ## Current completion work (2026-11-10)
 

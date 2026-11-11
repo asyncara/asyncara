@@ -2758,3 +2758,17 @@ Proxy memory-r1 CLI PASS, server FAIL after RemoteDisconnected and forced SIGTER
 Final regression1e8be3c/runtime2a96f61 PASS21commands/511.101s: GateA53/199.987s, complete85both, HTTP101/185.439s, DBbounds/plain/allocation,14NativeServerchecks. Whole-handler memory diagnostic-r2/r3 PASS3processes bothbackends0errors/loss4066reachable;10sdeadline unchanged. First forcedtermination failure remains without proven timeout attribution; intervening diagnostic500 was testargumentmismatch corrected byadapter. C-only compatibility and independent package underway; no runtime source changed.
 
 Independent priority package 891c48c6626b/707files/SHA25632ccc430b2b71a931083b58b72354bb7e5dd8045f4cf2a757af7cf39826d2ec5 PASS29commands/298.347s. Freshbuild141.291s; modulee2ceebbcbbfdb88dc06c094b21e7f7525e8f42c44659108527a90ca563ee59cb. Additional264 combined service requests reviewed fromrawpaths, zeroSQLsessions/Redisclients/keys/nativefinalowners. C-onlybuild+4checksPASS. Cleanup only stopped successful privateSQLfixture data and finished Cargo cache, with retainedfilehash verification; failures/logs/source/modules preserved. NoFPMcampaign, no newbenchmark/speedclaim, nopush/release. Nine capability contracts tested within stated boundaries; broadcertificationstillPARTIALLY_IMPLEMENTED. Original83pendingquerydisconnect and firstproxyVGforcedtermination retainedwithpreciseunknowns.
+
+
+## 2026-11-12 — Correct entity-level priority status
+
+The owner identified a contradiction between ROADMAP and the recent priority
+reports. The nine-complete summary in 4927965/df93bdd promoted tested capability
+subsets to completed entities while known work remained open. Withdraw that
+classification. ROADMAP now has one canonical current table: all ten priority
+entities remain PARTIALLY_IMPLEMENTED, with tested subsets and remaining work in
+separate columns. PRIORITY_CAPABILITIES, dos/PRIORITY, CURRENT, COMPLETION_STATUS
+and RELEASE_READINESS agree. Retain scoped implementation/test results, source
+and package identities, and every failure; preserve dated roadmap records.
+This is a documentation correction, not new runtime progress or new test evidence.
+No native/PHP source, tests, thresholds, archives or raw reports changed.

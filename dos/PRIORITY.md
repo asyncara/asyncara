@@ -2,31 +2,37 @@
 
 تاريخ التقرير: **2026-11-12**. حالة الإصدار: **EXPERIMENTAL**.
 
-هذا الملف يلخّص الكيانات العشرة التي طلب مالك المشروع جعلها
-`IMPLEMENTED_AND_TESTED`. وهو لقطة مرتبطة بالمصدر والأدلة أدناه، ويُقرأ مع
-[النطاق التفصيلي للقدرات](../docs/PRIORITY_CAPABILITIES.md)، وليس خارطة طريق بديلة.
+هذا تقرير عن الكيانات العشرة المطلوبة. المرجع المعتمد لحالة الكيان ككل هو
+[docs/ROADMAP.md](../docs/ROADMAP.md#current-priority-status)، بينما يعرض
+[تقرير القدرات](../docs/PRIORITY_CAPABILITIES.md) الأدلة الخاصة بالأجزاء المختبرة.
 
-**الحالة الحالية: تسعة كيانات منفّذة ومختبرة ضمن نطاقات محددة؛ التصديق الواسع
-لبروتوكولات HTTP والبروكسيات ما زال جزئيًا.** لا تعني حالة
-`IMPLEMENTED_AND_TESTED` دعم كل البروتوكولات والإصدارات والمنصات، أو انعدام جميع
-العيوب، أو الجاهزية للإنتاج. القيود والإخفاقات المحفوظة جزء من هذا التقرير.
+**تصحيح: الكيانات العشرة ما زالت `PARTIALLY_IMPLEMENTED` على مستوى الطلب الكامل.**
+القول السابق إن تسعة كيانات اكتملت كان تصنيفًا غير دقيق: نقل حالة أجزاء محددة
+منفذة ومختبرة إلى الكيان بأكمله، مع أن فجواته ما زالت مفتوحة. هذا الادعاء مسحوب.
+
+توجد قدرات فرعية تستحق `IMPLEMENTED_AND_TESTED` في نطاقها المحدد، ونتائج اختباراتها
+محفوظة أدناه. لكنها لا تكفي لإغلاق الكيان أو تقليص نطاق المطلوب دون بيان ذلك.
+هذا تصحيح للتوثيق فقط؛ لا يضيف تنفيذًا أو اختبارات أو يحوّل إخفاقًا سابقًا إلى نجاح.
 
 ## ملخص الحالات
 
-| الكيان | الحالة | النطاق الذي تنطبق عليه الحالة |
+| الكيان | حالة الكيان ككل | أجزاء منفذة ومختبرة ضمنه |
 |---|---|---|
-| Rust Hyper backend | `IMPLEMENTED_AND_TESTED` | محرك HTTP/1.1 الاختياري على Linux، وFFI وDNS وTLS والملكية والحدود |
-| Native Server | `IMPLEMENTED_AND_TESTED` | خادم CLI وHTTP/1.1، وتوجيه الطلبات، وTLS/mTLS، والبث المحدود والعمال |
-| HTTP Client | `IMPLEMENTED_AND_TESTED` | curl multi، والطلبات المتزامنة، وHTTP/2 المخزّن، والبث عبر HTTP/1.1، والبروكسيات المحددة |
-| Hyper HTTP Client | `IMPLEMENTED_AND_TESTED` | واجهة HttpClient على Hyper: الطلبات والأجسام والضغط والبث ضمن الحدود الموثقة |
+| Rust Hyper backend | `PARTIALLY_IMPLEMENTED` | محرك HTTP/1.1 الاختياري على Linux، وFFI وDNS وTLS والملكية والحدود |
+| Native Server | `PARTIALLY_IMPLEMENTED` | خادم CLI وHTTP/1.1، وتوجيه الطلبات، وTLS/mTLS، والبث المحدود والعمال |
+| HTTP Client | `PARTIALLY_IMPLEMENTED` | curl multi، والطلبات المتزامنة، وHTTP/2 المخزّن، والبث عبر HTTP/1.1، والبروكسيات المحددة |
+| Hyper HTTP Client | `PARTIALLY_IMPLEMENTED` | واجهة HttpClient على Hyper: الطلبات والأجسام والضغط والبث ضمن الحدود الموثقة |
 | Broad HTTP Protocol/Proxy Certification | `PARTIALLY_IMPLEMENTED` | مصفوفة محلية لبروتوكولات وبروكسيات محددة؛ ليست شهادة توافق شاملة |
-| PostgreSQL | `IMPLEMENTED_AND_TESTED` | libpq غير الحاجب، والمعاملات والنتائج المحدودة وTLS/mTLS في التكوين المختبَر |
-| MySQL / MariaDB | `IMPLEMENTED_AND_TESTED` | Connector/C غير المتزامن، باختبارات منفصلة لـOracle MySQL وMariaDB |
-| Redis | `IMPLEMENTED_AND_TESTED` | TCP/TLS غير الحاجب، وACL وRESP2/RESP3 وpipelines وPub/Sub المحدودة |
-| Native Filesystem | `IMPLEMENTED_AND_TESTED` | واجهات Files/File، وعمّال pthread، والبث والملكية والاستبدال الذري |
-| Memory Hardening | `IMPLEMENTED_AND_TESTED` | المحاسبة والحدود والملكية والتنظيف في المسارات المختبرة؛ ليست شهادة ذاكرة شاملة |
+| PostgreSQL | `PARTIALLY_IMPLEMENTED` | libpq غير الحاجب، والمعاملات والنتائج المحدودة وTLS/mTLS في التكوين المختبَر |
+| MySQL / MariaDB | `PARTIALLY_IMPLEMENTED` | Connector/C غير المتزامن، باختبارات منفصلة لـOracle MySQL وMariaDB |
+| Redis | `PARTIALLY_IMPLEMENTED` | TCP/TLS غير الحاجب، وACL وRESP2/RESP3 وpipelines وPub/Sub المحدودة |
+| Native Filesystem | `PARTIALLY_IMPLEMENTED` | واجهات Files/File، وعمّال pthread، والبث والملكية والاستبدال الذري |
+| Memory Hardening | `PARTIALLY_IMPLEMENTED` | المحاسبة والحدود والملكية والتنظيف في المسارات المختبرة؛ ليست شهادة ذاكرة شاملة |
 
 ## تقارير الكيانات
+
+الوصف التالي للأجزاء المنفذة، وليس إقرارًا باكتمال الكيان. القيود والأعمال
+المتبقية المذكورة لكل قسم ما زالت مفتوحة؛ حالة الأقسام العشرة جميعها جزئية.
 
 ### 1. Rust Hyper backend
 
@@ -52,7 +58,9 @@
 و[العمال](../tests/server/workers.py). نجحت 14 حالة تشغيل على epoll/poll في
 التحقق النهائي، ثم أُعيدت على البناء المستقل.
 
-توجد أيضًا اختبارات معالجات تجمع SQL وRedis وHTTP والملفات. يبقى فشل أولي
+يبقى أيضًا reset غير مفسّر في اختبار GCC/poll/TLS للإدخال البطيء، كما هو موثق
+في [أدلة بث طلبات الخادم](../docs/phase7/server-request-stream.json).
+توجد اختبارات معالجات تجمع SQL وRedis وHTTP والملفات. يبقى فشل أولي
 لانقطاع طلب PostgreSQL موثقًا دون تفسير مثبت. البث half-duplex، ولا يوجد
 تصديق HTTP/2/3 للخادم أو دمج WebSocket upgrade. لا تثبت النتائج تفوقًا أدائيًا
 مطلقًا أو تحملًا طويل المدة.
@@ -233,7 +241,8 @@ ASan/UBSan 8.5.12، مع epoll وpoll. تختلف التغطية حسب المج
 | العنصر | الهوية |
 |---|---|
 | الفرع | `phase7-native-server-20261109T231953Z` |
-| HEAD المرجعي قبل إضافة هذا التقرير | `49279650ea9c27d986f9461fbc4e0723d9c6b55e` |
+| HEAD المرجعي قبل إنشاء التقرير الأصلي | `49279650ea9c27d986f9461fbc4e0723d9c6b55e` |
+| commit التقرير السابق الذي احتوى التصنيف غير الدقيق | `df93bdda700087e00de3885fa527ec005a3fabe4` |
 | checkpoint تنفيذ التغييرات | `2a96f61deb1df16f4f304feacb87d2ef4f3194ac` |
 | checkpoint الاختبارات والمراقب | `1e8be3cbe4f96272aa61fd3d5b5a14d2085b240c` |
 | المصدر المضمّن في الأرشيف | `891c48c6626bdeb551a26d1c9e9f9f127a7424f2` |

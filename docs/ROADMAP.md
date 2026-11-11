@@ -1,23 +1,43 @@
 # Implementation status
 
-Latest priority source package:707 verified files, fresh Rust/C build and29
-commands PASS; [current scope](PRIORITY_CAPABILITIES.md) and
-[package attestation](phase7/proxy-services-package.json). Historical failures
-remain separate; broad protocol certification remains partial.
+## Current priority status
 
-## Current priority contracts (2026-11-11)
+Updated 2026-11-12 against source/report checkpoint `df93bdd`. **EXPERIMENTAL**.
+This is the canonical overall-status table for the owner's ten priority areas.
+All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
+substantial implemented and tested capabilities; their outstanding work is not
+closed by those narrower results.
 
-[Priority capability matrix](PRIORITY_CAPABILITIES.md) is the current lookup for
-Rust Hyper, Native Server, both HTTP clients, HTTP/proxy certification, SQL, Redis,
-filesystem and managed-memory hardening. It defines each tested API contract and
-keeps broader unsupported certification separate from implementation status.
-Historical tables below retain their original source/date.
+The earlier "nine implemented and tested entities" summary in
+`PRIORITY_CAPABILITIES.md` and `dos/PRIORITY.md` incorrectly promoted tested
+sub-capabilities into entity-level completion. That classification is withdrawn.
+This correction changes documentation, not runtime behavior or test outcomes.
 
-The new native continuation adds [bounded Basic proxy authentication](PROXY_AUTHENTICATION.md)
-and repairs reproduced native/root-callback trace disclosure and pre-runtime
-connection-pool configuration. Final service/memory/regression evidence is
-recorded in that continuation; no universal protocol or memory guarantee and
-no production release promotion is made.
+`IMPLEMENTED_AND_TESTED` is valid for a specifically named capability and its
+executed scope. It must not be used as the overall status while known work in
+that area's requested scope remains open. Status may change only with evidence
+closing that work, not by silently redefining the area around tests that pass.
+
+| Priority area | Overall status | Implemented and tested capabilities | Remaining work / retained findings |
+|---|---|---|---|
+| Rust Hyper backend | PARTIALLY_IMPLEMENTED | HTTP/1.1 FFI/readiness transport, worker DNS, verified TLS and bounded requests/streams. [Evidence](HYPER_SAFETY_REVIEW.md). | Capability coverage remains partial: no Hyper proxies or HTTP/2/3; the related client lacks redirects and client mTLS. Local tests do not close broader compatibility. |
+| Native Server | PARTIALLY_IMPLEMENTED | CLI routed Fiber handlers, TLS/mTLS, bounded input/output streams and four-worker checks. [Evidence](SERVER.md). | Retained GCC/poll/TLS slow-input reset and initial SQL-handler disconnect are unexplained; deployment/protocol acceptance and the all-cases Go performance target remain open. |
+| HTTP Client | PARTIALLY_IMPLEMENTED | curl multi, buffered HTTP/2, HTTP/1.1 streams, multiple-file MIME, atomic downloads and Basic proxies. [Evidence](HTTP_ENGINEERING.md), [HTTP/2](HTTP2_CLIENT.md). | HTTP/2 streaming and HTTP/3 are not certified; broader proxy/protocol coverage remains open. The original full nested-proxy Valgrind deadline failure is retained. |
+| Hyper HTTP Client | PARTIALLY_IMPLEMENTED | Bounded methods/headers/bodies, verified HTTPS, gzip/deflate and bounded response/upload streams. [Evidence](HYPER_REQUESTS.md), [streams](HTTP_STREAMING.md). | Redirects, proxies, client mTLS, Brotli/zstd and HTTP/2/3 remain unavailable. Passing the supported subset does not establish client completion. |
+| Broad HTTP Protocol/Proxy Certification | PARTIALLY_IMPLEMENTED | Local independent HTTP/1.1, buffered HTTP/2, forward/CONNECT, separate proxy TLS trust and Basic authentication. [Evidence](PROXY_AUTHENTICATION.md). | Digest/NTLM/Negotiate, SOCKS, HTTP/3 and broader remote proxy/platform matrices are unverified or unavailable. |
+| PostgreSQL | PARTIALLY_IMPLEMENTED | Nonblocking libpq, callback transactions, bounded results/notifications, prepared cache, TLS/mTLS and path ownership. [Evidence](DATABASE_COMPATIBILITY.md), [mTLS](POSTGRESQL_MTLS.md). | Remote cancellation acknowledgement and broader remote/rotation acceptance remain open. Preserve the upstream 109-byte TLS-unload finding and the unattributed Native Server pending-query failure. |
+| MySQL / MariaDB | PARTIALLY_IMPLEMENTED | Connector/C async state machine, bound statements, callback transactions/pools and IP-SAN TLS/mTLS; Oracle 8.4.13 and MariaDB 11.8.9 tested separately. [Evidence](MYSQL_COMPATIBILITY.md). | DNS/SNI TLS is unsupported; broader versions/authentication, prepared-cache APIs and cancellation certification remain incomplete. |
+| Redis | PARTIALLY_IMPLEMENTED | Nonblocking TCP/TLS, ACL, RESP2/RESP3 replies/pipelines, Pub/Sub and bounded push notification ownership. [Evidence](REDIS_NOTIFICATIONS.md). | Attributes, streaming aggregates, Cluster/Sentinel and an idle notification pump remain unavailable; broader compatibility remains open. |
+| Native Filesystem | PARTIALLY_IMPLEMENTED | Four bounded pthread workers, Files/File lifetime, filename admission, streams, partial operations and atomic visibility/sync. [Evidence](FILESYSTEM.md). | Wider filesystem and crash-durability acceptance is incomplete. Atomic visibility and sync-call tests do not prove power-loss durability. io_uring remains outside this milestone, not a completion prerequisite. |
+| Memory Hardening | PARTIALLY_IMPLEMENTED | Managed allocation ledger, resource bounds, owner copy policies and scoped sanitizer/Valgrind controls. [Evidence](NATIVE_OWNERSHIP_AUDIT.md), [findings](DEPENDENCY_FINDINGS.md). | Retained memory and shutdown findings are not all resolved; foreign-buffer containment and wider lifecycle coverage remain incomplete. A managed ledger and scoped clean runs are not complete memory certification. |
+
+Detailed capability evidence is in [PRIORITY_CAPABILITIES.md](PRIORITY_CAPABILITIES.md);
+the [Arabic priority report](../dos/PRIORITY.md) mirrors these overall statuses.
+The latest independently built source package has 707 verified files and 29
+passing build/test commands: [attestation](phase7/proxy-services-package.json).
+Those passes do not close the outstanding work above. PostgreSQL and memory
+findings retain their exact attribution; this table does not relabel an upstream
+finding as an Asyncara defect.
 
 ## Development priority (2026-11-11)
 
@@ -29,6 +49,14 @@ requires correction. Existing FPM results and historical failures keep their
 original status. This priority decision is not a claim of new compatibility or
 production readiness.
 
+
+## Historical implementation and validation records
+
+The records below retain their original source identities, measurements and
+failures. Older statements such as Hyper lacking DNS/TLS or PostgreSQL lacking
+a prepared cache describe their dated checkpoints; later implementations have
+scoped evidence. Remaining entity-level gaps are summarized in the current
+table above. No old PASS or FAIL is upgraded by this documentation correction.
 
 ## Verified SQL TLS filename ownership (2026-11-11)
 

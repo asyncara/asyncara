@@ -1,23 +1,18 @@
 # Current isolated HTTP development state
 
-Latest priority source package:707 verified files, fresh Rust/C build and29
-commands PASS; [current scope](PRIORITY_CAPABILITIES.md) and
-[package attestation](phase7/proxy-services-package.json). Historical failures
-remain separate; broad protocol certification remains partial.
+## Current overall priority status (2026-11-12)
 
-## Current priority contracts (2026-11-11)
+[ROADMAP.md](ROADMAP.md#current-priority-status) is the canonical overall-status
+reference. All ten requested priority entities remain **PARTIALLY_IMPLEMENTED**.
+The earlier nine-complete summary incorrectly elevated tested subsets into
+entity-level completion and is withdrawn. [Capability evidence](PRIORITY_CAPABILITIES.md)
+and the [Arabic report](../dos/PRIORITY.md) now separate these two levels.
 
-[Priority capability matrix](PRIORITY_CAPABILITIES.md) is the current lookup for
-Rust Hyper, Native Server, both HTTP clients, HTTP/proxy certification, SQL, Redis,
-filesystem and managed-memory hardening. It defines each tested API contract and
-keeps broader unsupported certification separate from implementation status.
-Historical tables below retain their original source/date.
-
-The new native continuation adds [bounded Basic proxy authentication](PROXY_AUTHENTICATION.md)
-and repairs reproduced native/root-callback trace disclosure and pre-runtime
-connection-pool configuration. Final service/memory/regression evidence is
-recorded in that continuation; no universal protocol or memory guarantee and
-no production release promotion is made.
+The 707-file source package, independent build and 29 passing commands retain
+their original [attestation](phase7/proxy-services-package.json). Those results
+and the dated entries below establish only their stated scopes. No runtime or
+test changed in this correction; no remaining gap was closed. Release remains
+**EXPERIMENTAL**, and all historical failures are preserved.
 
 ## Development priority (2026-11-11)
 
