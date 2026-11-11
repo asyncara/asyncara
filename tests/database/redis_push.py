@@ -3,7 +3,8 @@
 import argparse,hashlib,importlib.util,json,os,pathlib,secrets,socket,subprocess,sys,time,traceback
 p=argparse.ArgumentParser()
 for key in ['php','module','out']:p.add_argument('--'+key,required=True)
-p.add_argument('--backend',choices=['epoll','poll'],required=True);p.add_argument('--fpm');a=p.parse_args()
+p.add_argument('--backend',choices=['epoll','poll'],required=True);p.add_argument('--fpm');p.add_argument('--trust-paths',action='store_true');a=p.parse_args()
+if a.fpm and a.trust_paths:p.error('--trust-paths and --fpm are separate scopes')
 r=pathlib.Path(__file__).resolve().parents[2];o=pathlib.Path(a.out).resolve();o.mkdir(parents=True,exist_ok=False,mode=0o700)
 sys.path.insert(0,str(r/'tests/server'));from tls import certificates
 certs=certificates(o);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();rows=[];child=None;start=time.monotonic()
@@ -27,7 +28,16 @@ try:
    if time.monotonic()>deadline:raise
    time.sleep(.01)
  for secured in [False,True]:
+  if a.trust_paths and not secured:continue
   name='tls'if secured else'plain';config=o/(name+'.json');config.write_text(json.dumps({'port':tls if secured else plain,'tls':secured,'password':password,'ca':str(certs/'ca.pem'),'backend':a.backend}));config.chmod(0o600)
+  if a.trust_paths:
+   wrong=o/'wrong-trust';wrong.mkdir();(wrong/'ca.pem').write_bytes((certs/'wrong.pem').read_bytes());allowed=o/'allowed';allowed.mkdir()
+   values=json.loads(config.read_text());(allowed/'linked-ca.pem').symlink_to(certs/'ca.pem');values.update(wrongDirectory=str(wrong),allowedDirectory=str(allowed));config.write_text(json.dumps(values))
+   for mode in ['native-input','native-warning','tcp-relative','redis-relative','tcp-absolute','redis-absolute','tcp-basedir','redis-basedir','tcp-late-basedir','redis-late-basedir','tcp-symlink-basedir','redis-symlink-basedir','tcp-dot-basedir','redis-dot-basedir']:
+    cmd=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(r/'tests/database/redis_tls_paths.php'),str(config),mode];began=time.monotonic()
+    with(o/(mode+'.log')).open('x')as log:result=subprocess.run(cmd,env=os.environ|{'ASYNCARA_BACKEND':a.backend},stdout=log,stderr=log,timeout=60)
+    rows.append({'name':mode,'command':cmd,'exit':result.returncode,'seconds':time.monotonic()-began,'logSha256':sha(o/(mode+'.log'))});assert result.returncode==0,mode
+   continue
   if a.fpm:
    folder=o/(name+'-fpm');folder.mkdir();os.environ.update(ASYNCARA_FPM_DIR=str(folder),ASYNCARA_EXTENSION=str(pathlib.Path(a.module).resolve()),FPM_BIN=a.fpm)
    spec=importlib.util.spec_from_file_location('audit',r/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)

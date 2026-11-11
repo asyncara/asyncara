@@ -208,6 +208,47 @@ static bool capture_path(ar_engine *e, char **path) {
     }
     return true;
 }
+/* Explicit stream TLS trust names cross deferred PHP Tasks, DNS and socket
+ * waits. Capture PHP's virtual cwd and enforce its path policy before OpenSSL
+ * sees the name: SSL_CTX_load_verify_locations bypasses PHP stream wrappers.
+ * No native owner/engine allocation survives a warning, exception or bailout.
+ * This captures a name, not file contents or a race-free filesystem capability. */
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_tls_ca_path, 0, 1, IS_STRING, 0)
+ZEND_ARG_TYPE_INFO(0, path, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+PHP_FUNCTION(asyncara_tls_ca_path) {
+    zend_string *input;
+    ZEND_PARSE_PARAMETERS_START(1, 1)
+    Z_PARAM_PATH_STR(input)
+    ZEND_PARSE_PARAMETERS_END();
+    size_t length = ZSTR_LEN(input);
+    const char *name = ZSTR_VAL(input);
+    char path[MAXPATHLEN];
+    if (!length || length >= sizeof(path) || strpbrk(name, "\r\n") || strstr(name, "://")) {
+        zend_value_error("TLS CA file must be a bounded nonempty local path");
+        RETURN_THROWS();
+    }
+    if (name[0] == '/') {
+        memcpy(path, name, length + 1);
+    } else {
+        if (!VCWD_GETCWD(path, sizeof(path))) {
+            zend_throw_exception(zend_ce_exception, "Cannot capture TLS CA working directory", 0);
+            RETURN_THROWS();
+        }
+        size_t cwd_length = strlen(path);
+        if (cwd_length > sizeof(path) - 2 || length > sizeof(path) - cwd_length - 2) {
+            zend_value_error("TLS CA path is too long");
+            RETURN_THROWS();
+        }
+        path[cwd_length] = '/';
+        memcpy(path + cwd_length + 1, name, length + 1);
+    }
+    if (php_check_open_basedir(path)) {
+        if (!EG(exception)) zend_value_error("TLS CA path violates open_basedir");
+        RETURN_THROWS();
+    }
+    RETURN_STRING(path);
+}
 /* Common buffered options need no heap tree: curl consumes this bounded view
  * synchronously and copies option strings. Never attach it to a request-owned
  * job across a Zend call, return, suspension, or worker submission. Complex
@@ -1242,6 +1283,7 @@ static void execute_hook(zend_execute_data *execute_data, zval *return_value) {
 #include "mysql.c"
 #endif
 static const zend_function_entry functions[] = {
+    PHP_FE(asyncara_tls_ca_path, arginfo_tls_ca_path)
     PHP_FE(asyncara_udp_bind, arginfo_udp_bind)
     PHP_FE(asyncara_http_headers, arginfo_http_headers)
     PHP_FE(asyncara_http_read, arginfo_http_read)
