@@ -11,9 +11,17 @@ typedef struct {
     PGconn *conn;
     PGresult *result;
     PGnotify *notification;
+    char *tls_paths[3];
+    bool connecting;
     bool pending;
 } asyncara_pg;
 static int pg_resource_type;
+static void pg_release_tls_paths(asyncara_pg *p) {
+    for (size_t i = 0; i < 3; i++) {
+        if (p->tls_paths[i]) efree(p->tls_paths[i]);
+        p->tls_paths[i] = NULL;
+    }
+}
 static void pg_close_handle(asyncara_pg *p) {
     if (p->result) PQclear(p->result);
     if (p->notification) PQfreemem(p->notification);
@@ -22,6 +30,8 @@ static void pg_close_handle(asyncara_pg *p) {
     if (p->conn)
         PQfinish(p->conn);
     p->conn = NULL;
+    p->connecting = false;
+    pg_release_tls_paths(p);
 }
 static void pg_destroy(zend_resource *resource) {
     asyncara_pg *p = resource->ptr;
@@ -145,6 +155,10 @@ PHP_FUNCTION(asyncara_pg_open) {
     asyncara_pg *p = ecalloc(1, sizeof(*p));
     /* Register before acquiring foreign allocations: Zend may bail out later. */
     zend_resource *resource = zend_register_resource(p, pg_resource_type);
+    /* Request-owned names survive connectPoll suspension. A partial Zend
+     * allocation bailout leaves every completed copy in this resource. */
+    for (size_t i = 0; i < path_count; i++) p->tls_paths[i] = estrdup(tls_paths[i]);
+    p->connecting = true;
     p->conn = PQconnectStartParams(keys, values, 0);
     if (!p->conn || PQstatus(p->conn) == CONNECTION_BAD) {
         if (p->conn) {
@@ -162,14 +176,28 @@ PHP_FUNCTION(asyncara_pg_poll) {
     asyncara_pg *p = pg_fetch(z);
     if (!p)
         RETURN_THROWS();
+    /* TLS files may be opened by a later poll, after another Task tightened
+     * the request's path policy. Do not advance libpq past that boundary. */
+    if (p->connecting) {
+        for (size_t i = 0; i < 3; i++) {
+            if (p->tls_paths[i] && php_check_open_basedir(p->tls_paths[i])) {
+                if (!EG(exception)) zend_value_error("PostgreSQL TLS path violates open_basedir");
+                RETURN_THROWS();
+            }
+        }
+    }
     PostgresPollingStatusType status = PQconnectPoll(p->conn);
     if (status == PGRES_POLLING_FAILED) {
         pg_error(p);
         RETURN_THROWS();
     }
-    if (status == PGRES_POLLING_OK && PQsetnonblocking(p->conn, 1)) {
-        pg_error(p);
-        RETURN_THROWS();
+    if (status == PGRES_POLLING_OK) {
+        p->connecting = false;
+        pg_release_tls_paths(p);
+        if (PQsetnonblocking(p->conn, 1)) {
+            pg_error(p);
+            RETURN_THROWS();
+        }
     }
     array_init(return_value);
     add_assoc_long(return_value, "status", status);
