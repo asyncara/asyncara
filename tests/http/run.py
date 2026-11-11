@@ -54,6 +54,7 @@ def run(name, cmd, env=None, timeout=120):
     if code:
         raise SystemExit(1)
 
+run('https-proxy-buffered-readiness', ['python3', 'tests/http/test_https_proxy_io.py'])
 run('capacity-peer-shutdown', ['python3', 'tests/http/peer_shutdown.py', 'tests/http/capacity_server.py'])
 
 if not a.php_only:

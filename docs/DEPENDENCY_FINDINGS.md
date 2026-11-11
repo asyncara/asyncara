@@ -421,3 +421,18 @@ No additional invalid access appears in these scoped checks; this is not proof
 that every allocation path is leak-free. The distribution-PHP/fatal-cycle reports
 are separate. Earlier r1/r2 memcheck header log collisions are retained and
 replaced with distinct raw logs r3/r4; the no-PHP r2 log was unaffected.
+
+## HTTP/2 reuse and instrumented nested-TLS deadline (2026-11-11)
+
+Native `acda044` repairs an Asyncara cache assumption exposed by libcurl8.5.0:
+a successful multiplexed transfer can retain its receive buffer after easy_reset.
+The detached handle must accept a public default-buffer reset before reuse;
+otherwise it is disposed while the multi-owned connection stays available.
+This is not the historical chunked-trailer allocation finding.
+
+An independent no-PHP/no-Asyncara libcurl control also reproduces a5s nested-TLS
+large-transfer timeout under Valgrind, with6.170s of measured process CPU.
+Normal control reaches16MiB; instrumented proxy control times out after10MiB.
+Raw memory checks report no errors/loss, but the original full functional
+Valgrind proxy gate remains FAIL; deadlines and bounds were not weakened.
+[Exact source, controls and limitations](HTTP2_CLIENT.md).
