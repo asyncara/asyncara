@@ -2676,3 +2676,7 @@ The existing client had no proxyCaFile public option; preservedbefore-r1FAIL unk
 ### HTTPS proxy request-lifecycle verification preparation
 
 Native checkpoint `2a5224f` passes the five-build epoll/poll matrix (35 commands). First private HTTPS-proxy FPM run passes 20 sequential and 40 four-worker requests, minimum 38/43 pending-I/O ticks, and idle six descriptors/one thread. Add the same workload to CI, snapshot source/test identities, and reject empty/NUL/CRLF proxy trust paths. Final regression and memory validation remain pending; no broad protocol certification claim.
+
+### Verified HTTPS proxy checkpoint (2026-11-11)
+
+Native2a5224f/testf6fb750: five-build35-command matrix PASS; ordinary-unload DEBUG Valgrind epoll/poll zero errors/loss,3888 reachable. GateA47 PASS190.670s, full85 both PASS, HTTP90 PASS153.722s. Two private-proxy FPM cases PASS120 main/480 HTTP, original overlap/two-tick assertions and fatal pending cleanup retained. Independent raw response/RSS/idle recomputation passes. C-only build and both proxy suites PASS. Evidence `docs/phase7/https-proxy.json`; no new protocol-wide, performance or endurance claim. Next: independent buffered HTTP/2/multiplex certification using pinned hyper-h2 peer; archive independent build follows final test checkpoint.

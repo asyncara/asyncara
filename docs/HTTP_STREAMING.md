@@ -344,3 +344,14 @@ both backends and private-CA FPM. Filename capture is not a content/symlink
 snapshot or atomic sandbox. Curl trust-file/crypto work remains library-owned;
 Hyper retains bounded worker reads and its per-client trust byte cache. Workers
 join at request shutdown, not immediately when a completed file Future is freed.
+
+## Separate HTTPS proxy trust (2026-11-11)
+
+The curl client accepts optional `proxyCaFile` with an explicit HTTPS proxy.
+Proxy and origin certificate/hostname verification remain independent and enabled.
+Both explicit trust filenames have owned absolute-path snapshots and native
+open_basedir admission checks. No certificate-content/symlink snapshot or atomic
+filesystem sandbox is promised. The existing network event loop, upload/file
+workers, buffer bounds and cancellation owners are unchanged.
+[Exact API, tested configurations, memory and FPM evidence](HTTPS_PROXY.md).
+The optional Hyper transport still rejects proxies.

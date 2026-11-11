@@ -1,5 +1,16 @@
 # Implementation status
 
+## Verified HTTPS proxy continuation (2026-11-11)
+
+Native `2a5224f` adds independent `proxyCaFile` trust to the existing curl multi
+client. Verified HTTP/1.1 forward/CONNECT, TLS identity rejection, streaming,
+uploads, cancellation and request cleanup are IMPLEMENTED_AND_TESTED in the
+[documented scope](HTTPS_PROXY.md). PHP83/84/85, DEBUG/GCC, epoll/poll, ordinary
+DEBUG Valgrind, Gate A, full PHP85/HTTP and four-worker FPM checks pass.
+Hyper proxies, HTTP/2/3 proxy certification, proxy authentication and SOCKS remain
+outside this result. Historical failures remain preserved; EXPERIMENTAL stays.
+
+
 ## HTTP trust-path repair (2026-11-11)
 
 Native `30bdea1` fixes a reproduced deferred relative-CA lookup defect on both
