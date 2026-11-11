@@ -117,6 +117,7 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-stock-databases.log ./scripts/test-databases.py
       - name: Deferred file paths and staged-owner request cleanup
         run: |
+          python3 tests/filesystem_paths_fpm_check.py
           for backend in epoll poll; do
             python3 tests/filesystem_paths_fpm.py --module build/asyncara.so --fpm php-fpm8.5 --backend "$backend" --out build/filesystem-paths-fpm/"$backend"
           done
