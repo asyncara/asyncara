@@ -305,7 +305,7 @@ static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
         return false;
     bool files = false, multipart = false, legacy_file = false, upload = false;
-    bool proxy_ca = false;
+    bool proxy_ca = false, proxy_user = false, proxy_password = false;
     const char *proxy = NULL;
     int64_t upload_size = -1;
     for (size_t i = 0; i < v->count; i++) {
@@ -320,6 +320,14 @@ static bool valid_http_options(ar_value *v) {
             if (x->type != V_INT || x->integer < 1 || x->integer > 3600000) return false;
         } else if (!strcmp(key, "caPem")) {
             if (x->type != V_STRING || !x->length || x->length > 1048576 || memchr(x->string, 0, x->length)) return false;
+        } else if (!strcmp(key, "proxyUsername") || !strcmp(key, "proxyPassword")) {
+            bool username = !strcmp(key, "proxyUsername");
+            if (x->type != V_STRING || x->length > 4096 || (username && !x->length)) return false;
+            for (size_t c = 0; c < x->length; c++) {
+                unsigned char ch = (unsigned char)x->string[c];
+                if (ch < 32 || ch > 126 || (username && ch == ':')) return false;
+            }
+            if (username) proxy_user = true; else proxy_password = true;
         } else if (!strcmp(key, "resolvedAddresses")) {
             if (x->type != V_ARRAY || !x->count || x->count > 16) return false;
             for (size_t n = 0; n < x->count; n++) {
@@ -381,6 +389,17 @@ static bool valid_http_options(ar_value *v) {
     /* Explicit proxy trust must not silently accompany a plaintext proxy or
      * depend on a later environment change choosing the intended endpoint. */
     if (proxy_ca && (!proxy || strncasecmp(proxy, "https://", 8))) return false;
+    if (proxy_user != proxy_password || (proxy_user && (!proxy || strchr(proxy, '@') ||
+        (strncasecmp(proxy, "http://", 7) && strncasecmp(proxy, "https://", 8))))) return false;
+    if (proxy_user) for (size_t i = 0; i < v->count; i++) {
+        if (strcmp(v->keys[i], "headers")) continue;
+        ar_value *headers = v->items[i];
+        for (size_t h = 0; h < headers->count; h++) {
+            ar_value *s = headers->items[h];
+            if (s->length >= 19 && !strncasecmp(s->string, "Proxy-Authorization", 19) &&
+                (s->length == 19 || strchr(":; \t", s->string[19]))) return false;
+        }
+    }
     /* Multiple files use one sequential unknown-length producer. Do not
      * silently ignore file descriptors without the matching MIME/upload mode. */
     return !files || (multipart && upload && upload_size == -1 && !legacy_file);
@@ -1352,6 +1371,11 @@ PHP_MINIT_FUNCTION(asyncara) {
         "asyncara_server_listen", sizeof("asyncara_server_listen") - 1),
         9, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
 #endif
+    /* Submission options can include HTTP proxy credentials or application
+     * bodies. Redact the complete argument array, also on validation failure. */
+    zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table),
+        "asyncara_submit", sizeof("asyncara_submit") - 1),
+        1, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
     /* Connection options contain credentials. PHP must redact them even when
      * native validation fails before a resource is returned to userland. */
 #ifdef HAVE_ASYNCARA_PQ

@@ -18,11 +18,13 @@ p.add_argument('--module', required=True)
 p.add_argument('--backend', choices=['epoll', 'poll'], required=True)
 p.add_argument('--out', type=Path, required=True)
 p.add_argument('--probe', action='store_true')
+p.add_argument('--server', action='store_true', help='Native Server SQL/HTTP/filesystem lifecycle integration')
 p.add_argument('--paths', nargs='*', choices=['relative','invalid','policy','late-policy','native-policy-ca','native-policy-cert','native-policy-key'], help='Run TLS filename ownership controls instead of authentication cases')
 p.add_argument('--fpm', type=Path, help='Additional existing one/four-worker prepared-query lifecycle fixture')
 a = p.parse_args()
 if a.fpm and a.probe: p.error('--fpm and --probe are separate runs')
 if a.paths is not None and (a.fpm or a.probe): p.error('--paths is a separate run')
+if a.server and (a.fpm or a.probe or a.paths is not None):p.error('--server is a separate run')
 root = Path(__file__).resolve().parents[2]
 out = a.out.resolve(); out.mkdir(parents=True, exist_ok=False, mode=0o700)
 pg = Path(os.environ.get('POSTGRES_BIN', '/usr/lib/postgresql/16/bin'))
@@ -82,6 +84,7 @@ try:
     cmd=[a.php,'-n','-d','extension='+str(module),'-d','zend.exception_ignore_args=0',str(root/'tests/database/mtls_pg.php')]+(['probe'] if a.probe else [])
     if a.paths is not None:
         cmd=['python3',str(root/'tests/database/sql_tls_paths.py'),'--php',a.php,'--module',str(module),'--out',str(out/'paths')]+(['--modes',*a.paths] if a.paths else [])
+    if a.server:cmd=['python3',str(root/'tests/database/native_server.py'),'--php',a.php,'--module',str(module),'--out',str(out/'native-server')]
     env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_PG_MTLS_FIXTURE':str(out/'fixture.json')}
     with (out/'php.log').open('x') as log:
         child=subprocess.Popen(cmd,cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=log)

@@ -85,6 +85,10 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
+    for mode in (['cli', 'server'] if a.hyper else ['cli']):
+        run(backend + '-proxy-auth-' + mode, ['python3', 'tests/http/proxy_auth.py',
+            '--php', a.php, '--module', module, '--backend', backend,
+            '--out', out / (backend + '-proxy-auth-' + mode)] + (['--server'] if mode == 'server' else []), env)
     run(backend + '-https-proxy', ['python3', 'tests/http/https_proxy.py',
         '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-https-proxy')], env)
     for transport in (['curl-multi', 'hyper-prototype'] if a.hyper else ['curl-multi']):

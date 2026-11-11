@@ -16,7 +16,9 @@ final class ConnectionPool
     {
         if ($size < 1 || $size > 256) throw new \ValueError('Pool size must be 1..256');
         if ($pendingLimit < 0 || $pendingLimit > 100000) throw new \ValueError('Pool pendingLimit must be 0..100000');
-        $this->idle = new Queue($size); for ($i = 0; $i < $size; $i++) $this->idle->put(null);
+        // Configuration creates vacant slots, never native connections or a
+        // waiting producer. It is valid before App::listen()/Async::run().
+        $this->idle = new Queue($size); for ($i = 0; $i < $size; $i++) $this->idle->tryPut(null);
     }
     public function withConnection(callable $body): mixed
     {

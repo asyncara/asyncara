@@ -43,6 +43,8 @@ php=[a.php,'-n','-d','extension='+str(module)]
 run('diagnostics',['python3','tests/diagnostics/run.py','--php',a.php,'--extension',module,'--output',out/'diagnostics'])
 run('php-identity',php+['-v'])
 run('extension-identity',php+['--ri','asyncara'])
+run('root-callback-traces',php+['tests/server/callback_traces.php'])
+run('pool-configuration',php+['tests/pool_configuration.php'])
 for backend in ['epoll','poll']:
  env={'ASYNCARA_BACKEND':backend}
  for seed in a.seeds:

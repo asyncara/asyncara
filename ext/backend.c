@@ -372,6 +372,9 @@ void ar_http_start(ar_engine *e, ar_job *j) {
     SET(CURLOPT_NOSIGNAL, 1L);
     SET(CURLOPT_SSL_VERIFYPEER, 1L);
     SET(CURLOPT_SSL_VERIFYHOST, 2L);
+    /* Origin headers must never be copied to CONNECT. Authentication uses
+     * curl's proxy credential options, not an origin Authorization header. */
+    SET(CURLOPT_HEADEROPT, (long)CURLHEADER_SEPARATE);
     SET(CURLOPT_FOLLOWLOCATION, 0L);
     SET(CURLOPT_MAXREDIRS, 5L);
     SET(CURLOPT_CONNECTTIMEOUT_MS, 10000L);
@@ -422,6 +425,11 @@ void ar_http_start(ar_engine *e, ar_job *j) {
                 SET(CURLOPT_NOPROXY, "");
                 SET(CURLOPT_PROXY_SSL_VERIFYPEER, 1L);
                 SET(CURLOPT_PROXY_SSL_VERIFYHOST, 2L);
+            } else if (!strcmp(key, "proxyUsername")) {
+                SET(CURLOPT_PROXYAUTH, (long)CURLAUTH_BASIC);
+                SET(CURLOPT_PROXYUSERNAME, v->string);
+            } else if (!strcmp(key, "proxyPassword")) {
+                SET(CURLOPT_PROXYPASSWORD, v->string);
             } else if (!strcmp(key, "caPem")) {
                 snprintf(j->error, sizeof(j->error), "caPem is internal to the Hyper backend"); ar_done(e, j); return;
             } else if (!strcmp(key, "caFile")) {

@@ -10,7 +10,7 @@ function reject(callable $f,string $type=OperationException::class,?string $cont
 $checks=[];$ticks=0;$streamIds=[];
 Runtime::configure(['httpMaxHostConnections'=>1,'httpMaxConnections'=>4]);
 Async::run(function()use($config,&$checks,&$ticks,&$streamIds):void{
-    $url=$config['url'];$client=new HttpClient(concurrency:8,timeout:5,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null);
+    $url=$config['url'];$client=new HttpClient(concurrency:8,timeout:5,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null,proxyCredentials:$config['proxyCredentials']??null);
     $warm=$client->get($url.'/ok')->await();verify($warm->headers['x-test-protocol']===['h2'],'Actual HTTP/2 peer');
     verify($warm->headers['x-repeat']===['one','two'],'Repeated HTTP/2 headers');$connection=$warm->headers['x-test-connection'];
     $held=[];for($n=0;$n<4;$n++)$held[]=$client->get($url.'/hold/shared');
@@ -32,7 +32,7 @@ Async::run(function()use($config,&$checks,&$ticks,&$streamIds):void{
         reject(fn()=>$client->get($url.'/'.$path)->await(),contains:match($path){'header-limit'=>'HTTP header limit exceeded','oversize'=>'HTTP body limit exceeded',default=>null});verify(!$sibling->isCompleted(),'Failure affected independent held stream');
         $client->get($url.'/release/'.$path)->await();verify($sibling->await()->body==='released','Sibling lost after '.$path);$checks[]=$path.'_rejected_sibling_survives';
     }
-    $timed=new HttpClient(concurrency:2,timeout:.2,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null);
+    $timed=new HttpClient(concurrency:2,timeout:.2,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null,proxyCredentials:$config['proxyCredentials']??null);
     $deadline=$timed->get($url.'/hold/deadline');
     Async::timeout(2,function()use($client,$url):void{while($client->get($url.'/state/deadline')->await()->json()['held']!==1)Async::sleep(0);});
     reject($deadline->await(...),contains:'Timeout');$checks[]='pending_stream_deadline';
