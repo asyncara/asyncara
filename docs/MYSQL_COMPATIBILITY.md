@@ -80,3 +80,11 @@ The same explicit transport selection applies to3.4.10: `tls: false` (and defaul
 Unix sockets) selects plaintext, whereas default TCP / `tls: true` sets both
 TLS and verification true and installs the strict identity callback. Combining
 a CA with `tls: false` is rejected. There is no TLS-without-verification mode.
+
+## Explicit client certificates and encrypted keys
+
+See [MYSQL_MTLS.md](MYSQL_MTLS.md) for implemented/tested certFile/keyFile/
+keyPassword on strict3.4.10, separate Oracle/MariaDB authentication controls,
+FPM cleanup and unsuppressed memory results. The later3.3.17 control separately
+passes ordinary Unix integration against both servers while still rejecting TLS.
+Historical3.3 results above are unchanged.

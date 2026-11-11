@@ -342,3 +342,18 @@ public and provides no secret-memory erasure. Keys/trust load synchronously insi
 libpq. Tests reject untrusted clients, wrong identities, mismatched/absent keys,
 wrong/missing passwords and downgrade. [Evidence](POSTGRESQL_MTLS.md). Ordinary
 unload remains FAIL109bytes, independently reproduced without PHP/Asyncara.
+
+## MySQL/MariaDB client TLS ownership (2026-11-11)
+
+Native `94614a6` owns all nine copied option strings until connection resource
+release; Connector/C owns separate library copies. certFile/keyFile must be
+paired and keyPassword requires the pair. Strict verified TCP/IP-SAN checks and
+PHP open_basedir prechecks apply; no interactive key prompt is permitted.
+Trust-file reads and cryptography remain synchronous, external allocations are
+not covered by the native ledger, and prechecks are not an atomic filesystem
+sandbox. Local cancellation closes the connection without claiming remote query
+acknowledgement. Shared-waiter cancellation leaves the owner query pending.
+Tests hold a server lock until two timers dispatch, then inspect result/connection
+cleanup and independent server sessions. [Exact evidence](MYSQL_MTLS.md) includes
+four ordinary-unload DEBUG Valgrind controls with zero lost bytes, separately
+from unresolved PostgreSQL/library and distribution-PHP findings.

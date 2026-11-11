@@ -1,5 +1,16 @@
 # Implementation status
 
+## Connector/C verified client TLS continuation (2026-11-11)
+
+Paired certFile/keyFile and optional encrypted-key password are
+IMPLEMENTED_AND_TESTED through the existing native start/continue driver.
+MariaDB11.8.9 and Oracle MySQL8.4.13 have independent private-CA/authentication,
+PHP83/84/85 epoll/poll, DEBUG, GCC, Valgrind and short FPM evidence. Native
+checkpoint `94614a6`; [exact scope and results](MYSQL_MTLS.md). Stock3.3.17
+rejects unsupported TLS explicitly. No DNS/SNI, WAN, rotation, broader version,
+prepared-cache or server cancellation acknowledgement claim is added.
+Other priority gaps remain open; release stays EXPERIMENTAL.
+
 ## PostgreSQL verified client TLS continuation (2026-11-11)
 
 The explicit sslcert/sslkey/sslpassword API is IMPLEMENTED_AND_TESTED against

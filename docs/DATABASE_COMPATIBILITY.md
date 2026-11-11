@@ -10,8 +10,10 @@ PostgreSQL now exposes paired sslcert/sslkey and optional nonempty sslpassword
 with verify-full, TCP and a per-connection noninteractive policy. Local private-CA
 certificate authentication and encrypted keys are tested; see
 [POSTGRESQL_MTLS.md](POSTGRESQL_MTLS.md). This does not certify implicit libpq
-environment/default files. Connector/C client certificate options remain an
-implementation gap at this checkpoint. No verification option was disabled.
+environment/default files. Connector/C now exposes paired certFile/keyFile and
+optional keyPassword; independently tested issuer/subject-required accounts and
+encrypted keys are detailed in [MYSQL_MTLS.md](MYSQL_MTLS.md). No verification
+option was disabled.
 
 | Driver / server | Backend | Verified authentication / TLS | Cancellation |
 |---|---|---|---|
@@ -67,7 +69,7 @@ an additional diagnostic run; that run does not repair or erase the finding.
 
 Remaining: real remote deployment certification, PostgreSQL acknowledged
 cancellation, broader Oracle/MariaDB versions, certificate
-rotation and MySQL/MariaDB mTLS, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
+rotation, broader MySQL/MariaDB mTLS deployments, server-disconnect fault matrix, Redis arbitrary pushes/attributes,
 streaming aggregates, cluster/sentinel and complete notification buffering policy.
 
 The 2026-11-10 continuation adds an opt-in bounded PostgreSQL server-preparation

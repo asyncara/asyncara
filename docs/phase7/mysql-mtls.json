@@ -1,0 +1,1351 @@
+{
+  "nativeCommit": "94614a68b73226d39b97b2638b9cff45af3b5319",
+  "status": "IMPLEMENTED_AND_TESTED",
+  "release": "EXPERIMENTAL",
+  "scope": "Verified TCP client certificates on separate MariaDB11.8.9/mysql_native_password and Oracle8.4.13/caching_sha2_password, Connector/C3.4.10, numeric-IP SAN; not broad server certification",
+  "reports": [
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-before-r1/report.json",
+      "sha256": "36d64dfa214474bbff430adeeb8434619efe86488c8a1f45941c17bc71a0eea9",
+      "originalStatus": "EXPECTED_FAILURES_REPRODUCED",
+      "commands": [
+        {
+          "name": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "expected": 0,
+          "seconds": 6.9814000418409705,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "name": "maria",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--probe",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-before.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-before-r1/maria"
+          ],
+          "exit": 1,
+          "expected": 1,
+          "seconds": 5.310756498016417,
+          "logSha256": "8d89e880dbce68da3dc903428b37103fdca92b4c5f91d87bc6a5ef918f78b187"
+        },
+        {
+          "name": "oracle",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--probe",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-before.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-before-r1/oracle",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 1,
+          "expected": 1,
+          "seconds": 16.38711216300726,
+          "logSha256": "913bf0040cd3c8e8526d5cfde6e9f5d4240c34bbc8fce70f39a32579de8ebd03"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-first-r1/report.json",
+      "sha256": "d31ced8af52fc80106fd5d378a952fb8703d1116d3bb12dac345db198327e9f7",
+      "originalStatus": "PASS",
+      "commands": [
+        {
+          "name": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "expected": 0,
+          "seconds": 6.889401077060029,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "name": "maria",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-first.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-first-r1/maria"
+          ],
+          "exit": 0,
+          "expected": 0,
+          "seconds": 6.655611109221354,
+          "logSha256": "08c89c59cecf83b6952a7645c32cf43e79cb3a4e08244878e229f800d2b1db0a"
+        },
+        {
+          "name": "oracle",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-first.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-first-r1/oracle",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "expected": 0,
+          "seconds": 16.61274201516062,
+          "logSha256": "36186196f90af748b3f73d8c235bf6102bce9e541ac4108699cc865b9d23a3ff"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/report.json",
+      "sha256": "6cc214f01f1e41f88b5848b1e0ffb44a70f79d66a80ea08d994d4612db37fbf7",
+      "originalStatus": "PASS",
+      "commands": [
+        {
+          "php": "83",
+          "case": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 7.9629463229794055,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "php": "83",
+          "case": "epoll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+            "--module",
+            "build/priority-mysql-mtls-matrix-83.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/83-maria-epoll"
+          ],
+          "exit": 0,
+          "seconds": 6.989321394125,
+          "logSha256": "4e7953bcf3b1e7cf8d996f2ca6606f4a935443f6e1e835ae1ecdb4c9a1bc8089"
+        },
+        {
+          "php": "83",
+          "case": "epoll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+            "--module",
+            "build/priority-mysql-mtls-matrix-83.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/83-oracle-epoll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 30.360979825025424,
+          "logSha256": "79c8a173d1e3e60c94a9943f03a20fb2d12e8abcf1c770295a1734b9b0e425bd"
+        },
+        {
+          "php": "83",
+          "case": "poll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+            "--module",
+            "build/priority-mysql-mtls-matrix-83.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/83-maria-poll"
+          ],
+          "exit": 0,
+          "seconds": 9.305583010893315,
+          "logSha256": "2f38d13eb7793d827f8d8c32d3d8e8c192731b4e29fec4e7e6581e29a6c9a287"
+        },
+        {
+          "php": "83",
+          "case": "poll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+            "--module",
+            "build/priority-mysql-mtls-matrix-83.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/83-oracle-poll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 17.566707893041894,
+          "logSha256": "03901d0c501200b3a8994a861384f9ddb30114ac54411450617373c23def138d"
+        },
+        {
+          "php": "83",
+          "case": "credential-traces",
+          "command": [
+            "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-83.so",
+            "tests/database/credential_traces.php"
+          ],
+          "exit": 0,
+          "seconds": 0.06580177485011518,
+          "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+        },
+        {
+          "php": "84",
+          "case": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 7.28195087891072,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "php": "84",
+          "case": "epoll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+            "--module",
+            "build/priority-mysql-mtls-matrix-84.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/84-maria-epoll"
+          ],
+          "exit": 0,
+          "seconds": 10.20003470289521,
+          "logSha256": "1c655fb82234188b28966380ca8d33d0fe867e3dc6f24f43aa5a3b1a53a93a94"
+        },
+        {
+          "php": "84",
+          "case": "epoll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+            "--module",
+            "build/priority-mysql-mtls-matrix-84.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/84-oracle-epoll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 28.519406539853662,
+          "logSha256": "06c8e4afaa0228be2c51cfb280ff7f0e672e9562d4d984ca7a3a35cc1b296971"
+        },
+        {
+          "php": "84",
+          "case": "poll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+            "--module",
+            "build/priority-mysql-mtls-matrix-84.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/84-maria-poll"
+          ],
+          "exit": 0,
+          "seconds": 7.927831423934549,
+          "logSha256": "96042cd24604c4ee45bf9bfd5db4ac4d607d1e34003d4613a9a79e05335a27cc"
+        },
+        {
+          "php": "84",
+          "case": "poll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+            "--module",
+            "build/priority-mysql-mtls-matrix-84.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/84-oracle-poll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 21.40385070699267,
+          "logSha256": "b4c0336789b985c13bf32cff95c5fbe3f3de9f24df1608f4f6db3f3c95761fca"
+        },
+        {
+          "php": "84",
+          "case": "credential-traces",
+          "command": [
+            "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-84.so",
+            "tests/database/credential_traces.php"
+          ],
+          "exit": 0,
+          "seconds": 0.05099709890782833,
+          "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+        },
+        {
+          "php": "85",
+          "case": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 8.799662742065266,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "php": "85",
+          "case": "epoll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-maria-epoll"
+          ],
+          "exit": 0,
+          "seconds": 7.831517256097868,
+          "logSha256": "173ba094be8ce12457ffb088d8d30b03e992731e1c8b0cd28e202b2121348801"
+        },
+        {
+          "php": "85",
+          "case": "epoll-maria-mismatch",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-maria-epoll-mismatch",
+            "--mismatch"
+          ],
+          "exit": 0,
+          "seconds": 9.411791498074308,
+          "logSha256": "dbd0b3255142a5b6663dbb335f73fd94b61dcbb71024c63079595d87983b8dc3"
+        },
+        {
+          "php": "85",
+          "case": "epoll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-oracle-epoll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 20.470522670075297,
+          "logSha256": "2d18abb4a559093cda779815b6f607c1d5e55f1b7f22ca5028653831d7125796"
+        },
+        {
+          "php": "85",
+          "case": "epoll-oracle-mismatch",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-oracle-epoll-mismatch",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--mismatch"
+          ],
+          "exit": 0,
+          "seconds": 17.590307665988803,
+          "logSha256": "33f108eb4892e2a8d6df6e3286849724ddf750af10c0d9b00d8c96ec647e1aaf"
+        },
+        {
+          "php": "85",
+          "case": "poll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-maria-poll"
+          ],
+          "exit": 0,
+          "seconds": 8.696845378028229,
+          "logSha256": "2cf6dbd6e7ed0e00a2943dfbf3fb0fb363a7d75cadfbdca89196c0b94b716696"
+        },
+        {
+          "php": "85",
+          "case": "poll-maria-mismatch",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-maria-poll-mismatch",
+            "--mismatch"
+          ],
+          "exit": 0,
+          "seconds": 8.047585089923814,
+          "logSha256": "d103ed2ffff612deb24a6b1cd576599e7f901e5816fd8c200e508bacf61c678c"
+        },
+        {
+          "php": "85",
+          "case": "poll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-oracle-poll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 22.878798476187512,
+          "logSha256": "cc626b739e5301cee4035de3ace60a42b1598cc993612aaf474c748ccca20afe"
+        },
+        {
+          "php": "85",
+          "case": "poll-oracle-mismatch",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/85-oracle-poll-mismatch",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--mismatch"
+          ],
+          "exit": 0,
+          "seconds": 20.539855189155787,
+          "logSha256": "f0af3de8aaec6c12d608a0b1923c01149490b1ebb8d304e9cecbfd400b04186c"
+        },
+        {
+          "php": "85",
+          "case": "credential-traces",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-85.so",
+            "tests/database/credential_traces.php"
+          ],
+          "exit": 0,
+          "seconds": 0.06398941902443767,
+          "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+        },
+        {
+          "php": "debug",
+          "case": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 8.117571513168514,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "php": "debug",
+          "case": "epoll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/debug-maria-epoll"
+          ],
+          "exit": 0,
+          "seconds": 7.398867379873991,
+          "logSha256": "88f0e63ba2a4fe055c9ec10771580da67b738ffd8b4fcaa474cbd3d37a59cf51"
+        },
+        {
+          "php": "debug",
+          "case": "epoll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/debug-oracle-epoll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 27.389402110828087,
+          "logSha256": "8bb3b0ada30084e41c159cf022251b1e22e740496082ba6d37835343ae14e4da"
+        },
+        {
+          "php": "debug",
+          "case": "poll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/debug-maria-poll"
+          ],
+          "exit": 0,
+          "seconds": 8.488598935073242,
+          "logSha256": "2ddab968d5108de44a2faec31a64e268c5e1b2118d11825cd7410d79f8e3b1e6"
+        },
+        {
+          "php": "debug",
+          "case": "poll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/debug-oracle-poll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 24.904192184098065,
+          "logSha256": "67768101a9bfeedcf34028a485466aa417c3f29514c5d1adfb02559b638ad536"
+        },
+        {
+          "php": "debug",
+          "case": "credential-traces",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-debug.so",
+            "tests/database/credential_traces.php"
+          ],
+          "exit": 0,
+          "seconds": 0.05960318190045655,
+          "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+        },
+        {
+          "php": "gcc",
+          "case": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 16.754334773868322,
+          "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+        },
+        {
+          "php": "gcc",
+          "case": "epoll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-gcc.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/gcc-maria-epoll"
+          ],
+          "exit": 0,
+          "seconds": 8.501501739025116,
+          "logSha256": "7fa5871a2135f2a1e50c243b5e910a9a2414c64ca2273fa336b307e9ae480aee"
+        },
+        {
+          "php": "gcc",
+          "case": "epoll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-gcc.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/gcc-oracle-epoll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 20.51084406184964,
+          "logSha256": "ab5c0d69bf8a09340300b9f15cd9b119922864793fad8fe380811f266149a749"
+        },
+        {
+          "php": "gcc",
+          "case": "poll-maria-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-gcc.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/gcc-maria-poll"
+          ],
+          "exit": 0,
+          "seconds": 10.509948400082067,
+          "logSha256": "b91bc49836b28717699c08bf21d1afb8e2295cd1d978ee7c49092dee4d08d616"
+        },
+        {
+          "php": "gcc",
+          "case": "poll-oracle-mtls",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+            "--module",
+            "build/priority-mysql-mtls-matrix-gcc.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-matrix-r1/gcc-oracle-poll",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 21.223239965038374,
+          "logSha256": "cb8d3999ae6d6bb901eccf23b9745476cef848e43826c4073a9ad136c2fe7beb"
+        },
+        {
+          "php": "gcc",
+          "case": "credential-traces",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-gcc.so",
+            "tests/database/credential_traces.php"
+          ],
+          "exit": 0,
+          "seconds": 0.3681877558119595,
+          "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/report.json",
+      "sha256": "da379ddeae1a8533e906fc19a22760cb021a0651f1817e1f61122f23ad95fe70",
+      "originalStatus": "PASS",
+      "commands": [
+        {
+          "name": "maria-epoll",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/maria-epoll.sh",
+            "--module",
+            "/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/maria-epoll-fixture"
+          ],
+          "exit": 0,
+          "seconds": 23.13427172298543,
+          "runnerSha256": "7313c6d3d666f87ab87f435a6ef70e806ec790a73d012f4fa651af9bf9779993",
+          "memcheckSha256": "2492088c4ccc41732835e3d797ea5bd69e9c6b068f3f71a932b67b816837975f"
+        },
+        {
+          "name": "maria-poll",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/maria-poll.sh",
+            "--module",
+            "/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/maria-poll-fixture"
+          ],
+          "exit": 0,
+          "seconds": 22.056388478027657,
+          "runnerSha256": "686d85789282cf05ebb239e24ad069a4272731447f003afcb864e18f183e8913",
+          "memcheckSha256": "b0c16c91748a3911803fb7c1de1f0a5a2be6af2bccf1bbfeb14385fbb86d321c"
+        },
+        {
+          "name": "oracle-epoll",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/oracle-epoll.sh",
+            "--module",
+            "/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "epoll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/oracle-epoll-fixture",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 29.967435287078843,
+          "runnerSha256": "8d12d4a8ab8b98bd066a110811aaa4145ed9b0da653576d1fc2facfb6ea4d3fe",
+          "memcheckSha256": "024d0fe3b98b105a2aa6e5dd96cb87106bc8e9da2c0c252d6a9f7371e2720664"
+        },
+        {
+          "name": "oracle-poll",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/oracle-poll.sh",
+            "--module",
+            "/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-matrix-debug.so",
+            "--backend",
+            "poll",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-memory-r1/oracle-poll-fixture",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "exit": 0,
+          "seconds": 30.530827093869448,
+          "runnerSha256": "786b8d94e00b210e41822bdc7956cf1eb4fe9ec92e9521c6c76076eddffd385c",
+          "memcheckSha256": "dcbe508f2885d650bc5452fad51603319ea18daf80785ef69d4ae618ed0831a3"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/report.json",
+      "sha256": "550b1773dbf874c440d3a430d8f0d7c4ecf81fbcd9437beceaef544c607153cd",
+      "originalStatus": "PASS",
+      "commands": [
+        {
+          "name": "gate-a",
+          "command": [
+            "python3",
+            "tests/fast/gate_a.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--extension",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/gate-a"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 206.16561720101163,
+          "logSha256": "91dc22bc08d3c766b8eebdd4b450b4204ad6733fdb8d870c69877b7f7d4f5398"
+        },
+        {
+          "name": "epoll-full",
+          "command": [
+            "bash",
+            "scripts/test.sh"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "epoll"
+          },
+          "exit": 0,
+          "seconds": 36.37369186198339,
+          "logSha256": "4206ebbc922257eb09dc426565332f69c607f92a8d9d747b65c339d66183fa99"
+        },
+        {
+          "name": "poll-full",
+          "command": [
+            "bash",
+            "scripts/test.sh"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "poll"
+          },
+          "exit": 0,
+          "seconds": 33.115617875009775,
+          "logSha256": "499798837eed77066b7e8e14ddd4e624df2376b418b3de6868a5792668ce873d"
+        },
+        {
+          "name": "maria-epoll-fpm",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--fpm",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/maria-epoll-fpm"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 15.014482581987977,
+          "logSha256": "9ec27eb1ad384be7d73f19fb713531a7bbaa0c06ce4f3024c180bf0f60797ea7"
+        },
+        {
+          "name": "oracle-epoll-fpm",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "epoll",
+            "--fpm",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/oracle-epoll-fpm",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 25.252332675037906,
+          "logSha256": "05289fd6992e76a416c635f7eb0b7893e26e4bc3db5b63721389280dbc376824"
+        },
+        {
+          "name": "epoll-database-bounds",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--test-file",
+            "tests/database/resource_bounds.php",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/epoll-database-bounds"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "epoll"
+          },
+          "exit": 0,
+          "seconds": 7.02592442301102,
+          "logSha256": "2f667be744592abfe2412d609dc6ce004dd2ed3eb9ffa300b43bc57cc43e4c73"
+        },
+        {
+          "name": "epoll-databases",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/epoll-databases"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "epoll"
+          },
+          "exit": 0,
+          "seconds": 22.26426675193943,
+          "logSha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+        },
+        {
+          "name": "maria-poll-fpm",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--fpm",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/maria-poll-fpm"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 14.555478009860963,
+          "logSha256": "d3a46302fb26d1621d632dec5f06f52b21ecedd13dcb7ce8196c1c46c83196b3"
+        },
+        {
+          "name": "oracle-poll-fpm",
+          "command": [
+            "python3",
+            "tests/database/mtls_mysql.py",
+            "--php",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "--module",
+            "build/priority-mysql-mtls-matrix-85.so",
+            "--backend",
+            "poll",
+            "--fpm",
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+            "--out",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/oracle-poll-fpm",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 28.53704407881014,
+          "logSha256": "737a58381c90b5f0f0c56121d6f0bcac489ce1863f222d74f8cff8d8ef2fdc2e"
+        },
+        {
+          "name": "poll-database-bounds",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--test-file",
+            "tests/database/resource_bounds.php",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/poll-database-bounds"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "poll"
+          },
+          "exit": 0,
+          "seconds": 9.072773283114657,
+          "logSha256": "2f667be744592abfe2412d609dc6ce004dd2ed3eb9ffa300b43bc57cc43e4c73"
+        },
+        {
+          "name": "poll-databases",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/poll-databases"
+          ],
+          "environment": {
+            "ASYNCARA_BACKEND": "poll"
+          },
+          "exit": 0,
+          "seconds": 25.550835100002587,
+          "logSha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+        },
+        {
+          "name": "allocations",
+          "command": [
+            "bash",
+            "scripts/audit-allocations.sh"
+          ],
+          "environment": {},
+          "exit": 0,
+          "seconds": 5.289614312117919,
+          "logSha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-stock-r1/report.json",
+      "sha256": "760faed3a5e79d31ee63f9539462034f5396a54d8dc45be0f78033470f78d0f6",
+      "originalStatus": "FAIL",
+      "commands": [
+        {
+          "name": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 5.724399438127875,
+          "logSha256": "a0bc990c7c9970577aa4026361b4b32a440a9f683be21297c6d65108b8376e0d"
+        },
+        {
+          "name": "capability",
+          "command": [
+            "bash",
+            "scripts/test-connector-gate.sh"
+          ],
+          "exit": 0,
+          "seconds": 0.08571731182746589,
+          "logSha256": "d0810438ce6f579785308fe0447786752b6ed7929095494ea15666ee9e217c73"
+        },
+        {
+          "name": "epoll-client-gates",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-stock.so",
+            "/home/coder/Asyncara-server-20261109T231953Z/tests/database/client_tls_gate.php"
+          ],
+          "exit": 255,
+          "seconds": 0.03911451296880841,
+          "logSha256": "e46f0caddb81676758434bd540dedc0e712388bd2b7090dd41a61e0ce6f81788"
+        }
+      ]
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-stock-r2/report.json",
+      "sha256": "6415b0618c585626543de718c5f951bb9807e0461ec0aff795251b089d316433",
+      "originalStatus": "PASS",
+      "commands": [
+        {
+          "name": "build",
+          "command": [
+            "bash",
+            "scripts/build-local.sh"
+          ],
+          "exit": 0,
+          "seconds": 5.263922550948337,
+          "logSha256": "a0bc990c7c9970577aa4026361b4b32a440a9f683be21297c6d65108b8376e0d"
+        },
+        {
+          "name": "capability",
+          "command": [
+            "bash",
+            "scripts/test-connector-gate.sh"
+          ],
+          "exit": 0,
+          "seconds": 0.18131143716163933,
+          "logSha256": "ffd0cd2b1a34bbcc981e87c25b5c6d7424505b1d14908840d9ccd1ce9a5d0313"
+        },
+        {
+          "name": "epoll-client-gates",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-stock3317.so",
+            "/home/coder/Asyncara-server-20261109T231953Z/tests/database/client_tls_gate.php"
+          ],
+          "exit": 0,
+          "seconds": 0.041331215063109994,
+          "logSha256": "a6fff1652f12149e4b04642f7d554bc17d98079324a0e948dc7b9542f7a06c0e"
+        },
+        {
+          "name": "epoll-database",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-stock-r2/epoll-databases"
+          ],
+          "exit": 0,
+          "seconds": 24.594011968001723,
+          "logSha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+        },
+        {
+          "name": "poll-client-gates",
+          "command": [
+            "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+            "-n",
+            "-d",
+            "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-mysql-mtls-stock3317.so",
+            "/home/coder/Asyncara-server-20261109T231953Z/tests/database/client_tls_gate.php"
+          ],
+          "exit": 0,
+          "seconds": 0.03672454901970923,
+          "logSha256": "a6fff1652f12149e4b04642f7d554bc17d98079324a0e948dc7b9542f7a06c0e"
+        },
+        {
+          "name": "poll-database",
+          "command": [
+            "python3",
+            "scripts/test-databases.py",
+            "--oracle-prefix",
+            "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root",
+            "--output",
+            "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-stock-r2/poll-databases"
+          ],
+          "exit": 0,
+          "seconds": 22.57298858393915,
+          "logSha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+        }
+      ]
+    }
+  ],
+  "binaries": {
+    "priority-mysql-mtls-matrix-84.so": "b4e555f779ef79442c0ac73994c93a3272b6b3b796c8cb3887fa646e4756c2cb",
+    "priority-mysql-mtls-matrix-83.so": "4c6c3e110614801ec4713b98de3055e046590363ceec032361993ed1d65537e7",
+    "priority-mysql-mtls-matrix-85.so": "91442e19b905f94f0234bd853668b9771e03479cfe81023a867ba123d06171b9",
+    "priority-mysql-mtls-matrix-debug.so": "164820d591d1b51b79e29772201e4126e23cd78b8bb1a02ab674c44437fbb55c",
+    "priority-mysql-mtls-matrix-gcc.so": "195f41f07e960e30f7f4da28ef51a823faded2ab51879ee8583418ea244e5754"
+  },
+  "fpmIndependent": {
+    "path": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-regressions-r1/independent-fpm-summary.json",
+    "sha256": "c1fe8681e158bdae3640068c0629ab603a8abc8ce827b7bc961ef36c98610838",
+    "result": {
+      "status": "PASS",
+      "scope": "recalculation from raw request records and idle samples, not endurance",
+      "results": [
+        {
+          "fixture": "maria-epoll-fpm",
+          "seconds": 8.567183643812314,
+          "cases": [
+            {
+              "workers": 1,
+              "requests": 20,
+              "httpOperations": 80,
+              "minTicks": 25,
+              "minDatabaseTicks": 16,
+              "rssKiB": [
+                22768,
+                23136
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            },
+            {
+              "workers": 4,
+              "requests": 40,
+              "httpOperations": 160,
+              "minTicks": 24,
+              "minDatabaseTicks": 13,
+              "rssKiB": [
+                22404,
+                22712
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            }
+          ]
+        },
+        {
+          "fixture": "maria-poll-fpm",
+          "seconds": 8.823869001120329,
+          "cases": [
+            {
+              "workers": 1,
+              "requests": 20,
+              "httpOperations": 80,
+              "minTicks": 25,
+              "minDatabaseTicks": 15,
+              "rssKiB": [
+                22840,
+                23208
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            },
+            {
+              "workers": 4,
+              "requests": 40,
+              "httpOperations": 160,
+              "minTicks": 25,
+              "minDatabaseTicks": 12,
+              "rssKiB": [
+                20816,
+                22808
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            }
+          ]
+        },
+        {
+          "fixture": "oracle-epoll-fpm",
+          "seconds": 8.703502016840503,
+          "cases": [
+            {
+              "workers": 1,
+              "requests": 20,
+              "httpOperations": 80,
+              "minTicks": 28,
+              "minDatabaseTicks": 13,
+              "rssKiB": [
+                23752,
+                24112
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            },
+            {
+              "workers": 4,
+              "requests": 40,
+              "httpOperations": 160,
+              "minTicks": 28,
+              "minDatabaseTicks": 13,
+              "rssKiB": [
+                23700,
+                23860
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            }
+          ]
+        },
+        {
+          "fixture": "oracle-poll-fpm",
+          "seconds": 11.196706188842654,
+          "cases": [
+            {
+              "workers": 1,
+              "requests": 20,
+              "httpOperations": 80,
+              "minTicks": 26,
+              "minDatabaseTicks": 14,
+              "rssKiB": [
+                23876,
+                24232
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            },
+            {
+              "workers": 4,
+              "requests": 40,
+              "httpOperations": 160,
+              "minTicks": 25,
+              "minDatabaseTicks": 11,
+              "rssKiB": [
+                23520,
+                23792
+              ],
+              "idleFds": 6,
+              "idleThreads": 1,
+              "remainingDatabaseSessions": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "nativeManifest": {
+    "ext/backend.c": "716f9579b3a0abbb059c08135f228fcfb7ede7094e3a2a4a583fe53733c23b11",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/config.m4": "13add630e22b6c6592571a966364f62b749fed2af8aba62d9e4e08cdf44eec78",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper/Cargo.lock": "52e7d4117bc7f37af8593253fd640a680544355766f44be7f034a20115b38a79",
+    "ext/hyper/Cargo.toml": "7d364f48ab300dd8863afb1277cc2e4e43c567c53c66488b18905f73790238ea",
+    "ext/hyper/src/body.rs": "ed1fe5cf8b7f6db87dd9f29b210907a7eafeef1f9592ff4a06b8d07be58c076f",
+    "ext/hyper/src/lib.rs": "f175fabc3ced220e79faf6e4d81bb243946b9071b52167c4a0c8ee27a023111c",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/server.rs": "026eb8755001b69b1940d2f6b613d4b80f2e9f2155bd0f80759ba0c374ce8297",
+    "ext/hyper/src/tests.rs": "0a5a5ea56cf6b4af80d0cfb42f67b0049da1ff23dbdde970dc3ac45ccc0cc37a",
+    "ext/hyper/src/tls.rs": "16d8df5899bfa1a3b2cf551a6e593f4c45b9aa1c21595eb2f6272610d709fbcf",
+    "ext/hyper_decode.c": "1f4b49afd413106774e49b959ab967b38fa59ab947e340d50cfe314e11a81ed1",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/mysql.c": "bbb48566210e7b97df52fdfe4118070df4905abd3966ab25908456434810c590",
+    "ext/native.h": "2e96cd73c57bbef87eff0648eed8f7f8bfff54c48377704d91953ccbdcab2652",
+    "ext/php_asyncara.c": "81e93832b84a42f3868118298dfdd4a2499796b1f28523f2a54b33f3de484572",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/postgresql.c": "5074124b3d607a14b9b41f92d716d38ea6b5bc95ec753ffc291ffdfa30ad7907",
+    "ext/server.h": "c6c6c01c4e7b199d80a40efa4ec67b930e20c8f73aeb26e3c14693e296264b4a",
+    "ext/server_php.h": "810f2b1ad35cd82a5426e308b04ff5f3dc32734b8599bb6fc93cc7c57d7e431d",
+    "ext/workers.c": "f37519118ee1f125fb4f8c972156d4f86b7e592a13fb347ee369834f33ff204a"
+  },
+  "limitations": [
+    "Connector/C trust-file loading/key decryption remain synchronous",
+    "Third-party allocations are outside the Asyncara ledger",
+    "No server-side cancellation acknowledgement",
+    "No DNS/SNI, WAN or certificate-rotation certification",
+    "Stock-r1 selected3.4.10 accidentally; original FAIL retained; explicit3.3.17-r2 supersedes only that control"
+  ]
+}

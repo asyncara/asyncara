@@ -514,3 +514,18 @@ crypto can block setup. Local cancellation closes the connection without remote
 cancellation acknowledgement. The certificate-only lock test requires two timers
 before an independent owner releases the query, and FPM tests verify request
 cleanup. [Exact scope](POSTGRESQL_MTLS.md) includes ordinary unload loss.
+
+## MySQL/MariaDB client TLS ownership (2026-11-11)
+
+Native `94614a6` owns all nine copied option strings until connection resource
+release; Connector/C owns separate library copies. certFile/keyFile must be
+paired and keyPassword requires the pair. Strict verified TCP/IP-SAN checks and
+PHP open_basedir prechecks apply; no interactive key prompt is permitted.
+Trust-file reads and cryptography remain synchronous, external allocations are
+not covered by the native ledger, and prechecks are not an atomic filesystem
+sandbox. Local cancellation closes the connection without claiming remote query
+acknowledgement. Shared-waiter cancellation leaves the owner query pending.
+Tests hold a server lock until two timers dispatch, then inspect result/connection
+cleanup and independent server sessions. [Exact evidence](MYSQL_MTLS.md) includes
+four ordinary-unload DEBUG Valgrind controls with zero lost bytes, separately
+from unresolved PostgreSQL/library and distribution-PHP findings.
