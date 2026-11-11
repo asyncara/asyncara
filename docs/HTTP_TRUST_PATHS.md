@@ -84,3 +84,12 @@ reports/logs are selected for upload, excluding fixture private keys. GCC tests
 instrument C/PHP, not the Rust/AWS-LC release library. Upstream libpq unloading,
 distribution-PHP cyclic shutdown and historical sanitizer findings retain their
 separate status. No broad protocol/proxy or universal memory certification follows.
+
+## Independently built distribution
+
+Packaged source6ba0a71,646files: `build/asyncara-0.1.0-dev-http-trust-r1.tar.gz`.
+SHA256`1d389145098cc2d4f1f0866a60b62be2b620d5c1818c9bcd6a6251cac6a5f6f0`.
+Second archive is byte-identical; every member matches the Git source tree.
+Fresh Cargo/C build166.467s and12 certificate/FPM/codec/credential controls PASS.
+[Exact independent module and commands](phase7/http-trust-package.json).
+No GitHub release publication. Historical packages remain unchanged.
