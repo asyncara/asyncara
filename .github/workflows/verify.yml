@@ -112,6 +112,7 @@ jobs:
         run: |
           for backend in epoll poll; do
             python3 tests/database/redis_push.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/redis-push/"$backend"
+            python3 tests/database/redis_push.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --fpm php-fpm8.5 --out build/redis-push/"$backend-fpm"
           done
       - name: Bounded PostgreSQL prepared statement ownership
         run: |
