@@ -363,3 +363,14 @@ a corrected easy-cache reuse invariant. [HTTP2_CLIENT.md](HTTP2_CLIENT.md) recor
 the exact matrix and remaining instrumented deadline failure. Streaming APIs
 still deliberately select HTTP/1.1; the h2-only peer verifies rejection instead
 of claiming HTTP/2 streaming support.
+
+## Transfer file identity (2026-11-11)
+
+Upload, download, atomic download and curl multipart file names are captured
+before producer/client-permit deferral. Changing cwd after submission no longer
+redirects a transfer. Tests hold a preceding network operation through two timer
+ticks before releasing the client permit and check actual source/destination
+bytes. The five-build/both-backend matrix, scoped DEBUG Valgrind, full HTTP gate
+and C-only controls pass. This changes filename ownership, not HTTP protocols,
+buffer limits or disk backend. Hyper multipart remains unsupported.
+[Exact lifecycle and validation scope](FILESYSTEM.md).

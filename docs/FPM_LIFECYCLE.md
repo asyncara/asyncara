@@ -1,5 +1,16 @@
 # PHP-FPM lifecycle verification
 
+## Development priority (2026-11-11)
+
+The owner selected **Asyncara Server as the primary development and validation
+mode**. FPM compatibility and existing tests remain available. New FPM-specific
+failures are retained and deferred instead of blocking native-server progress;
+a defect reproduced in shared runtime ownership, memory or I/O paths still
+requires correction. Existing FPM results and historical failures keep their
+original status. This priority decision is not a claim of new compatibility or
+production readiness.
+
+
 ## Native API lifecycle continuation, November 7
 
 The continuation starts from rewritten `phase4-endurance` commit

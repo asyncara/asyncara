@@ -1,5 +1,17 @@
 # Current partial-work inventory and completion record
 
+## Verified deferred filename ownership (2026-11-11)
+
+Native `141174a` fixes reproduced cwd-dependent filename selection in filesystem,
+SQLite and HTTP transfers. The scoped policy is **IMPLEMENTED_AND_TESTED**:
+five-build epoll/poll matrix, ordinary DEBUG Valgrind, Gate A, full PHP85/HTTP,
+original and supplementary FPM checks, C-only build and independent raw FPM
+review pass. [Exact results and boundaries](FILESYSTEM.md#filename-capture-at-admission-2026-11-11).
+Filename ownership does not pin an inode; file I/O remains worker-backed.
+Historical failures and the earlier stop checkpoint are preserved. Packaging
+is attested separately. Release remains EXPERIMENTAL.
+
+
 ## Verified TCP/Redis trust-path ownership (2026-11-11)
 
 Native `19a64d2` repairs reproduced relative-CA selection and explicit

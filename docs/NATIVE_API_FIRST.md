@@ -1,5 +1,16 @@
 # Native Async API First — Optional Transparent Compatibility
 
+## Development priority (2026-11-11)
+
+The owner selected **Asyncara Server as the primary development and validation
+mode**. FPM compatibility and existing tests remain available. New FPM-specific
+failures are retained and deferred instead of blocking native-server progress;
+a defect reproduced in shared runtime ownership, memory or I/O paths still
+requires correction. Existing FPM results and historical failures keep their
+original status. This priority decision is not a claim of new compatibility or
+production readiness.
+
+
 This is the architectural direction adopted for Phase 4 lifecycle hardening.
 Asyncara remains **EXPERIMENTAL**. This decision preserves the existing runtime
 and public methods; it is not a migration or a new implementation.
@@ -68,10 +79,11 @@ one worker backend. io_uring filesystem operations remain **NOT_IMPLEMENTED**;
 a NOP probe is not file I/O support. Do not introduce a backend registry before
 a second real implementation justifies it.
 
-The immediate gate is the unresolved local uninstrumented FPM responsiveness
-failure and request-safe I/O ownership. Diagnostic passes, hosted results and
-mixed CLI endurance cannot substitute for local FPM acceptance. Preserve the
-existing APIs, limits, historical failures and acceptance thresholds.
+The current development gate prioritizes Asyncara Server and shared I/O
+ownership. The historical local FPM responsiveness failure remains unresolved
+and deferred under the owner decision above. Diagnostic or native-server passes
+cannot be relabeled as FPM acceptance. Preserve the existing APIs, compatibility
+tests, limits, historical failures and acceptance thresholds.
 
 ## Native development continuation
 

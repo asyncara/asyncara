@@ -583,3 +583,17 @@ Names are captured, not contents or symlink targets; default trust selection and
 synchronous OpenSSL trust-file/crypto work are unchanged. Error paths close the
 socket. [Exact before/after and memory evidence](STREAM_TLS_PATHS.md) remains
 separate from upstream allocation reports and historical endurance failures.
+
+## Deferred filesystem and transfer filenames (2026-11-11)
+
+`File::open/stage`, `Files::exists/readStream/writeStream`, SQLite open (except
+`:memory:`) and HttpClient download/upload/multipart/multipartFiles capture
+relative names at public API admission, before Task/producer/permit deferral.
+The shared bounded native helper creates no native operation. It preserves PHP
+virtual cwd, lexical symlink/`..` traversal and open_basedir policy; native worker
+submission rechecks policy. Capture and metadata checks are synchronous, regular
+file I/O remains worker-backed. Invalid paths may throw before a Future exists;
+rejected writeStream admission closes an already-owned ReadableStream producer.
+No inode/content snapshot or atomic hostile-filesystem sandbox is promised.
+Cancellation cannot undo a published write. Existing close, draining and
+backpressure rules remain in force. [Implementation and evidence](FILESYSTEM.md).

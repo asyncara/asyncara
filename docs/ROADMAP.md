@@ -1,13 +1,26 @@
 # Implementation status
 
-## Saved filesystem admission checkpoint (2026-11-11)
+## Development priority (2026-11-11)
 
-Native `141174a` fixes reproduced deferred filename selection in filesystem,
-SQLite and HTTP file transfers. The matched regression and five-build matrix
-pass; final memory/full/FPM/package gates are pending because the owner requested
-a stop and push. Status: IMPLEMENTED_BUT_NOT_FULLY_TESTED;
-[scope and evidence](FILESYSTEM.md#filename-capture-at-admission-2026-11-11).
-Earlier package results keep their original identities. EXPERIMENTAL remains.
+The owner selected **Asyncara Server as the primary development and validation
+mode**. FPM compatibility and existing tests remain available. New FPM-specific
+failures are retained and deferred instead of blocking native-server progress;
+a defect reproduced in shared runtime ownership, memory or I/O paths still
+requires correction. Existing FPM results and historical failures keep their
+original status. This priority decision is not a claim of new compatibility or
+production readiness.
+
+
+## Verified deferred filename ownership (2026-11-11)
+
+Native `141174a` fixes reproduced cwd-dependent filename selection in filesystem,
+SQLite and HTTP transfers. The scoped policy is **IMPLEMENTED_AND_TESTED**:
+five-build epoll/poll matrix, ordinary DEBUG Valgrind, Gate A, full PHP85/HTTP,
+original and supplementary FPM checks, C-only build and independent raw FPM
+review pass. [Exact results and boundaries](FILESYSTEM.md#filename-capture-at-admission-2026-11-11).
+Filename ownership does not pin an inode; file I/O remains worker-backed.
+Historical failures and the earlier stop checkpoint are preserved. Packaging
+is attested separately. Release remains EXPERIMENTAL.
 
 
 ## Verified TCP/Redis trust-path ownership (2026-11-11)
