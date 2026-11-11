@@ -14,7 +14,7 @@ foreach(['pendingOperations','nativeMemoryBytes','nativeWorkers','openFileHandle
 demand($before['eventLoopBackend']===$config['backend'],'Wrong FPM backend');
 $id=$_SERVER['AUDIT_ID'];demand(preg_match('/\A[0-9]+\z/',$id)===1,'Invalid fixture request identity');
 $prefix=$config['root'].'/'.getmypid().'-';
-demand(glob($prefix.'*/a/.asyncara-*')===[],'Previous request retained a staged file');
+demand(glob($prefix.'*/a/.asyncara*')===[],'Previous request retained a staged file');
 $directory=$prefix.$id;mkdir($directory,0700);mkdir($directory.'/a');mkdir($directory.'/b');
 file_put_contents($directory.'/a/value','first');file_put_contents($directory.'/a/only','present');file_put_contents($directory.'/b/value','second');
 $cwd=getcwd();$start=microtime(true);$mode=$_GET['mode']??'';
@@ -23,7 +23,7 @@ try{
         if($mode==='fatal'){
             chdir($directory.'/a');$pending=File::stage('target');chdir($directory.'/b');$file=$pending->await();
             $file->write('unpublished')->await();
-            demand(asyncara_info()['openFileHandles']===1&&count(glob($directory.'/a/.asyncara-*'))===1,'Fatal fixture has no captured staged owner');
+            demand(asyncara_info()['openFileHandles']===1&&count(glob($directory.'/a/.asyncara*'))===1,'Fatal fixture has no captured staged owner');
             ini_set('memory_limit','8M');asyncara_submit('read',[$_SERVER['AUDIT_LARGE_FILE']]);
             while(true)asyncara_poll([],[],1000); // Original fatal conversion workload, with an extra live stage.
         }
