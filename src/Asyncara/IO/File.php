@@ -18,6 +18,7 @@ final class File
 
     public static function open(string $path, string $mode = 'r'): Future
     {
+        $path = \asyncara_file_path($path);
         return Async::spawn(static function () use ($path, $mode): self {
             $id = Async::shield(static fn() => Scheduler::current()->native('file_open', [$path, $mode])->await());
             try {
@@ -33,6 +34,7 @@ final class File
     /** Private 0600 file in a pinned destination directory; close discards until publish. */
     public static function stage(string $destination): Future
     {
+        $destination = \asyncara_file_path($destination);
         return Async::spawn(static function () use ($destination): self {
             $id = Async::shield(static fn() => Scheduler::current()->native('file_stage', [$destination])->await());
             try {

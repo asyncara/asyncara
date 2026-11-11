@@ -15,6 +15,7 @@ final class Connection
     public function __unserialize(array $data): void { throw new \LogicException('Native SQLite connections cannot be unserialized'); }
     public static function open(string $path): Future
     {
+        if ($path !== ':memory:') $path = \asyncara_file_path($path);
         return Async::spawn(static fn() => Async::shield(static fn() => new self(Scheduler::current()->native('sqlite_open', [$path])->await())));
     }
     public function query(string $sql, array $parameters = []): Future

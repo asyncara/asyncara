@@ -26,6 +26,7 @@ final class Files
     public static function copy(string $from, string $to): Future { return Scheduler::current()->native('copy', [$from, $to]); }
     public static function exists(string $path): Future
     {
+        $path = \asyncara_file_path($path);
         return Async::spawn(static function () use ($path): bool {
             try { self::stat($path)->await(); return true; }
             catch (FilesystemException $e) { if ($e->isMissing()) return false; throw $e; }
@@ -35,6 +36,7 @@ final class Files
     public static function readStream(string $path, int $chunkSize = 65536): AsyncStream
     {
         if ($chunkSize < 1 || $chunkSize > 16777216) throw new \ValueError('Invalid chunk size');
+        $path = \asyncara_file_path($path);
         return AsyncStream::fromProducer(static function ($emitter) use ($path, $chunkSize): void {
             Async::using(
                 static fn() => self::open($path),
@@ -47,6 +49,12 @@ final class Files
     }
     public static function writeStream(string $path, iterable $chunks): Future
     {
+        try { $path = \asyncara_file_path($path); }
+        catch (\Throwable $error) {
+            // Preserve producer cleanup even when admission rejects the path.
+            if ($chunks instanceof ReadableStream) $chunks->close();
+            throw $error;
+        }
         return Async::spawn(static function () use ($path, $chunks): int {
             try {
                 return Async::using(

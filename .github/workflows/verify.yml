@@ -49,6 +49,11 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-4.log bash -c './scripts/phpize-local.sh'
       - run: ./scripts/ci-run.sh build/ci-step-5.log bash -c 'ASYNCARA_EXTENSION=ext/modules/asyncara.so ./scripts/test.sh'
       - run: ./scripts/ci-run.sh build/ci-step-6.log bash -c 'ASYNCARA_BACKEND=poll ./scripts/test.sh'
+      - name: Deferred filesystem path identity and policy
+        run: |
+          for backend in epoll poll; do
+            python3 tests/filesystem_paths.py --php php --module build/asyncara.so --backend "$backend" --out build/filesystem-paths-"$backend"
+          done
       - run: ./scripts/ci-run.sh build/ci-http-completion.log python3 tests/http/run.py --php php --extension build/asyncara.so --output build/http-completion
       - run: ./scripts/ci-run.sh build/ci-step-7.log bash -c './scripts/test-network-edges.sh'
       - run: ./scripts/ci-run.sh build/ci-network-failure.log python3 tests/soak/test_network_failure.py --output build/network-failure
@@ -80,6 +85,8 @@ jobs:
             build/ws-fuzz-smoke/
             build/network-failure/
             build/http-completion/
+            build/filesystem-paths-*/*.json
+            build/filesystem-paths-*/*.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit
   database-lifecycle:
