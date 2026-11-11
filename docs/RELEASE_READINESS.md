@@ -1,5 +1,14 @@
 # Release readiness
 
+## Current priority scope (2026-11-12)
+
+The [priority capability contracts](PRIORITY_CAPABILITIES.md) distinguish tested
+APIs from broader deployment/protocol certification. New Basic proxy credentials,
+sensitive trace protections and pre-runtime lazy pool configuration are tested
+in real Native Server handlers. Historical sections below keep their source
+identities and failures. Neither these additions nor short passing gates promote
+the release: it remains **EXPERIMENTAL**.
+
 ## Current completion work (2026-11-10)
 
 Server HTTPS/mTLS, bounded input/output streaming and the optional Hyper client's

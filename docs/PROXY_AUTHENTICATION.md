@@ -107,3 +107,13 @@ losses; reachable library allocations are3888bytes CLI and4066bytes server.
 This diagnostic scope is not substituted for the normal whole-handler fixture.
 The observer now retains external request timings and attempts server metadata
 and ordinary stop after failure. All failed reports remain preserved.
+
+Whole-handler follow-ups `memory-original-diagnostic-r2` and `r3` also pass at
+unchanged deadlines, including both readiness backends, with zero Valgrind
+errors/loss and4066reachable bytes. Their9.492/9.633/9.851-second request times
+show little margin under the10-second limit; they do not retrospectively prove
+why the first request disconnected. The first report lacks a server timeout
+counter. The intermediate diagnostic-r1 returned500 from a test-helper argument
+mismatch; that failed report is retained and only the adapter was corrected.
+Final normal HTTP gate101 and full PHP8.5/Native Server gates pass at the
+`1e8be3c` test checkpoint, with native source still `2a96f61`.

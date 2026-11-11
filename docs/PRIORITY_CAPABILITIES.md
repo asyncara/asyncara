@@ -44,3 +44,34 @@ Validation of that combined fixture and final package is recorded separately
 from the earlier per-subsystem evidence above. One initial PHP83 service run
 failed during a pending-query request; it remains preserved and is not explained
 by the diagnostic rerun passing. No reliability failure is erased by status labels.
+
+## Final-source validation (2026-11-12)
+
+Runtime/native source is `2a96f61`; test/observer checkpoint is `1e8be3c`.
+The exact [source/module/report attestation](phase7/proxy-services.json)
+separates source identity from historical results and the later package.
+
+| Scope | Actual result |
+|---|---|
+| Authenticated proxy matrix | PASS40 commands; PHP8.3.36/8.4.27/8.5.12, DEBUG/GCC, epoll/poll;161.896s |
+| SQL/Redis/HTTP/files Native Server matrix | PASS38 commands;56 server processes,1232 main requests,336 required ticks during pending queries;452.078s |
+| Gate A | PASS53 checks;199.987s |
+| Complete PHP8.5 suites | PASS epoll and poll |
+| HTTP regression gate | PASS101 checks;185.439s |
+| Database bounds/plain integrations/allocation audit | PASS |
+| Native Server protocol/TLS/input/output/four-worker scopes | PASS14 commands across epoll/poll |
+| Final regression supervisor | PASS21 commands;511.101s |
+| Ordinary DEBUG Valgrind, separate proxy memory scope | PASS4 processes;0 errors/definite/indirect/possible losses |
+| Whole-handler DEBUG Valgrind repetitions | PASS3 processes including epoll/poll;0 errors/loss; original FAIL preserved |
+
+The split memory diagnostic has two requests instead of one and is explicitly
+separate. Later whole-handler requests took9.492s,9.633s and9.851s under Valgrind,
+with the original10s server deadline unchanged. The first run has no captured
+server timeout counter; cost-of-instrumentation/deadline attribution remains an
+inference, not an established cause. Its forced-termination allocation report
+is not relabeled a normal-shutdown leak or PASS. Another diagnostic fixture
+iteration returned500 because it passed Request into a string helper; only the
+test adapter was fixed. All raw failures remain in the attested evidence root.
+
+Source-distribution independent build is attested separately after packaging;
+no GitHub release or remote push is implied by these local results.

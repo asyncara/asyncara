@@ -1,5 +1,14 @@
 # HTTP completion and measured performance
 
+## Current proxy authentication scope (2026-11-12)
+
+[Explicit Basic proxy authentication](PROXY_AUTHENTICATION.md) now has local
+HTTP/HTTPS forward and CONNECT tests, including buffered HTTP/2 over authenticated
+HTTPS CONNECT. Earlier statements below excluding authentication describe their
+original checkpoints. Hyper still rejects proxies; streaming remains HTTP/1.1.
+See the [current capability contracts](PRIORITY_CAPABILITIES.md) for remaining
+protocol and deployment gaps. Historical failed memory/deadline runs remain.
+
 This report records the historical http-r1 checkpoint. Later source changes,
 validated ownership optimizations and the optional PHP-integrated Hyper prototype
 are in [HTTP_PERFORMANCE_WORK.md](HTTP_PERFORMANCE_WORK.md) and

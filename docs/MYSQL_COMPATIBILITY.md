@@ -90,3 +90,21 @@ passes ordinary Unix integration against both servers while still rejecting TLS.
 Historical3.3 results above are unchanged.
 
 Explicit SQL TLS filename admission and handshake-resume ownership is now verified in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). This scoped correction does not broaden the server/version matrix or erase the PostgreSQL ordinary-unload memory failure. Native Server is the primary development mode; existing FPM compatibility remains.
+
+## Combined Native Server application verification (2026-11-12)
+
+The `2a96f61` continuation also validates lazy connection pools configured before
+App::listen, mTLS SQL callback transactions/prepared statements, Redis TLS/ACL,
+Hyper or curl self-HTTP and worker-backed atomic file operations in the same
+handler. `tests/database/mtls_pg.py --server` and
+`tests/database/mtls_mysql.py --server` run the actual server; the latter's
+`--oracle-prefix` selects an independent Oracle installation. No PDO wrapper or
+blocking driver replacement is involved.
+
+The final local matrix has56 server processes,1232 main responses and336 required
+timer ticks during peer-held queries. PostgreSQL16.15, MariaDB11.8.9 and Oracle
+MySQL8.4.13 remain distinct configurations. PHP83/84/85/DEBUG cover both backends;
+GCC covers the Connector servers, with positive libpq TLS excluded because the
+retained109-byte ordinary-unload dependency finding would fail. An initial PHP83
+PostgreSQL pending-query disconnect remains unexplained and preserved; this
+later pass does not establish its cause. See [current contracts](PRIORITY_CAPABILITIES.md).

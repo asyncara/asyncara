@@ -1,5 +1,14 @@
 # HTTP streaming
 
+## Current proxy authentication scope (2026-11-12)
+
+[Explicit Basic proxy authentication](PROXY_AUTHENTICATION.md) now has local
+HTTP/HTTPS forward and CONNECT tests, including buffered HTTP/2 over authenticated
+HTTPS CONNECT. Earlier statements below excluding authentication describe their
+original checkpoints. Hyper still rejects proxies; streaming remains HTTP/1.1.
+See the [current capability contracts](PRIORITY_CAPABILITIES.md) for remaining
+protocol and deployment gaps. Historical failed memory/deadline runs remain.
+
 The existing curl multi owner now supports response streams, worker-backed file
 uploads/downloads, iterable request bodies and curl MIME multipart requests.
 These paths share the existing client semaphore and native connection limits.
