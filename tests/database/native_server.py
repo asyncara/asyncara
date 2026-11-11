@@ -35,7 +35,9 @@ try:
                 conn=http.client.HTTPConnection(address,timeout=15)
                 try:
                     conn.request('GET',path);r=conn.getresponse();data=r.read();assert r.status==expected,(path,r.status,data);return json.loads(data)if data else None
-                finally:conn.close()
+                finally:
+                    conn.close()
+                    with(out/(transport+'-requests.jsonl')).open('a')as events:events.write(json.dumps({'path':path,'monotonic':time.monotonic()})+'\n')
             with concurrent.futures.ThreadPoolExecutor(max_workers=16)as workers:
                 values=list(workers.map(lambda i:request('/work/'+str(i)),range(1,17)))
             assert {v['id']for v in values}==set(range(1,17))

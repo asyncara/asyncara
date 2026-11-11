@@ -52,6 +52,7 @@ jobs:
           for backend in epoll poll; do
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-direct"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy --out build/http2/"$backend-proxy"
+            build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy-auth --out build/http2/"$backend-proxy-auth"
             build/http2-venv/bin/python tests/http/http2_fpm.py --module build/hyper.so --fpm "$FPM_BIN" --backend "$backend" --out build/http2/"$backend-fpm"
           done
       - name: Verified Hyper TLS and bounded trust policies

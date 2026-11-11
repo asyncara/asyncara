@@ -19,9 +19,10 @@ function rejected(#[\SensitiveParameter] callable $f,string $type=ValueError::cl
     verify(!$exposed,'Credential exposed in trace');
 }
 $checks=[];$ticks=0;
-$exercise=function()use($cfg,&$checks,&$ticks):void{
+$exercise=function(?string $onlyKind=null)use($cfg,&$checks,&$ticks):void{
     $control=new HttpClient();
     foreach(['httpProxy','httpsProxy']as$kind){
+        if($onlyKind!==null&&$kind!==$onlyKind)continue;
         $proxy=$cfg[$kind];$trust=$kind==='httpsProxy'?$cfg['ca']:null;
         $username='asyncara-test';$password=credentials()['password'];
         $client=new HttpClient(concurrency:4,timeout:5,proxy:$proxy,caFile:$cfg['ca'],proxyCaFile:$trust,
@@ -80,17 +81,23 @@ $exercise=function()use($cfg,&$checks,&$ticks):void{
     $stats=$control->get($cfg['control'].'/state')->await()->json();
     verify($stats['leaked']===0&&$stats['originAuthOnConnect']===0,'Authentication crossed hop boundary');
 };
-if(($argv[2]??'')==='server'){
+if(in_array($argv[2]??'',['server','server-split'],true)){
     $app=new Asyncara\App();
     $shared=new HttpClient(proxy:$cfg['httpsProxy'],caFile:$cfg['ca'],proxyCaFile:$cfg['ca'],proxyCredentials:credentials());
     $app->get('/probe',fn()=>Asyncara\Server\Response::text($shared->get($cfg['origin'].'/ok')->await()->body));
-    $app->get('/exercise',function()use($exercise):Asyncara\Server\Response{
-        try{$exercise();}catch(Throwable $error){
+    $runExercise=function(?string $kind=null)use($exercise):Asyncara\Server\Response{
+        try{$exercise($kind);}catch(Throwable $error){
             // Test diagnostics only: no exception argument dump or payloads.
             fwrite(STDERR,json_encode(['failure'=>$error::class,'message'=>str_replace(credentials()['password'],'[redacted]',$error->getMessage()),'line'=>$error->getLine()])."\n");throw $error;
         }
         return Asyncara\Server\Response::text('checked');
-    });
+    };
+    $app->get('/exercise',fn()=>$runExercise());
+    // Separate memory diagnostic scope: unchanged per-request deadlines.
+    // The ordinary integration still runs the entire suite in one handler.
+    if(($argv[2]??'')==='server-split')foreach(['httpProxy','httpsProxy']as$kind)
+        $app->get('/exercise/'.$kind,fn()=>$runExercise($kind));
+    $app->get('/diagnostics',fn()=>Asyncara\Server\Response::json($app->stats()));
     $app->get('/stop',function()use($app):Asyncara\Server\Response{$app->stop();return Asyncara\Server\Response::text('stopped');});
     $app->listen('127.0.0.1:0',['connections'=>32,'timeoutMs'=>10000],static function(string $address):void{echo "READY $address\n";flush();});
 }else Async::run($exercise);

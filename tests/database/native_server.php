@@ -54,10 +54,13 @@ $app->get('/pending/{mode}',function(Request $request)use($class,$options,$pg,&$
     $lock=$pg?'SELECT pg_advisory_lock(714209) AS n':"SELECT GET_LOCK('asyncara_server_ownership',5) AS n";
     $unlock=$pg?'SELECT pg_advisory_unlock(714209)':"SELECT RELEASE_LOCK('asyncara_server_ownership')";
     try{
+        if(getenv('ASYNCARA_SERVICE_DIAGNOSTIC'))fwrite(STDERR,"pending $mode owner-lock\n");
         $owner->query($lock)->await();$pending=$db->query($lock);
         for($i=0;$i<2;$i++){Async::sleep(.002);demand(!$pending->isCompleted(),'Query ended before independent lock release');$ticks++;}
+        if(getenv('ASYNCARA_SERVICE_DIAGNOSTIC'))fwrite(STDERR,"pending $mode two-ticks\n");
         $source=new CancellationSource();$waiter=Async::spawn(fn()=>$pending->await($source->token));Async::sleep(0);$source->cancel();
         try{$waiter->await();throw new RuntimeException('Waiter cancellation lost');}catch(CancelledException){}
+        if(getenv('ASYNCARA_SERVICE_DIAGNOSTIC'))fwrite(STDERR,"pending $mode waiter-cancelled\n");
         demand(!$pending->isCompleted(),'Shared waiter destroyed query');
         if($mode==='release'){$owner->query($unlock)->await();$pending->await();$db->query($unlock)->await();}
         else{
