@@ -560,3 +560,14 @@ receive-buffer reset after detachment; failure frees that handle only. The multi
 owner retains the connection and sibling streams. Shared-waiter cancellation,
 operation cancellation and sibling error isolation pass the [HTTP/2 regressions](HTTP2_CLIENT.md).
 This does not extend the HTTP/1.1 streaming contract to HTTP/2.
+
+## Redis asynchronous push ownership (2026-11-11)
+
+A RESP3 push is not an ordinary command completion. The serialized parser now
+retains it separately under explicit message/byte bounds and continues to await
+the corresponding reply. `drainNotifications()` is non-suspending and does not
+read idle connections. Overflow cancels reuse by closing the connection and
+raises an explicit error; no automatic replay or cache-coherence guarantee.
+Shared waiter cancellation preserves the command owner; owner cancellation
+discards the connection. Dedicated Pub/Sub validates acknowledgements and message
+shapes, with no background application queue. [Precise contract](REDIS_NOTIFICATIONS.md).

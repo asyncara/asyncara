@@ -124,3 +124,13 @@ Redaction is not memory erasure or protection against explicit application
 logging, inspecting SensitiveParameterValue, dumping captured objects, caller
 frames, SQL/Redis command payloads or messages received from external servers.
 Historical memory findings remain separate; no universal secret/memory guarantee.
+
+## Redis notification association continuation (2026-11-11)
+
+The original parser could deliver an invalidation push as a PING reply after
+CLIENT TRACKING. The correction distinguishes out-of-band frames, bounds the
+notification queue and preserves command/transaction result ordering. Dedicated
+RESP2/RESP3 Pub/Sub remains a separate read mode. See [REDIS_NOTIFICATIONS.md](REDIS_NOTIFICATIONS.md)
+for actual server/build/backend evidence and the explicit no-idle-pump limit.
+This does not add attributes, streaming aggregates, Cluster, Sentinel or automatic
+reconnection, and does not certify complete client-side caching semantics.

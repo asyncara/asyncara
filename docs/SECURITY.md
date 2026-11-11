@@ -387,3 +387,13 @@ receive-buffer reset before cache admission. A rejected detached handle is freed
 shared active connections and streams retain their owners. Verified TLS, bounds,
 cancellation and failure isolation are tested. [Evidence and retained Valgrind
 deadline failure](HTTP2_CLIENT.md); no relaxed security checks or limits.
+
+## Redis reply association (2026-11-11)
+
+RESP3 push frames previously counted as ordinary pipeline replies, allowing
+a legitimate invalidation to be returned as a PING result. The fix preserves
+frame identity, bounded separate notification ownership and exact result order;
+nested pushes and malformed Pub/Sub shapes fail with explicit disconnect.
+Overflow is observable and invalidates reuse; it is not a silent dropping policy.
+[Reproductions and validation](REDIS_NOTIFICATIONS.md). No complete client-side
+cache, remote service guarantee or universal memory-safety claim is implied.

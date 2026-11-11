@@ -21,6 +21,7 @@ is an exception; applications should stop submitting work or reduce concurrency.
 | PostgreSQL buffered query | 16 MiB conversion budget / 100,000 rows | Fail query and close connection; per-cell metadata charge reduces empty-cell amplification |
 | PostgreSQL notifications | 1,024 messages / 1 MiB channel+payload bytes | DISCONNECT_SLOW_CONSUMER with explicit exception; no silent drop |
 | Redis buffered reply or entire pipeline | 16 MiB wire bytes / 100,000 parser elements; depth 32 | Fail operation and close connection to avoid protocol desynchronization |
+| Redis parsed RESP3 pushes between command replies | 1024 messages / 1MiB encoded wire bytes, configurable lower | Explicit exception and disconnect on overflow; separate drain, no idle background pump |
 | Redis requests | 16 MiB framed bytes; 10,000 commands per pipeline | REJECT_NEW_ITEM before concatenating beyond bound |
 | ConnectionPool | 8 slots (maximum 256), 1,024 pending borrowers | FAIL_WITH_CAPACITY_EXCEPTION; `pendingLimit: 0` disallows waiting borrowers |
 | ProcessPool | 256 pending jobs / 64 MiB encoded pending requests / 16 MiB frame | FAIL_WITH_CAPACITY_EXCEPTION; reservations released on completion including cancellation before execution |
@@ -256,3 +257,9 @@ consumer close/owner cancellation explicitly terminates the transfer.
 ## Bounded Hyper decoding (2026-11-10)
 
 The optional Hyper buffered decoder caps encoded input and decoded output independently at16MiB. zlib state/internal allocations use ar_calloc/ar_free and the aggregate native limit;32KiB output scratch is stack memory. Failed allocation rejects the operation and collects the owning job. Response streams retain64KiB raw-byte backpressure. [Executed expansion/allocation/cancellation controls](HYPER_COMPRESSION.md) establish this scope without accounting for all foreign libraries.
+
+Redis `notificationLimit` and `notificationByteLimit` now bound the parsed push
+queue separately from pipeline results. Parser bytes/elements still cover all
+intervening pushes. `drainNotifications()` transfers already-read messages to PHP
+application ownership; overflow/close clears retained input and disconnects.
+Wire bytes do not measure total PHP array overhead. [Exact contract and evidence](REDIS_NOTIFICATIONS.md).

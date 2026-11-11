@@ -1,5 +1,17 @@
 # Implementation status
 
+## Verified Redis push/reply ownership (2026-11-11)
+
+Redis7.0.15 RESP3 command reply association, bounded parsed notification queues,
+explicit drain, dedicated RESP2/3 Pub/Sub and failure cleanup are
+IMPLEMENTED_AND_TESTED in [the documented scope](REDIS_NOTIFICATIONS.md).
+Runtime `fdc3fc3` preserves native readiness backends; the PHP parser no longer
+returns an invalidation push as a PING reply. PHP83/84/85, DEBUG/GCC epoll/poll,
+scoped ordinary DEBUG Valgrind, full PHP85 suites, Gate A and four-worker
+plain/TLS FPM pass. No idle background notification pump, Cluster/Sentinel,
+attributes, streaming aggregates or complete caching certification is claimed.
+Historical failures and EXPERIMENTAL classification remain unchanged.
+
 ## Verified buffered HTTP/2 continuation (2026-11-11)
 
 Native `acda044` fixes a reproduced curl easy-handle cache ownership failure
