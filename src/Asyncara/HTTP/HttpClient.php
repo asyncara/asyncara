@@ -13,7 +13,7 @@ final class HttpClient
     private Semaphore $slots;
     private ?bool $hyper = null;
     private ?string $hyperCaPem = null;
-    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10)
+    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10, private ?string $proxyCaFile = null)
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
         if ($connectTimeout <= 0 || $connectTimeout > 3600 || !is_finite($connectTimeout)) throw new \ValueError('Invalid HTTP connect timeout');
@@ -21,13 +21,15 @@ final class HttpClient
         // admission, Hyper DNS/trust preparation and producer Tasks may run
         // after another Fiber changes cwd. Capture the name, not file contents;
         // native admission / worker open still enforce open_basedir when used.
-        if ($this->caFile !== null) {
-            if ($this->caFile === '' || strpbrk($this->caFile, "\0\r\n") !== false || str_contains($this->caFile, '://'))
+        if ($this->proxyCaFile !== null && ($this->proxy === null || strtolower((string)parse_url($this->proxy, PHP_URL_SCHEME)) !== 'https'))
+            throw new \ValueError('Proxy CA file requires an explicit HTTPS proxy');
+        foreach (['caFile', 'proxyCaFile'] as $property) if ($this->$property !== null) {
+            if ($this->$property === '' || strpbrk($this->$property, "\0\r\n") !== false || str_contains($this->$property, '://'))
                 throw new \ValueError('CA file must be a nonempty local path');
-            if ($this->caFile[0] !== '/') {
+            if ($this->{$property}[0] !== '/') {
                 $cwd = getcwd();
                 if ($cwd === false) throw new \RuntimeException('Cannot capture CA working directory');
-                $this->caFile = $cwd.'/'.$this->caFile;
+                $this->$property = $cwd.'/'.$this->$property;
             }
         }
         $this->slots = new Semaphore($concurrency);
@@ -282,6 +284,7 @@ final class HttpClient
         $options = ['method' => $method, 'headers' => $headers, 'followRedirects' => $followRedirects, 'connectTimeoutMs' => (int)ceil($this->connectTimeout * 1000)];
         if ($this->proxy !== null) $options['proxy'] = $this->proxy;
         if ($this->caFile !== null) $options['caFile'] = $this->caFile;
+        if ($this->proxyCaFile !== null) $options['proxyCaFile'] = $this->proxyCaFile;
         return $options;
     }
 }

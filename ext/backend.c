@@ -420,10 +420,16 @@ void ar_http_start(ar_engine *e, ar_job *j) {
             } else if (!strcmp(key, "proxy")) {
                 SET(CURLOPT_PROXY, v->string);
                 SET(CURLOPT_NOPROXY, "");
+                SET(CURLOPT_PROXY_SSL_VERIFYPEER, 1L);
+                SET(CURLOPT_PROXY_SSL_VERIFYHOST, 2L);
             } else if (!strcmp(key, "caPem")) {
                 snprintf(j->error, sizeof(j->error), "caPem is internal to the Hyper backend"); ar_done(e, j); return;
             } else if (!strcmp(key, "caFile")) {
                 SET(CURLOPT_CAINFO, v->string);
+            } else if (!strcmp(key, "proxyCaFile")) {
+                /* Proxy and origin trust are independent TLS layers. Never
+                 * reuse origin roots implicitly or disable either verifier. */
+                SET(CURLOPT_PROXY_CAINFO, v->string);
             } else if (!strcmp(key, "followRedirects")) {
                 j->follow_redirects = (int)v->integer;
                 SET(CURLOPT_FOLLOWLOCATION, (long)v->integer);

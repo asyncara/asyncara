@@ -22,7 +22,7 @@ try:
  env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_HTTP_BACKEND':a.transport}
  for k in ['http_proxy','HTTP_PROXY','https_proxy','HTTPS_PROXY','all_proxy','ALL_PROXY']:env.pop(k,None)
  modes=['client-relative','client-config-relative','client-queued','stream-relative','upload-relative','basedir']
- if a.transport=='curl-multi':modes+=['native-relative','native-basedir']
+ if a.transport=='curl-multi':modes+=['native-relative','native-basedir','proxy-basedir','native-proxy-basedir']
  for mode in modes:
   cmd=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(r/'tests/http/ca_paths.php'),str(o/'config.json'),mode];start=time.monotonic()
   with(o/(mode+'.log')).open('x')as log:
