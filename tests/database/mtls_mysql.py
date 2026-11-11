@@ -19,9 +19,11 @@ p.add_argument('--out', type=Path, required=True)
 p.add_argument('--oracle-prefix', type=Path)
 p.add_argument('--fpm', type=Path, help='Additional unchanged audit runner, mTLS request fixture')
 p.add_argument('--probe', action='store_true', help='Positive connection only, for old-source control')
+p.add_argument('--paths', nargs='*', choices=['relative','invalid','policy','late-policy'], help='Run TLS filename ownership controls instead of authentication cases')
 p.add_argument('--mismatch', action='store_true', help='Trusted server certificate with incorrect IP SAN')
 a = p.parse_args()
 if a.fpm and (a.probe or a.mismatch): p.error('--fpm requires the full positive certificate fixture')
+if a.paths is not None and (a.fpm or a.probe or a.mismatch): p.error('--paths is a separate run')
 root = Path(__file__).resolve().parents[2]
 out = a.out.resolve(); out.mkdir(parents=True, exist_ok=False, mode=0o700)
 sha = lambda f: hashlib.sha256(Path(f).read_bytes()).hexdigest()
@@ -88,6 +90,8 @@ try:
     (out/'fixture.json').write_text(json.dumps(fixture));(out/'fixture.json').chmod(0o600)
     (out/'options.json').write_text(json.dumps(opts));(out/'options.json').chmod(0o600)
     cmd=[a.php,'-n','-d','extension='+str(module),'-d','zend.exception_ignore_args=0',str(root/'tests/database/mtls_mysql.php')]+(['probe']if a.probe else[])
+    if a.paths is not None:
+        cmd=['python3',str(root/'tests/database/sql_tls_paths.py'),'--php',a.php,'--module',str(module),'--out',str(out/'paths')]+(['--modes',*a.paths] if a.paths else [])
     env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_MY_MTLS_FIXTURE':str(out/'fixture.json')}
     with (out/'php.log').open('x')as log:
         child=subprocess.Popen(cmd,cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=log)

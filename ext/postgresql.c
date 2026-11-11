@@ -49,6 +49,10 @@ PHP_FUNCTION(asyncara_pg_open) {
      * Keep capacity derived from the whitelist when adding public options. */
     const char *keys[sizeof(allowed) / sizeof(allowed[0]) + 3];
     const char *values[sizeof(keys) / sizeof(keys[0])];
+    /* libpq copies these names during connectStart, but reads their files in
+     * later connectPoll calls. Pin virtual cwd before that deferred access. */
+    char tls_paths[3][MAXPATHLEN];
+    size_t path_count = 0;
     size_t count = 0;
     zend_string *key;
     zval *v;
@@ -67,7 +71,13 @@ PHP_FUNCTION(asyncara_pg_open) {
             RETURN_THROWS();
         }
         keys[count] = ZSTR_VAL(key);
-        values[count++] = Z_STRVAL_P(v);
+        bool ca = zend_string_equals_literal(key, "sslrootcert");
+        bool file = ca || zend_string_equals_literal(key, "sslcert") || zend_string_equals_literal(key, "sslkey");
+        /* "system" is libpq's explicit system-trust selector, not a filename. */
+        if (file && !(ca && zend_string_equals_literal(Z_STR_P(v), "system"))) {
+            if (!capture_php_path(Z_STR_P(v), tls_paths[path_count])) RETURN_THROWS();
+            values[count++] = tls_paths[path_count++];
+        } else values[count++] = Z_STRVAL_P(v);
     }
     ZEND_HASH_FOREACH_END();
     zval *cert = zend_hash_str_find(opts, "sslcert", 7),
@@ -93,15 +103,6 @@ PHP_FUNCTION(asyncara_pg_open) {
         }
         if (strchr(Z_STRVAL_P(private_key), ':')) {
             zend_value_error("PostgreSQL client TLS supports key files, not OpenSSL engines");
-            RETURN_THROWS();
-        }
-        if (php_check_open_basedir(Z_STRVAL_P(cert)) || php_check_open_basedir(Z_STRVAL_P(private_key))) {
-            zend_value_error("PostgreSQL client TLS path violates open_basedir");
-            RETURN_THROWS();
-        }
-        zval *ca = zend_hash_str_find(opts, "sslrootcert", 11);
-        if (ca && php_check_open_basedir(Z_STRVAL_P(ca))) {
-            zend_value_error("PostgreSQL client TLS CA path violates open_basedir");
             RETURN_THROWS();
         }
         if (!key_password) {

@@ -226,12 +226,20 @@ PHP_FUNCTION(asyncara_mysql_open) {
         zend_value_error("MariaDB CA configuration requires TLS with callback/status verification");
         goto error;
     }
-    /* Library file reads bypass PHP streams. Check explicit CA/cert/key paths
-     * before handing them to Connector/C; this is not an atomic sandbox. */
+    /* Connector/C copies options but can open TLS files in a later continue
+     * call. Own absolute names before that suspension. Capture preserves a
+     * warning handler's exception; it is not an atomic filesystem sandbox. */
     for (size_t i = 5; i <= 7; i++) {
-        if (p->options[i] && php_check_open_basedir(p->options[i])) {
-            zend_value_error("MariaDB TLS file violates open_basedir");
-            goto error;
+        if (p->options[i]) {
+            zval *value = zend_hash_str_find(options, my_option_names[i], strlen(my_option_names[i]));
+            ZVAL_DEREF(value); /* Already validated as a string above. */
+            char path[MAXPATHLEN];
+            if (!capture_php_path(Z_STR_P(value), path)) goto error;
+            /* Allocate before replacing the registered owner's old string so
+             * a Zend allocation bailout cannot leave a stale owned pointer. */
+            char *owned = estrdup(path);
+            efree(p->options[i]);
+            p->options[i] = owned;
         }
     }
     if (mysql_options(p->conn, MYSQL_OPT_NONBLOCK, NULL) ||
