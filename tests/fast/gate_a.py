@@ -8,6 +8,7 @@ out=pathlib.Path(a.output).resolve();out.mkdir(parents=True,exist_ok=False)
 module=pathlib.Path(a.extension);module=(root/module).resolve();start=time.monotonic();rows=[]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 manifest={str(p.relative_to(root)):sha(p)for d in ['ext','src','tests/fast']for p in (root/d).rglob('*')if p.is_file()}
+manifest['tests/http/curl_cache.c']=sha(root/'tests/http/curl_cache.c')
 (out/'identity.json').write_text(json.dumps({'source':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'status':subprocess.check_output(['git','status','--short'],cwd=root,text=True),'manifest':manifest,'module':str(module),'moduleSha256':sha(module),'arguments':vars(a)},indent=2)+'\n')
 def run(name,cmd,env=None,expected=0):
  before=resource.getrusage(resource.RUSAGE_CHILDREN);t=time.monotonic();log=out/(name+'.log')

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Private TLS proxy peer with bounded loopback-only forwarding."""
-import http.client,http.server,json,pathlib,select,socket,ssl,sys,threading,urllib.parse
+import http.client,http.server,json,pathlib,socket,ssl,sys,threading,urllib.parse
+from https_proxy_io import ready_for_tunnel
 cfg=json.loads(pathlib.Path(sys.argv[1]).read_text());stop=threading.Event();lock=threading.Lock();stats={'http':0,'connect':0,'headers':0}
 class Proxy(http.server.BaseHTTPRequestHandler):
     protocol_version='HTTP/1.1'
@@ -13,8 +14,7 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         self.connection.settimeout(3)
         try:
             while not stop.is_set():
-                ready,_,_=select.select([remote,self.connection],[],[],.1)
-                if self.connection.pending() and self.connection not in ready:ready.append(self.connection)
+                ready=ready_for_tunnel(remote,self.connection)
                 for source in ready:
                     data=source.recv(65536)
                     if not data:return
