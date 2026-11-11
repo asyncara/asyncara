@@ -112,3 +112,18 @@ Repeat each family with both backends. Omit `--paths` to run the existing comple
 mTLS suite. `--paths invalid policy late-policy native-policy-ca native-policy-cert
 native-policy-key` selects controls that reject before TLS negotiation. Existing
 output directories are refused. Independent packaging is attested separately.
+
+## Independent source distribution
+
+Packaged source `a7c26fd6284b3bc0bced0eedc35406491aae652b`,696 files, archive
+`build/asyncara-0.1.0-dev-sql-tls-paths-r1.tar.gz`. SHA-256:
+`bd3ceec136ff19b085cf5eeed9d1d688df4f5083483855afe1ad8f5275b9dc70`. A second archive is byte-identical; every
+file matches Git before and after extracted-source tests. Fresh Cargo/C build
+PASS in131.931s, followed by26 SQL/Native Server checks,
+27commands total in278.542s. Independent module SHA-256:
+`9ad12c175d640e1b6c043ca304bf58b51bf5e0f1563185f772dff3a4165c1b81`.
+[Build/test attestation](phase7/sql-tls-paths-package.json) records exact commands
+and hashes. Completed fixture data and Cargo cache were removed after validation
+to bound disk usage; source, module, certificates, logs and reports remain.
+No GitHub release was published. Final attestation commits only add documentation;
+the archive contains native6ed922b, not later documentation edits.

@@ -19,6 +19,8 @@ The explicit filename policy is **IMPLEMENTED_AND_TESTED** in [the defined scope
 PHP83/84/85, DEBUG/GCC, both readiness backends, Gate A, complete PHP85/HTTP and
 Native Server checks. Unsuppressed policy/MySQL memory controls pass; positive
 PostgreSQL TLS unload still FAILs109 bytes and remains separately documented.
+Independent696-file packaging, fresh Cargo/C compilation and27 SQL/Native Server
+checks PASS; [package attestation](phase7/sql-tls-paths-package.json).
 No FPM endurance, universal DB compatibility or production-readiness claim is added.
 
 ## Verified deferred filename ownership (2026-11-11)

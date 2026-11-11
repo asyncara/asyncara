@@ -1,0 +1,1215 @@
+{
+  "status": "PASS",
+  "release": "EXPERIMENTAL",
+  "sourceCommit": "a7c26fd6284b3bc0bced0eedc35406491aae652b",
+  "nativeCommit": "6ed922be0d4a9a5998d462f336091e64c02cd0f3",
+  "rawReport": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/report.json",
+  "rawReportSha256": "be1785146423bbf841644042c25c1b425034fc20bb93744d7a4fb835e6071792",
+  "result": {
+    "status": "PASS",
+    "sourceCommit": "a7c26fd6284b3bc0bced0eedc35406491aae652b",
+    "nativeCheckpoint": "6ed922be0d4a9a5998d462f336091e64c02cd0f3",
+    "priority": "Native Server primary; FPM compatibility retained, no additional FPM run in this package check",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-sql-tls-paths-r1.tar.gz",
+    "archiveSha256": "bd3ceec136ff19b085cf5eeed9d1d688df4f5083483855afe1ad8f5275b9dc70",
+    "sourceFiles": 696,
+    "gitTreeVerified": true,
+    "byteReproducible": true,
+    "commands": [
+      {
+        "name": "independent-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 131.9311354609672,
+        "logSha256": "985905cacbe455a884af0d9d458ac8ebedcd665633cd4a3677ddc2a10b7520a0"
+      },
+      {
+        "name": "epoll-pg-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-pg-paths",
+          "--paths"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 6.582332829013467,
+        "logSha256": "e234b6bb00b5a7acae947572bfcc1efbd924ef8a5fb9f4f9518ca042a9c14d6e"
+      },
+      {
+        "name": "epoll-pg-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-pg-mtls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.849892552942038,
+        "logSha256": "f096016505087675139cdd9f326310625f43b23bc533a451d4937c57ef98288f"
+      },
+      {
+        "name": "epoll-maria-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-maria-paths",
+          "--paths"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.50482136500068,
+        "logSha256": "3bda2a8df2a12640533deb3b237ca2c3fe68da8f40b3d1a5a3e4af3c37f7656c"
+      },
+      {
+        "name": "epoll-maria-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-maria-mtls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 4.845489881932735,
+        "logSha256": "b364e96331337bbfc9c915716da09955d45ce1a4ae81764ffe5da38b9acadfd9"
+      },
+      {
+        "name": "epoll-oracle-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-oracle-paths",
+          "--paths",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 15.328546043019742,
+        "logSha256": "c4756446db426f39cd6915aff310549d2b1be8dfab259a7f0c922a31dba60237"
+      },
+      {
+        "name": "epoll-oracle-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-oracle-mtls",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 18.15375065500848,
+        "logSha256": "018261d2d23d9a5f24b48191836101c4b8cde778a44e6393935a138581dbfc0d"
+      },
+      {
+        "name": "poll-pg-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-pg-paths",
+          "--paths"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.834391494980082,
+        "logSha256": "a8e688921534be43a75a6965d1c4c3ec8155a7b7382eedd0410845805387907e"
+      },
+      {
+        "name": "poll-pg-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-pg-mtls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.391839944990352,
+        "logSha256": "4b1e5fedb35b755499cdc9af2b9873be9bd503f368c021ab21e96e93dc7725e2"
+      },
+      {
+        "name": "poll-maria-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-maria-paths",
+          "--paths"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.8734212529379874,
+        "logSha256": "69a9d588c294bd58d8fd803771a44495fef521a3bbe8caaa380c22dd8f66361d"
+      },
+      {
+        "name": "poll-maria-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-maria-mtls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 5.880443772068247,
+        "logSha256": "e320cc2462724d897f173ef1f4264840ff176bf809693d76a85b2660f376b336"
+      },
+      {
+        "name": "poll-oracle-paths",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-oracle-paths",
+          "--paths",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 14.079515440156683,
+        "logSha256": "fa6fe5149dbaf85b88eb1519c9908580e2dfe4c4b3fcdc7480291987c4d69748"
+      },
+      {
+        "name": "poll-oracle-mtls",
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-oracle-mtls",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 16.17914376500994,
+        "logSha256": "ccf47358a7f7bab688be915913f9cf7d4c75a4dc019fa39ecb4d745ffaa50e12"
+      },
+      {
+        "name": "epoll-server-run",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-run",
+          "--backend",
+          "epoll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 2.2788556220475584,
+        "logSha256": "a2c56fc5ad63086fce025fb9414caa03af9f260b9fbe9745dafdc6e47164e268"
+      },
+      {
+        "name": "epoll-server-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-tls",
+          "--backend",
+          "epoll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 3.3827631829772145,
+        "logSha256": "f3fb8f084dc381914ad233ccd3e7d8c9f4d35b09960bc99c86f91b2367be3689"
+      },
+      {
+        "name": "epoll-server-stream",
+        "command": [
+          "python3",
+          "tests/server/stream.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-stream",
+          "--backend",
+          "epoll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.6945021741557866,
+        "logSha256": "108385c465a7f6e70e0276fec863061cbcde74eeea1a0820e00a52e818a1cbb7"
+      },
+      {
+        "name": "epoll-server-stream-tls",
+        "command": [
+          "python3",
+          "tests/server/stream.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-stream-tls",
+          "--backend",
+          "epoll",
+          "--tls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.2316568850073963,
+        "logSha256": "1e3c953aea87b598e71c7f98c34e9be497e436d9b7accd7ec20bd6a54916f0f4"
+      },
+      {
+        "name": "epoll-server-input",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-input",
+          "--backend",
+          "epoll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 3.855390098877251,
+        "logSha256": "7c9e855f61d274ba163e2b213fa147bb5a667a7ba7b46f90375e88ce87754e9d"
+      },
+      {
+        "name": "epoll-server-input-tls",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-input-tls",
+          "--backend",
+          "epoll",
+          "--tls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 4.430131108965725,
+        "logSha256": "76dbd125a48443509e7feaba1c07dd6ebd72f7165d41cbd8aca87bb8e2b97c73"
+      },
+      {
+        "name": "epoll-server-workers",
+        "command": [
+          "python3",
+          "tests/server/workers.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-server-workers",
+          "--posix",
+          "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925/posix.so",
+          "--tls",
+          "--input"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 3.04818873712793,
+        "logSha256": "9e33e295abbd332483afb089fd8240cb5f4d7bc7d6ad7f2cab74959710a80f06"
+      },
+      {
+        "name": "poll-server-run",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-run",
+          "--backend",
+          "poll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 2.166970211081207,
+        "logSha256": "44dedb43eaf9e29cff526931d249cc62a94c8cf0b7c1509392ea883315cc100b"
+      },
+      {
+        "name": "poll-server-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-tls",
+          "--backend",
+          "poll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 3.1138471560552716,
+        "logSha256": "ff8d11a5736550f01da82b01fcec1ed848ea23108230f24ff4c9ffe4a22e7fc3"
+      },
+      {
+        "name": "poll-server-stream",
+        "command": [
+          "python3",
+          "tests/server/stream.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-stream",
+          "--backend",
+          "poll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.6706945749465376,
+        "logSha256": "1d7c5ea37998d1d5cc2db66968e60efed1880bd27218e4256dfcc63cf124a625"
+      },
+      {
+        "name": "poll-server-stream-tls",
+        "command": [
+          "python3",
+          "tests/server/stream.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-stream-tls",
+          "--backend",
+          "poll",
+          "--tls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.380426635965705,
+        "logSha256": "03c106777271f44b99964a9f2c5878951a289a91bc2fe680657626a43414a6c2"
+      },
+      {
+        "name": "poll-server-input",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-input",
+          "--backend",
+          "poll"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 4.103807626990601,
+        "logSha256": "f863ae8fbf65ec987c3c50ec01231f5b7b66fa65dfa81b1a0257abcccda3f198"
+      },
+      {
+        "name": "poll-server-input-tls",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-input-tls",
+          "--backend",
+          "poll",
+          "--tls"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 4.38939323509112,
+        "logSha256": "a862acbd9fe64cd373966f4eb1085266884f5ab5a308e3ac8dd304b510377038"
+      },
+      {
+        "name": "poll-server-workers",
+        "command": [
+          "python3",
+          "tests/server/workers.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-server-workers",
+          "--posix",
+          "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925/posix.so",
+          "--tls",
+          "--input"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 2.3611118718981743,
+        "logSha256": "4ff6b070eba16dbd913e136a47293540cb22a00d22862343c684f33d9ec70281"
+      }
+    ],
+    "buildEnvironment": {
+      "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+      "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+      "CARGO_TARGET_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/cargo-target",
+      "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+      "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+      "PHP_INCLUDE_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+    },
+    "independentModuleSha256": "9ad12c175d640e1b6c043ca304bf58b51bf5e0f1563185f772dff3a4165c1b81",
+    "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7"
+  },
+  "sourceTreeComparedWithGitBeforeAndAfterTests": true,
+  "cleanupReports": [
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/report.json",
+      "sha256": "003fe5e268476b8ca5947e92707b4cc9f1f9595e8d9d1b45b1f69d6f21cce1e9",
+      "result": {
+        "status": "PASS",
+        "deleted": [
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-after-matched-r1/epoll-postgresql/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/0"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-after-matched-r1/epoll-mariadb/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/1"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-after-matched-r1/epoll-oracle/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/2"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-focused-r1/epoll-postgresql/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/3"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-focused-r1/epoll-mariadb/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/4"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-focused-r1/epoll-oracle/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/5"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/6"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-oracle-poll-mtls/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/7"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-oracle-epoll-paths/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/8"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/9"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/10"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/11"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/12"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-oracle-epoll-paths/data",
+            "allocatedBytes": 196984832,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/13"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/14"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/15"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/16"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/17"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-oracle-epoll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/18"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/19"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/20"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-oracle-epoll-mtls/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/21"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/22"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/23"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-maria-epoll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/24"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/25"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-oracle-poll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/26"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/27"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-oracle-epoll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/28"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-oracle-epoll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/29"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-maria-poll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/30"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-oracle-poll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/31"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-oracle-epoll-mtls/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/32"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/33"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/34"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-maria-epoll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/35"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/debug-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/36"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/83-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/37"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/38"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/39"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/40"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-pg-poll-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/41"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-pg-epoll-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/42"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/gcc-maria-poll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/43"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/85-oracle-poll-mtls/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/44"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r1/84-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/45"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-before-r1/epoll-postgresql/data",
+            "allocatedBytes": 40382464,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/46"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-before-r1/epoll-mariadb/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/47"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-before-r1/epoll-oracle/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/48"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-after-r1/epoll-postgresql/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/49"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-after-r1/epoll-mariadb/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/50"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-late-after-r1/epoll-oracle/data",
+            "allocatedBytes": 196984832,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/51"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/52"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-oracle-poll-mtls/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/53"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-oracle-epoll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/54"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/55"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/56"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/57"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/58"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-oracle-epoll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/59"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/60"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/61"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-oracle-poll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/62"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/63"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-oracle-epoll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/64"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/65"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/66"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-oracle-epoll-mtls/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/67"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/68"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/69"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-maria-epoll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/70"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/71"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-oracle-poll-paths/data",
+            "allocatedBytes": 196984832,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/72"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/73"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-oracle-epoll-paths/data",
+            "allocatedBytes": 196980736,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/74"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-oracle-epoll-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/75"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-maria-poll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/76"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/77"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-oracle-epoll-mtls/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/78"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-pg-epoll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/79"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/80"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-maria-epoll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/81"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/debug-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/82"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/83-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/83"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-maria-epoll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/84"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-maria-poll-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/85"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-pg-poll-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/86"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-pg-poll-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/87"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-pg-epoll-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/88"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/gcc-maria-poll-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/89"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/85-oracle-poll-mtls/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/90"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-matrix-r2/84-oracle-poll-paths/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r1/91"
+          }
+        ],
+        "retainedFilesVerified": 5180,
+        "freeGainBytes": 12218310656,
+        "finishedUtc": "2026-11-11T21:46:32Z",
+        "scope": "Stopped synthetic database storage only. Logs, source, certificates, reports and binaries preserved; fixtures regenerate through recorded commands."
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/report.json",
+      "sha256": "775e87666464c8c6143062cea892362682725d3ad97bfe709e4ae96f23cd9a46",
+      "result": {
+        "status": "PASS",
+        "deleted": [
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r1/epoll-pg-policy/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/0"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/epoll-maria/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/1"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/epoll-pg-policy/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/2"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/poll-maria/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/3"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/poll-oracle/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/4"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/poll-pg-tls/data",
+            "allocatedBytes": 40382464,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/5"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/epoll-pg-tls/data",
+            "allocatedBytes": 40382464,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/6"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/epoll-oracle/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/7"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-memory-r2/poll-pg-policy/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/8"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-maria-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/9"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-oracle-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/10"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-pg-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/11"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-pg-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/12"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-oracle-paths/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/13"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-pg-mtls/data",
+            "allocatedBytes": 40390656,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/14"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-maria-paths/data",
+            "allocatedBytes": 149684224,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/15"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-maria-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/16"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-oracle-mtls/data",
+            "allocatedBytes": 196972544,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/17"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-pg-paths/data",
+            "allocatedBytes": 40386560,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/18"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/epoll-oracle-mtls/data",
+            "allocatedBytes": 196976640,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/19"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/poll-maria-mtls/data",
+            "allocatedBytes": 149688320,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/20"
+          },
+          {
+            "path": "/home/coder/Asyncara-priority-20261110T205459Z/sql-tls-paths-package-r1/cargo-target",
+            "allocatedBytes": 125698048,
+            "metadata": "/home/coder/Asyncara-priority-20261110T205459Z/sql-trust-data-cleanup-r2/21"
+          }
+        ],
+        "retainedFilesVerified": 2775,
+        "freeGainBytes": 2567139328,
+        "finishedUtc": "2026-11-11T22:15:53Z",
+        "scope": "Stopped synthetic database storage and completed independent Cargo build cache only. Logs, source, certificates, reports and binaries preserved; fixtures regenerate through recorded commands."
+      }
+    }
+  ],
+  "limitations": [
+    "Independent clean source/build directory, same local dependency/toolchain environment; not cross-platform certification.",
+    "PostgreSQL ordinary Valgrind TLS unload remains FAIL109bytes in separate retained reports.",
+    "No FPM campaign or GitHub release/publication in this continuation."
+  ]
+}
