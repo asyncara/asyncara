@@ -1,5 +1,26 @@
 # Filesystem behavior
 
+## Filename capture at admission (2026-11-11)
+
+Native `141174a` captures relative filenames before the Tasks used by
+File open/stage, Files exists/readStream/writeStream, SQLite open and HTTP file
+transfers can run. The shared bounded C helper retains PHP virtual cwd and
+open_basedir rules, preserves symlink/.. traversal and ordinary filename bytes,
+and does not open a file or create a native operation. Worker admission still
+checks current policy. SQLite :memory: remains special. A rejected writeStream
+path closes an already-owned ReadableStream producer. Invalid path input can
+now throw before a Future is created. This captures a name, not an inode or
+file contents; hostile filesystem replacement is a separate boundary.
+
+State: IMPLEMENTED_BUT_NOT_FULLY_TESTED. Matched controls reproduce28 failures
+before the fix and pass afterward. PHP83/84/85, DEBUG and GCC ASan/UBSan on
+epoll/poll pass45 commands/220 PHP executions in170.174s. The user requested
+a stop and push at this point. Final memory/full/FPM gates and independent
+packaging for this source remain unexecuted. [Exact checkpoint and pending work]
+(phase7/filesystem-admission-checkpoint.json). The previous stream-trust-r1
+archive does not contain this correction. Release remains EXPERIMENTAL.
+
+
 All implemented file operations execute on bounded native pthread workers.
 io_uring filesystem operations remain **NOT_IMPLEMENTED**; the old NOP probe is
 not a filesystem backend. Stable File handles, chunked streams and backpressure

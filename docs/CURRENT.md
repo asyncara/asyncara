@@ -1,5 +1,15 @@
 # Current isolated HTTP development state
 
+## Saved filesystem admission checkpoint (2026-11-11)
+
+Native `141174a` fixes reproduced deferred filename selection in filesystem,
+SQLite and HTTP file transfers. The matched regression and five-build matrix
+pass; final memory/full/FPM/package gates are pending because the owner requested
+a stop and push. Status: IMPLEMENTED_BUT_NOT_FULLY_TESTED;
+[scope and evidence](FILESYSTEM.md#filename-capture-at-admission-2026-11-11).
+Earlier package results keep their original identities. EXPERIMENTAL remains.
+
+
 ## Verified TCP/Redis trust-path ownership (2026-11-11)
 
 Native `19a64d2` repairs reproduced relative-CA selection and explicit
