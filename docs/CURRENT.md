@@ -1,5 +1,19 @@
 # Current isolated HTTP development state
 
+## Current priority contracts (2026-11-11)
+
+[Priority capability matrix](PRIORITY_CAPABILITIES.md) is the current lookup for
+Rust Hyper, Native Server, both HTTP clients, HTTP/proxy certification, SQL, Redis,
+filesystem and managed-memory hardening. It defines each tested API contract and
+keeps broader unsupported certification separate from implementation status.
+Historical tables below retain their original source/date.
+
+The new native continuation adds [bounded Basic proxy authentication](PROXY_AUTHENTICATION.md)
+and repairs reproduced native/root-callback trace disclosure and pre-runtime
+connection-pool configuration. Final service/memory/regression evidence is
+recorded in that continuation; no universal protocol or memory guarantee and
+no production release promotion is made.
+
 ## Development priority (2026-11-11)
 
 The owner selected **Asyncara Server as the primary development and validation

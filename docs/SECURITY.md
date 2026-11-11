@@ -437,3 +437,18 @@ native resource users retain explicit close responsibility and request cleanup.
 The libpq `system` selector remains a selector. No inode/content snapshot,
 default-library-file sandbox, asynchronous disk-loading guarantee or remote
 cancellation acknowledgement is introduced. [Exact evidence and limits](SQL_TLS_PATHS.md).
+
+## Proxy credentials and callback traces (2026-11-11)
+
+Explicit Basic proxy credentials are bounded to4096 printable ASCII bytes per
+field, detached from caller references and passed through curl's proxy-specific
+setters. They require an explicit HTTP(S) proxy and conflict with user-provided
+Proxy-Authorization headers. Origin authentication is kept outside CONNECT.
+HTTP proxy Basic setup is plaintext; use HTTPS proxy transport to protect that
+hop. This does not imply Digest/NTLM/Negotiate/SOCKS support.
+
+Native submission arguments and root Async/Scheduler callbacks are now marked
+sensitive, matching existing spawn policy. Independent old-source controls
+reproduce synthetic credential/captured-callback exposure. The correction does
+not redact user-written error text, arbitrary closures or deliberate object
+dumps. See [authentication evidence](PROXY_AUTHENTICATION.md).

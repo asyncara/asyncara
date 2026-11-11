@@ -611,3 +611,17 @@ native resource users retain explicit close responsibility and request cleanup.
 The libpq `system` selector remains a selector. No inode/content snapshot,
 default-library-file sandbox, asynchronous disk-loading guarantee or remote
 cancellation acknowledgement is introduced. [Exact evidence and limits](SQL_TLS_PATHS.md).
+
+## Pool configuration before Native Server startup
+
+ConnectionPool construction now admits vacant slots without suspension and
+without opening a native connection. It can occur before App::listen or
+Async::run. Factory execution, borrowing and close still require the runtime.
+`tests/pool_configuration.php` verifies lazy factories, distinct concurrent
+leases and exact repeated-close behavior. This does not add cross-request or
+cross-process ownership, lazy query submission, or an automatic pool destructor.
+
+Explicit HTTP proxy credentials are captured with client configuration, copied
+at native admission and retained under existing operation/pool lifetimes. The
+[authentication contract](PROXY_AUTHENTICATION.md) preserves cancellation and
+result collection. No proxy network wait is moved to workers.

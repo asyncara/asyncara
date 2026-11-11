@@ -283,3 +283,19 @@ native resource users retain explicit close responsibility and request cleanup.
 The libpq `system` selector remains a selector. No inode/content snapshot,
 default-library-file sandbox, asynchronous disk-loading guarantee or remote
 cancellation acknowledgement is introduced. [Exact evidence and limits](SQL_TLS_PATHS.md).
+
+## Native Server configuration and proxy credential continuation
+
+ConnectionPool's constructor previously called Queue::put merely to create
+empty slots, incorrectly requiring an already active scheduler. The reproduced
+configuration failure is corrected with non-suspending insertion; factories
+remain deferred until actual borrowing. Existing lease/cancellation/discard
+ownership is unchanged. tests/pool_configuration.php verifies independent
+borrowers and exactly two final closes.
+
+Proxy username/password use the existing bounded owned ar_value conversion,
+then curl-owned copies. Cached easy handles retain the existing reset/eligibility
+policy; independent proxy tests reject missing/wrong credentials after successful
+authenticated use. Sensitive native argument arrays and root callbacks prevent
+the reproduced exception-trace disclosure, without changing operation ownership.
+This audit does not count third-party credential copies as ledger-owned memory.
