@@ -108,6 +108,11 @@ jobs:
       - run: ./scripts/ci-run.sh build/ci-step-19.log bash -c 'make build'
       - run: ./scripts/ci-run.sh build/ci-step-20.log bash -c './scripts/prepare-test-certs.sh'
       - run: ./scripts/ci-run.sh build/ci-stock-databases.log ./scripts/test-databases.py
+      - name: Bounded Redis RESP3 pushes and ordinary reply association
+        run: |
+          for backend in epoll poll; do
+            python3 tests/database/redis_push.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/redis-push/"$backend"
+          done
       - name: Bounded PostgreSQL prepared statement ownership
         run: |
           for backend in epoll poll; do
@@ -154,5 +159,7 @@ jobs:
             build/pg-mtls/**/*.log
             build/mysql-mtls/**/report.json
             build/mysql-mtls/**/*.log
+            build/redis-push/**/report.json
+            build/redis-push/**/*.log
     env:
       ASYNCARA_AUDIT_DIR: build/ci-audit

@@ -13,11 +13,15 @@ final class Connection
     private int $bytes = 0, $elements = 0;
     private Semaphore $gate;
     private bool $subscribed = false;
-    private function __construct(private TcpStream $stream, private float $timeout) { $this->gate = new Semaphore(1); }
-    public static function connect(string $host = '127.0.0.1', int $port = 6379, #[\SensitiveParameter] ?string $password = null, ?string $user = null, bool $resp3 = false, float $timeout = 30, bool $tls = false, ?string $caFile = null): Future
+    private bool $closed = false;
+    private array $notifications = [];
+    private int $notificationBytes = 0;
+    private function __construct(private TcpStream $stream, private float $timeout, private int $notificationLimit = 1024, private int $notificationByteLimit = 1048576) { $this->gate = new Semaphore(1); }
+    public static function connect(string $host = '127.0.0.1', int $port = 6379, #[\SensitiveParameter] ?string $password = null, ?string $user = null, bool $resp3 = false, float $timeout = 30, bool $tls = false, ?string $caFile = null, int $notificationLimit = 1024, int $notificationByteLimit = 1048576): Future
     {
-        return Async::spawn(static function () use ($host,$port,$password,$user,$resp3,$timeout,$tls,$caFile): self {
-            $connection = new self(TcpStream::connect($host,$port,$timeout,$tls,$caFile)->await(),$timeout);
+        if ($notificationLimit < 1 || $notificationLimit > 1024 || $notificationByteLimit < 1 || $notificationByteLimit > 1048576) throw new \ValueError('Redis notification limits must be 1..1024 messages and 1..1048576 wire bytes');
+        return Async::spawn(static function () use ($host,$port,$password,$user,$resp3,$timeout,$tls,$caFile,$notificationLimit,$notificationByteLimit): self {
+            $connection = new self(TcpStream::connect($host,$port,$timeout,$tls,$caFile)->await(),$timeout,$notificationLimit,$notificationByteLimit);
             try {
                 if ($password !== null) $connection->command($user !== null ? ['AUTH',$user,$password] : ['AUTH',$password])->await();
                 if ($resp3) $connection->command(['HELLO',3])->await();
@@ -53,7 +57,14 @@ final class Connection
             try {
                 $this->stream->write($request); $results = [];
                 $this->bytes = $this->elements = 0;
-                foreach ($commands as $_) $results[] = $this->parse(0);
+                foreach ($commands as $_) {
+                    do {
+                        $before = $this->bytes; $push = false;
+                        $reply = $this->parse(0,$push);
+                        if ($push) $this->acceptNotification($reply,$this->bytes-$before);
+                    } while ($push);
+                    $results[] = $reply;
+                }
                 return $results;
             } catch (\Throwable $e) { $this->close(); throw $e; }
         })));
@@ -71,7 +82,14 @@ final class Connection
         if (!$channels || $this->subscribed) throw new \LogicException('Provide channels on an unused connection');
         $this->subscribed = true;
         return Async::spawn(fn() => Async::timeout($this->timeout, fn() => $this->gate->withPermit(function () use ($channels): self {
-            try { $this->stream->write(self::encode(['SUBSCRIBE', ...$channels])); foreach ($channels as $_) { $reply = $this->readReply(); if ($reply instanceof ServerException) throw $reply; } return $this; }
+            try {
+                $this->stream->write(self::encode(['SUBSCRIBE', ...$channels]));
+                foreach ($channels as $channel) {
+                    $reply = $this->readReply(); if ($reply instanceof ServerException) throw $reply;
+                    if (!is_array($reply) || count($reply)!==3 || $reply[0]!=='subscribe' || $reply[1]!==(string)$channel || !is_int($reply[2]) || $reply[2]<1) throw new OperationException('Unexpected Redis subscription acknowledgement');
+                }
+                return $this;
+            }
             catch (\Throwable $e) { $this->close(); throw $e; }
         })));
     }
@@ -79,7 +97,7 @@ final class Connection
     {
         if (!$this->subscribed) throw new \LogicException('Connection is not subscribed');
         return $this->gate->withPermit(function (): array {
-            try { $reply = $this->readReply(); if (!is_array($reply)) throw new OperationException('Unexpected Redis Pub/Sub reply'); return $reply; }
+            try { $reply = $this->readReply(); if (!is_array($reply) || count($reply)!==3 || $reply[0]!=='message' || !is_string($reply[1]) || !is_string($reply[2])) throw new OperationException('Unexpected Redis Pub/Sub reply'); return $reply; }
             catch (\Throwable $e) { $this->close(); throw $e; }
         });
     }
@@ -113,10 +131,12 @@ final class Connection
         if (strlen($digits) > strlen($limit) || (strlen($digits) === strlen($limit) && strcmp($digits,$limit) > 0)) throw new OperationException('Redis integer outside platform range');
         return (int)$line;
     }
-    private function parse(int $depth): mixed
+    private function parse(int $depth, ?bool &$push = null): mixed
     {
         if ($depth > 32 || ++$this->elements > 100000) throw new OperationException('Redis response nesting/element limit exceeded');
         $type = $this->take(1); $line = $this->line();
+        $push = $type === '>';
+        if ($push && $depth !== 0) throw new OperationException('Redis push cannot be nested in a reply');
         if ($type === '+') return $line;
         if ($type === '-') return new ServerException($line);
         if ($type === '_') { if ($line !== '') throw new OperationException('Malformed Redis null'); return null; }
@@ -149,5 +169,24 @@ final class Connection
         }
         throw new OperationException('Unsupported RESP type');
     }
-    public function close(): void { $this->stream->close(); }
+    private function acceptNotification(array $notification, int $bytes): void
+    {
+        if (count($this->notifications) >= $this->notificationLimit || $bytes > $this->notificationByteLimit-$this->notificationBytes) throw new OperationException('Redis notification queue limit exceeded; connection closed');
+        $this->notifications[] = $notification; $this->notificationBytes += $bytes;
+    }
+    /** Drain pushes already read with command replies. Does not read or wait for idle pushes. */
+    public function drainNotifications(): array
+    {
+        $notifications = $this->notifications; $this->notifications = []; $this->notificationBytes = 0;
+        return $notifications;
+    }
+    public function statistics(): array
+    {
+        return ['notifications'=>count($this->notifications),'notificationBytes'=>$this->notificationBytes,'notificationLimit'=>$this->notificationLimit,'notificationByteLimit'=>$this->notificationByteLimit,'closed'=>$this->closed];
+    }
+    public function close(): void
+    {
+        $this->closed = true; $this->notifications = []; $this->notificationBytes = 0; $this->buffer = '';
+        $this->stream->close();
+    }
 }
