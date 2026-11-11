@@ -36,7 +36,7 @@ if(!str_contains($mode,'basedir')){
         });
     }finally{chdir($before);}
 }else{
-    demand(in_array($mode,['basedir','native-basedir'],true),'Unknown check');
+    demand(in_array($mode,['basedir','native-basedir','proxy-basedir','native-proxy-basedir'],true),'Unknown check');
     ini_set('open_basedir',dirname(__DIR__,2).PATH_SEPARATOR.$config['allowed']);
     $warnings=0;
     set_error_handler(static function(int $level,string $message)use(&$warnings):bool{
@@ -47,7 +47,9 @@ if(!str_contains($mode,'basedir')){
             for($i=0;$i<40;$i++){
                 $rejected=false;
                 try{
-                    if($mode==='native-basedir')Scheduler::current()->native('http',[$config['url'].'/small',null,['method'=>'GET','headers'=>[],'caFile'=>$config['forbidden']],5000])->await();
+                    if($mode==='native-proxy-basedir')Scheduler::current()->native('http',['http://proxy-target.invalid/small',null,['method'=>'GET','headers'=>[],'proxy'=>$config['url'],'proxyCaFile'=>$config['forbidden']],5000])->await();
+                    elseif($mode==='proxy-basedir')(new HttpClient(proxy:$config['url'],proxyCaFile:$config['forbidden']))->get('http://proxy-target.invalid/small')->await();
+                    elseif($mode==='native-basedir')Scheduler::current()->native('http',[$config['url'].'/small',null,['method'=>'GET','headers'=>[],'caFile'=>$config['forbidden']],5000])->await();
                     else(new HttpClient(caFile:$config['forbidden']))->get($config['url'].'/small')->await();
                 }catch(ValueError $e){$rejected=str_contains($e->getMessage(),'open_basedir');}
                 demand($rejected,'HTTP native trust file bypassed open_basedir');

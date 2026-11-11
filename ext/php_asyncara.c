@@ -16,6 +16,7 @@
 #include <poll.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 #if PHP_VERSION_ID < 80300 || PHP_VERSION_ID >= 80600
 #error Asyncara targets released PHP 8.3 through 8.5
@@ -246,6 +247,8 @@ static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
         return false;
     bool files = false, multipart = false, legacy_file = false, upload = false;
+    bool proxy_ca = false;
+    const char *proxy = NULL;
     int64_t upload_size = -1;
     for (size_t i = 0; i < v->count; i++) {
         char *key = v->keys[i];
@@ -306,15 +309,20 @@ static bool valid_http_options(ar_value *v) {
                 bytes += s->length + 2;
                 if (bytes > 65536) return false;
             }
-        } else if (!strcmp(key, "method") || !strcmp(key, "proxy") || !strcmp(key, "caFile") ||
+        } else if (!strcmp(key, "method") || !strcmp(key, "proxy") || !strcmp(key, "caFile") || !strcmp(key, "proxyCaFile") ||
                    !strcmp(key, "fileField") || !strcmp(key, "fileName") || !strcmp(key, "fileType")) {
             if (x->type != V_STRING || memchr(x->string, 0, x->length) || strpbrk(x->string, "\r\n"))
                 return false;
             if (!strncmp(key, "file", 4) && (!x->length || x->length > 256)) return false;
             if (!strncmp(key, "file", 4)) legacy_file = true;
+            if (!strcmp(key, "proxy")) proxy = x->string;
+            if (!strcmp(key, "proxyCaFile")) proxy_ca = true;
         } else
             return false;
     }
+    /* Explicit proxy trust must not silently accompany a plaintext proxy or
+     * depend on a later environment change choosing the intended endpoint. */
+    if (proxy_ca && (!proxy || strncasecmp(proxy, "https://", 8))) return false;
     /* Multiple files use one sequential unknown-length producer. Do not
      * silently ignore file descriptors without the matching MIME/upload mode. */
     return !files || (multipart && upload && upload_size == -1 && !legacy_file);
@@ -879,7 +887,7 @@ PHP_FUNCTION(asyncara_submit) {
                 if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem")) && !e->hyper_requested) {
                     zend_value_error("Resolved addresses and trust bytes are internal to the Hyper transport");
                     goto error;
-                } else if (!strcmp(options->keys[i], "caFile")) {
+                } else if (!strcmp(options->keys[i], "caFile") || !strcmp(options->keys[i], "proxyCaFile")) {
                     /* libcurl can open its trust file after submission returns.
                      * This key is never part of the borrowed stack option view:
                      * replace only the job-owned copy, retaining ledger cleanup
