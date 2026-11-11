@@ -8,7 +8,7 @@ require dirname(__DIR__,2).'/autoload.php';
 use Asyncara\{Async,Future};
 use Asyncara\HTTP\HttpClient;
 $before=asyncara_info();
-foreach(['hyperSubmitted','hyperCompleted','hyperConnections','pendingOperations','nativeMemoryBytes']as$key)
+foreach(['hyperSubmitted','hyperCompleted','hyperConnections','pendingOperations','nativeMemoryBytes','nativeWorkers']as$key)
     if($before[$key]!==0)throw new RuntimeException('Cross-request owner '.$key);
 $id=$_SERVER['AUDIT_ID'];$start=microtime(true);$mode=$_GET['mode']??'';
 $url=str_replace('http://','https://',$_SERVER['AUDIT_URL']);
@@ -37,6 +37,9 @@ try{
     });
 }finally{chdir($cwd);}
 gc_collect_cycles();$after=asyncara_info();
-if($after['pendingOperations']||$after['nativeMemoryBytes']||$after['nativeWorkers']||Future::pendingCount())throw new RuntimeException('Native trust ownership');
+// Hyper loads explicit CA bytes through the four request-owned file workers.
+// They join at RSHUTDOWN; audit.idle separately requires one OS thread after it.
+$expectedWorkers=$caConfig['transport']==='hyper-prototype'?4:0;
+if($after['pendingOperations']||$after['nativeMemoryBytes']||$after['nativeWorkers']!==$expectedWorkers||Future::pendingCount())throw new RuntimeException('Native trust ownership '.json_encode(['pending'=>$after['pendingOperations'],'memory'=>$after['nativeMemoryBytes'],'workers'=>$after['nativeWorkers'],'futures'=>Future::pendingCount()]));
 if($caConfig['transport']==='hyper-prototype'&&($after['hyperSubmitted']!==$count||$after['hyperCompleted']!==$count))throw new RuntimeException('Hyper submission count');
 header('Content-Type: application/json');echo json_encode(['id'=>$id,'pid'=>getmypid(),'start'=>$start,'end'=>microtime(true),'before'=>$before,'after'=>$after,'result'=>$result],JSON_THROW_ON_ERROR);
