@@ -379,3 +379,11 @@ filesystem sandbox is promised. The existing network event loop, upload/file
 workers, buffer bounds and cancellation owners are unchanged.
 [Exact API, tested configurations, memory and FPM evidence](HTTPS_PROXY.md).
 The optional Hyper transport still rejects proxies.
+
+## Buffered HTTP/2 cache ownership (2026-11-11)
+
+The reproduced successful-handle reuse defect is fixed by checking the public
+receive-buffer reset before cache admission. A rejected detached handle is freed;
+shared active connections and streams retain their owners. Verified TLS, bounds,
+cancellation and failure isolation are tested. [Evidence and retained Valgrind
+deadline failure](HTTP2_CLIENT.md); no relaxed security checks or limits.

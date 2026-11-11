@@ -551,3 +551,12 @@ filesystem sandbox is promised. The existing network event loop, upload/file
 workers, buffer bounds and cancellation owners are unchanged.
 [Exact API, tested configurations, memory and FPM evidence](HTTPS_PROXY.md).
 The optional Hyper transport still rejects proxies.
+
+## HTTP/2 buffered completion ownership (2026-11-11)
+
+Successful curl completion does not guarantee an easy handle is reusable while
+other HTTP/2 streams share its connection. Cache admission now checks a public
+receive-buffer reset after detachment; failure frees that handle only. The multi
+owner retains the connection and sibling streams. Shared-waiter cancellation,
+operation cancellation and sibling error isolation pass the [HTTP/2 regressions](HTTP2_CLIENT.md).
+This does not extend the HTTP/1.1 streaming contract to HTTP/2.

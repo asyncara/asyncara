@@ -2,8 +2,8 @@
 
 Native checkpoint `acda044` corrects a reproduced easy-handle reuse failure.
 The existing curl multi API negotiates HTTP/2 with the tested TLS peer. No new
-HTTP parser or transport replaces libcurl. Final compatibility/memory gates are
-in progress. Release remains EXPERIMENTAL.
+HTTP parser or transport replaces libcurl. Functional compatibility and lifecycle gates pass within the scope below.
+The full proxy Valgrind gate retains a deadline failure. Release remains EXPERIMENTAL.
 
 ## Reproduced defect and correction
 
@@ -104,9 +104,9 @@ propagated the producer error. The fixture now relies on consume's existing
 ownership contract. No production stream error was suppressed or assertion
 threshold weakened. Historical Phase4 zero-tick failures remain unresolved.
 
-## Instrumented deadline limitation under investigation
+## Instrumented deadline limitation
 
-`http2-memory-r1` and `r2` remain FAIL: the full nested-TLS proxy workload reaches
+`http2-memory-r1`, `r2` and `r3` remain FAIL: the full nested-TLS proxy workload reaches
 its unchanged5s operation deadline during the17MiB oversize-response test, before
 the required16MiB body-limit rejection. Completed raw DEBUG memchecks show zero
 errors/lost bytes, but that is not a full functional-memory gate pass.
@@ -129,3 +129,36 @@ remove the Valgrind oversize timeout. Historical and new original logs are kept.
 The first independent control runner failed at Valgrind loader initialization
 because it omitted the existing private debuginfo path; its terminal record is
 preserved. The corrected runner uses that path without changing the system.
+
+## Final verification evidence
+
+Raw root: `/home/coder/Asyncara-priority-20261110T205459Z`.
+[Durable attestation](phase7/http2-client.json) includes original failures,
+commands, source manifest, binary fingerprints and report hashes.
+
+| Check | Actual result |
+|---|---|
+| Five builds: PHP83.36/84.27/85.12,85.12 DEBUG/GCC; epoll/poll | PASS35 build/test commands151.615s; final corrected peer30 tests109.565s |
+| Gate A | PASS49 commands212.054s (outer runner) |
+| Full PHP85 suites | PASS epoll47.255s, poll40.692s |
+| HTTP gate, curl and Hyper | PASS93 commands183.459s (outer runner) |
+| HTTPS proxy and direct h2 FPM, both backends | PASS240 main requests/960 HTTP operations |
+| C-only independent module | PASS build plus4 direct/proxy/backend cases |
+| Native cache, GCC ASan/UBSan, native Valgrind | PASS;200 controlled rejection/cleanup paths, valid cache reuse;56bytes reachable under native Valgrind |
+| Direct h2 DEBUG Valgrind, epoll/poll | PASS;0errors and0definite/indirect/possible loss;3888bytes reachable |
+| Full proxy h2 DEBUG Valgrind | FAIL at original5s deadline in17MiB limit test; raw memcheck0errors/loss,3888reachable; not a functional pass |
+
+The final FPM raw recheck verifies source/module hashes, every response ID,
+original two-tick and overlap conditions, per-request native cleanup, distinct
+HTTP/2 stream IDs on one connection and idle6FD/1thread. HTTP/2 sequential RSS
+ranges are21656..21972KiB(epoll) and21780..22260(poll); four-worker ranges
+21412..21856 and21700..21736. Minimum h2 ticks28/13(epoll sequential/four) and
+23/16(poll). The original conditional RSS threshold is retained; these short
+cases have too few samples for a long-run trend claim. No request-order
+chronology is inferred from batch emission order. Fatal-pending cleanup and
+same-worker recovery use the existing audit runner. This is not an endurance pass.
+
+The final matrix uses ordinary unloading and leak detection, without memory
+suppressions. Rust release dependencies are not instrumented by the GCC C/PHP
+build. No universal native-memory safety claim follows from these scoped checks.
+Independent source packaging is recorded separately after this checkpoint.

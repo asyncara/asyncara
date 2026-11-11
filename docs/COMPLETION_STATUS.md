@@ -1,5 +1,19 @@
 # Current partial-work inventory and completion record
 
+## Verified buffered HTTP/2 continuation (2026-11-11)
+
+Native `acda044` fixes a reproduced curl easy-handle cache ownership failure
+while sibling HTTP/2 streams remain active. Buffered curl HTTP/2 over verified
+TLS, directly and through HTTPS CONNECT, is IMPLEMENTED_AND_TESTED within
+[the explicit scope](HTTP2_CLIENT.md). Five-build/both-backend functional and
+GCC matrix, full PHP85 suites, Gate A49, HTTP93 and short four-worker FPM pass.
+Independent recomputation covers240 main/960 HTTP operations, minimum13 ticks
+and idle6 descriptors/1 thread. Full proxy Valgrind remains FAIL at the unchanged
+5s deadline; an independent libcurl-only control reproduces that instrumented
+cost. Direct DEBUG and native cache memory controls pass separately.
+HTTP/2 streaming, Hyper/Server HTTP/2, HTTP/3 and universal proxy certification
+are not included. Historical failures remain intact; release stays EXPERIMENTAL.
+
 ## Verified HTTPS proxy continuation (2026-11-11)
 
 Native `2a5224f` adds independent `proxyCaFile` trust to the existing curl multi

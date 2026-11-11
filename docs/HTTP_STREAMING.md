@@ -355,3 +355,11 @@ filesystem sandbox is promised. The existing network event loop, upload/file
 workers, buffer bounds and cancellation owners are unchanged.
 [Exact API, tested configurations, memory and FPM evidence](HTTPS_PROXY.md).
 The optional Hyper transport still rejects proxies.
+
+## Buffered HTTP/2 scope (2026-11-11)
+
+The curl buffered API now has independent HTTP/2/TLS/HTTPS-CONNECT evidence and
+a corrected easy-cache reuse invariant. [HTTP2_CLIENT.md](HTTP2_CLIENT.md) records
+the exact matrix and remaining instrumented deadline failure. Streaming APIs
+still deliberately select HTTP/1.1; the h2-only peer verifies rejection instead
+of claiming HTTP/2 streaming support.

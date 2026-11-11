@@ -1,0 +1,2440 @@
+{
+  "status": "IMPLEMENTED_AND_TESTED",
+  "release": "EXPERIMENTAL",
+  "scope": "Buffered curl8.5.0 HTTP/2 verified TLS direct and HTTPS CONNECT; not streaming, Hyper, HTTP3 or broad protocol certification",
+  "nativeCommit": "acda0441e19cc840e804b8c4315d867b345c4cd0",
+  "testCommit": "d84546c1b236d27a08d2047c2c8340fe845245f4",
+  "reports": [
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-first-r1/report.json",
+      "sha256": "33f6006790776413d4e615cc4c270f17222a7ace0043f3de94b1cccbc58229e9",
+      "result": {
+        "status": "FAIL",
+        "failure": "AssertionError((255, None))",
+        "exit": 255,
+        "backend": "epoll",
+        "proxy": false,
+        "wallSeconds": 0.5558325790334493,
+        "h2Version": "4.4.1",
+        "moduleSha256": "15bc24109e2564dc2232cab90a41766f7e09aaedab752d6a7a8acd1113a3a82e",
+        "sourceManifestSha256": "f7a1b21b6953aa78f3da5155e29e27aa01a35802f601093537faf3e6a92fd0fd",
+        "artifacts": {
+          "origin.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "origin-final.log": "a0b57da4d2d089440503f9d0e51d7881e419b512deb6700116df1c8fb806bc55",
+          "php.log": "3cb0f00e004de6ff5835baaa21fe412b2ac77b17bcb486a3cb0452d2638c1186"
+        },
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-https-proxy-matrix-85.so",
+          "/home/coder/Asyncara-server-20261109T231953Z/tests/http/http2.php",
+          "/home/coder/Asyncara-priority-20261110T205459Z/http2-first-r1/config.json"
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-cache-before-r1/report.json",
+      "sha256": "337eefdb200cdce04f4dd7f5c32420594c9db6ab46e14b8a97b05d41a5452512",
+      "result": {
+        "status": "EXPECTED_FAILURE_REPRODUCED",
+        "rows": [
+          {
+            "command": [
+              "cc",
+              "-std=c11",
+              "-D_GNU_SOURCE",
+              "-O2",
+              "-g",
+              "-Wall",
+              "-Wextra",
+              "-Werror",
+              "-I.local/sysroot/usr/include",
+              "-I.local/sysroot/usr/include/x86_64-linux-gnu",
+              "tests/http/curl_cache.c",
+              "ext/workers.c",
+              "ext/backend.c",
+              "ext/memory.c",
+              "-pthread",
+              "-l:libsqlite3.so.0",
+              "-l:libcurl.so.4",
+              "-Wl,--wrap=curl_easy_setopt",
+              "-Wl,--wrap=curl_easy_cleanup",
+              "-o",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-cache-before-r1/cache"
+            ],
+            "exit": 0,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-cache-before-r1/cache"
+            ],
+            "exit": 2,
+            "logSha256": "8226c516655ef3ad4fc461977e022552a66701abf8250603246cbfc1e9dadc09"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-after-r1/report.json",
+      "sha256": "052b2e674a5b0df29bdcb1b50d8d56333c8cc3bb7b8b85ce8f8df0eb173e55f3",
+      "result": {
+        "status": "FAIL",
+        "failure": "AssertionError((255, None))",
+        "exit": 255,
+        "backend": "epoll",
+        "proxy": false,
+        "wallSeconds": 1.4144229989033192,
+        "h2Version": "4.4.1",
+        "moduleSha256": "307f9ee99f1d5c43c93df1dd3a3caecf74c0f1d3d10c44ef0ee9e70f1d0ff757",
+        "sourceManifestSha256": "2709cfc760b6732117b12433cff5337af218bf5b37ab2543ea0d2fb29841199d",
+        "artifacts": {
+          "origin.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "origin-final.log": "f721725be8a8719a513bfd9006977bc3ddba77516874e02c9f141ed9b85954ea",
+          "php.log": "d3e9d5c0759743ea942f42ca160fc549cb5b9103512228e8847ad59f34844244"
+        },
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-first.so",
+          "/home/coder/Asyncara-server-20261109T231953Z/tests/http/http2.php",
+          "/home/coder/Asyncara-priority-20261110T205459Z/http2-after-r1/config.json"
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-after-r2/report.json",
+      "sha256": "3a376e8fc254e788c6eb0280542de4db3de902dd19ad5a06ea1f913527dd5100",
+      "result": {
+        "status": "PASS",
+        "failure": null,
+        "exit": 0,
+        "backend": "epoll",
+        "proxy": false,
+        "wallSeconds": 1.1498100261669606,
+        "h2Version": "4.4.1",
+        "moduleSha256": "307f9ee99f1d5c43c93df1dd3a3caecf74c0f1d3d10c44ef0ee9e70f1d0ff757",
+        "sourceManifestSha256": "77530a9fc8387d100277d55cba15275ca6e25f97fb6c764469aeb7d75085ff78",
+        "artifacts": {
+          "origin.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "origin-final.log": "c776b66c9fe5ac09b986b773e768bdf1d8316ae2ae6c0748fb1f79141bb95e30",
+          "php.log": "0cf0005c72ca83fbbced4b8321a7fa2295a886eff73b56bdd793dcfe902fac0c"
+        },
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-first.so",
+          "/home/coder/Asyncara-server-20261109T231953Z/tests/http/http2.php",
+          "/home/coder/Asyncara-priority-20261110T205459Z/http2-after-r2/config.json"
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-comparison-r1/report.json",
+      "sha256": "347d1996c29dabc83b6bc605c9a4e6ffbe07b5af7d64fd4a2d33473c5ab855d2",
+      "result": {
+        "status": "PASS",
+        "scope": "Expected vulnerable failure, candidate normal and verified HTTPS proxy controls",
+        "rows": [
+          {
+            "name": "before",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-https-proxy-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-comparison-r1/before"
+            ],
+            "exit": 1,
+            "expectedExit": 1,
+            "seconds": 1.3511861539445817
+          },
+          {
+            "name": "after-poll",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-first.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-comparison-r1/after-poll"
+            ],
+            "exit": 0,
+            "expectedExit": 0,
+            "seconds": 1.8031939340289682
+          },
+          {
+            "name": "after-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-first.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-comparison-r1/after-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "expectedExit": 0,
+            "seconds": 4.176196055021137
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/report.json",
+      "sha256": "8886fd7d03ba59a2250dd6d789d3a370c0ee3be26d8bcdeaddc4a49308f117f5",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "php": "83",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 8.139817907009274,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "83",
+            "case": "epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.404876180924475,
+            "logSha256": "7d7cc6118b6d8d7665d600d780c2f83f8f312eb380f331dc715d3216d087839e"
+          },
+          {
+            "php": "83",
+            "case": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.4515326567925513,
+            "logSha256": "59e3f988b71ef69ca33e6ed82bb4072ce1621a48e736ed796f5e4f8d52e523d4"
+          },
+          {
+            "php": "83",
+            "case": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.4401380519848317,
+            "logSha256": "02721913cd97ecbc20f5be771c223d61dc0f1c8e3b5cf6975bca32333823937a"
+          },
+          {
+            "php": "83",
+            "case": "poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.3475585121195763,
+            "logSha256": "7a73fa5d3a127cb340c053c33581476984a45202d7b83077713ae6049858fc06"
+          },
+          {
+            "php": "83",
+            "case": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.4493824990931898,
+            "logSha256": "ac6fe4e093bc34d65b49f27d075ecb45f228dd03472d6ae62609eeb063fa78e2"
+          },
+          {
+            "php": "83",
+            "case": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/83-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.477988326922059,
+            "logSha256": "a25dc5388cbd834486fbe170f9a9fb813990e268a2efb8cde980598d56e73ed6"
+          },
+          {
+            "php": "84",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 7.284408533014357,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "84",
+            "case": "epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 2.7631905148737133,
+            "logSha256": "2c459ef8d77f0e70b7f2d58adf755ec514341169ae8a11727c58dd336c484258"
+          },
+          {
+            "php": "84",
+            "case": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.5937070110812783,
+            "logSha256": "b1eb0471b7ce7f6c9371dbdebe03722821590bf1127f7a9de8a24dc454a686a6"
+          },
+          {
+            "php": "84",
+            "case": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.184134111972526,
+            "logSha256": "d162700af0bc2c41a8334364aebf64c5270f99f3bbd6b3ea7578ba22c1c37847"
+          },
+          {
+            "php": "84",
+            "case": "poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.7452114070765674,
+            "logSha256": "90c930001966a184e4327401c028ee42ca3484e7f372d4d67c2254f13e34e222"
+          },
+          {
+            "php": "84",
+            "case": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.5256287849042565,
+            "logSha256": "6397a40989dfe99ab227514c69d0fbec368f822f3e510a8df6e1d713e50e3872"
+          },
+          {
+            "php": "84",
+            "case": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/84-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.171462076017633,
+            "logSha256": "66a354bae9497f4968938f2b64daa7cc7272ae3eabad164d403d707fd6e8d4be"
+          },
+          {
+            "php": "85",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 8.329864175058901,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "85",
+            "case": "epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.6789655790198594,
+            "logSha256": "93a2822e26a3080d50db09740fc2dcc3560b4017b3ef5d1f871ae2db6483e020"
+          },
+          {
+            "php": "85",
+            "case": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.3190066788811237,
+            "logSha256": "28bb4fae9bcf3afe0409a1ffe6c30a7660d96e1d090ddac25d9b7a3acc7058f5"
+          },
+          {
+            "php": "85",
+            "case": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.6174974809400737,
+            "logSha256": "32251ed83fadf165f9524001c040c1a8f3cfddd895a43c8488714bf1c0e14a2a"
+          },
+          {
+            "php": "85",
+            "case": "poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.0957815358415246,
+            "logSha256": "6bb962db3572a22790640fa16b3f97daba80d0b29fcf14469bba2144aaa219e9"
+          },
+          {
+            "php": "85",
+            "case": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.0912721569184214,
+            "logSha256": "874f124d2048dabc5755dc24f1997a7af43a4e0891a502c63f591e3eb9b8ba6a"
+          },
+          {
+            "php": "85",
+            "case": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/85-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.6694688289426267,
+            "logSha256": "3acba1827ae0875147a3d0661a05d83e7cd0d248ca7f63df7a56d11182620e26"
+          },
+          {
+            "php": "debug",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 7.426502872025594,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.1836313367821276,
+            "logSha256": "044eaac9c920b7051a62bf42edc2b8e607ccb16740ca67e5f38d918130842ef8"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.259621063945815,
+            "logSha256": "95da934a1d366fccac6ba3a7323bb90b7aefa84267812fbd7a2984f32eda7613"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.790065454086289,
+            "logSha256": "e3d3b40c8b8e0b7ca85320a602dc7b7c86c203d2f6f8dcab1ccd9f2c69e73ada"
+          },
+          {
+            "php": "debug",
+            "case": "poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.71870469301939,
+            "logSha256": "0474a3b390104bae239757a39dfd100c07885a2c447b99839a7f2bdaaae0b3c4"
+          },
+          {
+            "php": "debug",
+            "case": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.7862193300388753,
+            "logSha256": "47252017a43a5701a613f78aefd6ea58a3b0804b7928e9ca819e81afb36c3ae6"
+          },
+          {
+            "php": "debug",
+            "case": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/debug-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.937821738887578,
+            "logSha256": "e665f67af22c2bbdac20b567d67833aa3c1936fbdb169488c52d73da76ae6f96"
+          },
+          {
+            "php": "gcc",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 22.23876676009968,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.8490473539568484,
+            "logSha256": "2889265029d0253b8329963c5ad8f06fec37f93afa900e25048b14044c50d5eb"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 3.5878863150719553,
+            "logSha256": "3b22ac4f333c8be9ad36a3500c50db382b13ad2cb6b27c6cf7157d436a2c98a3"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 6.236069393111393,
+            "logSha256": "91de3ca1dec18325d1605deaa991105bfe0b7a58d898eff1350b291f28ef990d"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.438672891119495,
+            "logSha256": "4740cac6eab89fcfe210d285370f894a0de479b5fe3a68f5de347bf3eec38a1f"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.7897501790430397,
+            "logSha256": "9e6908365dbeb22e0fc533f48b5473c8e528c07ba9dd1aaba8df0a7b23e4e9d1"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-matrix-r1/gcc-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.590923536801711,
+            "logSha256": "2c06e7a73128470b97899d2ea5b051ad0cd7c43071a89c2af79a05c6e89c4ce5"
+          }
+        ],
+        "binaries": {
+          "priority-http2-matrix-84.so": "3bb16a375041f2061732bf127d08727153543e6e17a348cdfd5b402c667367e9",
+          "priority-http2-matrix-83.so": "6a9745f243b240f2d7ac4acdef05bdb2bf08b52baef4f149b65d155dd242ee57",
+          "priority-http2-matrix-gcc.so": "3a428b898a16312c02fc9a4c9a87237487b4876caf9309b0e9f5753bf8941d1a",
+          "priority-http2-matrix-85.so": "307f9ee99f1d5c43c93df1dd3a3caecf74c0f1d3d10c44ef0ee9e70f1d0ff757",
+          "priority-http2-matrix-debug.so": "e690dd7676a4f6b597113612921ccd9b9a3361fd3a9916cee8601edb200ca14e"
+        }
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/report.json",
+      "sha256": "53b4777504ed0df45f46e74c56dd707a4b757073cd34e558ac073032fa8bc338",
+      "result": {
+        "status": "PASS",
+        "scope": "Same native acda044 binaries, final test peer; ordinary unload GCC leak detection on",
+        "rows": [
+          {
+            "name": "83-epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.056377491913736,
+            "logSha256": "caf0300a16bfb250d99c60a4534485a4eaef7cf7ae7373636359d243aecc0e61"
+          },
+          {
+            "name": "83-epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.3747344380244613,
+            "logSha256": "36ce89c051c6214605de38ea27f8da7e39fc17011d4bf69c3c1e1e96cf62c1d6"
+          },
+          {
+            "name": "83-epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.398956719087437,
+            "logSha256": "5174d0f79eac4a9650aa0ba0bf3ecd703b01634fd16338ceb167df96244a3c69"
+          },
+          {
+            "name": "83-poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.1864653539378196,
+            "logSha256": "f8ad4b42368ea6c656e1a48aefdc9792710f53ea327d597bd653cf2f12b8a8c4"
+          },
+          {
+            "name": "83-poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.537932210136205,
+            "logSha256": "894fd156c5a91ccb1208216c5192c6f4704e0d327bc10b75e48f173815199085"
+          },
+          {
+            "name": "83-poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-http2-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/83-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.7261848419439048,
+            "logSha256": "3e44131fc38816145695036f602da2e61b9296ee7be18ea40e57b14dc02f13be"
+          },
+          {
+            "name": "84-epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.353984260931611,
+            "logSha256": "8a8a9878f6cd4584dbd4f239d3bbbb66a4394f3103706e0b5017981d71d235c2"
+          },
+          {
+            "name": "84-epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.5563894871156663,
+            "logSha256": "4d1791ab4970d619fda65e4947f8936e9e69a96c9c6fcb0478ee08df52a71db3"
+          },
+          {
+            "name": "84-epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.8085034978576005,
+            "logSha256": "f2eaeddd33af13e81540738d91c9dc046d9a9ebaf35e30af98fcaa5033de7813"
+          },
+          {
+            "name": "84-poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.5412712059915066,
+            "logSha256": "7d7b9a705aa878a98e3cb70b0dc323380eba91c1eda437e2e07021a636c59045"
+          },
+          {
+            "name": "84-poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.8034816009458154,
+            "logSha256": "1507d73b3e850de332ca582de6f10b857e1e95ae4d002a6f5920b49b7d74f974"
+          },
+          {
+            "name": "84-poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-http2-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/84-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.1632644180208445,
+            "logSha256": "ed33435df9f313ebcb0b9117348589b73a3b76b90a842cbe070c99249a217f98"
+          },
+          {
+            "name": "85-epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.592667673015967,
+            "logSha256": "303da3dd55ffcb9d5e310286cb797a01eaedd4a10421ea86e87ca78c93ea673f"
+          },
+          {
+            "name": "85-epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 3.1828504141885787,
+            "logSha256": "4360847f702993acdb5bce547b11dd2bee5eadc4d1af03a6eb754649f497132a"
+          },
+          {
+            "name": "85-epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 5.121666599996388,
+            "logSha256": "92264d84f84fb16ad21c1b3fd3dd0eeb096018dd3a21fd1a8adfa0cdc6393512"
+          },
+          {
+            "name": "85-poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.161078138044104,
+            "logSha256": "76378a8bb33d75a7540ea30ca9b379d189a9a43d10d9d6143c4dfb1a664ad7b9"
+          },
+          {
+            "name": "85-poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.3188649979420006,
+            "logSha256": "9f971e7745c932d0307d1086f3bcc7282cb1b339343e760f63f925b79ffdc4ab"
+          },
+          {
+            "name": "85-poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/85-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.211888791061938,
+            "logSha256": "358ff6afd1018ddd72b0bca2157b2056371b96f2eb8ab58370b04b68c6816014"
+          },
+          {
+            "name": "debug-epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 5.034525212831795,
+            "logSha256": "1e9421669349570ee12d5287987c6572465ac5f9e2d1d5db9905eb6698d3f69a"
+          },
+          {
+            "name": "debug-epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.0821739949751645,
+            "logSha256": "ebe1728b79408e02a1dbf364ff92d71ab64b705daa6dc202e7b89a6ffdf2bc28"
+          },
+          {
+            "name": "debug-epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.18808793509379,
+            "logSha256": "29a719eea087a1808c39148ed356f4dca4aa79af40478ac9f2a840fdf5c75fa8"
+          },
+          {
+            "name": "debug-poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.854922658065334,
+            "logSha256": "8a3c4ed29e63b802617ff112f2158f3faf197d462d78d808a230e84cb5e45427"
+          },
+          {
+            "name": "debug-poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.6609364410396665,
+            "logSha256": "6c2c1139bc01a302b36d74372c3cbe0fa5dc07480d39e222a3940355fb62e766"
+          },
+          {
+            "name": "debug-poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/debug-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.7783409068360925,
+            "logSha256": "1139df07cb33dc530cca8834cf77325e65433e3d2c0b4b7f58f716776538791c"
+          },
+          {
+            "name": "gcc-epoll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-epoll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 5.0140694819856435,
+            "logSha256": "74328156cf85bc785579d3ef41e939f8f6d62add42c18e8af4a5d8a8bd57c34e"
+          },
+          {
+            "name": "gcc-epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.7669502780772746,
+            "logSha256": "59b3c9efeffeaf2dd29b3858b12c2de93ecac719416a78161da68446fa2e6a4b"
+          },
+          {
+            "name": "gcc-epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.6145756270270795,
+            "logSha256": "89e89637a8b6aa478e829bf12cf95e0a8c4449cd1dce8515b99ad76fb13763b9"
+          },
+          {
+            "name": "gcc-poll-https-proxy",
+            "command": [
+              "python3",
+              "tests/http/https_proxy.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-poll-https-proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.33352631283924,
+            "logSha256": "7da3da770b311c73a518e2bfddeafb7a11ba90da78bdede9e874e9184619b1fa"
+          },
+          {
+            "name": "gcc-poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 4.362272623926401,
+            "logSha256": "91557023a9206cd70bdcd8b69f203415f1d8deea145876019275c3d6eef668a5"
+          },
+          {
+            "name": "gcc-poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-http2-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-peer-validation-r1/gcc-poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 7.777925165835768,
+            "logSha256": "d32fb423423af6c46e77f3ce4fa093dcf6409d1f3b344ae98e2a52c7a8731d44"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/report.json",
+      "sha256": "6730333b7d9d655eb6d36118a990a7a34cafe80eaa4ab8a6c4e428473b92e96a",
+      "result": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "native-build",
+            "command": [
+              "cc",
+              "-std=c11",
+              "-D_GNU_SOURCE",
+              "-O2",
+              "-g",
+              "-Wall",
+              "-Wextra",
+              "-Werror",
+              "-I.local/sysroot/usr/include",
+              "-I.local/sysroot/usr/include/x86_64-linux-gnu",
+              "tests/http/curl_cache.c",
+              "ext/workers.c",
+              "ext/backend.c",
+              "ext/memory.c",
+              "-pthread",
+              "-l:libsqlite3.so.0",
+              "-l:libcurl.so.4",
+              "-Wl,--wrap=curl_easy_setopt",
+              "-Wl,--wrap=curl_easy_cleanup",
+              "-o",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/cache"
+            ],
+            "exit": 0,
+            "seconds": 4.442340300884098,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "native-cache",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/cache"
+            ],
+            "exit": 0,
+            "seconds": 0.01949841482564807,
+            "logSha256": "a6f9030eee4ef1058208cdd04b6d5c09c9baeed61f58051818c994ed985e6e61"
+          },
+          {
+            "name": "gcc-build",
+            "command": [
+              "cc",
+              "-std=c11",
+              "-D_GNU_SOURCE",
+              "-O2",
+              "-g",
+              "-Wall",
+              "-Wextra",
+              "-Werror",
+              "-I.local/sysroot/usr/include",
+              "-I.local/sysroot/usr/include/x86_64-linux-gnu",
+              "tests/http/curl_cache.c",
+              "ext/workers.c",
+              "ext/backend.c",
+              "ext/memory.c",
+              "-pthread",
+              "-l:libsqlite3.so.0",
+              "-l:libcurl.so.4",
+              "-Wl,--wrap=curl_easy_setopt",
+              "-Wl,--wrap=curl_easy_cleanup",
+              "-O1",
+              "-fsanitize=address,undefined",
+              "-fno-omit-frame-pointer",
+              "-o",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/cache-gcc"
+            ],
+            "exit": 0,
+            "seconds": 5.322007611161098,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "gcc-cache",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/cache-gcc"
+            ],
+            "exit": 0,
+            "seconds": 0.08829532912932336,
+            "logSha256": "a6f9030eee4ef1058208cdd04b6d5c09c9baeed61f58051818c994ed985e6e61"
+          },
+          {
+            "name": "native-valgrind",
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--keep-debuginfo=yes",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--log-file=/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/native-memcheck.log",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/cache"
+            ],
+            "exit": 0,
+            "seconds": 1.364529588026926,
+            "logSha256": "a6f9030eee4ef1058208cdd04b6d5c09c9baeed61f58051818c994ed985e6e61",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 56,
+              "errors": 0
+            },
+            "memcheckSha256": "4912a25ba6a873bf979a3caa159f727d6bce7d2d2feff9cdd8a844f92301c696"
+          },
+          {
+            "name": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/epoll-direct.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/epoll-direct-fixture"
+            ],
+            "exit": 0,
+            "seconds": 16.519146360922605,
+            "logSha256": "ee1c18b9cce249ed2f2dae620e268f6b23efe3ca39fca6d6116cee44bb90a647",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "399dcd53d7f6b05a187af04cae92b58e791547ac0f7854a975f9345991064034"
+          },
+          {
+            "name": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/epoll-proxy.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r1/epoll-proxy-fixture",
+              "--proxy"
+            ],
+            "exit": 1,
+            "seconds": 18.859270630171522,
+            "logSha256": "00dfaa384ab1e623666bc080c9753f28dee8b8118d28e4ea782237c462a8c154",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "d80ddd07bd25a7d1aa5b37cd14be62b3e7c8c1e615d339a0e8a4e66140c793f0"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r2/report.json",
+      "sha256": "12c17ade55d37ddcfa763b58134049aa5723eabb7459debcb7789bc49e159e4c",
+      "result": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r2/epoll-direct.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r2/epoll-direct-fixture"
+            ],
+            "exit": 0,
+            "seconds": 16.09772892203182,
+            "logSha256": "789405cfee198bbfb55a0fe56800eaf65484398e6aec3c64f5ac4a05167d0fc0",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "c10bec94625db5ffd07a28c557b8f4df1abccb3c0da2d5f8c3c56bc17469cb74"
+          },
+          {
+            "name": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r2/epoll-proxy.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r2/epoll-proxy-fixture",
+              "--proxy"
+            ],
+            "exit": 1,
+            "seconds": 18.646544915856794,
+            "logSha256": "ecc86c3872947db820560ff296cb9875734e307efedff3bda4274573abfd8ac8",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "6ea5f741915f87d6df34edf6a7ff53887030e33cc477aafec6a92d85a309040d"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r3/report.json",
+      "sha256": "ff76201e092643ea6c11c1bf70be822072006dcac9645a44f6ad0de5fd3594e8",
+      "result": {
+        "status": "FAIL",
+        "scope": "Ordinary unloading, DEBUG PHP and native cache; no suppressions or module retention",
+        "rows": [
+          {
+            "name": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r3/poll-direct.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r3/poll-direct-fixture"
+            ],
+            "exit": 0,
+            "seconds": 14.89041051408276,
+            "logSha256": "85b97b21a8649aaec5779c949b4b0c6fd731e56b5c10eaa4c7b072be8a794554",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "5679b65f7f1ba1c8296926022a333de8afe927d42314a384f7b8b3c6cbc8e2b4"
+          },
+          {
+            "name": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r3/poll-proxy.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-http2-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-memory-r3/poll-proxy-fixture",
+              "--proxy"
+            ],
+            "exit": 1,
+            "seconds": 17.699062184197828,
+            "logSha256": "174c6b9d448ca7004faf2d5749903bae9322d928070bb0348a043d8194378567",
+            "findings": {
+              "definitely lost": 0,
+              "indirectly lost": 0,
+              "possibly lost": 0,
+              "still reachable": 3888,
+              "errors": 0
+            },
+            "memcheckSha256": "69a683a740c8d531fe3b79a06a421de270105c96e5b46adb4bc254adc4ec14c2"
+          }
+        ],
+        "phpSha256": "04e0a603eeb86e12e695a5570811412fd8c4a7d5a747ade343350bdfa6bee805",
+        "moduleSha256": "e690dd7676a4f6b597113612921ccd9b9a3361fd3a9916cee8601edb200ca14e"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/report.json",
+      "sha256": "8cb38a02bb44df94c860be5b93041a7df2d285b5fb3ffea6ad9f61b6c99ecc1a",
+      "result": {
+        "status": "COMPLETE",
+        "rows": [
+          {
+            "name": "normal-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/control",
+              "https://localhost:12123/oversize",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/origin/certs/ca.pem",
+              "",
+              ""
+            ],
+            "exit": 0,
+            "result": {
+              "curlCode": 23,
+              "message": "Failed writing received data to disk/application",
+              "bytes": 16777135,
+              "seconds": 0.160274011,
+              "cpuSeconds": 0.04901834,
+              "httpVersionEnum": 3,
+              "curlVersion": "8.5.0"
+            },
+            "logSha256": "88b8f04f1a621d99fa9816f4855f34c9d8757e0d532ee28209228beefb695109"
+          },
+          {
+            "name": "normal-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/control",
+              "https://localhost:12123/oversize",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/origin/certs/ca.pem",
+              "https://localhost:8089",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/proxy/certs/ca.pem"
+            ],
+            "exit": 0,
+            "result": {
+              "curlCode": 23,
+              "message": "Failed writing received data to disk/application",
+              "bytes": 16776181,
+              "seconds": 0.370667202,
+              "cpuSeconds": 0.11840176,
+              "httpVersionEnum": 3,
+              "curlVersion": "8.5.0"
+            },
+            "logSha256": "b8f76667d789bfd84b51738eb2ec537312f69fb06cdb93f88b563631ca02ae4d"
+          },
+          {
+            "name": "valgrind-direct",
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/valgrind-direct-memcheck.log",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/control",
+              "https://localhost:12123/oversize",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/origin/certs/ca.pem",
+              "",
+              ""
+            ],
+            "exit": 0,
+            "result": {
+              "curlCode": 23,
+              "message": "Failed writing received data to disk/application",
+              "bytes": 16777114,
+              "seconds": 5.248043516,
+              "cpuSeconds": 5.160391828,
+              "httpVersionEnum": 3,
+              "curlVersion": "8.5.0"
+            },
+            "logSha256": "3f893767d959e2de56264cbf60e6e317ad5cce75dff73365435bf4f6f955c2cf"
+          },
+          {
+            "name": "valgrind-proxy",
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/valgrind-proxy-memcheck.log",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/control",
+              "https://localhost:12123/oversize",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/origin/certs/ca.pem",
+              "https://localhost:8089",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-curl-control-r2/proxy/certs/ca.pem"
+            ],
+            "exit": 0,
+            "result": {
+              "curlCode": 28,
+              "message": "Timeout was reached",
+              "bytes": 10485760,
+              "seconds": 6.256149963,
+              "cpuSeconds": 6.169822728,
+              "httpVersionEnum": 3,
+              "curlVersion": "8.5.0"
+            },
+            "logSha256": "3c2748bd8879eb7fc80c49fdb501d9e7dbbc42b7480d7b54e7797ea90855214a"
+          }
+        ],
+        "binarySha256": "30c21b32a3470d7fa99d95725e035af35c5cde2102e6cdfd7df553695e5daaa6",
+        "sourceSha256": "ad2567f886831784bd127f76593405e4d62a95c5e48e8ac5e3cfdb8bba902174"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/report.json",
+      "sha256": "9dc33c37d6539f9d31fc3ec5a393e9864801f162cbefc6dc42ce42fbf9c23050",
+      "result": {
+        "status": "PASS",
+        "sourceCommit": "d84546c1b236d27a08d2047c2c8340fe845245f4",
+        "moduleSha256": "307f9ee99f1d5c43c93df1dd3a3caecf74c0f1d3d10c44ef0ee9e70f1d0ff757",
+        "commands": [
+          {
+            "name": "gate-a",
+            "command": [
+              "python3",
+              "tests/fast/gate_a.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "build/priority-http2-matrix-85.so",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/gate-a"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 212.05434498400427,
+            "logSha256": "4d504493d3fac2462eed835463726842410c6251033d1460a2e6a4ea91bd10cd"
+          },
+          {
+            "name": "epoll-full",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "environment": {
+              "ASYNCARA_BACKEND": "epoll"
+            },
+            "exit": 0,
+            "seconds": 47.25525863398798,
+            "logSha256": "6ab1b15aa13ae83d952739baf5550a8129761376bb6c78010cfbf669b4427457"
+          },
+          {
+            "name": "poll-full",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "environment": {
+              "ASYNCARA_BACKEND": "poll"
+            },
+            "exit": 0,
+            "seconds": 40.69237712305039,
+            "logSha256": "8d33c0c571db0de122cbdb407381bcd23ccd1ae303ecf6b78c65826230cf6c1f"
+          },
+          {
+            "name": "http-gate",
+            "command": [
+              "python3",
+              "tests/http/run.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "build/priority-http2-matrix-85.so",
+              "--hyper",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/http-gate"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 183.4589634949807,
+            "logSha256": "b95428339d85437b5d227f36623239e5e346875fca70064227397a0d95fd6de7"
+          },
+          {
+            "name": "epoll-https-proxy-fpm",
+            "command": [
+              "python3",
+              "tests/http/https_proxy_fpm.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-https-proxy-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 15.929663044866174,
+            "logSha256": "adef891c462360befb81edef24e42928315f3c5576be07a236a0a979c3465929"
+          },
+          {
+            "name": "poll-https-proxy-fpm",
+            "command": [
+              "python3",
+              "tests/http/https_proxy_fpm.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-https-proxy-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 17.929835748160258,
+            "logSha256": "adef891c462360befb81edef24e42928315f3c5576be07a236a0a979c3465929"
+          },
+          {
+            "name": "epoll-http2-fpm",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2_fpm.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-http2-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 9.408594459993765,
+            "logSha256": "70fbe909f585b574e408e2935a2cf2aaadd3941f44b0f1fec6659a2da0a0b8ed"
+          },
+          {
+            "name": "poll-http2-fpm",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2_fpm.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-http2-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 8.990469997981563,
+            "logSha256": "70fbe909f585b574e408e2935a2cf2aaadd3941f44b0f1fec6659a2da0a0b8ed"
+          },
+          {
+            "name": "allocations",
+            "command": [
+              "bash",
+              "scripts/audit-allocations.sh"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 5.540858556050807,
+            "logSha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-conly-r1/report.json",
+      "sha256": "d81448d58f903ddfd3cae6a3936c889009be1b4585b23d667e7711797be0413c",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "name": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 6.266011300031096,
+            "logSha256": "a0bc990c7c9970577aa4026361b4b32a440a9f683be21297c6d65108b8376e0d"
+          },
+          {
+            "name": "epoll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-conly.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-conly-r1/epoll-direct"
+            ],
+            "exit": 0,
+            "seconds": 1.9273420190438628,
+            "logSha256": "44136111d67beba87f8811efb6307d94b5d85fcdf53dbe3bd3c0a4e21b512759"
+          },
+          {
+            "name": "epoll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-conly.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-conly-r1/epoll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 4.403387065045536,
+            "logSha256": "e3ef3f01b292b2257cf22d1180dbfaee0ca54e82634a485fe381d6cdf3369543"
+          },
+          {
+            "name": "poll-direct",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-conly.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-conly-r1/poll-direct"
+            ],
+            "exit": 0,
+            "seconds": 2.027181316865608,
+            "logSha256": "7415b4dae42bb19c4ae1c32b68d6715174c8570b0946caf42c0e35160b355af7"
+          },
+          {
+            "name": "poll-proxy",
+            "command": [
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/bin/python",
+              "tests/http/http2.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-http2-conly.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/http2-conly-r1/poll-proxy",
+              "--proxy"
+            ],
+            "exit": 0,
+            "seconds": 3.5407532781828195,
+            "logSha256": "6427efc8b6dc1cc5080801792d0b167a24022a025caae66f481dc879b20f18d7"
+          }
+        ],
+        "moduleSha256": "ea0533ea3de2e485839cdc5a878c6dbef88aec5f1a9dfba90597b659edd72892"
+      }
+    }
+  ],
+  "independentReview": {
+    "path": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/independent-review.json",
+    "sha256": "7524802d8c49c6cf306a922436faf676938adc96f0f9947ccc7685cf250d5288",
+    "result": {
+      "status": "PASS",
+      "scope": "Independent recomputation of retained raw response records and idle samples; short integration, not endurance; no chronological inference from batch ordering",
+      "rows": [
+        {
+          "backend": "epoll",
+          "kind": "https-proxy",
+          "case": "A-lifecycle",
+          "mainResponses": 20,
+          "httpOperations": 80,
+          "minTicks": 35,
+          "workerPids": [
+            419231
+          ],
+          "rssMinKiB": 22388,
+          "rssMaxKiB": 22804,
+          "rssRangeKiB": 416,
+          "samples": 3,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-https-proxy-fpm/report.json",
+          "sha256": "62db90b4803b617954b843a5b23f78738bdec1bd5ee3edc5ccec00d7c3396437",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "epoll",
+          "kind": "https-proxy",
+          "case": "TLS-proxy-four-workers",
+          "mainResponses": 40,
+          "httpOperations": 160,
+          "minTicks": 30,
+          "workerPids": [
+            419505,
+            419506,
+            419507,
+            419508
+          ],
+          "rssMinKiB": 22092,
+          "rssMaxKiB": 22396,
+          "rssRangeKiB": 304,
+          "samples": 4,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-https-proxy-fpm/report.json",
+          "sha256": "62db90b4803b617954b843a5b23f78738bdec1bd5ee3edc5ccec00d7c3396437",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "epoll",
+          "kind": "http2",
+          "case": "A-lifecycle",
+          "mainResponses": 20,
+          "httpOperations": 80,
+          "minTicks": 28,
+          "workerPids": [
+            420572
+          ],
+          "rssMinKiB": 21656,
+          "rssMaxKiB": 21972,
+          "rssRangeKiB": 316,
+          "samples": 3,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-http2-fpm/report.json",
+          "sha256": "021a8a0c2ec8c1d8adf8a8adc5bb7330c7662f539c75d5612a2c9c9f3041e4c0",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "epoll",
+          "kind": "http2",
+          "case": "H2-four-workers",
+          "mainResponses": 40,
+          "httpOperations": 160,
+          "minTicks": 13,
+          "workerPids": [
+            420623,
+            420624,
+            420627,
+            420629
+          ],
+          "rssMinKiB": 21412,
+          "rssMaxKiB": 21856,
+          "rssRangeKiB": 444,
+          "samples": 4,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/epoll-http2-fpm/report.json",
+          "sha256": "021a8a0c2ec8c1d8adf8a8adc5bb7330c7662f539c75d5612a2c9c9f3041e4c0",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "poll",
+          "kind": "https-proxy",
+          "case": "A-lifecycle",
+          "mainResponses": 20,
+          "httpOperations": 80,
+          "minTicks": 34,
+          "workerPids": [
+            419908
+          ],
+          "rssMinKiB": 22284,
+          "rssMaxKiB": 22752,
+          "rssRangeKiB": 468,
+          "samples": 3,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-https-proxy-fpm/report.json",
+          "sha256": "2de4f22f3335eb21c921e69c2bf65bfcdca01d1a0038b952a2a3331296f41cad",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "poll",
+          "kind": "https-proxy",
+          "case": "TLS-proxy-four-workers",
+          "mainResponses": 40,
+          "httpOperations": 160,
+          "minTicks": 32,
+          "workerPids": [
+            420157,
+            420158,
+            420159,
+            420160
+          ],
+          "rssMinKiB": 22232,
+          "rssMaxKiB": 22344,
+          "rssRangeKiB": 112,
+          "samples": 4,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-https-proxy-fpm/report.json",
+          "sha256": "2de4f22f3335eb21c921e69c2bf65bfcdca01d1a0038b952a2a3331296f41cad",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "poll",
+          "kind": "http2",
+          "case": "A-lifecycle",
+          "mainResponses": 20,
+          "httpOperations": 80,
+          "minTicks": 23,
+          "workerPids": [
+            420688
+          ],
+          "rssMinKiB": 21780,
+          "rssMaxKiB": 22260,
+          "rssRangeKiB": 480,
+          "samples": 3,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-http2-fpm/report.json",
+          "sha256": "61866e4892a33d4199e4b2cfa543dc0d0d36748d0e5cf455bc00434871952620",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        },
+        {
+          "backend": "poll",
+          "kind": "http2",
+          "case": "H2-four-workers",
+          "mainResponses": 40,
+          "httpOperations": 160,
+          "minTicks": 16,
+          "workerPids": [
+            420732,
+            420733,
+            420734,
+            420735
+          ],
+          "rssMinKiB": 21700,
+          "rssMaxKiB": 21736,
+          "rssRangeKiB": 36,
+          "samples": 4,
+          "idleFds": 6,
+          "idleThreads": 1,
+          "report": "/home/coder/Asyncara-priority-20261110T205459Z/http2-regressions-r1/poll-http2-fpm/report.json",
+          "sha256": "61866e4892a33d4199e4b2cfa543dc0d0d36748d0e5cf455bc00434871952620",
+          "manifestSha256": "9ce8972f6efe9943bd47e5a7bac64467c1f396c1d3592dcac395c144d41a0bb4"
+        }
+      ]
+    }
+  },
+  "manifest": {
+    "ext/backend.c": "9ebe5b1742553a6a321f59569c7e59bf59969dc7dcd604af959ebfbccda9bce8",
+    "ext/mysql.c": "bbb48566210e7b97df52fdfe4118070df4905abd3966ab25908456434810c590",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/server.h": "c6c6c01c4e7b199d80a40efa4ec67b930e20c8f73aeb26e3c14693e296264b4a",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper_decode.c": "1f4b49afd413106774e49b959ab967b38fa59ab947e340d50cfe314e11a81ed1",
+    "ext/server_php.h": "810f2b1ad35cd82a5426e308b04ff5f3dc32734b8599bb6fc93cc7c57d7e431d",
+    "ext/native.h": "2e96cd73c57bbef87eff0648eed8f7f8bfff54c48377704d91953ccbdcab2652",
+    "ext/config.m4": "13add630e22b6c6592571a966364f62b749fed2af8aba62d9e4e08cdf44eec78",
+    "ext/postgresql.c": "5074124b3d607a14b9b41f92d716d38ea6b5bc95ec753ffc291ffdfa30ad7907",
+    "ext/workers.c": "3b3ce893ed7c4f846a8597d2c660f3ebbad07ea15b22ac42da4d26d51568ace7",
+    "ext/php_asyncara.c": "2e90b46dfb602a299152bb7c74e97e2cc8ae4f79fd534be03a350e382e48cb0e",
+    "ext/hyper/Cargo.toml": "7d364f48ab300dd8863afb1277cc2e4e43c567c53c66488b18905f73790238ea",
+    "ext/hyper/Cargo.lock": "52e7d4117bc7f37af8593253fd640a680544355766f44be7f034a20115b38a79",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/body.rs": "ed1fe5cf8b7f6db87dd9f29b210907a7eafeef1f9592ff4a06b8d07be58c076f",
+    "ext/hyper/src/server.rs": "026eb8755001b69b1940d2f6b613d4b80f2e9f2155bd0f80759ba0c374ce8297",
+    "ext/hyper/src/tests.rs": "0a5a5ea56cf6b4af80d0cfb42f67b0049da1ff23dbdde970dc3ac45ccc0cc37a",
+    "ext/hyper/src/tls.rs": "16d8df5899bfa1a3b2cf551a6e593f4c45b9aa1c21595eb2f6272610d709fbcf",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/lib.rs": "f175fabc3ced220e79faf6e4d81bb243946b9071b52167c4a0c8ee27a023111c",
+    "src/Asyncara.php": "a5d1a7689b606a10395fd28d325ef2f492cbbe000e0cc9889bf19add9a1d95cc",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/Task.php": "73bf493abb351e54a50ce64c9825f46b6b1357ac70f4af785203ba32566e6e9e",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/Async.php": "ab0e3f90f35392419e7e93b715669870f59de1ed22d801bb5bb11e6023d6fdbe",
+    "src/Asyncara/Scheduler.php": "6f717dd117f4e9b4200a8d8624a716103dd1864da086ef13f1ab71053f0ba938",
+    "src/Asyncara/Future.php": "9effeb81391634304ad8d6adf47a2e70299b11fa319d908312a733b389df7344",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "785f6ee3395beefcd6e75d7230f442eb4fdcd43ce17f4d53406031b3824259b8",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/App.php": "6d84dc4d40ac9a457d54bd198b7c8faf86674a8824a86742dfccd680a77cc24d",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/Response.php": "bcde814234d4222422e2b710ba9fe6ad815da027af4bc3fb2a75bb38681b8a65",
+    "src/Asyncara/HTTP/HttpClient.php": "580bac3892802fd649be922e30aeb89563e91dc8f071fd71ea37669fffc651ea",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/HTTP/BufferedRequest.php": "2cc04b1415cf698139a8b6edfbaefb2e37de31ac694ee3b6fd82598b3019fa0a",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/PostgreSQL/Connection.php": "32a653bb3b540a05508dc1014f85671de2e6b3ff44ca15a9b9db93e5110d322e",
+    "src/Asyncara/PostgreSQL/Statement.php": "924a28f88f4b812e309ac9843303ff739c9ea0e86db6e6ff39117db58d43a48c",
+    "src/Asyncara/SQLite/Connection.php": "a223f275e74f00fc1837ec94972c70a1869e59d2ef734f67f2a058d3e1e125f8",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Server/Request.php": "47741d8a8bb2b37422bc65fe3af692c0dae3ccec05625f7c02d0c2ba4c5d97d9",
+    "src/Asyncara/Server/Workers.php": "ae0f050c33cb7918c1e422a1cce4c05bfbc6894274f5b584f1a354de7b7773fd",
+    "src/Asyncara/Server/Response.php": "8af4f4568f48ee667292773a25c7b5bec4ccdde0d20c889ab875f3dc2d57e068",
+    "src/Asyncara/Server/Route.php": "b0a35214f456bace5fece05b2cdfba3a80c3738585313bc2122e0d06d3d62b33",
+    "src/Asyncara/Server/StreamResponse.php": "7b7dd71ed877e72a99e81ebf2aa1db3be1c68e4a64ffa1bd42a190cfb7885c90",
+    "src/Asyncara/Server/RequestBodyStream.php": "4e29112fafb161a51ca91f08a64a28dfcba3fe4bbad9069153fc3a9dcc45dafa",
+    "src/Asyncara/Server/RequestBodyException.php": "9f2b313c1b33fb9762cd0ea9119a0589fa9ba7a3be6917c54f9725322f91963d",
+    "src/Asyncara/Server/Inbox.php": "63374f8c892252298acc11d30ba47566a35095de8411e8049a63965e13c39e4a",
+    "src/Asyncara/Database/Database.php": "26a68110e21f3ae8797d644281f1fb66aa5899e64727c5656776e93179455c74",
+    "src/Asyncara/Pool/ConnectionPool.php": "1daed3f3fd359c2cb9fc3bfbbceed6eba2d70d81496f6726867e3a53cee934fb",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/MySQL/Connection.php": "ca9a30d38e545815a7ec5508b8a818dfd0b0abad1191c3cb5a22586ce1ee5097",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/File.php": "8bb76689242c3725719cfd04b377e16cb22c4f647d7a63811ff59e23bad9e5a9",
+    "src/Asyncara/IO/TcpStream.php": "f84e528510d3c42600f763f2fdcf1d5eefceb4bf822d4d871e3491edf41d7390",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/IO/Files.php": "8e1217f97a14e2243922f9880bc556a245e1a760d3a60175e698805b4c27578a",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Semaphore.php": "c0430983dcc0891a22edeb45c7a618609148f73d01bcf5609b0fd2b76560c2d0",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Redis/Connection.php": "3763f4dc5989054720f158fb623239f4146ebf93a39740da610ebd766f00d3dc",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Stream/AsyncStream.php": "348d72208df8c4071053a2d582344b2aef68c2416174dcfd0cfd2e91e6f0b111",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f",
+    "tests/http/multi_error.c": "5240ac7814283471d85abe097f96a2ced53d2952a0263b7e3cf3767af6addba5",
+    "tests/http/hyper_tls_memory.py": "3b51e5e1b9c979877e913409a1fe05e073268fa12c9d53a686e2daa4c6b575ed",
+    "tests/http/fpm_request.php": "c77a642ff83ba0d5bb0b0c551f38bce14f887774a2c5db1fb450f8713f89199b",
+    "tests/http/http2_fpm_request.php": "5a78b18df228d1dac47e114b27126cf1b45a957fd4f5432dee69cae496a5a8c5",
+    "tests/http/completion.php": "9bc919d219bec6d35de9b19437c85975b2a30be39a32242787ecb1b3f12dd66d",
+    "tests/http/https_proxy_fpm.py": "6a0a3214cb5d98c0638df347d44d3e2d8be7af965f9903f39357aca4d81d5d3d",
+    "tests/http/hyper.php": "065459a649e524f150205e3b956885c3bdd2ae031665dbea9f5431f8e20410be",
+    "tests/http/http2_peer.py": "1925bb4ab90945affa5a8ef5359cd84af11daf760dbd3d33c36c790d175962dd",
+    "tests/http/method_native.c": "db28ddb07e1d4464dbd54a7ef1993c81de981e2789f5fc55f7862689c12facb5",
+    "tests/http/curl_trailer_control.py": "33a6e4de5f3a8a0c78d8d7dc1abde7831b16b29d98966babbe948ee31e9cc4e1",
+    "tests/http/curl_h2_control.c": "ad2567f886831784bd127f76593405e4d62a95c5e48e8ac5e3cfdb8bba902174",
+    "tests/http/cancelled_upload_reuse.php": "bb445c5318ec46d63d21c94d0b95c9540e4408327e9e223733bb67d705a1c235",
+    "tests/http/hyper_stream_fpm_request.php": "66ace0dcc9875c79824139f551f0ca995a1b2aff47f099656f7c547823036c34",
+    "tests/http/http2_fpm.py": "1c5258b16acc0cfc54a4c5532fe989cf975f2314717994bccc022f73cd940fcc",
+    "tests/http/hyper_fpm_request.php": "62c7aa6d2faf530393247ecab5fe523a2ad3499548a117b6158b5e7cb45e3d51",
+    "tests/http/methods.php": "e5034555c4a9035002f96870dfd04a35a2eba98e0fd895810c96fb07780d8f7e",
+    "tests/http/hyper_compressed_fpm_request.php": "2e744b5eb334291cf8e9cd52051ae63a693b6ef95bdfe64a9a632531c829e4f2",
+    "tests/http/stage_shutdown.php": "c463a0ea3646c79e2f3d0981b47204e6a32dae29a8b54e32251a7e510dcc434d",
+    "tests/http/http2.php": "75656019741d8befdf1e067cf76d497aed1ce9121b076c784c629bec1af76b3b",
+    "tests/http/https_proxy.py": "56119b90faf69e7e073bf6fd377332334bfe4620277a756392b1996d7cdb603f",
+    "tests/http/hyper_ffi.py": "8a84e60f1e514704dfe3920bc98e5c197760cb302c3afe1e5e2e8abb17999fd2",
+    "tests/http/acquire_cancel.php": "cafe68425c7f3c6685095a186f22045cdda78fec73a22b499746172d1b95f438",
+    "tests/http/hyper_tls_bounds.php": "35b9bb95b810127621df5da82a98e279582dd41600df1d9359723e87ca61dae8",
+    "tests/http/hyper_post_fpm_request.php": "80faf2ae32fc29d094e6f3bd25a6bacf9f87ca5142b6ea3197d0fcfdf84f125c",
+    "tests/http/hyper_compression.php": "1873191b186765fe14693a4371afbcb597299e8cc5e0d506dc07e53df65fdff4",
+    "tests/http/ca_paths.php": "478a0c91fcba19b32812d06e60db5a77adeacc291ed450a32303804832306448",
+    "tests/http/hyper_wakeups.php": "534ba685408e062facfa246603dca951a7f3a834e9069340574ec5e55a093825",
+    "tests/http/gate_protocol.php": "34ce5c0238a0032979f2501af85e50b94e8db3633f279e1406ad0cce110d658e",
+    "tests/http/transfer_geometry_server.py": "fef0c6498cdd203d043b7d8b6ce5aa3e66ef5eef8c93bf222c0ed0aee2a22107",
+    "tests/http/hyper_fpm.py": "952bf95906bcb282368ce143903db216c7a24baf23612838016ee65229dc1ccb",
+    "tests/http/hyper_requests_peer.py": "6a68f865800b29854cf5c2256a483da7533e7a121364172a91b6b890cdb3fd76",
+    "tests/http/sdk_identity.py": "6e04259850ab371693d1549f5bb40eeb669d321e3cacaaed1e059fb218707786",
+    "tests/http/hyper_tls_memory.php": "d6fc618c44c9de63423af175f8ae55b8aca4df2aa0efa076ac3de59494e0e724",
+    "tests/http/native_completion.c": "7d484613976c142b6a7fd2100828dd0489d638dfcc3f427cb76bafe301456aa4",
+    "tests/http/peer_shutdown.py": "759b044ae58b457143afab3e01dc7cf508542277f7893e714d92368df23518ad",
+    "tests/http/ca_fpm.py": "93b136d8069dc232e6d892f7787116b507bbf9b47e01e3c7fd6fd90b63a40d2b",
+    "tests/http/hyper_tls_peer.py": "c6119f7503eb1ff7ecf802c0e4c89f94416fe98fde5904eb8ed5b96b57e65a02",
+    "tests/http/headers.php": "355751e97e820df5b951e161d2ec38f66b7786b3fbad965cc9cdf971948a9934",
+    "tests/http/run.py": "e2d9765ee547975afde9d8e16451f038cd5be77760efcfa10d4b7dd6d40e3894",
+    "tests/http/stage_shutdown.py": "138d1fe00154c74b4b784680a43e396bf10c5fc38519fffb6dc9ef64431646ef",
+    "tests/http/buffered_owner.php": "3f7a5f63d97c81ea64448bc5eaf374813fa8df533ddfa20c404232493b9280cf",
+    "tests/http/hyper_dns_server.py": "8e089e97f1bbfedf3f366f8428b4c7ca9815f362901029536cc126f555b39ef5",
+    "tests/http/https_proxy_peer.py": "f5c58bc5058b47795f214b9072e892a335a0e095276c8b317f7377db04b24b87",
+    "tests/http/http2.py": "e8dba5e04f093c7d2c1200fb1ba1d26506775cc7cf312e04749d90e1cd0a6d8b",
+    "tests/http/hyper_uri.php": "79f06e4393b6bbd072dcac36122dd5fc1252f70738701a21bbafe7f7ebf7c462",
+    "tests/http/hyper_stream_memory.php": "9dc18513fae41c8f6e7d5c281d50a8ff026260b0846cd5a333fec51afe35f7cb",
+    "tests/http/https_proxy_io.py": "2314271525aeabd0f871a29c4525405c8c3f2c44c5185d4f69bcce14633ac498",
+    "tests/http/ca_paths.py": "80cc64e85d08886ff867dffd849c4811c35d905f730dabc389e6ace3759ca74b",
+    "tests/http/hyper_requests.py": "2acd3c66902dd6eacecf0634f45c99ceb951633b9a40062fb5e96d369c67fa39",
+    "tests/http/connections.php": "8809696e86b8fa20c6235b8226d444dd07fdc9a3f50e05366110797d3968ac66",
+    "tests/http/hyper_decode.c": "10700965a45cf922a926568717dc1efcae5c73dade57676c2b85cf21a897d05a",
+    "tests/http/dns_gate.c": "f0cab46143100757af7d937758ce3383642af2560aacd5257b9fea0d8db92aee",
+    "tests/http/proxy.py": "7023c2f1276a770a7637b8e78f32fa0d87911b623a0d7bcc38d26ffe809e991b",
+    "tests/http/hyper_tls.py": "b7bc092a54bbe3bfae209c0cd403cd1bd4c5a94743b8053442dc23f6d1b2901e",
+    "tests/http/options_lifetime.php": "b87a57cfe2a56007537ea59211b83cc3a81e367586abbc7ab367206ec17dfd5d",
+    "tests/http/transfer_geometry.php": "9c8f02617c452b8258347f28f6a65991908e6dc72d5308052de4b60c065afb15",
+    "tests/http/capacity_server.py": "1d699919f6c9112e48688e07d5dfe1a9395a51f100c6507ba5bd07a005e5c75b",
+    "tests/http/wait_scaling.c": "7140413bfed95501d27d45fad82d464203f345e5b520708270fc4d7763f3062f",
+    "tests/http/wait_observer.php": "361a25d82447cc21a48009f12e070416a76908c1c8669107942d024d6faa7350",
+    "tests/http/hyper_requests.php": "defa9d8d69d5801e6c76e97da30a2ab44a3d504e64ea2685b3d1ac42b6e9eef0",
+    "tests/http/dispatch_native.c": "bf87cfbfe0a769ba2fc9497b1f191295a9718d337e699cf9750a1e3ba1ab575f",
+    "tests/http/method_server.py": "9f04f96c048594376b47872d05ef2e9b3913b2e4f5b05359de03e3003774406e",
+    "tests/http/hyper_stream_bounds.php": "a1bc81d5443bb6aa303180582e1c95deb87c2083dee55d09a309c55e8a52c958",
+    "tests/http/compression_peer.py": "5e63b110bea39c21111b0933efa8034fe970d6782818a77e80765cff53c237dc",
+    "tests/http/http2-requirements.txt": "20542b1b2c86cb1820756ecc3efd4cc02f7afda6a5cadd1c21984245cfcc3e5c",
+    "tests/http/hyper_compression.py": "e2ba096848af9d8dc976cb88862930f940018287eb0a73d69358f78cd5ac1a31",
+    "tests/http/pooling.php": "bfa51860b2f6de9b83b7dbbac3aadab20046b819f2cfd7e2571de92767c92525",
+    "tests/http/fpm_barrier.py": "ba865838a9649d5b5e0c7fbde522b9a39cff21537435d6b50c0f390d794866bd",
+    "tests/http/stage_native.c": "2f7e1b5aa184dabf0c605a586cc64a348d72d9bc6dbf6412884a7df901414235",
+    "tests/http/curl_cache.c": "1c0dd7b8a2561a9a53d847444c4e8f5c4628a92b16647008922ee856028c271e",
+    "tests/http/fpm.py": "eac2fb69b0c9057e6b317df52471c458eca1a4ca023fc1b95208003b292996bb",
+    "tests/http/buffer_budget.php": "95c79183906dd39226cdb4b75892d7d56e78ee1e6136eb142c075df428e856fb",
+    "tests/http/hyper_tls.php": "85b2fcfa34db5180a31db0e718bc8c1def79a0672b838c42d86e4519fb12cde7",
+    "tests/http/capacity.php": "b4bf03dad68303185f33a5e8ec922e2c7ad02cb3f82b5b584a4c89244c664cec",
+    "tests/http/curl_trailer_control.c": "114d2609dcbbdec612074753776a7e6d3ff169165e64d4770faa83a3decf20a1",
+    "tests/http/proxy.php": "ef5f08f92c5d15f76ec8a951b2c19292db9674d0ce1be443749f57a3e1dfae84",
+    "tests/http/hyper_encoding.php": "ca7906dfd5be63e80d8427d6790d3cecfca920189b23efdd65fa65927becb881",
+    "tests/http/ca_fpm_request.php": "878b30eb051fb766c0eb01fb1d28baee830277cb390042835311382fe1448478",
+    "tests/http/hyper_streaming.py": "1bf01db685f7ba7f30e1b04339030981a4d4bfeca83da545010fa30c383e5555",
+    "tests/http/hyper_streaming.php": "911c72ee8d7efaaea124b91c81b45ef9b8404a10971a5d1b2461e74905e2c9aa",
+    "tests/http/hyper_dns_lifecycle.php": "7fb99c8900ebe94d08e297f0bdf382d684fcaa56924deb2f4990e7f71e012264",
+    "tests/http/hyper_dns_fpm_request.php": "3cdbdbcfa69cdc9fda34538a9f954c46a48d1c5f3273e460e62b5602251e419d",
+    "tests/http/https_proxy_fpm_request.php": "341cd0501bfd0f792926ce78c182c4b5736ed03349a586a42d981f0d4289a477",
+    "tests/http/buffer_capacity.c": "5025d31e79a55f52710c8a1a3220b545aba65bd99deddecef2a5490d1a1f2a90",
+    "tests/http/hyper_dns.php": "9ca0e00025aea1100a5a644b12513846681fa4d7ca61688167cd9ac4f0e3fd24",
+    "tests/http/https_proxy.php": "c8a3c9721e8cb1f952254cac9ba6e9bde634be056f2194cc0861a8cae3c1bff6",
+    "tests/http/start_wait.c": "a45393b9618bc365dcec2e5715797dfbaad8c4ebe57faf7fcf8f40b5170210b3",
+    "tests/http/hyper_faults.c": "bbf4ad344744f6456fcbc07bf091188ee0c5144967d4026108503cdb97f6a8e5",
+    "tests/http/test_https_proxy_io.py": "61b5b094465446910af5f45e300a7a0c43719e56a5a3dd2f606f65d18dcafaee"
+  },
+  "memoryQualification": "Full proxy Valgrind functional gate remains FAIL at original5s deadline; no-PHP/no-Asyncara libcurl control reproduces timing limit; native/cache and direct DEBUG controls pass. Original reports preserved; no suppressions."
+}
