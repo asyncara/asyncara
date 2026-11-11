@@ -13,10 +13,24 @@ final class HttpClient
     private Semaphore $slots;
     private ?bool $hyper = null;
     private ?string $hyperCaPem = null;
-    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10, private ?string $proxyCaFile = null)
+    public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10, private ?string $proxyCaFile = null, #[\SensitiveParameter] private ?array $proxyCredentials = null)
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
         if ($connectTimeout <= 0 || $connectTimeout > 3600 || !is_finite($connectTimeout)) throw new \ValueError('Invalid HTTP connect timeout');
+        if ($proxyCredentials !== null) {
+            if ($proxy === null || !in_array(strtolower((string)parse_url($proxy, PHP_URL_SCHEME)), ['http','https'], true) ||
+                str_contains($proxy, '@') || count($proxyCredentials) !== 2 ||
+                !isset($proxyCredentials['username'], $proxyCredentials['password']))
+                throw new \ValueError('Proxy credentials require an explicit HTTP(S) proxy without URL credentials and username/password keys');
+            foreach ($proxyCredentials as $key => $value) {
+                if (!is_string($value) || strlen($value) > 4096 || preg_match('/[^\x20-\x7e]/', $value) ||
+                    ($key === 'username' && ($value === '' || str_contains($value, ':'))))
+                    throw new \ValueError('Proxy Basic credentials must contain at most 4096 printable ASCII bytes; username must be nonempty without colon');
+            }
+            // Detach reference-valued entries; a client's identity must not change
+            // while its requests wait for admission or share a curl connection.
+            $this->proxyCredentials = ['username'=>(string)$proxyCredentials['username'], 'password'=>(string)$proxyCredentials['password']];
+        }
         // A client's explicit trust path belongs to its configuration. Queued
         // admission, Hyper DNS/trust preparation and producer Tasks may run
         // after another Fiber changes cwd. Capture the name, not file contents;
@@ -138,7 +152,7 @@ final class HttpClient
         $options = $this->options('POST', $url, $headers, false) + ['multipart' => $fields, 'files' => $metadata];
         return $this->uploadRequest($url, $sources[0], null, $options, $sources);
     }
-    private function uploadRequest(string $url, \Closure $source, ?int $length, array $options, ?array $sources = null): Future
+    private function uploadRequest(string $url, \Closure $source, ?int $length, #[\SensitiveParameter] array $options, ?array $sources = null): Future
     {
         $options['uploadSize'] = $length ?? -1;
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $source, $options, $sources): Response {
@@ -217,7 +231,7 @@ final class HttpClient
         }));
     }
     /** Hyper resolves DNS and loads trust bytes using existing bounded native workers. */
-    private function preparedRequest(string $url, ?string $body, array $options): Future
+    private function preparedRequest(string $url, ?string $body, #[\SensitiveParameter] array $options): Future
     {
         return Async::spawn(fn() => $this->slots->withPermit(function () use ($url, $body, $options): Response {
             [$options, $timeout] = $this->prepareNative($url, $options);
@@ -226,7 +240,7 @@ final class HttpClient
         }));
     }
     /** Shared by buffered requests, response streams and worker-streamed uploads. */
-    private function prepareNative(string $url, array $options): array
+    private function prepareNative(string $url, #[\SensitiveParameter] array $options): array
     {
         $host = parse_url($url, PHP_URL_HOST);
         if (!($this->hyper ??= asyncara_info()['httpBackend'] === 'hyper-prototype') || !is_string($host) ||
@@ -288,6 +302,10 @@ final class HttpClient
         if ($this->proxy !== null) $options['proxy'] = $this->proxy;
         if ($this->caFile !== null) $options['caFile'] = $this->caFile;
         if ($this->proxyCaFile !== null) $options['proxyCaFile'] = $this->proxyCaFile;
+        if ($this->proxyCredentials !== null) {
+            $options['proxyUsername'] = $this->proxyCredentials['username'];
+            $options['proxyPassword'] = $this->proxyCredentials['password'];
+        }
         return $options;
     }
 }

@@ -165,12 +165,12 @@ final class Scheduler
         foreach ($this->readers as $id => [$s]) if ($s === $stream) unset($this->readers[$id]);
         foreach ($this->writers as $id => [$s]) if ($s === $stream) unset($this->writers[$id]);
     }
-    public function native(string $op, array $args): Future
+    public function native(string $op, #[\SensitiveParameter] array $args): Future
     {
         return $this->nativeOperation($op, $args)[1];
     }
     /** @internal Native operation identity for bounded HTTP streaming. */
-    public function nativeOperation(string $op, array $args, ?Future $future = null): array
+    public function nativeOperation(string $op, #[\SensitiveParameter] array $args, ?Future $future = null): array
     {
         // Reserve the PHP-visible completion before submitting native work.
         $future ??= new Future(); $id = asyncara_submit($op, $args);
@@ -246,7 +246,7 @@ final class Scheduler
         if ($root === null) foreach ($this->timers as [, , $timer, $waitTimer]) if (!$waitTimer) $timer->cancel();
         if ($this->tasks || $this->native || $this->timers) $this->poll();
     }
-    public function run(callable $body): mixed
+    public function run(#[\SensitiveParameter] callable $body): mixed
     {
         if (self::$active) throw new \LogicException('Nested Async::run() is not supported');
         if (Trace::$mask) Trace::begin();
