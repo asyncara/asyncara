@@ -14,7 +14,8 @@ p = argparse.ArgumentParser()
 p.add_argument('--php', required=True)
 p.add_argument('--module', required=True)
 p.add_argument('--out', type=Path, required=True)
-p.add_argument('--modes', nargs='+', choices=['relative', 'invalid', 'policy', 'late-policy'], default=['relative', 'invalid', 'policy', 'late-policy'])
+modes = ['relative', 'invalid', 'policy', 'late-policy', 'native-policy-ca', 'native-policy-cert', 'native-policy-key']
+p.add_argument('--modes', nargs='+', choices=modes, default=modes)
 a = p.parse_args()
 root = Path(__file__).resolve().parents[2]
 out = a.out.resolve(); out.mkdir(mode=0o700, parents=True, exist_ok=False)

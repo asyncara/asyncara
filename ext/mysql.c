@@ -374,6 +374,17 @@ PHP_FUNCTION(asyncara_mysql_step) {
         zend_value_error("Invalid MariaDB readiness mask");
         RETURN_THROWS();
     }
+    /* A connect continuation can load TLS files after another Task tightened
+     * open_basedir. The resource already owns absolute names; check before
+     * resuming Connector/C, without changing readiness or timeout semantics. */
+    if (p->stage == MY_CONNECT) {
+        for (size_t i = 5; i <= 7; i++) {
+            if (p->options[i] && php_check_open_basedir(p->options[i])) {
+                if (!EG(exception)) zend_value_error("MariaDB TLS path violates open_basedir");
+                RETURN_THROWS();
+            }
+        }
+    }
     zval rows;
     array_init(&rows);
     size_t bytes = 0, records = 0;

@@ -86,6 +86,34 @@ if ($mode === 'relative') {
             }
         }
     } finally { chdir($original); }
+} elseif (str_starts_with($mode, 'native-policy-')) {
+    $index = array_search(substr($mode, strlen('native-policy-')), ['ca','cert','key'], true);
+    demand($index !== false, 'Unknown native policy field');
+    $options = $base;
+    foreach ($keys as $key) {
+        copy($base[$key], $root.'/b/'.$key); chmod($root.'/b/'.$key, 0600);
+        $options[$key] = $root.'/b/'.$key;
+    }
+    $options[$keys[$index]] = $root.'/a/'.$keys[$index];
+    $marker = new DomainException('Native resume path policy');
+    set_error_handler(static function (int $level, string $message) use ($marker, &$warnings): bool {
+        if ($level !== E_WARNING || !str_contains($message, 'open_basedir')) return false;
+        $warnings++; throw $marker;
+    });
+    try {
+        Async::run(function () use ($options, $open, $close, $root, $isPg, $marker, &$checks): void {
+            $handle = $open($options); $caught = null;
+            try {
+                demand(ini_set('open_basedir', dirname(__DIR__,2).PATH_SEPARATOR.$root.'/b') !== false, 'Cannot tighten native resume policy');
+                // No TLS completion may be driven after the policy change.
+                try { if ($isPg) asyncara_pg_poll($handle); else asyncara_mysql_step($handle, 0); }
+                catch (Throwable $error) { $caught = $error; }
+                demand($caught === $marker, 'Native connection resume ignored tightened policy');
+                $checks++;
+            } finally { $close($handle); }
+        });
+        demand($warnings === 1, 'Native policy warning count');
+    } finally { restore_error_handler(); }
 } elseif ($mode === 'invalid') {
     Async::run(function () use ($base, $keys, $connect, $open, $close, &$checks): void {
         foreach (['public', 'native'] as $api) foreach ($keys as $key) foreach (['', "bad\0file", str_repeat('x', 4096)] as $path) {
