@@ -1,5 +1,15 @@
 # Current isolated HTTP development state
 
+## HTTP trust-path repair (2026-11-11)
+
+Native `30bdea1` fixes a reproduced deferred relative-CA lookup defect on both
+clients and a curl open_basedir bypass. Explicit trust-path ownership is
+IMPLEMENTED_AND_TESTED: PHP83/84/85, DEBUG/GCC, epoll/poll, scoped Valgrind,
+Gate A, full PHP85/HTTP and private-CA FPM checks. [Exact scope](HTTP_TRUST_PATHS.md)
+preserves failing-before controls and test-helper failures. No atomic path sandbox,
+new protocol/proxy certification or historical endurance resolution is claimed.
+Release stays EXPERIMENTAL.
+
 ## Connector/C verified client TLS continuation (2026-11-11)
 
 Paired certFile/keyFile and optional encrypted-key password are

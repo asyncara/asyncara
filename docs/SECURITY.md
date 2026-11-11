@@ -357,3 +357,14 @@ Tests hold a server lock until two timers dispatch, then inspect result/connecti
 cleanup and independent server sessions. [Exact evidence](MYSQL_MTLS.md) includes
 four ordinary-unload DEBUG Valgrind controls with zero lost bytes, separately
 from unresolved PostgreSQL/library and distribution-PHP findings.
+
+## Explicit HTTP trust filename lifetime (2026-11-11)
+
+HttpClient now captures explicit relative caFile at construction, including
+buffered/queued/stream/upload paths. Native HTTP admission independently captures
+its owned filename and checks PHP open_basedir before external curl access.
+[Before/after and cleanup evidence](HTTP_TRUST_PATHS.md) covers both transports,
+both backends and private-CA FPM. Filename capture is not a content/symlink
+snapshot or atomic sandbox. Curl trust-file/crypto work remains library-owned;
+Hyper retains bounded worker reads and its per-client trust byte cache. Workers
+join at request shutdown, not immediately when a completed file Future is freed.

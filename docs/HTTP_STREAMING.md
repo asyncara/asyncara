@@ -333,3 +333,14 @@ protocol/performance/endurance certification. Historical failures remain intact.
 ## Bounded Hyper decoding (2026-11-10)
 
 Buffered Hyper responses now decode bounded gzip/deflate; ResponseStream still exposes encoded bytes if a peer ignores identity. Its64KiB slots/backpressure remain unchanged. See [HYPER_COMPRESSION.md](HYPER_COMPRESSION.md) for the separate buffered limit and executed regression matrix.
+
+## Explicit HTTP trust filename lifetime (2026-11-11)
+
+HttpClient now captures explicit relative caFile at construction, including
+buffered/queued/stream/upload paths. Native HTTP admission independently captures
+its owned filename and checks PHP open_basedir before external curl access.
+[Before/after and cleanup evidence](HTTP_TRUST_PATHS.md) covers both transports,
+both backends and private-CA FPM. Filename capture is not a content/symlink
+snapshot or atomic sandbox. Curl trust-file/crypto work remains library-owned;
+Hyper retains bounded worker reads and its per-client trust byte cache. Workers
+join at request shutdown, not immediately when a completed file Future is freed.
