@@ -17,6 +17,19 @@ final class HttpClient
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
         if ($connectTimeout <= 0 || $connectTimeout > 3600 || !is_finite($connectTimeout)) throw new \ValueError('Invalid HTTP connect timeout');
+        // A client's explicit trust path belongs to its configuration. Queued
+        // admission, Hyper DNS/trust preparation and producer Tasks may run
+        // after another Fiber changes cwd. Capture the name, not file contents;
+        // native admission / worker open still enforce open_basedir when used.
+        if ($this->caFile !== null) {
+            if ($this->caFile === '' || strpbrk($this->caFile, "\0\r\n") !== false || str_contains($this->caFile, '://'))
+                throw new \ValueError('CA file must be a nonempty local path');
+            if ($this->caFile[0] !== '/') {
+                $cwd = getcwd();
+                if ($cwd === false) throw new \RuntimeException('Cannot capture CA working directory');
+                $this->caFile = $cwd.'/'.$this->caFile;
+            }
+        }
         $this->slots = new Semaphore($concurrency);
     }
     public function get(string $url, array $headers = [], bool $followRedirects = false): Future { return $this->request('GET', $url, null, $headers, $followRedirects); }

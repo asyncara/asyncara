@@ -172,7 +172,7 @@ static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool bi
     memcpy(s, Z_STRVAL_P(z), Z_STRLEN_P(z) + 1);
     return s;
 }
-/* Snapshot PHP's working directory before handing a path to another thread.
+/* Snapshot PHP's working directory before handing a path to a deferred owner.
  * Do not resolve symlinks here: unlink/rename must retain link semantics. */
 static bool capture_path(ar_engine *e, char **path) {
     if (!(*path)[0]) {
@@ -879,6 +879,15 @@ PHP_FUNCTION(asyncara_submit) {
                 if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem")) && !e->hyper_requested) {
                     zend_value_error("Resolved addresses and trust bytes are internal to the Hyper transport");
                     goto error;
+                } else if (!strcmp(options->keys[i], "caFile")) {
+                    /* libcurl can open its trust file after submission returns.
+                     * This key is never part of the borrowed stack option view:
+                     * replace only the job-owned copy, retaining ledger cleanup
+                     * on admission failure and cancellation. Check PHP's path
+                     * restriction before an external library opens the file. */
+                    ar_value *path = options->items[i];
+                    if (!capture_path(e, &path->string)) goto error;
+                    path->length = strlen(path->string);
                 } else if (!strcmp(options->keys[i], "streamResponse"))
                     j->stream_response = (int)options->items[i]->integer;
                 else if (!strcmp(options->keys[i], "uploadSize")) {

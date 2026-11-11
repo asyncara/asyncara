@@ -83,6 +83,10 @@ run('php-identity', php + ['-v'])
 run('extension-identity', php + ['--ri', 'asyncara'])
 for backend in ['epoll', 'poll']:
     env = {'ASYNCARA_BACKEND': backend, 'ASYNCARA_EXTENSION': str(module)}
+    for transport in (['curl-multi', 'hyper-prototype'] if a.hyper else ['curl-multi']):
+        run(backend + '-ca-paths-' + transport, ['python3', 'tests/http/ca_paths.py',
+            '--php', a.php, '--module', module, '--backend', backend, '--transport', transport,
+            '--out', out / (backend + '-ca-paths-' + transport)], env)
     for test in ['cancelled_upload_reuse', 'transfer_geometry', 'hyper_wakeups', 'capacity', 'gate_protocol', 'completion', 'methods', 'acquire_cancel', 'buffered_owner', 'options_lifetime', 'headers', 'wait_observer', 'proxy', 'pooling', 'buffer_budget']:
         run(backend + '-' + test, php + ['tests/http/' + test + '.php'], env)
     for limit in [8, 16, 32]:

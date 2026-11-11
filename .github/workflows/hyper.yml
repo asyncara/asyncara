@@ -82,7 +82,8 @@ jobs:
           path: |
             build/hyper-ffi/*.json
             build/hyper-ffi/*.log
-            build/hyper-http/
+            build/hyper-http/**/*.json
+            build/hyper-http/**/*.log
             build/hyper-client-tls/**/*.json
             build/hyper-client-tls/**/*.log
             build/hyper-server/**/*.json

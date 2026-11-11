@@ -2660,3 +2660,7 @@ Before-control3.4.10 module rejected certificate-required connections on separat
 MySQLmTLS verification complete in scoped configurations:34-command five-build/both-backend matrix PASS426.193s; ordinary-unload GCC and four annotated-Connector DEBUG Valgrind controls PASS0lost/0errors/3888reachable. GateA47PASS206.166s outer/full85both/databasebounds/plainSQL/allocation PASS. Four mTLS FPMcases240main/960HTTP retain originalticks/overlap, idle6fds1thread/server sessions0. Wrong stock runtime selectionr1 FAILpreserved; explicit3.3.17r2PASS includes800client-option rejections and independent plainOracle/MariaDB. Native94614a6 unchanged; docs/phase7/mysql-mtls.json records exacthashes. Package pending.
 
 MySQLmTLS package independently verified:639files/6dc68bd/SHA256dc5e23b63604129e01611f9d29102cb99cc9886b28a05592807f7323976a020f; freshbuild+10checksPASS, license unchanged.
+
+## HTTP trust-path ownership (2026-11-11)
+
+Negative controls http-ca-before-r1/r2 preserve actual curlCA open_basedir bypass and cwd changes redirecting trust-file lookup on both clients. Expandedr2 curl8casesfail;Hyper5relativecasesfail whileitsworkeropen_basedircontrolpasses. Nativephp_asyncara.c now captures ownedcaFile beforelibraryadmission andchecksPHPpathpolicy;HttpClient capturesexplicitrelativeCA atconstructionbeforequeued/streamingTasks. No trustbytes/symlink snapshot or atomicpath sandboxclaim. Nativebuild/matrixpending; tests integratedintoHTTPgate. CIartifactselectionexcludesephemeralfixturekeys.
