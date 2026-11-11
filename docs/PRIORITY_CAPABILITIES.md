@@ -75,3 +75,19 @@ test adapter was fixed. All raw failures remain in the attested evidence root.
 
 Source-distribution independent build is attested separately after packaging;
 no GitHub release or remote push is implied by these local results.
+
+## Independently built source distribution
+
+Packaged source `891c48c6626bdeb551a26d1c9e9f9f127a7424f2` contains 707 tracked files,
+verified byte-for-byte against Git before and after extraction/build checks.
+Archive: `build/asyncara-0.1.0-dev-proxy-services-r1.tar.gz`.
+SHA-256: `32ccc430b2b71a931083b58b72354bb7e5dd8045f4cf2a757af7cf39826d2ec5`. Repeated packaging is byte-identical.
+
+Fresh Rust/C build PASS in 141.291s; independent
+module SHA-256 `e2ceebbcbbfdb88dc06c094b21e7f7525e8f42c44659108527a90ca563ee59cb`.
+All 29 build/test commands PASS, including SQL/Redis/HTTP/file
+handlers on all three SQL servers and both backends (264 main service
+requests), authenticated proxies/HTTP2, copy/trace controls and 14 server scopes.
+[Package attestation](phase7/proxy-services-package.json) retains exact commands,
+hashes and limits. This later attestation is not inside the archived source.
+No release publication or remote push was performed.

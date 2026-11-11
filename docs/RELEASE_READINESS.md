@@ -1,5 +1,10 @@
 # Release readiness
 
+Latest priority source package:707 verified files, fresh Rust/C build and29
+commands PASS; [current scope](PRIORITY_CAPABILITIES.md) and
+[package attestation](phase7/proxy-services-package.json). Historical failures
+remain separate; broad protocol certification remains partial.
+
 ## Current priority scope (2026-11-12)
 
 The [priority capability contracts](PRIORITY_CAPABILITIES.md) distinguish tested

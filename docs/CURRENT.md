@@ -1,5 +1,10 @@
 # Current isolated HTTP development state
 
+Latest priority source package:707 verified files, fresh Rust/C build and29
+commands PASS; [current scope](PRIORITY_CAPABILITIES.md) and
+[package attestation](phase7/proxy-services-package.json). Historical failures
+remain separate; broad protocol certification remains partial.
+
 ## Current priority contracts (2026-11-11)
 
 [Priority capability matrix](PRIORITY_CAPABILITIES.md) is the current lookup for

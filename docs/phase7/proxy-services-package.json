@@ -1,0 +1,641 @@
+{
+  "status": "PASS",
+  "sourceCommit": "891c48c6626bdeb551a26d1c9e9f9f127a7424f2",
+  "nativeCheckpoint": "2a96f61deb1df16f4f304feacb87d2ef4f3194ac",
+  "priority": "Native Server primary; FPM compatibility retained, no additional FPM run in this package check",
+  "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-proxy-services-r1.tar.gz",
+  "archiveSha256": "32ccc430b2b71a931083b58b72354bb7e5dd8045f4cf2a757af7cf39826d2ec5",
+  "sourceFiles": 707,
+  "gitTreeVerified": true,
+  "byteReproducible": true,
+  "commands": [
+    {
+      "name": "independent-build",
+      "command": [
+        "bash",
+        "scripts/build-hyper-local.sh"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 141.29063301999122,
+      "logSha256": "1eb5aad7f5b02400f321ffa04c259d08216f9ed32a8efc5af570ac560428e16f"
+    },
+    {
+      "name": "epoll-pg-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_pg.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-pg-service"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 10.507069899700582,
+      "logSha256": "0623b8be5c9fbd3730970ac55f5c5647bff90bcb7b9e51858a2dcc01482e6450"
+    },
+    {
+      "name": "epoll-maria-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-maria-service"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 12.03688222868368,
+      "logSha256": "6e814835fe8e014563434e09c1e1d58f1aa43e7ed0a17f4a8949dc06e8433e41"
+    },
+    {
+      "name": "epoll-oracle-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-oracle-service",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 26.554324890952557,
+      "logSha256": "264ff5632de1b5f0c84f3a495d84579da02a8264df9c4267f41ebd03d6972c8c"
+    },
+    {
+      "name": "epoll-proxy-cli",
+      "command": [
+        "python3",
+        "tests/http/proxy_auth.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-proxy-cli"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 3.7802666258066893,
+      "logSha256": "896323ac274ec258779eedb0df2b97217cd1dd670fbb170f0ab9cd710b95843b"
+    },
+    {
+      "name": "epoll-proxy-server",
+      "command": [
+        "python3",
+        "tests/http/proxy_auth.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-proxy-server",
+        "--server"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 5.363967093639076,
+      "logSha256": "6ede10f089bbb4ac25dddff96bb95f1c6cdeb675aa8f66e2d235eaf00b434d87"
+    },
+    {
+      "name": "epoll-proxy-http2",
+      "command": [
+        "python3",
+        "tests/http/http2.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-proxy-http2",
+        "--proxy-auth"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 4.861251060850918,
+      "logSha256": "2854ed1aca3541e35f03c6dc870184dd482f6d526cb3b6dfa9f4639c1f59dbc9"
+    },
+    {
+      "name": "poll-pg-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_pg.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-pg-service"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 9.201806591823697,
+      "logSha256": "c43475a1be4dc6041e807f1f67cf2013c6303d72f5161f54bb264155614293ee"
+    },
+    {
+      "name": "poll-maria-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-maria-service"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 10.154476149007678,
+      "logSha256": "54d02b1455bd1c4b11166aaccd3d8f1449dcd858bd7acf4c415a0790120e66cb"
+    },
+    {
+      "name": "poll-oracle-service",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--server",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-oracle-service",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 22.18445633724332,
+      "logSha256": "14140c388fee80f016af22e706acf7ef35f96dd7bff309be5be1d5e4edc4fceb"
+    },
+    {
+      "name": "poll-proxy-cli",
+      "command": [
+        "python3",
+        "tests/http/proxy_auth.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-proxy-cli"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 3.4532665242441,
+      "logSha256": "c6f6584ad5543606c78f6182334f3b511c2fafa802fd5d22c1334ac013a2f8ab"
+    },
+    {
+      "name": "poll-proxy-server",
+      "command": [
+        "python3",
+        "tests/http/proxy_auth.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-proxy-server",
+        "--server"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 4.909868172835559,
+      "logSha256": "b6f5e2d83d326076858122bd727da1c60dec6a6b1c0f4ed29116048d28b23f61"
+    },
+    {
+      "name": "poll-proxy-http2",
+      "command": [
+        "python3",
+        "tests/http/http2.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-proxy-http2",
+        "--proxy-auth"
+      ],
+      "environment": {
+        "PYTHONPATH": "/home/coder/Asyncara-priority-20261110T205459Z/http2-tooling-r1/venv/lib/python3.12/site-packages"
+      },
+      "exit": 0,
+      "wallSeconds": 4.500385408755392,
+      "logSha256": "cbeb6b0826122ffccabbe52a76b1275d5e6c571e5f2c9354b152115b9b38a927"
+    },
+    {
+      "name": "pool_configuration.php",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+        "tests/pool_configuration.php"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 0.05329640302807093,
+      "logSha256": "ce4b8396fd223066ee350fbfc85fb40fb3df02e8309adf7867131709f8ced554"
+    },
+    {
+      "name": "server-callback_traces.php",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/asyncara-0.1.0-dev/build/asyncara-server.so",
+        "tests/server/callback_traces.php"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 0.050001501105725765,
+      "logSha256": "17ca4e7c4b721df1b743c28ca62ca0b5b07297594ad1de0a397a712991c0c281"
+    },
+    {
+      "name": "epoll-server-run",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-run",
+        "--backend",
+        "epoll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 2.3324004877358675,
+      "logSha256": "d5b9806e273e3abdbb6e0061208265b5bb5a24e0e0138a20e8cb7950811f959b"
+    },
+    {
+      "name": "epoll-server-tls",
+      "command": [
+        "python3",
+        "tests/server/tls.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-tls",
+        "--backend",
+        "epoll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 3.344032153021544,
+      "logSha256": "cdde2ddd68733c69c718c39ddb8e05b5ac287adef861afc2a1576e1c2103ebc3"
+    },
+    {
+      "name": "epoll-server-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-stream",
+        "--backend",
+        "epoll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.9468658571131527,
+      "logSha256": "233deae792cae8d2a33bf2be3ec711e6af2c000847067ebeddb201dc91e222fc"
+    },
+    {
+      "name": "epoll-server-stream-tls",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-stream-tls",
+        "--backend",
+        "epoll",
+        "--tls"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 1.8133885320276022,
+      "logSha256": "7c50e79d8c2dc5636545503861cfd9f76845413861ac066fc650408c9401251c"
+    },
+    {
+      "name": "epoll-server-input",
+      "command": [
+        "python3",
+        "tests/server/input.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-input",
+        "--backend",
+        "epoll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 3.970587210264057,
+      "logSha256": "c787dded2f932f299f9d6afa2e4eeb62b910fe4412fc248d39c6ac212159c7af"
+    },
+    {
+      "name": "epoll-server-input-tls",
+      "command": [
+        "python3",
+        "tests/server/input.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-input-tls",
+        "--backend",
+        "epoll",
+        "--tls"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 4.566834525205195,
+      "logSha256": "6b8102e1c4261b69365f3045a1a5a53910a304827fd919a1faf163cf32fee3b4"
+    },
+    {
+      "name": "epoll-server-workers",
+      "command": [
+        "python3",
+        "tests/server/workers.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/epoll-server-workers",
+        "--posix",
+        "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925/posix.so",
+        "--tls",
+        "--input"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 2.935240406077355,
+      "logSha256": "ab349eb938b097be1c31d76c933f1080c7d9e978e74a66d796463b2aff645537"
+    },
+    {
+      "name": "poll-server-run",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-run",
+        "--backend",
+        "poll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 2.3466758420690894,
+      "logSha256": "2d296bbdc128adc485302c5e3bbb1786202fffcc3786af2970a271a8fb870098"
+    },
+    {
+      "name": "poll-server-tls",
+      "command": [
+        "python3",
+        "tests/server/tls.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-tls",
+        "--backend",
+        "poll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 3.0779043580405414,
+      "logSha256": "5d341c7adb3315c9c8151d1fc66e0994fb8591b50e97d764c97744d31c06215f"
+    },
+    {
+      "name": "poll-server-stream",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-stream",
+        "--backend",
+        "poll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.6140218321233988,
+      "logSha256": "02bfc125ad6b905d8929efa430b3a916c169c582d283748fe31e2689bf20527b"
+    },
+    {
+      "name": "poll-server-stream-tls",
+      "command": [
+        "python3",
+        "tests/server/stream.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-stream-tls",
+        "--backend",
+        "poll",
+        "--tls"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 1.5080467578954995,
+      "logSha256": "bbb80428fe5f347b85602a50c6bc130dcdc63cf11dc817fed49bfe1280ec65a7"
+    },
+    {
+      "name": "poll-server-input",
+      "command": [
+        "python3",
+        "tests/server/input.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-input",
+        "--backend",
+        "poll"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 3.753037589136511,
+      "logSha256": "bfd1b9e35cd7445fda081c90aba704b52e3a9926e057efe0c063d16fb6b8ada0"
+    },
+    {
+      "name": "poll-server-input-tls",
+      "command": [
+        "python3",
+        "tests/server/input.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-input-tls",
+        "--backend",
+        "poll",
+        "--tls"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 4.948233238887042,
+      "logSha256": "db314706f580108e268ffb829417deb71506c5cd643e8d8e924b79a7386226c8"
+    },
+    {
+      "name": "poll-server-workers",
+      "command": [
+        "python3",
+        "tests/server/workers.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/poll-server-workers",
+        "--posix",
+        "/home/coder/Asyncara-http-speed-20261109T073938Z/reference-env/root/usr/lib/php/20250925/posix.so",
+        "--tls",
+        "--input"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 3.2875054348260164,
+      "logSha256": "72fc703b5cdd3969c7f307480e9f7c0231c1ca69d4dd748737529862f202514f"
+    }
+  ],
+  "buildEnvironment": {
+    "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+    "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+    "CARGO_TARGET_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/cargo-target",
+    "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+    "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+    "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+    "PHP_INCLUDE_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+  },
+  "independentModuleSha256": "e2ceebbcbbfdb88dc06c094b21e7f7525e8f42c44659108527a90ca563ee59cb",
+  "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7",
+  "rawReport": "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-package-r1/report.json",
+  "rawReportSha256": "083d872f579a7abd9568ea2d991f76e5feeaac56a895c5fca3e82e21f53f8b86",
+  "independentSQLServiceMainRequests": 264,
+  "reviewedUtc": "2026-11-11T23:25:23.695252+00:00",
+  "cleanup": {
+    "path": "/home/coder/Asyncara-priority-20261110T205459Z/proxy-services-data-cleanup-r1/report.json",
+    "sha256": "a282cdf7addf0173b44695ee7605c91e38865051fe43be6ecefb395c08511656",
+    "deletedRegenerableBytes": 4689711104,
+    "preservedFiles": 3845
+  }
+}
