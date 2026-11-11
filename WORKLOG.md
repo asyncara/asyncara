@@ -2692,3 +2692,5 @@ Native acda044 passes35-command five-build matrix. Native cache/GCC/Valgrind con
 ### HTTP/2 final scoped verification (2026-11-11)
 
 acda044 native/d84546c finalpeer:35-command matrix plus30 finalpeerchecks PASS; GateA49 PASS212.054s; full85epoll47.255/poll40.692; HTTP93PASS183.459. FourFPMcases240main960HTTP PASS, independentrecalculationminticks13,idle6FD1thread; C-onlybuild+4controlsPASS. NativecacheGCC/VG anddirectDEBUGepoll/pollPASS scoped0loss; fullproxyValgrindr1/r2/r3 remainsFAIL original5sdeadline, reproducedbyindependentCcurlwith6.170CPUseconds and10MiBprocessed. Noassertionsrelaxed. docs/phase7/http2-client.json retainsallreports; freshcombinedHTTPSproxy/HTTP2packagefollows. NextRedis inspection foundpotentialpush/replymisassociation; reproducerprepared,noruntimechange yet.
+
+HTTP2/proxy packagebb3fcf5/666files/SHA2562737618dca7170025eb4f0f2c08ba6cb30ec11b854cedecd37c0e104d1fa2267 independentlybuilt137.755s+14checksPASS. Exactmoduleattested; Rediscontinuationuncommittedandnotinarchive.

@@ -162,3 +162,16 @@ The final matrix uses ordinary unloading and leak detection, without memory
 suppressions. Rust release dependencies are not instrumented by the GCC C/PHP
 build. No universal native-memory safety claim follows from these scoped checks.
 Independent source packaging is recorded separately after this checkpoint.
+
+## Independent HTTP/2 and HTTPS proxy source package
+
+Source `bb3fcf5d15a9cac3bece5450941c17b1a25fe4f6`; archive
+`build/asyncara-0.1.0-dev-http2-proxy-r1.tar.gz`,666files. SHA256
+`2737618dca7170025eb4f0f2c08ba6cb30ec11b854cedecd37c0e104d1fa2267`.
+Two packages are byte-identical; every entry matches the committed Git tree.
+Fresh extraction, fresh Cargo target and native build pass15 commands: build plus
+HTTP/2 direct/proxy/FPM, HTTPSproxy/FPM and Hyper compression/streaming on epoll/poll.
+Build wall137.755s. [Build attestation](phase7/http2-proxy-package.json).
+Independent module SHA256: `fcb6e41b37c93161f974195bcef4b191624c3d546bdf29f7ad47fb86d1412244`.
+No release publication; the package does not erase scoped Valgrind deadline
+failures or certify streaming HTTP/2, HTTP/3 or historical endurance.
