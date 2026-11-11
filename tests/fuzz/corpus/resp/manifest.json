@@ -76,5 +76,19 @@
   },
   "bad-terminator": {
     "error": true
+  },
+  "nested-push": {
+    "error": true
+  },
+  "nested-map-push": {
+    "error": true
+  },
+  "push": {
+    "value": [
+      "invalidate",
+      [
+        "key"
+      ]
+    ]
   }
 }
