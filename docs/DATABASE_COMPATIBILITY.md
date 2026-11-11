@@ -134,3 +134,5 @@ RESP2/RESP3 Pub/Sub remains a separate read mode. See [REDIS_NOTIFICATIONS.md](R
 for actual server/build/backend evidence and the explicit no-idle-pump limit.
 This does not add attributes, streaming aggregates, Cluster, Sentinel or automatic
 reconnection, and does not certify complete client-side caching semantics.
+
+Explicit SQL TLS filename admission and handshake-resume ownership is now verified in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). This scoped correction does not broaden the server/version matrix or erase the PostgreSQL ordinary-unload memory failure. Native Server is the primary development mode; existing FPM compatibility remains.

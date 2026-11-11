@@ -328,3 +328,5 @@ Explicit PostgreSQL client-certificate configuration is tested on the scoped
 FAIL109bytes. [Evidence](POSTGRESQL_MTLS.md). This closes one API gap, not broad
 remote/memory certification or historical FPM zero-tick attribution. No release
 promotion or publication; EXPERIMENTAL remains.
+
+Explicit SQL TLS filename admission and handshake-resume ownership is now verified in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). This scoped correction does not broaden the server/version matrix or erase the PostgreSQL ordinary-unload memory failure. Native Server is the primary development mode; existing FPM compatibility remains.

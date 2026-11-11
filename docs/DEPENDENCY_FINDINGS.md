@@ -436,3 +436,7 @@ Normal control reaches16MiB; instrumented proxy control times out after10MiB.
 Raw memory checks report no errors/loss, but the original full functional
 Valgrind proxy gate remains FAIL; deadlines and bounds were not weakened.
 [Exact source, controls and limitations](HTTP2_CLIENT.md).
+
+## SQL TLS filename continuation (2026-11-11)
+
+Native6ed922b was retested with ordinary module unloading and unsuppressed DEBUG PHP/Valgrind3.22.0. Both positive PostgreSQL16.15/libpq16.15 TLS runs still report96 definitely+13 indirectly lost bytes in BIO_meth_new (two leak contexts); their12 functional filename checks pass independently. Forty other policy/MySQL processes report zero errors/definite/indirect/possible loss and3888 reachable bytes each. These do not erase the distribution-PHP shutdown discrepancy. Raw stacks, exact binaries and independent review are linked in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). The FD observer initially rejected Valgrind's own inherited log descriptor; no-module and loaded-empty PHP controls prove that exact descriptor, and the revised reviewer rejects every extra/mismatched descriptor. Original observer/startup failures remain retained. No suppression, module-retention policy or dependency replacement was used.

@@ -110,3 +110,5 @@ remain outside this tested scope. No hosted-CI execution is inferred from local
 results; CI now includes the separate MariaDB private-CA regression.
 
 Independent package: source6dc68bd,639files, `build/asyncara-0.1.0-dev-mysql-mtls-r1.tar.gz`, SHA256`dc5e23b63604129e01611f9d29102cb99cc9886b28a05592807f7323976a020f`. Reproduced byte-for-byte and compared every tracked file with Git. Fresh Cargo/C build121.642s plus10 independent certificate/FPM/Hyper/credential checks PASS; module`c79ef0f16667eda4f56abb21a4acd120400eeed95e1e0db475bef4f0270be2f3`. See [package attestation](phase7/mysql-mtls-package.json). Not published as a GitHub release.
+
+Explicit SQL TLS filename admission and handshake-resume ownership is now verified in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). This scoped correction does not broaden the server/version matrix or erase the PostgreSQL ordinary-unload memory failure. Native Server is the primary development mode; existing FPM compatibility remains.

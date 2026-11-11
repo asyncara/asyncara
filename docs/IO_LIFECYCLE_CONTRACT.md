@@ -597,3 +597,17 @@ rejected writeStream admission closes an already-owned ReadableStream producer.
 No inode/content snapshot or atomic hostile-filesystem sandbox is promised.
 Cancellation cannot undo a published write. Existing close, draining and
 backpressure rules remain in force. [Implementation and evidence](FILESYSTEM.md).
+
+## SQL TLS filenames and handshake continuation (2026-11-11)
+
+Explicit PostgreSQL sslrootcert/sslcert/sslkey and MySQL caFile/certFile/keyFile
+strings capture virtual cwd at public connect submission, and again at direct
+native admission. Caller reference values are detached. Native handshake
+continuations recheck current open_basedir before advancing the library;
+warning-handler exceptions retain identity. PostgreSQL frees its temporary
+Zend-owned names on successful connection or resource close; MySQL retains its
+existing copied options. Public handshake errors close the connection. Raw
+native resource users retain explicit close responsibility and request cleanup.
+The libpq `system` selector remains a selector. No inode/content snapshot,
+default-library-file sandbox, asynchronous disk-loading guarantee or remote
+cancellation acknowledgement is introduced. [Exact evidence and limits](SQL_TLS_PATHS.md).

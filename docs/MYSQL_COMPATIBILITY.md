@@ -88,3 +88,5 @@ keyPassword on strict3.4.10, separate Oracle/MariaDB authentication controls,
 FPM cleanup and unsuppressed memory results. The later3.3.17 control separately
 passes ordinary Unix integration against both servers while still rejecting TLS.
 Historical3.3 results above are unchanged.
+
+Explicit SQL TLS filename admission and handshake-resume ownership is now verified in [SQL_TLS_PATHS.md](SQL_TLS_PATHS.md). This scoped correction does not broaden the server/version matrix or erase the PostgreSQL ordinary-unload memory failure. Native Server is the primary development mode; existing FPM compatibility remains.
