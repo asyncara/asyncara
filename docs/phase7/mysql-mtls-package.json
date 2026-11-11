@@ -1,0 +1,232 @@
+{
+  "status": "PASS",
+  "sourceCommit": "6dc68bd5bf97b87cb3cf5f3a52fd1adb276be801",
+  "nativeCheckpoint": "94614a68b73226d39b97b2638b9cff45af3b5319",
+  "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-mysql-mtls-r1.tar.gz",
+  "archiveSha256": "dc5e23b63604129e01611f9d29102cb99cc9886b28a05592807f7323976a020f",
+  "sourceFiles": 639,
+  "gitTreeVerified": true,
+  "byteReproducible": true,
+  "commands": [
+    {
+      "name": "independent-build",
+      "command": [
+        "bash",
+        "scripts/build-hyper-local.sh"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 121.64243889879435,
+      "logSha256": "9e519d1c124af7f746c880b22e7b07fc5eb4d820e7d1dac151cacf8faf98a78a"
+    },
+    {
+      "name": "epoll-maria-mtls-fpm",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--fpm",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/epoll-maria-mtls-fpm"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 16.488034658832476,
+      "logSha256": "7f068b75388eec2f00e39b79aaaa460271354cf269fef27bba613c3214ffd53e"
+    },
+    {
+      "name": "epoll-oracle-mtls-fpm",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--fpm",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/epoll-oracle-mtls-fpm",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 24.964607503032312,
+      "logSha256": "ca5c1ebad576ce3e654021163005d33c51235903adb4e0f6990c22d7362c24c3"
+    },
+    {
+      "name": "epoll-hyper_compression",
+      "command": [
+        "python3",
+        "tests/http/hyper_compression.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/epoll-hyper_compression"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 4.67563839815557,
+      "logSha256": "e2770cb5a666a5e6df983bf5aea6d9ac516ba3e7cd98081a71d0f9cfbd7f0653"
+    },
+    {
+      "name": "epoll-hyper_streaming",
+      "command": [
+        "python3",
+        "tests/http/hyper_streaming.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/epoll-hyper_streaming"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 11.214183252071962,
+      "logSha256": "20ccb2602d97167893121a3d30a4e544781589a43416e649161fc812208be7df"
+    },
+    {
+      "name": "epoll-credentials",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=build/asyncara-server.so",
+        "tests/database/credential_traces.php"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "epoll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.1010196409188211,
+      "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+    },
+    {
+      "name": "poll-maria-mtls-fpm",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--fpm",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/poll-maria-mtls-fpm"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 14.419533304870129,
+      "logSha256": "3fe069a9f30c6b1fe82e51d9e8d5ad13fbf57d71a5997894927873d431fd4e0b"
+    },
+    {
+      "name": "poll-oracle-mtls-fpm",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--fpm",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/poll-oracle-mtls-fpm",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 25.284770890837535,
+      "logSha256": "765f0bbe584d63c2e351ca338fd4b6e0daaa377a1dacd2ca13f9d40cf9d851eb"
+    },
+    {
+      "name": "poll-hyper_compression",
+      "command": [
+        "python3",
+        "tests/http/hyper_compression.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/poll-hyper_compression"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 4.812305103987455,
+      "logSha256": "0f43084727a58914dd1988b31556f213e4a694ad5fc7776ba76d2a4ba275d4d9"
+    },
+    {
+      "name": "poll-hyper_streaming",
+      "command": [
+        "python3",
+        "tests/http/hyper_streaming.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "build/asyncara-server.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/poll-hyper_streaming"
+      ],
+      "environment": {},
+      "exit": 0,
+      "wallSeconds": 13.332285610027611,
+      "logSha256": "158d843e07b45b8259b08ddf1f1997462db3f1ea1994a09376fed1dbc3b145d9"
+    },
+    {
+      "name": "poll-credentials",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=build/asyncara-server.so",
+        "tests/database/credential_traces.php"
+      ],
+      "environment": {
+        "ASYNCARA_BACKEND": "poll"
+      },
+      "exit": 0,
+      "wallSeconds": 0.07531835185363889,
+      "logSha256": "0968898f078c95ec39cc577bcdf890b3567a4c0cbf3dbcd6e986a0635a28fe53"
+    }
+  ],
+  "buildEnvironment": {
+    "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+    "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+    "CARGO_TARGET_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/cargo-target",
+    "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+    "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+    "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+    "PHP_INCLUDE_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+  },
+  "independentModuleSha256": "c79ef0f16667eda4f56abb21a4acd120400eeed95e1e0db475bef4f0270be2f3",
+  "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7",
+  "rawReport": "/home/coder/Asyncara-priority-20261110T205459Z/mysql-mtls-package-r1/report.json",
+  "rawReportSha256": "a69cc010381cec57e9ee532de1ea29f02f217f7d1d00135a3c4b044ad136e00b"
+}
