@@ -1,0 +1,190 @@
+{
+  "reportPath": "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/report.json",
+  "reportSha256": "ec21ad397e03051885586c8894e3c46fb7c950b55e43d16346ef51e9474f3282",
+  "result": {
+    "status": "PASS",
+    "sourceCommit": "f9cd72d84b330b381d9d5c5b21cbe298565d1595",
+    "nativeCheckpoint": "acda0441e19cc840e804b8c4315d867b345c4cd0",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-redis-push-r1.tar.gz",
+    "archiveSha256": "a65307e5a15cac3f294c2a3df26494e4a9880a7c0eb38e9a659326299477942a",
+    "sourceFiles": 676,
+    "gitTreeVerified": true,
+    "byteReproducible": true,
+    "commands": [
+      {
+        "name": "independent-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "environment": {},
+        "exit": 0,
+        "wallSeconds": 144.76420556707308,
+        "logSha256": "d83ad8318da800342f0e06863f2c147f84f50a5e19904917979aa2b6ce2aa75f"
+      },
+      {
+        "name": "epoll-protocol",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=build/asyncara-server.so",
+          "tests/database/redis_push_protocol.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.0770750988740474,
+        "logSha256": "461cbcb8185dd665d6d98e1690b0dfacf88b37a8c1ba00b69cf2232b9e607292"
+      },
+      {
+        "name": "epoll-real",
+        "command": [
+          "python3",
+          "tests/database/redis_push.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/epoll-real"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 1.3530419450253248,
+        "logSha256": "3fb53bcb1b92a1396ee9b4eee8c9bb5a24a19ab74bd1e49d1bb23e1128b23b90"
+      },
+      {
+        "name": "epoll-fpm",
+        "command": [
+          "python3",
+          "tests/database/redis_push.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/epoll-fpm",
+          "--fpm",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 24.912359507987276,
+        "logSha256": "29f0d7167a238de326bfd381d9d9767cc60cdb5db00858ac69048db5405f384e"
+      },
+      {
+        "name": "epoll-corpus",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=build/asyncara-server.so",
+          "tests/fuzz/resp_regressions.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.8896413948386908,
+        "logSha256": "01f25cca05067d5ab104bfde355942598f167e31045f428f2b7479a9cb1284ef"
+      },
+      {
+        "name": "poll-protocol",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=build/asyncara-server.so",
+          "tests/database/redis_push_protocol.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.08093436295166612,
+        "logSha256": "a4919b6c732c2d968923adc1cb4143862ae35f3b4e8c59a101ab52a72906ebbb"
+      },
+      {
+        "name": "poll-real",
+        "command": [
+          "python3",
+          "tests/database/redis_push.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/poll-real"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 2.9422133630141616,
+        "logSha256": "bfcc18da2024a21f82e725863a7ebe407ac1e33a1183bf74de8113f41f4a6b4e"
+      },
+      {
+        "name": "poll-fpm",
+        "command": [
+          "python3",
+          "tests/database/redis_push.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "build/asyncara-server.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/poll-fpm",
+          "--fpm",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 21.996856370009482,
+        "logSha256": "30ec59e8bc8aea4f0204e80779123eec6edaaf162da0d155786c712b1c39bde2"
+      },
+      {
+        "name": "poll-corpus",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=build/asyncara-server.so",
+          "tests/fuzz/resp_regressions.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "exit": 0,
+        "wallSeconds": 0.1307449620217085,
+        "logSha256": "01f25cca05067d5ab104bfde355942598f167e31045f428f2b7479a9cb1284ef"
+      }
+    ],
+    "buildEnvironment": {
+      "RUSTUP_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/rustup",
+      "CARGO_HOME": "/home/coder/Asyncara-http-evidence-20261109T050419Z/rust-toolchain/cargo",
+      "CARGO_TARGET_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/cargo-target",
+      "ASYNCARA_OUTPUT": "build/asyncara-server.so",
+      "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "FPM_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+      "PHP_INCLUDE_DIR": "/home/coder/Asyncara-priority-20261110T205459Z/redis-push-package-r1/asyncara-0.1.0-dev/.local/sysroot/usr/include/php/20250925"
+    },
+    "independentModuleSha256": "d681f04ee7acdaa31cd0c487c4910ff43171f7aace238861432818a5fc1ab8e9",
+    "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7"
+  }
+}

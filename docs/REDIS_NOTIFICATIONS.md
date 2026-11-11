@@ -147,3 +147,14 @@ GCC instruments C/PHP; Rust release dependencies are not covered by that compile
 The mutation smoke also exercises existing IPC/header code and is not exhaustive
 RESP conformance or native-parser fuzz coverage. No performance superiority claim.
 Independent package verification follows the documented source checkpoint.
+
+## Independently verified source distribution
+
+Packaged source `f9cd72d84b330b381d9d5c5b21cbe298565d1595`,676files.
+Archive `build/asyncara-0.1.0-dev-redis-push-r1.tar.gz`; SHA256
+`a65307e5a15cac3f294c2a3df26494e4a9880a7c0eb38e9a659326299477942a`.
+Two archives are byte-identical; every file matches the committed source tree.
+Fresh extraction/Cargo target/native build144.764s and8 protocol/real Redis/FPM/
+corpus checks on epoll/poll all pass. [Independent attestation](phase7/redis-push-package.json).
+Independent module SHA256 `d681f04ee7acdaa31cd0c487c4910ff43171f7aace238861432818a5fc1ab8e9`.
+No GitHub release or broader certification follows from packaging.
