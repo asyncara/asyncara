@@ -1,0 +1,1725 @@
+{
+  "status": "IMPLEMENTED_AND_TESTED",
+  "release": "EXPERIMENTAL",
+  "runtimeCommit": "19a64d29fcaa1499e2d06f15cc24e8f2b0465658",
+  "scope": "Explicit TcpStream/Redis caFile name ownership and PHP path policy, not content snapshots or universal TLS/memory certification",
+  "reports": [
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r1/report.json",
+      "sha256": "1dc852d31b29807b257cac88fdf7dfd55e2e619c70f6d04aa56c1272ff0c73a2",
+      "result": {
+        "status": "EXPECTED_FAILURE_REPRODUCED",
+        "sourceCommit": "b973f8afa22361eb2b2bf78d8dff6dbc7114c03f",
+        "rows": [
+          {
+            "name": "tcp-relative",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r1/tcp-relative"
+            ],
+            "exit": 1,
+            "logSha256": "2322bd3f65ced78049185c20689fc14d4ce87911ef553e844cf47e3792ba3e4a"
+          },
+          {
+            "name": "redis-relative",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r1/redis-relative"
+            ],
+            "exit": 1,
+            "logSha256": "2322bd3f65ced78049185c20689fc14d4ce87911ef553e844cf47e3792ba3e4a"
+          },
+          {
+            "name": "tcp-basedir",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r1/tcp-basedir"
+            ],
+            "exit": 1,
+            "logSha256": "f8c9a9eabf7701e63a25e46271d4d7cfc2f01dcb31be8a21fbd78ce9cee5d687"
+          },
+          {
+            "name": "redis-basedir",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r1/redis-basedir"
+            ],
+            "exit": 1,
+            "logSha256": "f8c9a9eabf7701e63a25e46271d4d7cfc2f01dcb31be8a21fbd78ce9cee5d687"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r2/report.json",
+      "sha256": "f476f56a5096b8828884f75fb81d50ac3d0d1189f183f83798e16a5983ab212d",
+      "result": {
+        "status": "EXPECTED_FAILURE_REPRODUCED",
+        "sourceCommit": "b973f8afa22361eb2b2bf78d8dff6dbc7114c03f",
+        "rows": [
+          {
+            "name": "tcp-relative",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r2/tcp-relative"
+            ],
+            "exit": 1,
+            "logSha256": "2322bd3f65ced78049185c20689fc14d4ce87911ef553e844cf47e3792ba3e4a"
+          },
+          {
+            "name": "redis-relative",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r2/redis-relative"
+            ],
+            "exit": 1,
+            "logSha256": "2322bd3f65ced78049185c20689fc14d4ce87911ef553e844cf47e3792ba3e4a"
+          },
+          {
+            "name": "tcp-basedir",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r2/tcp-basedir"
+            ],
+            "exit": 1,
+            "logSha256": "f8c9a9eabf7701e63a25e46271d4d7cfc2f01dcb31be8a21fbd78ce9cee5d687"
+          },
+          {
+            "name": "redis-basedir",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-wrapper.py",
+              "--module",
+              "build/priority-http2-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-before-r2/redis-basedir"
+            ],
+            "exit": 1,
+            "logSha256": "f8c9a9eabf7701e63a25e46271d4d7cfc2f01dcb31be8a21fbd78ce9cee5d687"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/report.json",
+      "sha256": "3ae16e813738d100b703f962d3161f26f763cdd93b4732892df9565a1c195910",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "php": "83",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 7.003470364958048,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "83",
+            "case": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-tcp-trust-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/83-epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.7322411441709846,
+            "logSha256": "eed64ade80a579e2a73c50b8397e5ebb48eaee3e05991490a966e629cb4789cb"
+          },
+          {
+            "php": "83",
+            "case": "epoll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-tcp-trust-matrix-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/83-epoll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.044442162150517,
+            "logSha256": "9feec01bae0a885bc0eaf2a2763228af8f97ecb4080558cd53987b231e19c3a4"
+          },
+          {
+            "php": "83",
+            "case": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-tcp-trust-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/83-poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.6614082930609584,
+            "logSha256": "14d6222b84e87bbd31233ef8b8505183fa984209e4fd7b71cd4a43c672b9c085"
+          },
+          {
+            "php": "83",
+            "case": "poll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "build/priority-tcp-trust-matrix-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/83-poll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.1276217480190098,
+            "logSha256": "395a4b7dbc7538849de04f2404f87680bc94dc8bd5994f7707685a21146a0b07"
+          },
+          {
+            "php": "84",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 6.997178254183382,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "84",
+            "case": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-tcp-trust-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/84-epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.6348561779595912,
+            "logSha256": "2f902e2f1a3c3f32643e8c0e09bdb889cf7858bd223a3273ce034fa30b80e32a"
+          },
+          {
+            "php": "84",
+            "case": "epoll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-tcp-trust-matrix-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/84-epoll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.2931901779957116,
+            "logSha256": "c7ccca9ddb171de851fd03b534fbcebb4609aa878a25fde06fbd7a4a7de91170"
+          },
+          {
+            "php": "84",
+            "case": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-tcp-trust-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/84-poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.9506918659899384,
+            "logSha256": "1866422f5e9d23ba6a8662b298b224b24664458932a472b637e6c6aee266ad2d"
+          },
+          {
+            "php": "84",
+            "case": "poll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "build/priority-tcp-trust-matrix-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/84-poll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.1417189438361675,
+            "logSha256": "d3562bc1588588a3199918d8fb2f6652433286073e2284933cc25bd93ab06e32"
+          },
+          {
+            "php": "85",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 6.498489341931418,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "85",
+            "case": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/85-epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 2.201032157987356,
+            "logSha256": "94bf05175a62eb3610774bc53da2fff3b7010dd7cd05f3ffd2c0aadb5ac9695b"
+          },
+          {
+            "php": "85",
+            "case": "epoll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/85-epoll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.0841135641094297,
+            "logSha256": "5a287423f57fdcbd3274d8bb401ee3753e44ebabf3448177497b76b10d6850b4"
+          },
+          {
+            "php": "85",
+            "case": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/85-poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.7856845580972731,
+            "logSha256": "98cd6c46c2623e8d93f5f688d4253c53fd8a19ed9f305c7ea902f7a218ac4c43"
+          },
+          {
+            "php": "85",
+            "case": "poll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/85-poll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.0552045090589672,
+            "logSha256": "ede7c75143c0b1352cedf45429054fadc2d1dd072380d3bc1c767439c9c6e4b6"
+          },
+          {
+            "php": "debug",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 6.852652014931664,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/debug-epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.9676426427904516,
+            "logSha256": "d516740f54ae0a50ba91e400701a02b861ccc96c9221578e5d422406a879b547"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/debug-epoll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.2074870220385492,
+            "logSha256": "a64217be042d8eb8309e4e87a4ae5dd5ad5b4b87d6be5a7780d73eed5931334e"
+          },
+          {
+            "php": "debug",
+            "case": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/debug-poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.6923157582059503,
+            "logSha256": "3db0cd786fb782d761195b19ec204b33cee1ba63bc9be2840a629a20d2ca6c80"
+          },
+          {
+            "php": "debug",
+            "case": "poll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/debug-poll-redis"
+            ],
+            "exit": 0,
+            "seconds": 1.1440444698091596,
+            "logSha256": "b272c7b026e3ef617f126cbe5ba4d7249a82fa1d085b1f0ea5f9aed0f8ab7d2d"
+          },
+          {
+            "php": "gcc",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 15.965487661072984,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/gcc-epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 6.598420085851103,
+            "logSha256": "fa405159d3a3b2cdda03c2f1516c0ed0630c19c3c9c9467422b3342b3aa5a112"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/gcc-epoll-redis"
+            ],
+            "exit": 0,
+            "seconds": 2.2345234202221036,
+            "logSha256": "0e7facf94d6ad4674728f4ffe7b82b6bf48abe6efc0ce76ec7f2477461c1b8d4"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/gcc-poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 5.754649637034163,
+            "logSha256": "450ffd87e3c25ff90adb6379c6b3863a0ef6fe1a5235c1ad69b520e2af065c4b"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-redis",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "build/priority-tcp-trust-matrix-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix-r1/gcc-poll-redis"
+            ],
+            "exit": 0,
+            "seconds": 2.5320435990579426,
+            "logSha256": "fc785ea68af6c472f5eaaa9d8800f0201f7f695a985a57cc4c71d6978432cd2d"
+          }
+        ],
+        "binaries": {
+          "priority-tcp-trust-matrix-debug.so": "93aa60675851e1312921ae1e06b7d2567e7f08822ccb8032562dd8aead93dc06",
+          "priority-tcp-trust-matrix-85.so": "6ffaf1327fa3e82db6c97db7836c54b314db718265323214eaa3b1e5e184b588",
+          "priority-tcp-trust-matrix-83.so": "d0bafc97f6ec42bf403d3e519c900fc0d620ea8efcfb820d976b6ff1e21d4498",
+          "priority-tcp-trust-matrix-84.so": "01c22887775db55749c17ec937602335ba62355c4c14b89959343f9865a369c8",
+          "priority-tcp-trust-matrix-gcc.so": "d8835a37a3ff3efc6ff575eb382c8758691ea590d2cbf7a40aefd87b223cb80e"
+        }
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/report.json",
+      "sha256": "276e659e1c4f5fd54745ababdde72c5a604cd274ac781944b6790f2ba36ccc7f",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "name": "epoll-protocol",
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--keep-debuginfo=yes",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-protocol-%p.memcheck.log",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "tests/database/redis_push_protocol.php"
+            ],
+            "exit": 0,
+            "seconds": 8.364122712984681,
+            "logSha256": "e2f6df033ed87fcb4c026b7ca6d9e2199942747aab8849557c7b6279deefbb44",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-protocol-461407.memcheck.log",
+                "sha256": "f48ad352c798e7c6696cc8f3ef7efeaced97164ca64f1b7e55a488ec301dba7a",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "name": "epoll-real",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-real.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-real"
+            ],
+            "exit": 0,
+            "seconds": 19.51531875715591,
+            "logSha256": "97fb5264286e94507c5d06b7b4b745a673b8f4f72cc2a9505d898ecf59a81d2a",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-real-461566.memcheck.log",
+                "sha256": "a23aea5fcaf49e920aa0a3b6ecca3b1a2d860a9b8eb643a704d9374092eb6619",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-real-461511.memcheck.log",
+                "sha256": "181a34a4d25264ca917f3cb8add15b2dc416fa1212cf7ab533012f4fb6bc0295",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "name": "epoll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 94.14109480683692,
+            "logSha256": "b236233587f31181c8c64b0edaf20e32c0127c467b61f627299543de76442ccb",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462613.memcheck.log",
+                "sha256": "56bd9ceb7cec44db87b1235c82f89082d4610daa790c151520f51cf0346b29dd",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462254.memcheck.log",
+                "sha256": "af6695cf3c9d849d9cbbac193abbc05e115573062e7ef2484f802868e487efb6",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-461839.memcheck.log",
+                "sha256": "ab747d4b6db4809652e57b53ffcdf349db3cef950bd013524de1b9a8c28ead1e",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462338.memcheck.log",
+                "sha256": "925dedaf10eb9089dc6d2f60eaaa922fe2e6e3709ab2de8c9170228505f90110",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-461794.memcheck.log",
+                "sha256": "9b6f7bca5c8e70241d0516fbba3cd78e2028433d6328036d9a6d65d513e90064",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462428.memcheck.log",
+                "sha256": "6e5a6357ed649eda944fb29168277f080286dc52feb159885f5724eab66f89d5",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-461894.memcheck.log",
+                "sha256": "2f90a79ec3253f2b5a522ebebb0d653422ea69da450d65ba7423f9e15a434ecb",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462546.memcheck.log",
+                "sha256": "05775019a4f8e9e9ba8c6b1ccb68fc129765caf29a5a912efdffd8840d941ad5",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462142.memcheck.log",
+                "sha256": "518a6933c9faeb54daf23a7eb120f03d500f2da665cf424a1faaad045e1852b8",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-461730.memcheck.log",
+                "sha256": "e539df313777d46e36cc3d8f7d3099fca5d3ceb90a4eaaade2b662d2414ca796",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-461996.memcheck.log",
+                "sha256": "7c668f887fc42877a9427226889174fbb2046eed786c4faebe574f60691f8ffc",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462659.memcheck.log",
+                "sha256": "fe3f969e722c57acb8058b06a88ef9fc2b9f0a6dc924dab063460c978a6f4611",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462069.memcheck.log",
+                "sha256": "31fb2fdb66f5eab5d7e6e353ca2a41df285bc59eed112655866b12d17b15dbeb",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/epoll-trust-paths-462208.memcheck.log",
+                "sha256": "db7ff902b45cad2a4dd795ce665806b6ec530125653c90216f9de975b5a2f224",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "name": "poll-protocol",
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--keep-debuginfo=yes",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-protocol-%p.memcheck.log",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "tests/database/redis_push_protocol.php"
+            ],
+            "exit": 0,
+            "seconds": 6.894906484056264,
+            "logSha256": "de033a25021ea00cdede8359e351ecf482e4b15b1426ab730ea301744d41d2b3",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-protocol-462727.memcheck.log",
+                "sha256": "fcd41e43b2d15a50d33c5bdaff243408f702f6b3fa3e465e57db04e5711c2dfc",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "name": "poll-real",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-real.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-real"
+            ],
+            "exit": 0,
+            "seconds": 18.964825751027092,
+            "logSha256": "e5328eb8dfd749161a32887b4ab2cf201a7780fca9d37a091959dfc00950ed97",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-real-462872.memcheck.log",
+                "sha256": "431d7b45e93067b7de3440480482eab33a9452370559431e78e5ef8f84e6f1cd",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-real-462812.memcheck.log",
+                "sha256": "4fc34fc473403f32e94ec626ec2cf63895be1c32c5972ae46ab5043f4db4a726",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "name": "poll-trust-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths",
+              "--trust-paths"
+            ],
+            "exit": 0,
+            "seconds": 96.56166416616179,
+            "logSha256": "73d32a8158af5cf8e55ec512afa645c1babf2850fa0c41f6a2c52ec74b24e478",
+            "memchecks": [
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463753.memcheck.log",
+                "sha256": "4b5e7c2771b58135da95efd8f0d0d9fff0c36f60299d643213ee40420dea2fc6",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463592.memcheck.log",
+                "sha256": "641d0e66e73a00d0016a1502eef70b74ebd0c70385ba3ff0fc844a5a23137078",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463991.memcheck.log",
+                "sha256": "147d58fe6d12d50b334c5e083e02bd95e388060d23f22826a91eb6855e311a1d",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463114.memcheck.log",
+                "sha256": "199616082811c7f01baef9f6540acd588c86c7fb0c53b6d461177793947ecf44",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463816.memcheck.log",
+                "sha256": "78343aab3bc2c10caf3eae649eb2d29cb4320872eff05497c9b9fc81d0545c39",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463489.memcheck.log",
+                "sha256": "35dcf3794a33a5dc9d2ab2c483b0a9ce3b8276e5ae857aacc3e9c9d92acb8307",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463182.memcheck.log",
+                "sha256": "7117c74cd6ad78742b31721d201dc9199800c9c88a5438a67c64b50dd5e020dd",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463659.memcheck.log",
+                "sha256": "356259393ff7ccb9a7715b3946d18930101493fa14822c8483fa108d1a6a0260",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463288.memcheck.log",
+                "sha256": "6a5fb7bf8e002f1830b34ac304acde7b0d8c17206262be08ba9db5bf967a80e9",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463063.memcheck.log",
+                "sha256": "4641978ff850afaf02f9f75402e24df42395e0e1a0d6479037fc4cf236303cea",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463446.memcheck.log",
+                "sha256": "3bfb6eb00746e58dc239c8c5874698ab073b5c6fe2c2ae94eb52755d5fba9933",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463701.memcheck.log",
+                "sha256": "f2d09d513365d1dcdfadc7d23969e0afe6d6c90cf96edbbb08b2101659f65801",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463350.memcheck.log",
+                "sha256": "97653cbededb61c84a9d71124dc9c30e81d445d104ff95d7a8823bb443bc8eb4",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              },
+              {
+                "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory-r1/poll-trust-paths-463019.memcheck.log",
+                "sha256": "2d327ee6c936a1baa9e0bc70c6ff4bdd807a689a2bb5cba538bc313fa2f7cf8a",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 3888,
+                  "errors": 0
+                }
+              }
+            ]
+          }
+        ],
+        "moduleSha256": "93aa60675851e1312921ae1e06b7d2567e7f08822ccb8032562dd8aead93dc06",
+        "phpSha256": "04e0a603eeb86e12e695a5570811412fd8c4a7d5a747ade343350bdfa6bee805"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/report.json",
+      "sha256": "0138120446b7aacd93c892ce570fdbc756f1e1e227eaaab6be942fb44b583858",
+      "result": {
+        "status": "PASS",
+        "sourceCommit": "19a64d29fcaa1499e2d06f15cc24e8f2b0465658",
+        "moduleSha256": "6ffaf1327fa3e82db6c97db7836c54b314db718265323214eaa3b1e5e184b588",
+        "commands": [
+          {
+            "name": "gate-a",
+            "command": [
+              "python3",
+              "tests/fast/gate_a.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/gate-a"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 240.46336337691173,
+            "logSha256": "01bd74c4d5551d4d65aea31b7bac86be075da599aa3c9a02d63844c1be3af508"
+          },
+          {
+            "name": "epoll-full",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "environment": {
+              "ASYNCARA_BACKEND": "epoll"
+            },
+            "exit": 0,
+            "seconds": 42.619194796076044,
+            "logSha256": "4fcaf57947b49be54e394e9bf47227fe35738f331178a5307822350f3730e9a2"
+          },
+          {
+            "name": "epoll-fpm",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "epoll",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/epoll-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 21.524775736033916,
+            "logSha256": "633cdaf54e577948379412efd55274d2be28f879ffd8b7949fe95b879a5a904b"
+          },
+          {
+            "name": "poll-full",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "environment": {
+              "ASYNCARA_BACKEND": "poll"
+            },
+            "exit": 0,
+            "seconds": 40.77124589891173,
+            "logSha256": "bd45e24c85c54a508dba58c9975ccfb309554bbda47ef92109cac0b29ad32286"
+          },
+          {
+            "name": "poll-fpm",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--backend",
+              "poll",
+              "--fpm",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/sbin/php-fpm8.5",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/poll-fpm"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 22.607136222999543,
+            "logSha256": "265aa16a1a7fcf60aaadbb827c58e2fb93ced6da32741cfcee04cf1e138b03cb"
+          },
+          {
+            "name": "http-gate",
+            "command": [
+              "python3",
+              "tests/http/run.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "build/priority-tcp-trust-matrix-85.so",
+              "--hyper",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/http-gate"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 200.3781399920117,
+            "logSha256": "b95428339d85437b5d227f36623239e5e346875fca70064227397a0d95fd6de7"
+          },
+          {
+            "name": "database-bounds",
+            "command": [
+              "python3",
+              "scripts/test-databases.py",
+              "--test-file",
+              "tests/database/resource_bounds.php",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/database-bounds-fixtures"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 11.815668543800712,
+            "logSha256": "2f667be744592abfe2412d609dc6ce004dd2ed3eb9ffa300b43bc57cc43e4c73"
+          },
+          {
+            "name": "plain-databases",
+            "command": [
+              "python3",
+              "scripts/test-databases.py",
+              "--output",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/plain-database-fixtures"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 11.678325094981119,
+            "logSha256": "5cdf6de91384fa9d1aaca84fbeacf12b804b59e0f1f0a44767e1bd23ed30bdf4"
+          },
+          {
+            "name": "allocations",
+            "command": [
+              "bash",
+              "scripts/audit-allocations.sh"
+            ],
+            "environment": {},
+            "exit": 0,
+            "seconds": 7.802387121831998,
+            "logSha256": "22ce25519828a3d171efb716d6c245943fc382ac361255dcc19c050758520516"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/independent-review.json",
+      "sha256": "588b51034c89415e3cbb96465282b2191af110b518855a45737ab59d20886557",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "backend": "epoll",
+            "transport": "plain",
+            "case": "A-lifecycle",
+            "mainResponses": 20,
+            "httpOperations": 80,
+            "redisCommands": 180,
+            "notifications": 20,
+            "minTicks": 20,
+            "workerPids": [
+              468003
+            ],
+            "rssMinKiB": 18376,
+            "rssMaxKiB": 18720,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 3,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/epoll-fpm/plain-fpm/cases.json",
+            "sha256": "1f42180d57b37b4db50f73407324e616561abdddd194965e2376a951c7714827"
+          },
+          {
+            "backend": "epoll",
+            "transport": "plain",
+            "case": "Redis-four-workers",
+            "mainResponses": 40,
+            "httpOperations": 160,
+            "redisCommands": 360,
+            "notifications": 40,
+            "minTicks": 15,
+            "workerPids": [
+              468146,
+              468147,
+              468148,
+              468149
+            ],
+            "rssMinKiB": 18172,
+            "rssMaxKiB": 18284,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 4,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/epoll-fpm/plain-fpm/cases.json",
+            "sha256": "1f42180d57b37b4db50f73407324e616561abdddd194965e2376a951c7714827"
+          },
+          {
+            "backend": "epoll",
+            "transport": "tls",
+            "case": "A-lifecycle",
+            "mainResponses": 20,
+            "httpOperations": 80,
+            "redisCommands": 180,
+            "notifications": 20,
+            "minTicks": 14,
+            "workerPids": [
+              468336
+            ],
+            "rssMinKiB": 22024,
+            "rssMaxKiB": 22360,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 3,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/epoll-fpm/tls-fpm/cases.json",
+            "sha256": "3eee7cb9f6994229f8ee94a8c8d8a04d6838de8257984c3c8dc906e29837c602"
+          },
+          {
+            "backend": "epoll",
+            "transport": "tls",
+            "case": "Redis-four-workers",
+            "mainResponses": 40,
+            "httpOperations": 160,
+            "redisCommands": 360,
+            "notifications": 40,
+            "minTicks": 12,
+            "workerPids": [
+              468505,
+              468506,
+              468507,
+              468508
+            ],
+            "rssMinKiB": 21976,
+            "rssMaxKiB": 22072,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 4,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/epoll-fpm/tls-fpm/cases.json",
+            "sha256": "3eee7cb9f6994229f8ee94a8c8d8a04d6838de8257984c3c8dc906e29837c602"
+          },
+          {
+            "backend": "poll",
+            "transport": "plain",
+            "case": "A-lifecycle",
+            "mainResponses": 20,
+            "httpOperations": 80,
+            "redisCommands": 180,
+            "notifications": 20,
+            "minTicks": 8,
+            "workerPids": [
+              469373
+            ],
+            "rssMinKiB": 18360,
+            "rssMaxKiB": 18716,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 3,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/poll-fpm/plain-fpm/cases.json",
+            "sha256": "9b508144e0903ac67b36fd5f60dca715d02025417013563f42d5189be6a0e411"
+          },
+          {
+            "backend": "poll",
+            "transport": "plain",
+            "case": "Redis-four-workers",
+            "mainResponses": 40,
+            "httpOperations": 160,
+            "redisCommands": 360,
+            "notifications": 40,
+            "minTicks": 16,
+            "workerPids": [
+              469556,
+              469557,
+              469558,
+              469559
+            ],
+            "rssMinKiB": 18288,
+            "rssMaxKiB": 18456,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 4,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/poll-fpm/plain-fpm/cases.json",
+            "sha256": "9b508144e0903ac67b36fd5f60dca715d02025417013563f42d5189be6a0e411"
+          },
+          {
+            "backend": "poll",
+            "transport": "tls",
+            "case": "A-lifecycle",
+            "mainResponses": 20,
+            "httpOperations": 80,
+            "redisCommands": 180,
+            "notifications": 20,
+            "minTicks": 12,
+            "workerPids": [
+              469732
+            ],
+            "rssMinKiB": 22096,
+            "rssMaxKiB": 22436,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 3,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/poll-fpm/tls-fpm/cases.json",
+            "sha256": "ff9e1a7077dc0c4d4404a21b102d739c5d5f9798fdd306135ffb369f3b3caacf"
+          },
+          {
+            "backend": "poll",
+            "transport": "tls",
+            "case": "Redis-four-workers",
+            "mainResponses": 40,
+            "httpOperations": 160,
+            "redisCommands": 360,
+            "notifications": 40,
+            "minTicks": 18,
+            "workerPids": [
+              469900,
+              469901,
+              469902,
+              469903
+            ],
+            "rssMinKiB": 21816,
+            "rssMaxKiB": 21980,
+            "idleFDs": 6,
+            "idleThreads": 1,
+            "samples": 4,
+            "rawCases": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/poll-fpm/tls-fpm/cases.json",
+            "sha256": "ff9e1a7077dc0c4d4404a21b102d739c5d5f9798fdd306135ffb369f3b3caacf"
+          }
+        ],
+        "limitations": "Short raw response/idle-sample review, original conditional RSS threshold; no long-run certification or temporal inference from batch ordering"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra-r1/report.json",
+      "sha256": "1375903b3568a03a780056e1c6b3f2e1dd3040eaada3e3fdeba6b455e928b9a5",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "name": "conly-build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 6.093728972133249,
+            "logSha256": "a0bc990c7c9970577aa4026361b4b32a440a9f683be21297c6d65108b8376e0d"
+          },
+          {
+            "name": "epoll-conly-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-conly.so",
+              "--backend",
+              "epoll",
+              "--trust-paths",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra-r1/epoll-conly-paths"
+            ],
+            "exit": 0,
+            "seconds": 1.76438998314552,
+            "logSha256": "02fdd7887d13283a63f404c68c82bf2683e708f7df1c778be8bcb2e7b261850f"
+          },
+          {
+            "name": "epoll-network",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-85.so",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra-r1/network_edges.php"
+            ],
+            "exit": 0,
+            "seconds": 7.445981951896101,
+            "logSha256": "99285459e16d133c042c2f556c44305eae8c67a45049a2e61b6921c55283e9b0"
+          },
+          {
+            "name": "poll-conly-paths",
+            "command": [
+              "python3",
+              "tests/database/redis_push.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "build/priority-tcp-trust-conly.so",
+              "--backend",
+              "poll",
+              "--trust-paths",
+              "--out",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra-r1/poll-conly-paths"
+            ],
+            "exit": 0,
+            "seconds": 2.2016861960291862,
+            "logSha256": "42d5b129f99587ece977ccc28f688ae49958f87ef41fb49c5358058869059b78"
+          },
+          {
+            "name": "poll-network",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/priority-tcp-trust-matrix-85.so",
+              "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra-r1/network_edges.php"
+            ],
+            "exit": 0,
+            "seconds": 7.092890738975257,
+            "logSha256": "1e3691dc3fa8b124dbd3c121715a29a655161a08daf9450506ec926ced92b63d"
+          }
+        ],
+        "fixtureOriginalSha256": "3e7e52cc41fd4366c67372cc0f6875fdabf9fd50a31acb1909510d8f98b991c6",
+        "fixtureRunSha256": "df1d74b4bd71b8a7aeab27ca38b2b9ba9a0696e96be9879d842e4ea98768d81c",
+        "fixtureChanges": "Paths only: independent certificate, key, autoload, peer and log locations; unchanged assertions.",
+        "moduleSha256": "d6165a379f22f793a12465a978f5d4dac5f86b7f5457fdde72c9cf5943874a37"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions-r1/review-attempt-incomplete.json",
+      "sha256": "ec6ada726fe68d3f212a0ca751108e48adc4a77f59e71e5666554d6c91012e1f",
+      "result": {
+        "status": "NOT_RUN_PRECONDITION",
+        "exit": 1,
+        "command": "python3 /home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-review.py",
+        "reason": "Reviewer requires outer regression report PASS; it was still RUNNING during HTTP gate. No raw evidence was edited and no independent review was produced. Retry unchanged reviewer after outer gate reaches PASS.",
+        "time": 1794365157.8311021
+      }
+    }
+  ],
+  "nativeManifest": {
+    "ext/backend.c": "9ebe5b1742553a6a321f59569c7e59bf59969dc7dcd604af959ebfbccda9bce8",
+    "ext/mysql.c": "bbb48566210e7b97df52fdfe4118070df4905abd3966ab25908456434810c590",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/server.h": "c6c6c01c4e7b199d80a40efa4ec67b930e20c8f73aeb26e3c14693e296264b4a",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper_decode.c": "1f4b49afd413106774e49b959ab967b38fa59ab947e340d50cfe314e11a81ed1",
+    "ext/server_php.h": "810f2b1ad35cd82a5426e308b04ff5f3dc32734b8599bb6fc93cc7c57d7e431d",
+    "ext/native.h": "2e96cd73c57bbef87eff0648eed8f7f8bfff54c48377704d91953ccbdcab2652",
+    "ext/config.m4": "13add630e22b6c6592571a966364f62b749fed2af8aba62d9e4e08cdf44eec78",
+    "ext/postgresql.c": "5074124b3d607a14b9b41f92d716d38ea6b5bc95ec753ffc291ffdfa30ad7907",
+    "ext/workers.c": "3b3ce893ed7c4f846a8597d2c660f3ebbad07ea15b22ac42da4d26d51568ace7",
+    "ext/php_asyncara.c": "1922b2cb1da5781b2f915244f14674c1fa3be2564f58448968290b5f6d42867b",
+    "ext/hyper/Cargo.toml": "7d364f48ab300dd8863afb1277cc2e4e43c567c53c66488b18905f73790238ea",
+    "ext/hyper/Cargo.lock": "52e7d4117bc7f37af8593253fd640a680544355766f44be7f034a20115b38a79",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/body.rs": "ed1fe5cf8b7f6db87dd9f29b210907a7eafeef1f9592ff4a06b8d07be58c076f",
+    "ext/hyper/src/server.rs": "026eb8755001b69b1940d2f6b613d4b80f2e9f2155bd0f80759ba0c374ce8297",
+    "ext/hyper/src/tests.rs": "0a5a5ea56cf6b4af80d0cfb42f67b0049da1ff23dbdde970dc3ac45ccc0cc37a",
+    "ext/hyper/src/tls.rs": "16d8df5899bfa1a3b2cf551a6e593f4c45b9aa1c21595eb2f6272610d709fbcf",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/lib.rs": "f175fabc3ced220e79faf6e4d81bb243946b9071b52167c4a0c8ee27a023111c"
+  },
+  "sourceManifest": {
+    "ext/backend.c": "9ebe5b1742553a6a321f59569c7e59bf59969dc7dcd604af959ebfbccda9bce8",
+    "ext/mysql.c": "bbb48566210e7b97df52fdfe4118070df4905abd3966ab25908456434810c590",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/server.h": "c6c6c01c4e7b199d80a40efa4ec67b930e20c8f73aeb26e3c14693e296264b4a",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper_decode.c": "1f4b49afd413106774e49b959ab967b38fa59ab947e340d50cfe314e11a81ed1",
+    "ext/server_php.h": "810f2b1ad35cd82a5426e308b04ff5f3dc32734b8599bb6fc93cc7c57d7e431d",
+    "ext/native.h": "2e96cd73c57bbef87eff0648eed8f7f8bfff54c48377704d91953ccbdcab2652",
+    "ext/config.m4": "13add630e22b6c6592571a966364f62b749fed2af8aba62d9e4e08cdf44eec78",
+    "ext/postgresql.c": "5074124b3d607a14b9b41f92d716d38ea6b5bc95ec753ffc291ffdfa30ad7907",
+    "ext/workers.c": "3b3ce893ed7c4f846a8597d2c660f3ebbad07ea15b22ac42da4d26d51568ace7",
+    "ext/php_asyncara.c": "1922b2cb1da5781b2f915244f14674c1fa3be2564f58448968290b5f6d42867b",
+    "ext/hyper/Cargo.toml": "7d364f48ab300dd8863afb1277cc2e4e43c567c53c66488b18905f73790238ea",
+    "ext/hyper/Cargo.lock": "52e7d4117bc7f37af8593253fd640a680544355766f44be7f034a20115b38a79",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/body.rs": "ed1fe5cf8b7f6db87dd9f29b210907a7eafeef1f9592ff4a06b8d07be58c076f",
+    "ext/hyper/src/server.rs": "026eb8755001b69b1940d2f6b613d4b80f2e9f2155bd0f80759ba0c374ce8297",
+    "ext/hyper/src/tests.rs": "0a5a5ea56cf6b4af80d0cfb42f67b0049da1ff23dbdde970dc3ac45ccc0cc37a",
+    "ext/hyper/src/tls.rs": "16d8df5899bfa1a3b2cf551a6e593f4c45b9aa1c21595eb2f6272610d709fbcf",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/lib.rs": "f175fabc3ced220e79faf6e4d81bb243946b9071b52167c4a0c8ee27a023111c",
+    "src/Asyncara.php": "a5d1a7689b606a10395fd28d325ef2f492cbbe000e0cc9889bf19add9a1d95cc",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/Task.php": "73bf493abb351e54a50ce64c9825f46b6b1357ac70f4af785203ba32566e6e9e",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/Async.php": "ab0e3f90f35392419e7e93b715669870f59de1ed22d801bb5bb11e6023d6fdbe",
+    "src/Asyncara/Scheduler.php": "6f717dd117f4e9b4200a8d8624a716103dd1864da086ef13f1ab71053f0ba938",
+    "src/Asyncara/Future.php": "9effeb81391634304ad8d6adf47a2e70299b11fa319d908312a733b389df7344",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "785f6ee3395beefcd6e75d7230f442eb4fdcd43ce17f4d53406031b3824259b8",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/App.php": "6d84dc4d40ac9a457d54bd198b7c8faf86674a8824a86742dfccd680a77cc24d",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/Response.php": "bcde814234d4222422e2b710ba9fe6ad815da027af4bc3fb2a75bb38681b8a65",
+    "src/Asyncara/HTTP/HttpClient.php": "580bac3892802fd649be922e30aeb89563e91dc8f071fd71ea37669fffc651ea",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/HTTP/BufferedRequest.php": "2cc04b1415cf698139a8b6edfbaefb2e37de31ac694ee3b6fd82598b3019fa0a",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/PostgreSQL/Connection.php": "32a653bb3b540a05508dc1014f85671de2e6b3ff44ca15a9b9db93e5110d322e",
+    "src/Asyncara/PostgreSQL/Statement.php": "924a28f88f4b812e309ac9843303ff739c9ea0e86db6e6ff39117db58d43a48c",
+    "src/Asyncara/SQLite/Connection.php": "a223f275e74f00fc1837ec94972c70a1869e59d2ef734f67f2a058d3e1e125f8",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Server/Request.php": "47741d8a8bb2b37422bc65fe3af692c0dae3ccec05625f7c02d0c2ba4c5d97d9",
+    "src/Asyncara/Server/Workers.php": "ae0f050c33cb7918c1e422a1cce4c05bfbc6894274f5b584f1a354de7b7773fd",
+    "src/Asyncara/Server/Response.php": "8af4f4568f48ee667292773a25c7b5bec4ccdde0d20c889ab875f3dc2d57e068",
+    "src/Asyncara/Server/Route.php": "b0a35214f456bace5fece05b2cdfba3a80c3738585313bc2122e0d06d3d62b33",
+    "src/Asyncara/Server/StreamResponse.php": "7b7dd71ed877e72a99e81ebf2aa1db3be1c68e4a64ffa1bd42a190cfb7885c90",
+    "src/Asyncara/Server/RequestBodyStream.php": "4e29112fafb161a51ca91f08a64a28dfcba3fe4bbad9069153fc3a9dcc45dafa",
+    "src/Asyncara/Server/RequestBodyException.php": "9f2b313c1b33fb9762cd0ea9119a0589fa9ba7a3be6917c54f9725322f91963d",
+    "src/Asyncara/Server/Inbox.php": "63374f8c892252298acc11d30ba47566a35095de8411e8049a63965e13c39e4a",
+    "src/Asyncara/Database/Database.php": "26a68110e21f3ae8797d644281f1fb66aa5899e64727c5656776e93179455c74",
+    "src/Asyncara/Pool/ConnectionPool.php": "1daed3f3fd359c2cb9fc3bfbbceed6eba2d70d81496f6726867e3a53cee934fb",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/MySQL/Connection.php": "ca9a30d38e545815a7ec5508b8a818dfd0b0abad1191c3cb5a22586ce1ee5097",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/File.php": "8bb76689242c3725719cfd04b377e16cb22c4f647d7a63811ff59e23bad9e5a9",
+    "src/Asyncara/IO/TcpStream.php": "d0eb2f07a91d4271340fd670e97145657a36d508caad3a755ebcecb9059574e2",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/IO/Files.php": "8e1217f97a14e2243922f9880bc556a245e1a760d3a60175e698805b4c27578a",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Semaphore.php": "c0430983dcc0891a22edeb45c7a618609148f73d01bcf5609b0fd2b76560c2d0",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Redis/Connection.php": "b6fed9b15ddb186ee0804acbacd3124716f7ce5ac4bf199d0f4cbf10fc4c5728",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Stream/AsyncStream.php": "348d72208df8c4071053a2d582344b2aef68c2416174dcfd0cfd2e91e6f0b111",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f",
+    "tests/database/prepared_pg.py": "7885ea311e375e57c64c0c0b60770523416dd3a9197d96620d898387ffaf5b73",
+    "tests/database/resource_bounds.php": "cf16d9541c584250bb9c0334a112ad1fca2bb281ed3a28407ec3131bb8d43ce9",
+    "tests/database/mtls_pg.php": "a40efda5f64d4cecc8c422e1d4224b6e3d1a06192b3c1b34b30c96fdaa8e4a01",
+    "tests/database/redis_push_fpm_request.php": "15fedeef6d6dfb82f8e278e7eb727fb74bcec968afd2313126086ce6d5a76fec",
+    "tests/database/redis_push.php": "5d1cfc196c1718cf5e0849da85d93c2a58826a49a74e80132fffe9fe48cb42bb",
+    "tests/database/mtls_mysql_fpm.py": "206440ae5ee26c420e567468187944aaeab19c70db78c08802c3f6c6672a2787",
+    "tests/database/prepared_pg_fpm_request.php": "23d3377ce707544657e58467c2b320c1920a4d926902b3c0673a27f8b0b5c87f",
+    "tests/database/redis_push.py": "d190c462df7ea43e0734fb442bdd34e886cce06351746234a6fe55b7967fde4a",
+    "tests/database/mtls_mysql_fpm_request.php": "8aa8aa5451b67620fe6557540fa820202781106ad932ec9930c560035dda6e0c",
+    "tests/database/prepared_pg_fpm.py": "6a9c0c56e6e1359e376a6949ecae59de8e74de458f633ab01ba931dccc510edf",
+    "tests/database/mtls_mysql.php": "94578b938131ae72f39ecbc026cb807df7c3f11182427e58289472a2750c494f",
+    "tests/database/connector_gate.php": "75a0ade2bcb58892014700a83c90fe4e93e200ca12d58c6a420a117da51c1b24",
+    "tests/database/mtls_mysql.py": "5cbde5d83a0ebe9bc368a548827ebb9401eae50f55254f4d939b9e0eed1985f0",
+    "tests/database/redis_tls_paths.php": "c0f56e750199c12a18e8d3d49ad818432722b6ba0745c0aa1af409656afafc12",
+    "tests/database/credential_traces.php": "19a0b08112ffc019112090421ea42507d3d9c8050eac518b979d67a2b7c33dd5",
+    "tests/database/redis_push_protocol.php": "e7cdb6fe31a3d16b31a6b8ce78ba574aef723e92b067cfff9005bae9756d1133",
+    "tests/database/prepared_pg_shutdown.php": "358e5142329fb547fe68f3ccb2855a622693533302b33ad9923f82dc5f14273f",
+    "tests/database/tls.php": "29ddba75fa1e92aeffaf0b59427139ecf634920abcc619e363257ebfe570a8e0",
+    "tests/database/prepared_pg.php": "2c3abbcda5c6438470631dae1a05ba9f6b50beda7723818a9426f19796950c49",
+    "tests/database/client_tls_gate.php": "7228f0dbde259b2dd9ad904a99321e4e1a114498b078350f45583e076beb2358",
+    "tests/database/mtls_pg.py": "a6ec28fad9863ceb7e936268156337c2cfe4dbc81092fef9290a7facff439ebe"
+  },
+  "scripts": {
+    "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-matrix.py": "8354c18caaba271c6d12a8d2dce8730218a2f622c190f08cd40e7f677033e87a",
+    "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-memory.py": "636e916d5d2509a185686344c8724efdd8e028d7f274ce0263186b69f9c9756b",
+    "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-regressions.py": "a862bb2d18cd8df111c95bed79d19125303f6daf879911e5f101c2b181a6e783",
+    "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-review.py": "ef4da4c160d8129c9c60108db97ceab15ff96a48da07ec762ba83d8fc5541780",
+    "/home/coder/Asyncara-priority-20261110T205459Z/tcp-trust-extra.py": "3f31960e26d5821396508db4105ad3414f5ac863459cf9c555b7f542a20b6e9b"
+  },
+  "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7"
+}

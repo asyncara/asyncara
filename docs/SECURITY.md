@@ -397,3 +397,15 @@ nested pushes and malformed Pub/Sub shapes fail with explicit disconnect.
 Overflow is observable and invalidates reuse; it is not a silent dropping policy.
 [Reproductions and validation](REDIS_NOTIFICATIONS.md). No complete client-side
 cache, remote service guarantee or universal memory-safety claim is implied.
+
+## Explicit TCP/Redis TLS trust filename (2026-11-11)
+
+`TcpStream::connect` and Redis `Connection::connect` capture explicit `caFile`
+before scheduling. The native helper checks a bounded local path with PHP's
+virtual cwd/open_basedir policy; TCP rechecks after DNS/socket waits before TLS
+initialization. Invalid input can throw before a Future is created. A warning
+handler's exception is preserved without a live native owner in the helper.
+Names are captured, not contents or symlink targets; default trust selection and
+synchronous OpenSSL trust-file/crypto work are unchanged. Error paths close the
+socket. [Exact before/after and memory evidence](STREAM_TLS_PATHS.md) remains
+separate from upstream allocation reports and historical endurance failures.

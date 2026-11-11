@@ -1,5 +1,17 @@
 # Current partial-work inventory and completion record
 
+## Verified TCP/Redis trust-path ownership (2026-11-11)
+
+Native `19a64d2` repairs reproduced relative-CA selection and explicit
+open_basedir bypasses in TCP/Redis TLS. Filename capture before Task scheduling,
+policy recheck before TLS, failure ownership and warning exceptions are
+IMPLEMENTED_AND_TESTED in [the defined scope](STREAM_TLS_PATHS.md).
+PHP83/84/85, DEBUG/GCC epoll/poll, scoped ordinary Valgrind, Gate A, complete
+PHP85/HTTP and short four-worker FPM checks pass. No trust-content snapshot,
+atomic filesystem sandbox, broad remote certification or universal memory-safety
+claim is made. Historical failures remain intact; release stays EXPERIMENTAL.
+
+
 ## Verified Redis push/reply ownership (2026-11-11)
 
 Redis7.0.15 RESP3 command reply association, bounded parsed notification queues,
