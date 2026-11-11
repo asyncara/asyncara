@@ -20,6 +20,7 @@ final class Connection
     public static function connect(string $host = '127.0.0.1', int $port = 6379, #[\SensitiveParameter] ?string $password = null, ?string $user = null, bool $resp3 = false, float $timeout = 30, bool $tls = false, ?string $caFile = null, int $notificationLimit = 1024, int $notificationByteLimit = 1048576): Future
     {
         if ($notificationLimit < 1 || $notificationLimit > 1024 || $notificationByteLimit < 1 || $notificationByteLimit > 1048576) throw new \ValueError('Redis notification limits must be 1..1024 messages and 1..1048576 wire bytes');
+        if ($tls && $caFile !== null) $caFile = \asyncara_tls_ca_path($caFile);
         return Async::spawn(static function () use ($host,$port,$password,$user,$resp3,$timeout,$tls,$caFile,$notificationLimit,$notificationByteLimit): self {
             $connection = new self(TcpStream::connect($host,$port,$timeout,$tls,$caFile)->await(),$timeout,$notificationLimit,$notificationByteLimit);
             try {

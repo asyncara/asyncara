@@ -23,6 +23,7 @@ final class TcpStream
     public static function connect(string $host, int $port, float $timeout = 30, bool $tls = false, ?string $caFile = null): Future
     {
         if ($port < 1 || $port > 65535) throw new \ValueError('Invalid TCP port');
+        if ($tls && $caFile !== null) $caFile = \asyncara_tls_ca_path($caFile);
         return Async::spawn(static fn() => Async::timeout($timeout, static function () use ($host, $port, $tls, $caFile): self {
             $addresses = filter_var($host, FILTER_VALIDATE_IP) ? [$host] : Dns::resolve($host)->await();
             $last = null;
@@ -38,6 +39,9 @@ final class TcpStream
                     Scheduler::current()->writable($resource);
                     if (stream_socket_get_name($resource, true) === false) throw new OperationException('TCP connection refused or failed');
                     if ($tls) {
+                        // DNS/connect may suspend after admission. Respect a
+                        // subsequently tightened request path policy as well.
+                        if ($caFile !== null) \asyncara_tls_ca_path($caFile);
                         while (true) {
                             $result = @stream_socket_enable_crypto($resource, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
                             if ($result === true) break;
