@@ -71,6 +71,7 @@ final class HttpClient
         bool $atomic = false, bool $durable = false, bool $failOnHttpError = false): Future
     {
         if ($durable && !$atomic) throw new \ValueError('Durability requires atomic download');
+        $path = \asyncara_file_path($path);
         return Async::spawn(function () use ($url, $path, $headers, $followRedirects, $atomic, $durable, $failOnHttpError): int {
             $file = null; $stream = null;
             try {
@@ -103,6 +104,7 @@ final class HttpClient
     {
         // Open lazily in the owned producer so failed validation cannot abandon it.
         $options = $this->options($method, $url, $headers, false);
+        $path = \asyncara_file_path($path);
         return $this->uploadRequest($url, static fn() => Files::readStream($path), null, $options);
     }
     /** Each producer chunk must be a string of at most 64 KiB. No redirect replay. */
@@ -117,6 +119,7 @@ final class HttpClient
         $options = $this->options('POST', $url, $headers, false) + [
             'multipart' => $fields, 'fileField' => $fileField, 'fileName' => $filename ?? basename($path), 'fileType' => $contentType,
         ];
+        $path = \asyncara_file_path($path);
         return $this->uploadRequest($url, static fn() => Files::readStream($path), null, $options);
     }
     /** 1..16 sequential worker-streamed files; duplicate field names are allowed. */
@@ -130,7 +133,7 @@ final class HttpClient
                 $file['path'] === '' || str_contains($file['path'], "\0")) throw new \ValueError('Invalid multipart file descriptor');
             $part = ['field' => $file['field'], 'name' => $file['filename'] ?? basename($file['path']), 'type' => $file['contentType'] ?? 'application/octet-stream'];
             foreach ($part as $value) if (!is_string($value) || $value === '' || strlen($value) > 256 || strpbrk($value, "\0\r\n") !== false) throw new \ValueError('Invalid multipart metadata');
-            $metadata[] = $part; $path = $file['path']; $sources[] = static fn() => Files::readStream($path);
+            $metadata[] = $part; $path = \asyncara_file_path($file['path']); $sources[] = static fn() => Files::readStream($path);
         }
         $options = $this->options('POST', $url, $headers, false) + ['multipart' => $fields, 'files' => $metadata];
         return $this->uploadRequest($url, $sources[0], null, $options, $sources);

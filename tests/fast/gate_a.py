@@ -9,6 +9,7 @@ module=pathlib.Path(a.extension);module=(root/module).resolve();start=time.monot
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 manifest={str(p.relative_to(root)):sha(p)for d in ['ext','src','tests/fast']for p in (root/d).rglob('*')if p.is_file()}
 manifest['tests/http/curl_cache.c']=sha(root/'tests/http/curl_cache.c')
+manifest['tests/filesystem_paths.php']=sha(root/'tests/filesystem_paths.php')
 (out/'identity.json').write_text(json.dumps({'source':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'status':subprocess.check_output(['git','status','--short'],cwd=root,text=True),'manifest':manifest,'module':str(module),'moduleSha256':sha(module),'arguments':vars(a)},indent=2)+'\n')
 def run(name,cmd,env=None,expected=0):
  before=resource.getrusage(resource.RUSAGE_CHILDREN);t=time.monotonic();log=out/(name+'.log')
@@ -52,5 +53,6 @@ for backend in ['epoll','poll']:
   run(f'{backend}-{test}',php+[f'tests/fast/{test}.php',a.iterations],env)
  run(f'{backend}-buffered-readiness',php+['tests/stream_readiness.php'],env)
  run(f'{backend}-resource-copy',php+['tests/resource_copy.php'],env)
+ run(f'{backend}-filesystem-paths',php+['tests/filesystem_paths.php'],env)
 report={'status':'PASS','wallSeconds':time.monotonic()-start,'cpuSeconds':sum(r['cpuSeconds']for r in rows),'iterationsPerPath':a.iterations,'seeds':a.seeds,'commands':rows}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items()if k!='commands'}),flush=True)
