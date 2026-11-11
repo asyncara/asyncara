@@ -133,6 +133,7 @@ jobs:
           for backend in epoll poll; do
             python3 tests/database/prepared_pg.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-prepared/"$backend"
             python3 tests/database/mtls_pg.py --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-mtls/"$backend"
+            python3 tests/database/mtls_pg.py --paths --php "$(command -v php)" --module build/asyncara.so --backend "$backend" --out build/pg-mtls/"$backend-paths"
           done
       - name: Build dependencies with their supported Valgrind stack annotations
         run: |
@@ -154,6 +155,7 @@ jobs:
         run: |
           for backend in epoll poll; do
             python3 tests/database/mtls_mysql.py --php "$(command -v php)" --module build/tls.so --backend "$backend" --out build/mysql-mtls/"$backend"
+            python3 tests/database/mtls_mysql.py --paths --php "$(command -v php)" --module build/tls.so --backend "$backend" --out build/mysql-mtls/"$backend-paths"
             python3 tests/database/mtls_mysql.py --mismatch --php "$(command -v php)" --module build/tls.so --backend "$backend" --out build/mysql-mtls/"$backend-mismatch"
           done
       - uses: actions/upload-artifact@v4

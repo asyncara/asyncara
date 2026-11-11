@@ -18,6 +18,12 @@ final class Connection
     public static function connect(#[\SensitiveParameter] array $options,float $timeout=30):Future
     {
         if(!function_exists('asyncara_mysql_open'))throw new \LogicException('Build Asyncara with MariaDB Connector/C');
+        $captured=[];
+        foreach($options as$key=>$value){
+            if(in_array($key,['caFile','certFile','keyFile'],true)&&is_string($value))$value=\asyncara_file_path($value);
+            $captured[$key]=$value; // Detach references; never rewrite caller options.
+        }
+        $options=$captured;
         return Async::spawn(static fn()=>Async::timeout($timeout,static function()use($options,$timeout):self {
             if(!isset($options['socket'])){
                 $host=$options['host']??'127.0.0.1';

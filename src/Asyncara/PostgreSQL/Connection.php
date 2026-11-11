@@ -30,6 +30,13 @@ final class Connection
         if ($preparedCacheLimit < 0 || $preparedCacheLimit > 256 || $preparedCacheByteLimit < 1 || $preparedCacheByteLimit > 1048576) throw new \ValueError('PostgreSQL prepared cache limits must be 0..256 entries and 1..1048576 SQL bytes');
         if (!function_exists('asyncara_pg_open')) throw new \LogicException('Build Asyncara with libpq support');
         if ($preparedCacheLimit && !function_exists('asyncara_pg_prepare')) throw new \LogicException('Rebuild Asyncara with prepared PostgreSQL support');
+        // Detach referenced array elements instead of rewriting caller-owned values.
+        $captured = [];
+        foreach ($options as $key => $value) {
+            if (in_array($key, ['sslrootcert', 'sslcert', 'sslkey'], true) && is_string($value) && !($key === 'sslrootcert' && $value === 'system')) $value = \asyncara_file_path($value);
+            $captured[$key] = $value;
+        }
+        $options = $captured;
         return Async::spawn(static fn() => Async::timeout($timeout, static function () use ($options,$timeout,$notificationLimit,$notificationByteLimit,$preparedCacheLimit,$preparedCacheByteLimit): self {
             $host = $options['host'] ?? 'localhost';
             if (!str_starts_with($host,'/') && !isset($options['hostaddr'])) $options['hostaddr'] = filter_var($host,FILTER_VALIDATE_IP) ? $host : (Dns::resolve($host)->await()[0] ?? throw new OperationException('DNS returned no PostgreSQL address'));
