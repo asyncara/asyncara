@@ -62,6 +62,7 @@ jobs:
             for transport in curl-multi hyper-prototype; do
               python3 tests/http/ca_fpm.py --php php --module build/hyper.so --fpm "$FPM_BIN" --backend "$backend" --transport "$transport" --out build/hyper-fpm/"$backend-trust-$transport"
             done
+            python3 tests/http/https_proxy_fpm.py --module build/hyper.so --fpm "$FPM_BIN" --backend "$backend" --out build/hyper-fpm/"$backend-https-proxy"
           done
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
