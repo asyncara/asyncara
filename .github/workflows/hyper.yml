@@ -59,6 +59,9 @@ jobs:
           for backend in epoll poll; do
             python3 tests/http/hyper_fpm.py --requests --backend "$backend" --extension build/hyper.so --output build/hyper-fpm/"$backend"
             python3 tests/http/hyper_fpm.py --compression --backend "$backend" --extension build/hyper.so --output build/hyper-fpm/"$backend-compression"
+            for transport in curl-multi hyper-prototype; do
+              python3 tests/http/ca_fpm.py --php php --module build/hyper.so --fpm "$FPM_BIN" --backend "$backend" --transport "$transport" --out build/hyper-fpm/"$backend-trust-$transport"
+            done
           done
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
