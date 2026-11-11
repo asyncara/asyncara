@@ -90,3 +90,14 @@ Independent source packaging is recorded separately after its build finishes.
 Historical PostgreSQL unload, distribution-PHP shutdown and HTTP/2 proxy Valgrind
 deadline findings remain separate. Short scoped passes are not endurance or
 universal memory-safety certification.
+
+## Independently built source distribution
+
+Packaged commit `c7bbba4d2f541d7a5e2fd3ad510e06dd22e0b5d0`,680 files:
+`build/asyncara-0.1.0-dev-stream-trust-r1.tar.gz`.
+SHA-256 `1b3afaa00f785bbc530be840e1e19ebf864c2027a21b7ee71ef3457d364b96dd`.
+The reproduction archive is byte-identical and every member matches its Git tree.
+Fresh Cargo/C build158.861s and10 Redis/protocol/trust/FPM/corpus checks PASS.
+[Independent module and exact commands](phase7/stream-trust-package.json).
+This archive predates subsequent filesystem admission work; no GitHub release
+was published and historical source distributions remain untouched.
