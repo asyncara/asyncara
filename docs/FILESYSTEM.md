@@ -128,3 +128,28 @@ php -n -d extension="$PWD/build/asyncara.so" tests/filesystem_atomic.php
 
 Run permission tests as an ordinary user. More adversarial mount/ACL/filesystem
 and crash-durability testing remains necessary.
+
+## Independent source package (2026-11-11)
+
+`asyncara-0.1.0-dev-filesystem-admission-r1.tar.gz` contains **691 files** from
+`45d574c1802311894ca72c32273e25d731106092`. SHA-256:
+`a9621c87c19abd523cd55914d1360c36f6357f646c00e88b9d0234eb69418fc0`.
+Two independently created archives are byte-identical; every packaged file was
+compared with the Git tree. A fresh Cargo/C build in an extracted directory
+completed in 152.702s; all 25 build/validation commands passed in
+202.659s combined command time. This was a new binary, not a copied module.
+
+Independent module SHA-256:
+`08688e337273a8831f890cd84034f915f9c6799b0d5419d67081e93d7beefe19`.
+Tests cover filesystem/path policy, atomic cleanup, curl/Hyper file transfers,
+TCP/Redis trust paths and Native Server HTTP/1.1 protocol, TLS/mTLS, response and
+request streaming, and four TLS workers with streamed input, on epoll and poll.
+The server fixture includes HTTP client, file and SQLite calls inside handlers,
+timer progress before independent release, disconnect cancellation and cleanup.
+FPM compatibility remains retained but no further FPM run was added to this
+package verification, following the owner priority decision. Historical FPM
+failures remain unresolved; these server passes are not FPM or endurance passes.
+
+[Build and raw server attestations](phase7/filesystem-admission-package.json).
+The archive does not include the later documentation-only package attestation.
+No GitHub release has been published. Release remains EXPERIMENTAL.

@@ -19,8 +19,8 @@ five-build epoll/poll matrix, ordinary DEBUG Valgrind, Gate A, full PHP85/HTTP,
 original and supplementary FPM checks, C-only build and independent raw FPM
 review pass. [Exact results and boundaries](FILESYSTEM.md#filename-capture-at-admission-2026-11-11).
 Filename ownership does not pin an inode; file I/O remains worker-backed.
-Historical failures and the earlier stop checkpoint are preserved. Packaging
-is attested separately. Release remains EXPERIMENTAL.
+Historical failures and the earlier stop checkpoint are preserved. The 691-file source package has a verified fresh Cargo/C build and 25 checks,
+including Native Server on both backends; [package attestation](phase7/filesystem-admission-package.json). Release remains EXPERIMENTAL.
 
 
 ## Verified TCP/Redis trust-path ownership (2026-11-11)
