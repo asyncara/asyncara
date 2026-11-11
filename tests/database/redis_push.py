@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Isolated real Redis RESP2/3 push ownership, verified TLS and ACL controls."""
-import argparse,hashlib,json,os,pathlib,secrets,socket,subprocess,sys,time,traceback
+import argparse,hashlib,importlib.util,json,os,pathlib,secrets,socket,subprocess,sys,time,traceback
 p=argparse.ArgumentParser()
 for key in ['php','module','out']:p.add_argument('--'+key,required=True)
-p.add_argument('--backend',choices=['epoll','poll'],required=True);a=p.parse_args()
+p.add_argument('--backend',choices=['epoll','poll'],required=True);p.add_argument('--fpm');a=p.parse_args()
 r=pathlib.Path(__file__).resolve().parents[2];o=pathlib.Path(a.out).resolve();o.mkdir(parents=True,exist_ok=False,mode=0o700)
 sys.path.insert(0,str(r/'tests/server'));from tls import certificates
 certs=certificates(o);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();rows=[];child=None;start=time.monotonic()
 manifest={str(f.relative_to(r)):sha(f)for d in ['ext','src','tests/database']for f in(r/d).rglob('*')if f.is_file()and '__pycache__'not in f.parts}
+for f in [r/'scripts/audit-fpm.py',r/'tests/fast/fpm_client.py']:manifest[str(f.relative_to(r))]=sha(f)
 (o/'source-manifest.json').write_text(json.dumps(manifest,indent=2))
 def port():
  with socket.socket()as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
@@ -26,7 +27,18 @@ try:
    if time.monotonic()>deadline:raise
    time.sleep(.01)
  for secured in [False,True]:
-  name='tls'if secured else'plain';config=o/(name+'.json');config.write_text(json.dumps({'port':tls if secured else plain,'tls':secured,'password':password,'ca':str(certs/'ca.pem')}));config.chmod(0o600)
+  name='tls'if secured else'plain';config=o/(name+'.json');config.write_text(json.dumps({'port':tls if secured else plain,'tls':secured,'password':password,'ca':str(certs/'ca.pem'),'backend':a.backend}));config.chmod(0o600)
+  if a.fpm:
+   folder=o/(name+'-fpm');folder.mkdir();os.environ.update(ASYNCARA_FPM_DIR=str(folder),ASYNCARA_EXTENSION=str(pathlib.Path(a.module).resolve()),FPM_BIN=a.fpm)
+   spec=importlib.util.spec_from_file_location('audit',r/'scripts/audit-fpm.py');audit=importlib.util.module_from_spec(spec);spec.loader.exec_module(audit)
+   sys.path.insert(0,str(r/'tests/fast'));from fpm_client import request
+   wrapper=folder/'selected.php';wrapper.write_text('<?php $config=json_decode(file_get_contents('+json.dumps(str(config))+'),true,flags:JSON_THROW_ON_ERROR); require '+json.dumps(str(r/'tests/database/redis_push_fpm_request.php'))+';\n')
+   audit.request=lambda port,index,mode:request(audit,port,index,mode,wrapper)
+   began=time.monotonic();cases=[]
+   try:
+    for case in [('A-lifecycle',1,20,'io',False),('Redis-four-workers',4,40,'io',True)]:cases.append(audit.run(*case));print(name,case[0],'PASS',flush=True)
+   finally:audit.server.shutdown();audit.server.server_close();(folder/'cases.json').write_text(json.dumps(cases,indent=2))
+   rows.append({'name':name,'fpm':a.fpm,'exit':0,'seconds':time.monotonic()-began,'casesSha256':sha(folder/'cases.json')});continue
   cmd=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(r/'tests/database/redis_push.php'),str(config)];began=time.monotonic()
   with(o/(name+'.log')).open('x')as log:result=subprocess.run(cmd,env=os.environ|{'ASYNCARA_BACKEND':a.backend},stdout=log,stderr=log,timeout=60)
   rows.append({'name':name,'command':cmd,'exit':result.returncode,'seconds':time.monotonic()-began,'logSha256':sha(o/(name+'.log'))});assert result.returncode==0,name

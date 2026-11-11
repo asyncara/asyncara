@@ -86,7 +86,7 @@ final class Connection
                 $this->stream->write(self::encode(['SUBSCRIBE', ...$channels]));
                 foreach ($channels as $channel) {
                     $reply = $this->readReply(); if ($reply instanceof ServerException) throw $reply;
-                    if (!is_array($reply) || count($reply)!==3 || $reply[0]!=='subscribe' || $reply[1]!==(string)$channel || !is_int($reply[2]) || $reply[2]<1) throw new OperationException('Unexpected Redis subscription acknowledgement');
+                    if (!is_array($reply) || !array_is_list($reply) || count($reply)!==3 || $reply[0]!=='subscribe' || $reply[1]!==(string)$channel || !is_int($reply[2]) || $reply[2]<1) throw new OperationException('Unexpected Redis subscription acknowledgement');
                 }
                 return $this;
             }
@@ -97,7 +97,7 @@ final class Connection
     {
         if (!$this->subscribed) throw new \LogicException('Connection is not subscribed');
         return $this->gate->withPermit(function (): array {
-            try { $reply = $this->readReply(); if (!is_array($reply) || count($reply)!==3 || $reply[0]!=='message' || !is_string($reply[1]) || !is_string($reply[2])) throw new OperationException('Unexpected Redis Pub/Sub reply'); return $reply; }
+            try { $reply = $this->readReply(); if (!is_array($reply) || !array_is_list($reply) || count($reply)!==3 || $reply[0]!=='message' || !is_string($reply[1]) || !is_string($reply[2])) throw new OperationException('Unexpected Redis Pub/Sub reply'); return $reply; }
             catch (\Throwable $e) { $this->close(); throw $e; }
         });
     }

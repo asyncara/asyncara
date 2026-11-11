@@ -49,6 +49,26 @@ Async::run(function()use($notes,&$counts):void{
    }finally{$c->close();$c->close();$server->close();}$peer->await();$counts[$name]='PASS';
   });
  }
+ foreach(['bad-ack-map','bad-message-map','wrong-ack-channel']as$name){
+  Async::timeout(5,function()use($name,&$counts):void{
+   $server=new TcpServer();$port=(int)substr(strrchr($server->address(),':'),1);
+   $peer=Async::spawn(function()use($server,$name):void{
+    $s=$server->accept();try{
+     $request=frame(['SUBSCRIBE','channel']);verify($s->readExactly(strlen($request))===$request,'Subscribe request');
+     if($name==='bad-message-map')$s->write("*3\r\n+subscribe\r\n+channel\r\n:1\r\n");
+     $s->write($name==='wrong-ack-channel'?"*3\r\n+subscribe\r\n+wrong\r\n:1\r\n":"%3\r\n+a\r\n:1\r\n+b\r\n:2\r\n+c\r\n:3\r\n");
+     verify($s->read()==='','Malformed subscription retained socket');
+    }finally{$s->close();}
+   });
+   $c=Connection::connect('127.0.0.1',$port)->await();
+   set_error_handler(static function(int $number,string $text):never{throw new ErrorException($text,0,$number);});
+   try{
+    try{$c->subscribe(['channel'])->await();if($name==='bad-message-map')$c->nextMessage();throw new RuntimeException('Malformed subscription accepted');}
+    catch(OperationException $e){verify(str_contains($e->getMessage(),'Unexpected Redis'),'Wrong subscription error');}
+    verify($c->statistics()['closed'],'Malformed subscription owner survived');
+   }finally{restore_error_handler();$c->close();$server->close();}$peer->await();$counts[$name]='PASS';
+  });
+ }
 });
 gc_collect_cycles();$info=asyncara_info();$metrics=Runtime::diagnostics();verify(!$info['pendingOperations']&&!$info['nativeMemoryBytes']&&!Future::pendingCount()&&!$metrics['ioWatchers']&&!$metrics['activeTimers'],'Retained native/request owners');
 echo json_encode(['status'=>'PASS','php'=>PHP_VERSION,'cases'=>$counts,'native'=>$info,'scheduler'=>$metrics],JSON_THROW_ON_ERROR),"\n";
