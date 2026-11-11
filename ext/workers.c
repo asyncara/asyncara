@@ -847,12 +847,16 @@ void ar_job_free(ar_job *j) {
          * before job-owned strings and buffers disappear. Cache is request-local. */
         curl_easy_reset(j->curl);
 #if AR_HTTP_EASY_CACHE > 0
-        /* A cancelled/failed transfer may retain curl's active receive buffer
-         * even after easy_reset (notably curl 8.5). Such a handle rejects a
-         * later CURLOPT_BUFFERSIZE. Dispose it; successful detached handles
-         * retain the normal cache and multi-owned connection pool. */
+        /* easy_reset clears options, not all transfer storage. In curl 8.5,
+         * even a successful HTTP/2 transfer can retain its receive buffer
+         * while another stream uses that connection. Verify the default buffer
+         * setting through the public API before caching this detached handle.
+         * On rejection dispose only the easy owner; the multi connection pool
+         * and its other streams remain owned by curl. Never probe an active
+         * transfer or reuse a handle whose buffer state is not resettable. */
         if (!j->error[0] && !j->receive_paused && !j->send_paused && !j->engine->stopping &&
-            j->engine->http_idle_count < AR_HTTP_EASY_CACHE && j->engine->http_idle_count < 64)
+            j->engine->http_idle_count < AR_HTTP_EASY_CACHE && j->engine->http_idle_count < 64 &&
+            curl_easy_setopt(j->curl, CURLOPT_BUFFERSIZE, 0L) == CURLE_OK)
             j->engine->http_idle[j->engine->http_idle_count++] = j->curl;
         else
 #endif

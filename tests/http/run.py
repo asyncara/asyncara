@@ -63,6 +63,7 @@ if not a.php_only:
     flags += shlex.split(os.environ.get('EXTRA_CFLAGS', ''))
     for name, files, wraps in [
         ('capacity', ['tests/http/buffer_capacity.c'], []),
+        ('curl-cache', ['tests/http/curl_cache.c', 'ext/backend.c'], ['curl_easy_setopt', 'curl_easy_cleanup']),
         ('method', ['tests/http/method_native.c', 'ext/backend.c'], ['curl_multi_add_handle']),
         ('dispatch', ['tests/http/dispatch_native.c', 'ext/backend.c'], ['curl_multi_timeout', 'curl_multi_socket_action', 'write']),
         ('stage', ['tests/http/stage_native.c', 'ext/backend.c'], ['fsync', 'renameat']),
