@@ -2,7 +2,13 @@
 
 ## Current priority status
 
-Updated 2026-11-12 against native checkpoint `2b90593` and its package attestation. **EXPERIMENTAL**.
+Owner progression decision (2026-11-12): the delivered Rust Hyper backend
+milestone is accepted and closed for prioritization. Work now advances to
+Native Server. This decision does not erase the broader technical gaps or
+historical failures listed below, and does not certify HTTP/3 or new platforms.
+
+Updated 2026-11-12 with [native accept-error isolation evidence](phase7/server-accept.json);
+the earlier Hyper package identifies checkpoint `2b90593`. **EXPERIMENTAL**.
 This is the canonical overall-status table for the owner's ten priority areas.
 All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
 substantial implemented and tested capabilities; their outstanding work is not
@@ -21,7 +27,7 @@ closing that work, not by silently redefining the area around tests that pass.
 | Priority area | Overall status | Implemented and tested capabilities | Remaining work / retained findings |
 |---|---|---|---|
 | Rust Hyper backend | PARTIALLY_IMPLEMENTED | HTTP/1.1 and scoped ALPN HTTP/2, FFI/readiness transport, worker DNS, verified TLS and bounded requests/streams; explicit HTTP/HTTPS and [SOCKS5](HYPER_SOCKS5.md) proxies. [Evidence](HYPER_SAFETY_REVIEW.md). | Capability coverage remains partial: no HTTP/3; explicit Hyper proxies have [executed validation](HYPER_PROXY.md); local ALPN HTTP/2 buffered/streamed paths now have [scoped tests](HYPER_HTTP2.md); client redirects and mTLS now exist with scoped evidence in [the active completion record](HYPER_COMPLETION.md). Local tests do not close broader compatibility. |
-| Native Server | PARTIALLY_IMPLEMENTED | CLI routed Fiber handlers, TLS/mTLS, bounded input/output streams and four-worker checks. [Evidence](SERVER.md). | Retained GCC/poll/TLS slow-input reset and initial SQL-handler disconnect are unexplained; deployment/protocol acceptance and the all-cases Go performance target remain open. |
+| Native Server | PARTIALLY_IMPLEMENTED | CLI routed Fiber handlers, TLS/mTLS, bounded input/output streams, four-worker checks and bounded [accept-error isolation](SERVER.md#connection-local-accept-errors). [Evidence](SERVER.md). | Retained GCC/poll/TLS slow-input reset and initial SQL-handler disconnect are unexplained; deployment/protocol acceptance and the all-cases Go performance target remain open. |
 | HTTP Client | PARTIALLY_IMPLEMENTED | curl multi, buffered HTTP/2, HTTP/1.1 streams, multiple-file MIME, atomic downloads and Basic proxies. [Evidence](HTTP_ENGINEERING.md), [HTTP/2](HTTP2_CLIENT.md). | HTTP/2 streaming and HTTP/3 are not certified; broader proxy/protocol coverage remains open. The original full nested-proxy Valgrind deadline failure is retained. |
 | Hyper HTTP Client | PARTIALLY_IMPLEMENTED | Bounded methods/headers/bodies, verified HTTPS, gzip/deflate/Brotli/zstd, HTTP/2 and bounded response/upload streams. [Evidence](HYPER_REQUESTS.md), [streams](HTTP_STREAMING.md). | HTTP/3 remains unavailable; explicit proxies have [executed validation](HYPER_PROXY.md). ALPN HTTP/2 buffered/streamed paths have [scoped tests](HYPER_HTTP2.md). Redirects, client mTLS and bounded multi-file MIME and Brotli/zstd decoding have scoped results and retained validation failures in [the completion record](HYPER_COMPLETION.md). Passing those subsets does not establish client completion. |
 | Broad HTTP Protocol/Proxy Certification | PARTIALLY_IMPLEMENTED | Local independent HTTP/1.1, buffered HTTP/2, forward/CONNECT, separate proxy TLS trust and Basic authentication. [Evidence](PROXY_AUTHENTICATION.md); [SOCKS5 TCP continuation](HYPER_SOCKS5.md). | Digest/NTLM/Negotiate, SOCKS4/GSSAPI/UDP, HTTP/3 and broader remote proxy/platform matrices are unverified or unavailable. |

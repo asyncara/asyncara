@@ -2854,3 +2854,34 @@ SOCKS broad validation: Gate A 55 PASS/228.816s. First HTTP gate FAIL at unchang
 SOCKS FFI review PASS: fresh fault-enabled Rust/C build,16 native panic-failure/backend controls,16 ordinary Rust units and3 explicit certificate-dependent TLS regressions. Production module remains fault-free and unchanged. All runtime/test hashes match the final matrix; freeze this scoped checkpoint, then build a fresh source archive independently. Original curl deadline and cold memory-workload failures remain in the attestation.
 
 SOCKS checkpoint 2b90593 independently packaged:756 files, archiveSHA 5a670d2a51b5c9c53c3fafce774579e0c7effbc0053a02426906c8151aebe589. Fresh build+12protocol/server checks PASS199.960270s; independentmoduleSHA 1cde483b1a09eb253f5dbb8722e38da7d61019792e632b639416b1bc7abb6b31. Second package byte-identical. Runtime/tests unchanged after source checkpoint; documentation-only attestation follows. All retained failures and partial entity classifications remain.
+
+## 2026-11-12 — Native Server transient accept-error isolation
+
+Pushed the prior Hyper source/package commits through `8af2924` and independently
+verified the GitHub branch hash. Owner accepted the delivered Hyper milestone
+for progression; next entity is Native Server. Wider technical gaps remain visible.
+
+Reproduced server-wide failure on one acknowledged ECONNABORTED using the prior
+production module, on epoll and poll: a separate held handler with two completed
+timer ticks was cancelled. Corrected only `ext/hyper/src/server.rs`: retry the
+nine Linux pending TCP accept errors within the existing 64-attempt budget.
+Invalid listener/resource errors still propagate; no timeout, scheduler, PHP API
+or ownership policy was relaxed. Added real PHP/socket fault controls, a native
+64,000-error/1,000-turn budget regression, classification unit test and CI wiring.
+
+Preserved matrix-r1 FAIL: PHP83 RTLD_DEEPBIND bypassed preload injection. Loader
+bindings independently identify that harness limitation. Tests now link a
+separate fault module, while ordinary protocol/TLS/streaming tests use modules
+without the wrapper. Final matrix: 133 commands PASS, 344.023 seconds; Rust 17
+unit tests passed, three pre-existing explicitly configured TLS tests ignored.
+Gate A: 55 checks PASS, 226.661 seconds; full PHP85 epoll/poll suites PASS. Eight
+four-worker/body-lifetime commands PASS. Prior Rust library fails the native
+regression as expected; corrected budget and scoped GCC ASan/UBSan pass. Native
+Valgrind: 0 errors, 0 live bytes. DEBUG Valgrind both backends: 0 errors, 0
+definite/indirect/possible losses, 4,114 bytes still reachable; no suppressions.
+
+Evidence: `docs/phase7/server-accept.json`; raw root
+`/home/coder/Asyncara-server-accept-20261112T055450Z`. Phase4 checkout, installed
+module, LICENSE and historical failures remain unchanged. No FPM campaign or
+benchmark run; no attribution of historical zero-tick/SQL/slow-TLS failures to
+this fix. Native Server and release remain experimental and incompletely certified.

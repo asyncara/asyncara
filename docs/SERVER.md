@@ -11,6 +11,40 @@ original status. This priority decision is not a claim of new compatibility or
 production readiness.
 
 
+## Connection-local accept errors
+
+Linux can return a queued TCP connection's pending error from `accept4()`;
+this does not invalidate the listening socket or other accepted connections.
+`Server::drive()` now retries `ECONNABORTED`, `ENETDOWN`, `EPROTO`,
+`ENOPROTOOPT`, `EHOSTDOWN`, `ENONET`, `EHOSTUNREACH`, `EOPNOTSUPP` and
+`ENETUNREACH` within its existing **64 attempts per turn**. Existing EINTR and
+EAGAIN behavior remains. Invalid-listener and resource-exhaustion errors still
+propagate; the server does not silently conceal EBADF, EMFILE, ENFILE, ENOMEM,
+ENOBUFS or EINVAL. The classification follows the Linux
+[accept(2) pending-network-error contract](https://man7.org/linux/man-pages/man2/accept.2.html).
+
+The original implementation poisoned the entire server on ECONNABORTED and
+cancelled an unrelated pending PHP handler. The regression leaves a real request
+pending across two timer ticks, acknowledges each syscall injection, serves a
+second timer-backed request, then independently releases the held request and
+checks native cleanup. The separate native budget regression verifies persistent
+errors cannot extend the existing accept loop beyond 64 attempts.
+
+`tests/server/accept_fault.py` uses a test-only wrapper. PHP 8.3's RTLD_DEEPBIND
+can bypass preload interposition, so CI explicitly links a separate fault module;
+normal protocol/TLS/streaming tests use the production module. Fault injection is
+not a feature of the production module. Raw failures and validation scope are
+retained in [the accept-isolation evidence](phase7/server-accept.json).
+Validation: 133 build/test commands passed across PHP 8.3/8.4/8.5 NTS, DEBUG
+and GCC ASan/UBSan configurations on epoll/poll. Gate A passed 55 checks in
+226.661 seconds; both complete PHP 8.5 suites and eight four-worker/body-lifetime
+commands passed. Native Valgrind returned zero errors and zero live allocations;
+DEBUG returned zero lost bytes, with 4,114 still reachable bytes in each run.
+These are scoped results, not universal memory or endurance certification.
+
+This fix does not establish the cause of the historical FPM zero-tick failure,
+the retained SQL-handler disconnect, or the earlier slow-input TLS reset.
+
 ## Run the example
 
 The server is opt-in: build the Rust bridge and native extension together. Use a
