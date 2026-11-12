@@ -17,11 +17,15 @@ p.add_argument('--php', required=True)
 p.add_argument('--module', required=True)
 p.add_argument('--backend', choices=['epoll', 'poll'], required=True)
 p.add_argument('--out', type=Path, required=True)
+p.add_argument('--owner-pending', action='store_true', help='Owner termination during independently locked SQL')
+p.add_argument('--transactions', action='store_true', help='Manual transaction and savepoint ownership regression')
 p.add_argument('--probe', action='store_true')
 p.add_argument('--server', action='store_true', help='Native Server SQL/HTTP/filesystem lifecycle integration')
 p.add_argument('--paths', nargs='*', choices=['relative','invalid','policy','late-policy','native-policy-ca','native-policy-cert','native-policy-key'], help='Run TLS filename ownership controls instead of authentication cases')
 p.add_argument('--fpm', type=Path, help='Additional existing one/four-worker prepared-query lifecycle fixture')
 a = p.parse_args()
+if a.owner_pending and (a.transactions or a.probe or a.server or a.fpm or a.paths is not None):p.error('--owner-pending is a separate run')
+if a.transactions and (a.probe or a.server or a.fpm or a.paths is not None):p.error('--transactions is a separate run')
 if a.fpm and a.probe: p.error('--fpm and --probe are separate runs')
 if a.paths is not None and (a.fpm or a.probe): p.error('--paths is a separate run')
 if a.server and (a.fpm or a.probe or a.paths is not None):p.error('--server is a separate run')
@@ -30,7 +34,7 @@ out = a.out.resolve(); out.mkdir(parents=True, exist_ok=False, mode=0o700)
 pg = Path(os.environ.get('POSTGRES_BIN', '/usr/lib/postgresql/16/bin'))
 sha = lambda f: hashlib.sha256(Path(f).read_bytes()).hexdigest()
 module = Path(a.module).resolve()
-manifest = {str(f.relative_to(root)): sha(f) for d in ['ext', 'src/Asyncara/PostgreSQL', 'tests/database']
+manifest = {str(f.relative_to(root)): sha(f) for d in ['ext', 'src/Asyncara/PostgreSQL', 'src/Asyncara/Internal', 'tests/database']
             for f in (root/d).rglob('*') if f.is_file() and '__pycache__' not in str(f)}
 report = {'status':'RUNNING','backend':a.backend,'sourceManifest':manifest,
           'moduleSha256':sha(module),'phpSha256':sha(a.php),
@@ -85,6 +89,8 @@ try:
     if a.paths is not None:
         cmd=['python3',str(root/'tests/database/sql_tls_paths.py'),'--php',a.php,'--module',str(module),'--out',str(out/'paths')]+(['--modes',*a.paths] if a.paths else [])
     if a.server:cmd=['python3',str(root/'tests/database/native_server.py'),'--php',a.php,'--module',str(module),'--out',str(out/'native-server')]
+    if a.transactions:cmd=[a.php,'-n','-d','extension='+str(module),str(root/'tests/database/transactions.php')]
+    if a.owner_pending:cmd=[a.php,'-n','-d','extension='+str(module),str(root/'tests/database/transaction_owner_pending.php')]
     env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_PG_MTLS_FIXTURE':str(out/'fixture.json')}
     with (out/'php.log').open('x') as log:
         child=subprocess.Popen(cmd,cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=log)

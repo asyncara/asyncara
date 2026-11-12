@@ -276,6 +276,30 @@ error:
     zend_list_delete(resource);
     RETURN_THROWS();
 }
+/* Oracle MySQL does not prepare SAVEPOINT commands. Only recognize the exact
+ * bounded, quoted ASCII identifier shape emitted by the public helper. Do not
+ * route arbitrary SQL (or parameterized data queries) through the control path.
+ */
+static bool my_savepoint_control(const char *sql, size_t len) {
+    static const char *const prefixes[] = {"SAVEPOINT ", "ROLLBACK TO SAVEPOINT ", "RELEASE SAVEPOINT "};
+    for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); i++) {
+        size_t prefix = strlen(prefixes[i]);
+        if (len <= prefix || strncasecmp(sql, prefixes[i], prefix))
+            continue;
+        size_t bytes = len - prefix;
+        const char *name = sql + prefix;
+        if (bytes < 3 || bytes > 65 || name[0] != '`' || name[bytes - 1] != '`')
+            return false;
+        for (size_t n = 1; n < bytes - 1; n++) {
+            unsigned char c = (unsigned char)name[n];
+            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_' ||
+                  (n > 1 && c >= '0' && c <= '9')))
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
 PHP_FUNCTION(asyncara_mysql_query) {
     zval *z;
     char *sql;
@@ -302,7 +326,7 @@ PHP_FUNCTION(asyncara_mysql_query) {
      * Connector/C's nonblocking text path. All data queries retain binding.
      */
     if (!p->nparams && (!strcasecmp(sql, "START TRANSACTION") || !strcasecmp(sql, "BEGIN") ||
-                       !strcasecmp(sql, "COMMIT") || !strcasecmp(sql, "ROLLBACK"))) {
+                       !strcasecmp(sql, "COMMIT") || !strcasecmp(sql, "ROLLBACK") || my_savepoint_control(sql, len))) {
         p->stage = MY_CONTROL;
         p->waiting = mysql_real_query_start(&p->result, p->conn, p->sql, (unsigned long)len);
         RETURN_NULL();
