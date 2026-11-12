@@ -101,8 +101,14 @@ jobs:
           done
       - name: Server protocol, TLS and bounded streaming on epoll and poll
         run: |
+          CARGO_TARGET_DIR="$PWD/build/hyper-production" ASYNCARA_OUTPUT=build/hyper-accept-fault.so EXTRA_CFLAGS='-DASYNCARA_TEST_LINK_ACCEPT=1' EXTRA_LDFLAGS='tests/server/accept_fault.c -Wl,--wrap=accept4' bash scripts/build-hyper-local.sh
+          python3 tests/server/accept_budget.py --library build/hyper-production/release/libasyncara_hyper_bridge.a --out build/hyper-server/accept-budget
           for backend in epoll poll; do
             ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/hyper.so" tests/server/api.php
+            python3 tests/server/accept_fault.py --php php --module build/hyper-accept-fault.so --linked-shim --backend "$backend" --out build/hyper-server/"$backend-accept"
+            for fault in EBADF EMFILE ENFILE ENOMEM ENOBUFS EINVAL; do
+              python3 tests/server/accept_fault.py --php php --module build/hyper-accept-fault.so --linked-shim --backend "$backend" --fault "$fault" --out build/hyper-server/"$backend-accept-$fault"
+            done
             for test in run tls stream input; do
               python3 tests/server/"$test".py --php php --module build/hyper.so --backend "$backend" --out build/hyper-server/"$backend-$test"
             done

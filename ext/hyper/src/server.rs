@@ -760,6 +760,27 @@ fn listen(address: SocketAddr, reuse_port: bool) -> io::Result<TcpListener> {
     }
     Ok(listener)
 }
+// Linux accept(2) can report a queued connection's pending network error on the
+// listener. It does not invalidate the listener or already accepted peers.
+// Retry only these connection-local errors, within drive's existing 64-attempt
+// budget. Resource exhaustion and invalid listener errors must still propagate.
+fn retry_accept_error(error: &io::Error) -> bool {
+    matches!(
+        error.raw_os_error(),
+        Some(
+            libc::ECONNABORTED
+                | libc::ENETDOWN
+                | libc::EPROTO
+                | libc::ENOPROTOOPT
+                | libc::EHOSTDOWN
+                | libc::ENONET
+                | libc::EHOSTUNREACH
+                | libc::EOPNOTSUPP
+                | libc::ENETUNREACH
+        )
+    )
+}
+
 impl Server {
     fn drive(&mut self) -> io::Result<()> {
         if let Some(listener) = &self.listener {
@@ -830,6 +851,7 @@ impl Server {
                     }
                     Err(e) if e.kind() == io::ErrorKind::WouldBlock => break,
                     Err(e) if e.kind() == io::ErrorKind::Interrupted => continue,
+                    Err(e) if retry_accept_error(&e) => continue,
                     Err(e) => return Err(e),
                 }
             }
@@ -1423,6 +1445,43 @@ pub unsafe extern "C" fn ar_server_shutdown(ptr: *mut c_void) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn accept_retries_only_pending_connection_errors() {
+        for code in [
+            libc::ECONNABORTED,
+            libc::ENETDOWN,
+            libc::EPROTO,
+            libc::ENOPROTOOPT,
+            libc::EHOSTDOWN,
+            libc::ENONET,
+            libc::EHOSTUNREACH,
+            libc::EOPNOTSUPP,
+            libc::ENETUNREACH,
+        ] {
+            assert!(
+                retry_accept_error(&io::Error::from_raw_os_error(code)),
+                "{code}"
+            );
+        }
+        for code in [
+            libc::EBADF,
+            libc::EINVAL,
+            libc::EMFILE,
+            libc::ENFILE,
+            libc::ENOMEM,
+            libc::ENOBUFS,
+            libc::EPERM,
+            libc::ENOTSOCK,
+        ] {
+            assert!(
+                !retry_accept_error(&io::Error::from_raw_os_error(code)),
+                "{code}"
+            );
+        }
+        assert!(!retry_accept_error(&io::Error::other(
+            "unknown listener failure"
+        )));
+    }
     #[test]
     fn host_is_not_a_general_uri_authority() {
         for host in ["localhost", "127.0.0.1:8080", "[::1]:80", "example.com:"] {
