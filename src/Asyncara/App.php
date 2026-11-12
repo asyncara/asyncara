@@ -72,6 +72,8 @@ final class App
         $workers = $options['workers'] ?? 1; unset($options['workers']);
         $tls = $options['tls'] ?? null; unset($options['tls']);
         $streamRequests = $options['streamRequests'] ?? false; unset($options['streamRequests']);
+        $halfClose = $options['halfClose'] ?? false; unset($options['halfClose']);
+        if (!is_bool($halfClose)) throw new \ValueError('halfClose must be boolean');
         if (!is_bool($streamRequests)) throw new \ValueError('streamRequests must be boolean');
         if ($tls !== null && !is_array($tls)) throw new \ValueError('tls must be an array');
         if (!is_int($workers) || $workers < 1 || $workers > 64) throw new \ValueError('workers must be 1..64');
@@ -83,9 +85,9 @@ final class App
             if (str_ends_with($address, ':0')) throw new \ValueError('Multiple workers require a fixed port');
             $this->workers = new Server\Workers();
             try {
-                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options, $tls, $streamRequests): void {
+                $this->workers->run($workers, $limits['timeoutMs'], function (callable $ready) use ($address, $options, $tls, $streamRequests, $halfClose): void {
                     $this->workers = null; $this->workerProcess = true;
-                    $this->listen($address, $options + ['streamRequests' => $streamRequests] + ($tls === null ? [] : ['tls' => $tls]), static fn() => $ready());
+                    $this->listen($address, $options + ['streamRequests' => $streamRequests, 'halfClose' => $halfClose] + ($tls === null ? [] : ['tls' => $tls]), static fn() => $ready());
                 }, $onReady === null ? null : static fn() => $onReady($address));
             } finally { $this->workers = null; }
             return;
@@ -104,6 +106,7 @@ final class App
             }
         }
         $arguments = [...array_values($limits), $this->workerProcess, ...$pem, $streamRequests];
+        if ($halfClose) $arguments[] = true;
         $info = \asyncara_server_listen($address, ...$arguments);
         unset($arguments, $pem, $bytes); // Do not retain PEM/key strings in the listener frame.
         $this->running = true;

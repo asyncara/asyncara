@@ -105,6 +105,8 @@ jobs:
           python3 tests/server/accept_budget.py --library build/hyper-production/release/libasyncara_hyper_bridge.a --out build/hyper-server/accept-budget
           for backend in epoll poll; do
             ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/hyper.so" tests/server/api.php
+            python3 tests/server/protocol.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-server/"$backend-protocol"
+            python3 tests/server/protocol.py --php php --module build/hyper.so --backend "$backend" --stream --out build/hyper-server/"$backend-protocol-stream"
             python3 tests/server/accept_fault.py --php php --module build/hyper-accept-fault.so --linked-shim --backend "$backend" --out build/hyper-server/"$backend-accept"
             for fault in EBADF EMFILE ENFILE ENOMEM ENOBUFS EINVAL; do
               python3 tests/server/accept_fault.py --php php --module build/hyper-accept-fault.so --linked-shim --backend "$backend" --fault "$fault" --out build/hyper-server/"$backend-accept-$fault"

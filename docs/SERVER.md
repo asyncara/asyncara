@@ -47,6 +47,22 @@ identify `b90652d`; all 13 independent build/test commands passed.
 This fix does not establish the cause of the historical FPM zero-tick failure,
 the retained SQL-handler disconnect, or the earlier slow-input TLS reset.
 
+## TCP write-half closure
+
+`listen(address, ['halfClose' => true])` accepts a complete HTTP/1 request even
+when the peer sends TCP FIN on its sending side before the response is ready.
+This opt-in mode supports buffered and streamed request bodies and pipelined
+requests. The default remains `false`, preserving prompt EOF cancellation.
+With half-close enabled, FIN alone cannot distinguish a client still reading
+from an abandoned connection: the original request-cycle deadline bounds the
+remaining handler lifetime. Reset and timeout cleanup remain active.
+
+`tests/server/protocol.py` independently withholds I/O completion until two
+handler timer ticks, verifies HEAD/pipeline boundaries, Expect:100-continue,
+oversized-body rejection before 100, complete/truncated bodies, and deadline
+cancellation. This is plaintext TCP half-close coverage; TLS close-notify
+interoperability is not claimed. [Evidence](phase7/server-protocol.json).
+
 ## Run the example
 
 The server is opt-in: build the Rust bridge and native extension together. Use a

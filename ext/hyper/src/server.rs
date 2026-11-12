@@ -674,6 +674,7 @@ struct Peer {
     deadline: Rc<Cell<Instant>>,
 }
 struct Server {
+    half_close: bool,
     stream_requests: bool,
     tls: Option<Arc<rustls::ServerConfig>>,
     listener: Option<TcpListener>,
@@ -824,6 +825,7 @@ impl Server {
                         };
                         let mut builder = hyper::server::conn::http1::Builder::new();
                         builder
+                            .half_close(self.half_close)
                             .header_read_timeout(None)
                             .max_buf_size(65536)
                             .max_header_size(65536)
@@ -957,6 +959,7 @@ pub unsafe extern "C" fn ar_server_new(
         }));
         Some(
             Box::into_raw(Box::new(Server {
+                half_close: false,
                 stream_requests: false,
                 tls: None,
                 listener: Some(listener),
@@ -982,6 +985,16 @@ pub unsafe extern "C" fn ar_server_new(
     .unwrap_or(std::ptr::null_mut())
 }
 // Setup-only request-body mode; the default buffered path is unchanged.
+#[no_mangle]
+pub unsafe extern "C" fn ar_server_half_close(ptr: *mut c_void) -> i32 {
+    with(ptr, -1, |s| {
+        if s.accepted != 0 {
+            return -1;
+        }
+        s.half_close = true;
+        0
+    })
+}
 #[no_mangle]
 pub unsafe extern "C" fn ar_server_stream_requests(ptr: *mut c_void) -> i32 {
     with(ptr, -1, |s| {

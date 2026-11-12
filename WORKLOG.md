@@ -2894,3 +2894,7 @@ SHA-256 `e6ad26e521a629eb9eb471e6d58323bee24ecbc1eed14e3d2ecc325923b5390e`; inde
 SHA-256 `af0bc5f3511c61ae0f877ce27a157444bd08ab225abf7df36235c74973a1158e`.
 Attestation: `docs/phase7/server-accept-package.json`. Archive and binaries are
 local artifacts; no GitHub release was published.
+
+## 2026-11-12 — Native Server half-close and HTTP/1 peer coverage
+
+Added opt-in halfClose through Rust Hyper, native FFI and App (including worker options). The default remains unchanged. Original complete request with client write-FIN failed before handler/ticker entry; corrected mode permits two timer ticks before independent release. Seven independent peer checks cover Expect100, HEAD/pipelines, body limits, complete/truncated bodies and original deadline cancellation. 65 build/test commands PASS on PHP83/84/85, DEBUG and scoped GCC ASan/UBSan, epoll/poll (188.420s). Gate A55 PASS/202.607s. Baseline failure retained. Added CI coverage. Evidence docs/phase7/server-protocol.json. No TLS half-close, HTTP2 server or historical zero-tick fix is claimed. Original Phase4 checkout and module unchanged. Next: manual SQL transaction/savepoint gaps using existing nonblocking drivers.
