@@ -12,6 +12,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_listen, 0, 8, IS_ARRAY, 0
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, keyPem, IS_STRING, 0, "\"\"")
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, clientCaPem, IS_STRING, 0, "\"\"")
     ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, streamRequests, _IS_BOOL, 0, "false")
+    ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, halfClose, _IS_BOOL, 0, "false")
 ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_server_next, 0, 0, IS_ARRAY, 1)
 ZEND_END_ARG_INFO()
@@ -39,14 +40,15 @@ static void server_status(zval *value, ar_server_status *s) {
     add_assoc_long(value, "protocolErrors", s->errors);
 }
 PHP_FUNCTION(asyncara_server_listen) {
-    char *address; size_t len; zend_long connections, body, response, budget, timeout, requests; bool reuse_port, stream_requests = false;
+    char *address; size_t len; zend_long connections, body, response, budget, timeout, requests; bool reuse_port, stream_requests = false, half_close = false;
     char *cert = "", *key = "", *ca = ""; size_t cert_len = 0, key_len = 0, ca_len = 0;
-    ZEND_PARSE_PARAMETERS_START(8, 12)
+    ZEND_PARSE_PARAMETERS_START(8, 13)
         Z_PARAM_STRING(address, len) Z_PARAM_LONG(connections) Z_PARAM_LONG(body)
         Z_PARAM_LONG(response) Z_PARAM_LONG(budget) Z_PARAM_LONG(timeout) Z_PARAM_LONG(requests)
         Z_PARAM_BOOL(reuse_port)
         Z_PARAM_OPTIONAL
         Z_PARAM_STRING(cert, cert_len) Z_PARAM_STRING(key, key_len) Z_PARAM_STRING(ca, ca_len) Z_PARAM_BOOL(stream_requests)
+        Z_PARAM_BOOL(half_close)
     ZEND_PARSE_PARAMETERS_END();
     /* Reserve the engine wake pipe, PHP notification watcher and listener.
      * Other I/O shares AR_MAX_WATCHERS; applications must budget that too. */
@@ -62,6 +64,9 @@ PHP_FUNCTION(asyncara_server_listen) {
         zend_value_error("Invalid TLS certificate, key or client CA configuration"); RETURN_THROWS();
     }
     if (stream_requests && ar_server_stream_requests(e->server)) {
+        ar_server_free(e->server); e->server = NULL; server_error(); RETURN_THROWS();
+    }
+    if (half_close && ar_server_half_close(e->server)) {
         ar_server_free(e->server); e->server = NULL; server_error(); RETURN_THROWS();
     }
     ar_server_status s;
