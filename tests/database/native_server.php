@@ -31,6 +31,15 @@ $app->get('/work/{id}',function(Request $request)use($pool,$pg,$app,$http,$fixtu
             $db->query('DELETE FROM asyncara_server_tx')->await();
             $db->transaction(fn($tx)=>$tx->query($pg?'INSERT INTO asyncara_server_tx VALUES($1)':'INSERT INTO asyncara_server_tx VALUES(?)',[$id])->await())->await();
             try{$db->transaction(function($tx):never{$tx->query('DELETE FROM asyncara_server_tx')->await();throw new DomainException('rollback');})->await();}catch(DomainException){}
+            $db->beginTransaction()->await();
+            try {
+                $db->savepoint('handler')->await();
+                $db->query('DELETE FROM asyncara_server_tx')->await();
+                $db->rollbackTo('handler')->await(); $db->releaseSavepoint('handler')->await();
+                $db->commit()->await();
+            } finally {
+                if ($db->inTransaction()) Async::shield(fn() => $db->rollback()->await());
+            }
             demand((int)$db->query('SELECT n FROM asyncara_server_tx')->await()[0]['n']===$id,'Transaction affinity/rollback');
             $file->await();$bytes=Files::read($path)->await();
             demand($bytes===str_repeat((string)$id,512)&&$reply->await()->body==='ready','Handler file/HTTP integrity');

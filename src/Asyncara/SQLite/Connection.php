@@ -5,6 +5,8 @@ use Asyncara\{Async,Future,Scheduler,Task};
 use Asyncara\Concurrency\Semaphore;
 final class Connection
 {
+    use \Asyncara\Internal\SqlSavepoints;
+    private const SAVEPOINT_QUOTE = '"';
     private Semaphore $gate;
     private Semaphore $operations;
     private bool $closed = false;
@@ -48,18 +50,25 @@ final class Connection
             catch (\Throwable $e) { $this->gate->release(); throw $e; }
         });
     }
+    public function inTransaction(): bool { return !$this->closed && $this->transactionOwner !== null; }
     private function endTransaction(string $sql): Future
     {
-        if ($this->transactionOwner !== Scheduler::current()->task) throw new \LogicException('Transaction belongs to another task or is not active');
-        return Async::spawn(function () use ($sql): void {
-            Async::shield(fn() => $this->operations->withPermit(fn() => Scheduler::current()->native('sqlite_query', [$this->id, $sql, []])->await()));
-            $this->transactionOwner = null; $this->gate->release();
+        $caller = Scheduler::current()->task;
+        if ($this->transactionOwner === null || $this->transactionOwner !== $caller) throw new \LogicException('Transaction belongs to another task or is not active');
+        return Async::spawn(function () use ($sql, $caller): void {
+            Async::shield(fn() => $this->operations->withPermit(function () use ($sql, $caller): void {
+                // Another queued finish may have completed while this operation waited.
+                if ($this->transactionOwner !== $caller) throw new \LogicException('Transaction has already ended');
+                Scheduler::current()->native('sqlite_query', [$this->id, $sql, []])->await();
+                $this->transactionOwner = null; $this->gate->release();
+            }));
         });
     }
     public function commit(): Future { return $this->endTransaction('COMMIT'); }
     public function rollback(): Future { return $this->endTransaction('ROLLBACK'); }
     public function transaction(callable $body): Future
     {
+        if ($this->transactionOwner === Scheduler::current()->task && $this->transactionOwner !== null) throw new \LogicException('Nested transactions require savepoints');
         return Async::spawn(function () use ($body): mixed {
             Async::shield(fn() => $this->beginTransaction()->await());
             try { Scheduler::current()->currentCancellation()?->throwIfRequested(); $value = $body($this); Async::shield(fn() => $this->commit()->await()); return $value; }

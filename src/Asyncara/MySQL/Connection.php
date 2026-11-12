@@ -8,6 +8,9 @@ use Asyncara\Exception\OperationException;
 final class Connection
 {
     use \Asyncara\Internal\NonCopyable;
+    use \Asyncara\Internal\ManualSqlTransactions;
+    use \Asyncara\Internal\SqlSavepoints;
+    private const SAVEPOINT_QUOTE = '`';
 
     private Semaphore $gate;
     private Semaphore $operations;
@@ -64,8 +67,18 @@ final class Connection
     }
     public function execute(string $sql,array $parameters=[]):Future{return $this->query($sql,$parameters);}
     public function prepare(string $sql):Statement{return new Statement($this,$sql);}
+    /** Called with the transaction gate already held. */
+    private function transactionCommand(string $sql): array
+    {
+        return $this->operations->withPermit(function () use ($sql): array {
+            if ($this->closed) throw new \LogicException('Connection closed');
+            asyncara_mysql_query($this->handle, $sql, []);
+            return $this->drain();
+        });
+    }
     public function transaction(callable $body):Future
     {
+        if ($this->transactionOwner === Scheduler::current()->task && $this->transactionOwner !== null) throw new \LogicException('Nested transactions require savepoints');
         return Async::spawn(function()use($body):mixed {
             $this->gate->acquire();$this->transactionOwner=Scheduler::current()->task;
             try{
@@ -75,6 +88,6 @@ final class Connection
             }finally{$this->transactionOwner=null;$this->gate->release();}
         });
     }
-    public function close():void{if(!$this->closed){$this->closed=true;if($this->fd>=0)Scheduler::tryCurrent()?->closed($this->fd);asyncara_mysql_close($this->handle);}}
+    public function close():void{if(!$this->closed){$this->closed=true;$this->releaseManualTransaction();if($this->fd>=0)Scheduler::tryCurrent()?->closed($this->fd);asyncara_mysql_close($this->handle);}}
     public function __destruct(){$this->close();}
 }

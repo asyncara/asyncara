@@ -154,3 +154,62 @@ GCC covers the Connector servers, with positive libpq TLS excluded because the
 retained109-byte ordinary-unload dependency finding would fail. An initial PHP83
 PostgreSQL pending-query disconnect remains unexplained and preserved; this
 later pass does not establish its cause. See [current contracts](PRIORITY_CAPABILITIES.md).
+
+## Manual transactions and savepoints
+
+PostgreSQL and MySQL/MariaDB now provide `beginTransaction()`, `commit()`,
+`rollback()` and `inTransaction()`. SQLite retains its existing manual API and
+adds state inspection. All three provide `savepoint(name)`, `rollbackTo(name)`
+and `releaseSavepoint(name)`, with quoted ASCII identifiers, 1..63 bytes.
+
+```php
+Asyncara\Async::shield(fn() => $db->beginTransaction()->await());
+try {
+    $db->savepoint('batch')->await();
+    // Use this Task and connection for transaction work.
+    $db->releaseSavepoint('batch')->await();
+    Asyncara\Async::shield(fn() => $db->commit()->await());
+} catch (Throwable $error) {
+    if ($db->inTransaction()) Asyncara\Async::shield(fn() => $db->rollback()->await());
+    throw $error;
+}
+```
+
+Queries from another Task wait outside the transaction. A cancelled waiter does
+not cancel the shared query. Nested callback/manual transactions are rejected;
+use explicit savepoints. Concurrent finish operations are checked again after
+scheduling, preventing duplicate ownership release or a second native COMMIT.
+PostgreSQL/MySQL discard a connection if its owning Task exits with a manual
+transaction open. SQLite retains explicit cleanup. Complete the transaction
+before returning a connection-pool lease; leases are not Task lifetime boundaries.
+State inspection covers API ownership, not ad hoc SQL or implicit DDL commits.
+Active-query errors still close PostgreSQL/MySQL; savepoints do not add error
+recovery on a connection already discarded by that policy.
+
+Oracle MySQL 8.4.13 rejected SAVEPOINT via COM_STMT_PREPARE in the initial test,
+while MariaDB 11.8.9 passed. `ext/mysql.c::my_savepoint_control` recognizes only
+the helper's bounded quoted identifier commands, and uses the existing
+nonblocking `mysql_real_query_start/cont` control state. Parameter binding and
+result-bearing statements keep their existing prepared path. No blocking wrapper
+or SQL interpolation of application values was introduced.
+
+Tests: `tests/database/transactions.php`, plus `mtls_pg.py --transactions` and
+`mtls_mysql.py --transactions` (use `--oracle-prefix` for separate Oracle results).
+The independent fixtures confirm zero remaining server sessions. Evidence and
+executed matrix are recorded in [the transaction attestation](phase7/sql-transactions.json).
+The original SQLite duplicate-finish and Oracle prepared-protocol failures are
+retained. This does not close WAN/TLS rotation, cancellation acknowledgement,
+MySQL prepared-cache or broader entity certification gaps.
+
+Executed verification: normal PHP8.3/8.4/8.5 and DEBUG on epoll/poll pass the
+SQLite/PostgreSQL/MariaDB/Oracle transaction controls. GCC SQLite/MariaDB/Oracle
+controls pass; PostgreSQL functional assertions pass but ordinary GCC process
+exit remains FAIL on the retained109-byte library-unload finding, also reproduced
+by the previous module's connection-only control. Gate A55 passes in197.660s;
+full PHP85 suites pass on both backends. Native Server integration passes
+264responses in12instances with72original pending-query timer ticks. Six
+additional real locked-query owner-termination cases pass. DEBUG Valgrind SQLite
+on both backends and separate Oracle Unix-socket transactions return0errors and
+0lost bytes (3888bytes reachable). The original Oracle mTLS Valgrind attempt
+failed the unchanged2s operation deadline, with0lost bytes; the Unix-socket
+control does not replace that TLS failure. No suppressions were used.

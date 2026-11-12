@@ -1,0 +1,1817 @@
+{
+  "scope": "Manual SQL transactions/state/savepoints, owner-terminal cleanup, duplicate finish and Oracle native control compatibility",
+  "status": "IMPLEMENTED_AND_TESTED_IN_DOCUMENTED_SCOPE",
+  "release": "EXPERIMENTAL",
+  "parent": "871ee1a6e82819fa9345d879e9286ce7200d224d",
+  "evidenceRoot": "/home/coder/Asyncara-entities-20261112T064151Z",
+  "runtimeManifest": {
+    "ext/backend.c": "6c63a7676c892c8b6f6427965312155bf0ea11501afeaeae9ea2ce04ba49c822",
+    "ext/mysql.c": "9ea67d491e9cbdbb1103590d938249c4cc024bec8549e6ed30c7a9070815a83c",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/server.h": "89c1507d146234b3e97533af42a395e28397a9a9676c59f3ed8b298bab471c99",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper_decode.c": "8b4b3cf67e14bbdd871b71c45a3722a93a7c82967e0a210b4019d0e6c4708d2c",
+    "ext/server_php.h": "2499bb5a60693283a9df62793e90498c85bda2fba197d9e975103fda69a3005f",
+    "ext/native.h": "7c07eee155c5ed89c13d0408159ed1ce9aaeee14fed6e117dbe2e8f8e80a0dcc",
+    "ext/config.m4": "646a2dda5528c629aca872671d129810d373af11423f019ddaee383eccc762a1",
+    "ext/postgresql.c": "e07c0d43cf73bbe815c2092df008de4f2430c1a8fc7eb39fabca250a0d9a28f3",
+    "ext/workers.c": "3b3ce893ed7c4f846a8597d2c660f3ebbad07ea15b22ac42da4d26d51568ace7",
+    "ext/php_asyncara.c": "131220ad81115506b36ce123217d1ec40f147b443901a7b75c7fe4bd7373f999",
+    "ext/hyper/Cargo.toml": "ca45047ecea5bdea477a0f75bab46a411b0f37a7766bcfe0371a68a85876dafd",
+    "ext/hyper/Cargo.lock": "27bef551b7236eed0824a2ad769750bde59869230f0212b9f13feb4de4aa5c6a",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/body.rs": "ee633e8f5aeb3c49049552753d4d32ad26b3b2d666a68b372dc12c62f1585885",
+    "ext/hyper/src/job.rs": "3da34833b9b5a0097d562d93e1c77fc032633288613aa42e09af91f21f34bd7b",
+    "ext/hyper/src/socks.rs": "9020bb40c5c25d8e2ef96c2a27208abef886f0ff0ad6b644f05beca1e0f0cee1",
+    "ext/hyper/src/server.rs": "0d60c6d5d17ba3101749a12df4ce0c972971215ca2ef97d9383f2bc712de1143",
+    "ext/hyper/src/tests.rs": "0320a338f1f535b9c25765cad61e69ffeea85ac3899c2b1fea1e12792e4b7c98",
+    "ext/hyper/src/tls.rs": "c3c120b941f3dcf8b0ec5a0b291cc0e2a60d4a27830e2fd3c691c1b861968978",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/proxy.rs": "b304aa7a0e789260fb16af1fc52c03d1ab30ee68946af5790a2e9e5c62ecb270",
+    "ext/hyper/src/lib.rs": "39cac23ec258886caea16ee1b89543c100854c586828c82f5e94af972bfbb171",
+    "ext/hyper/src/protocol.rs": "f0aab9192c4697038173af4bc3bcfca9abc4d4c792bfa6fc5c0c44b5f7de51ff",
+    "src/Asyncara.php": "a5d1a7689b606a10395fd28d325ef2f492cbbe000e0cc9889bf19add9a1d95cc",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/Task.php": "73bf493abb351e54a50ce64c9825f46b6b1357ac70f4af785203ba32566e6e9e",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/Async.php": "da11843ea763a044a529a730702e1eea7d603a14380c81bf743f87df17ce4d25",
+    "src/Asyncara/Scheduler.php": "bce503edc49c7adc24cec2589e55b96e0d74dc4a964104eceb61e205e67d89e8",
+    "src/Asyncara/Future.php": "9effeb81391634304ad8d6adf47a2e70299b11fa319d908312a733b389df7344",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "785f6ee3395beefcd6e75d7230f442eb4fdcd43ce17f4d53406031b3824259b8",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/App.php": "a286dc9b0254711c99c0e6cf9d02195b03de4addc61721f08419fceaa622d496",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/Multipart.php": "d38080150134c18174bbba1ea39f63efb103d71cd1daa6d9e4a62357bda879b6",
+    "src/Asyncara/HTTP/Response.php": "bcde814234d4222422e2b710ba9fe6ad815da027af4bc3fb2a75bb38681b8a65",
+    "src/Asyncara/HTTP/HttpClient.php": "464202847c1911a3ed0f038ca9079dd5e4571044417c99f6538b55164e738fdc",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/HTTP/BufferedRequest.php": "2cc04b1415cf698139a8b6edfbaefb2e37de31ac694ee3b6fd82598b3019fa0a",
+    "src/Asyncara/HTTP/Redirect.php": "12d321180b9179c77e5ec374c6f4dc722926c0317cb9c5f8e3ca9483eb4c9497",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/PostgreSQL/Connection.php": "cb385d6e22d1cb811670372edddc2b9d0b189fd3b8a42afb75697b8d21760e60",
+    "src/Asyncara/PostgreSQL/Statement.php": "924a28f88f4b812e309ac9843303ff739c9ea0e86db6e6ff39117db58d43a48c",
+    "src/Asyncara/SQLite/Connection.php": "014eb6e6beada4c87d80fb9a25745a69917c632ce7049afe4ea2edb92883b6f6",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/ManualSqlTransactions.php": "1464d16369e2b9c28ca936d3b1f1e08b3fd0e38cb4ce5471755d64a62c17e701",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Internal/SqlSavepoints.php": "bc25a41f42dee214ecf6710b05a8ce5eb89999b1b5568b72c6ae9fe52de50811",
+    "src/Asyncara/Server/Request.php": "47741d8a8bb2b37422bc65fe3af692c0dae3ccec05625f7c02d0c2ba4c5d97d9",
+    "src/Asyncara/Server/Workers.php": "ae0f050c33cb7918c1e422a1cce4c05bfbc6894274f5b584f1a354de7b7773fd",
+    "src/Asyncara/Server/Response.php": "8af4f4568f48ee667292773a25c7b5bec4ccdde0d20c889ab875f3dc2d57e068",
+    "src/Asyncara/Server/Route.php": "b0a35214f456bace5fece05b2cdfba3a80c3738585313bc2122e0d06d3d62b33",
+    "src/Asyncara/Server/StreamResponse.php": "7b7dd71ed877e72a99e81ebf2aa1db3be1c68e4a64ffa1bd42a190cfb7885c90",
+    "src/Asyncara/Server/RequestBodyStream.php": "4e29112fafb161a51ca91f08a64a28dfcba3fe4bbad9069153fc3a9dcc45dafa",
+    "src/Asyncara/Server/RequestBodyException.php": "9f2b313c1b33fb9762cd0ea9119a0589fa9ba7a3be6917c54f9725322f91963d",
+    "src/Asyncara/Server/Inbox.php": "63374f8c892252298acc11d30ba47566a35095de8411e8049a63965e13c39e4a",
+    "src/Asyncara/Database/Database.php": "26a68110e21f3ae8797d644281f1fb66aa5899e64727c5656776e93179455c74",
+    "src/Asyncara/Pool/ConnectionPool.php": "ecb67e0e95fde3f19223697645e13eb9ade6ad8cd5608bfe4cea8c8b54df2b67",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/MySQL/Connection.php": "c62dc8c14cca85fabbe0e62a2d51b76f0ff172e545c95d5198c6daf83c55e5f9",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/File.php": "6db9246fba933448b709c57ea42598943fe8d50055e3ae5ebf245e6870dcb5bd",
+    "src/Asyncara/IO/TcpStream.php": "d0eb2f07a91d4271340fd670e97145657a36d508caad3a755ebcecb9059574e2",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/IO/Files.php": "2edb3444a8e6949394b9559856c251f77aef7511cb3df59ba4eef6b62634762e",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Semaphore.php": "99d0b06b177be09162a617d68897a38eeafd1f1836fe6b79eae8cdd7b13c5786",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Redis/Connection.php": "b6fed9b15ddb186ee0804acbacd3124716f7ce5ac4bf199d0f4cbf10fc4c5728",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Stream/AsyncStream.php": "5549d11c77117bfaf4d3429ef86a06aa6c41d31a6878638d01f794095935ae6d",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f"
+  },
+  "modules": {
+    "transactions-83.so": "06ae0eb1d8585f6e81a9feb143b8e46a2fe912e5d8edfd56bdbdf37a2d4c6213",
+    "transactions-84.so": "1783a9fd3e70d874a4690a02c4f58ae26052121aca794b8047115b64874ae0b5",
+    "transactions-gcc.so": "d3b260c19010048e9730c65180bf59c4c7213682d88bc134e6911105daf915eb",
+    "transactions-debug.so": "79f1588206fecd1fa6e89e5173b93a9394a782ebb44350e3cb84eb0ed740022a",
+    "transactions-85.so": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181"
+  },
+  "matrix": {
+    "status": "FAIL",
+    "parent": "871ee1a6e82819fa9345d879e9286ce7200d224d",
+    "rows": [
+      {
+        "php": "83",
+        "case": "build",
+        "exit": 0,
+        "seconds": 7.806887923274189,
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+      },
+      {
+        "php": "83",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 0.11947603989392519,
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "65ac7d1f3470f3641a0470adb595f9fa47451844b5b325368dbd04b27b247814"
+      },
+      {
+        "php": "83",
+        "case": "epoll-pg",
+        "exit": 0,
+        "seconds": 5.944622571114451,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-epoll-pg"
+        ],
+        "logSha256": "cfe5b24a77a634a3fe75ccceec8fcf0d60e802f6ab560857e791e4027158618c"
+      },
+      {
+        "php": "83",
+        "case": "epoll-maria",
+        "exit": 0,
+        "seconds": 7.029234508983791,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-epoll-maria"
+        ],
+        "logSha256": "3e905449bdc01ed5a36702dfc3a4ab207a3a0a39448ce4f66ec70f52f2db909d"
+      },
+      {
+        "php": "83",
+        "case": "epoll-oracle",
+        "exit": 0,
+        "seconds": 25.768650721292943,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "c8d6ba8b0c88bb3923034f2b20aca93b100d115f2844da869efdfca1c72bec02"
+      },
+      {
+        "php": "83",
+        "case": "poll-sqlite",
+        "exit": 0,
+        "seconds": 0.17292786063626409,
+        "command": [
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "a554e1449ed86ca4d06f5d25d846978677d48da050bb3168d9c989906a9ceabb"
+      },
+      {
+        "php": "83",
+        "case": "poll-pg",
+        "exit": 0,
+        "seconds": 7.575112638063729,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-poll-pg"
+        ],
+        "logSha256": "d91325a694ab6d3760751f168afe3bcc5cbb8c043aca58c7d963258a04750406"
+      },
+      {
+        "php": "83",
+        "case": "poll-maria",
+        "exit": 0,
+        "seconds": 7.073590268846601,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-poll-maria"
+        ],
+        "logSha256": "09db20fcdd78fe162bca0888373ac5e9069f473b8c5b738f60a67c6a713ff2ad"
+      },
+      {
+        "php": "83",
+        "case": "poll-oracle",
+        "exit": 0,
+        "seconds": 23.803504114039242,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-83.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/83-poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "1dd05005b3857c5459671fe5a30404f73f4c7a29c8e3f4fb34ff63fbbdd3db59"
+      },
+      {
+        "php": "84",
+        "case": "build",
+        "exit": 0,
+        "seconds": 7.464199938811362,
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+      },
+      {
+        "php": "84",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 0.13085802411660552,
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "3e89a42d2073062420eb9825eee8335184ebe17097e46c79b2e99e2aa3e6467d"
+      },
+      {
+        "php": "84",
+        "case": "epoll-pg",
+        "exit": 0,
+        "seconds": 5.555788710247725,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-epoll-pg"
+        ],
+        "logSha256": "4f4fd987cda1afe46e6be2a2a3483b6f595fcc878e64f9c9eb4231a320ad6eea"
+      },
+      {
+        "php": "84",
+        "case": "epoll-maria",
+        "exit": 0,
+        "seconds": 7.002855794038624,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-epoll-maria"
+        ],
+        "logSha256": "5f2380635ee158ea80e7156a8bc9d7079af8789bb0cfb9e8c824d29b5d515663"
+      },
+      {
+        "php": "84",
+        "case": "epoll-oracle",
+        "exit": 0,
+        "seconds": 16.27243617316708,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "9dff36116d10f92706bdc97476a1f53b82fcd133ad772dd45f55168cac318b55"
+      },
+      {
+        "php": "84",
+        "case": "poll-sqlite",
+        "exit": 0,
+        "seconds": 0.15327796479687095,
+        "command": [
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "b44fb6f1c1918fccfedd94ef05a196a7fe2840ce6a6c68f24dcfac3ecea43ccb"
+      },
+      {
+        "php": "84",
+        "case": "poll-pg",
+        "exit": 0,
+        "seconds": 6.605158783029765,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-poll-pg"
+        ],
+        "logSha256": "13230074529594bb43908f4b29719e4dfee968a91a400c8bd3989414ebe584df"
+      },
+      {
+        "php": "84",
+        "case": "poll-maria",
+        "exit": 0,
+        "seconds": 5.860283656977117,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-poll-maria"
+        ],
+        "logSha256": "eb5e639c97ef35a6f3f054e63e0cb18c7f8d95a718467081c1460cbd6bf6a517"
+      },
+      {
+        "php": "84",
+        "case": "poll-oracle",
+        "exit": 0,
+        "seconds": 18.627098018303514,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-84.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/84-poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "87666696554abff78c52c1e42c8f7bcfed926f7394362b3672aa0b7943dfb4f5"
+      },
+      {
+        "php": "85",
+        "case": "build",
+        "exit": 0,
+        "seconds": 7.991755336988717,
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+      },
+      {
+        "php": "85",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 0.14100068574771285,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "fcabacc5611daf123005bde557d3b89d75e8bc7370f2647e1c91c939c23b37bd"
+      },
+      {
+        "php": "85",
+        "case": "epoll-pg",
+        "exit": 0,
+        "seconds": 7.615296468138695,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-epoll-pg"
+        ],
+        "logSha256": "234f3ac93725889d3629dc4e02da0ee189b190364fff47ee30e10af6e8653cf9"
+      },
+      {
+        "php": "85",
+        "case": "epoll-maria",
+        "exit": 0,
+        "seconds": 8.274648017250001,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-epoll-maria"
+        ],
+        "logSha256": "785640cc0c67454612139a64600caf79a68c60fc0127d65b94d660d0bfdb1178"
+      },
+      {
+        "php": "85",
+        "case": "epoll-oracle",
+        "exit": 0,
+        "seconds": 37.822887911926955,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "248d7f4633bf7d8c8207c6d9390d54e44f236f6cde58258d27f6e7f8a758269d"
+      },
+      {
+        "php": "85",
+        "case": "poll-sqlite",
+        "exit": 0,
+        "seconds": 0.17829920817166567,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "ef3999a5fccbb0e083935cab1e3b65c187fc587d75501c3db2264014d1b6d28c"
+      },
+      {
+        "php": "85",
+        "case": "poll-pg",
+        "exit": 0,
+        "seconds": 6.403683704324067,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-poll-pg"
+        ],
+        "logSha256": "b246c368d9c9d23f6336399b0af8ab079e75246d8f2809bda91382e07e82f8e9"
+      },
+      {
+        "php": "85",
+        "case": "poll-maria",
+        "exit": 0,
+        "seconds": 6.879919129889458,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-poll-maria"
+        ],
+        "logSha256": "7a01be20cf4c8fc16a47e0a0688096e536315121aa82da4b74fe2b7ed7bcfbfe"
+      },
+      {
+        "php": "85",
+        "case": "poll-oracle",
+        "exit": 0,
+        "seconds": 23.326069225091487,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/85-poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "21340b9b357d495c056f6dc9f6d7f74d794b8bcff7fb66490ad8bb1e3fb1899e"
+      },
+      {
+        "php": "debug",
+        "case": "build",
+        "exit": 0,
+        "seconds": 11.548640455119312,
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+      },
+      {
+        "php": "debug",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 0.18133414117619395,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "3313540119ff0622d58ca2833bf59fe52cd625e020b0bc16f5e88e879852acc6"
+      },
+      {
+        "php": "debug",
+        "case": "epoll-pg",
+        "exit": 0,
+        "seconds": 5.849491089582443,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-epoll-pg"
+        ],
+        "logSha256": "43bbaf1fa0a674c85fcae680d1efbc147d3a1ce027b0900f481c96ca2a90ed1c"
+      },
+      {
+        "php": "debug",
+        "case": "epoll-maria",
+        "exit": 0,
+        "seconds": 7.732539056334645,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-epoll-maria"
+        ],
+        "logSha256": "7c8c886a7314fce12033aa92e38479097282d674308924d657ff92f317580f03"
+      },
+      {
+        "php": "debug",
+        "case": "epoll-oracle",
+        "exit": 0,
+        "seconds": 18.098423805087805,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "3fb2b8a668fba30152b7bc282e14e1b1f0ec1ad48e9960761a68b77f19c54866"
+      },
+      {
+        "php": "debug",
+        "case": "poll-sqlite",
+        "exit": 0,
+        "seconds": 0.15129811177030206,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "9d7d20473fbee92cf1648d2714a5f2d6119a3f4ddff54d91c67c3d1f7efcc78c"
+      },
+      {
+        "php": "debug",
+        "case": "poll-pg",
+        "exit": 0,
+        "seconds": 5.1051351660862565,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-poll-pg"
+        ],
+        "logSha256": "f406667ff291a8231de5c99b3b5f07e28f08200be07314f55bad09169fb563ee"
+      },
+      {
+        "php": "debug",
+        "case": "poll-maria",
+        "exit": 0,
+        "seconds": 7.817425241228193,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-poll-maria"
+        ],
+        "logSha256": "90147e4043d7c9ae0a054b099d886dd02d184bc423ba4825b164c99ac7232e93"
+      },
+      {
+        "php": "debug",
+        "case": "poll-oracle",
+        "exit": 0,
+        "seconds": 18.082723557949066,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/debug-poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "4044391bdf70e1315ca3a4e9c214c5ed7668769538546b6aec9a74efc6b03737"
+      },
+      {
+        "php": "gcc",
+        "case": "build",
+        "exit": 0,
+        "seconds": 16.946898664347827,
+        "command": [
+          "bash",
+          "scripts/build-local.sh"
+        ],
+        "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+      },
+      {
+        "php": "gcc",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 1.0896764169447124,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "cfaedd291abfb4773d9739455247e8b4df4824685a15dafd914a01bfc5ed8f00"
+      },
+      {
+        "php": "gcc",
+        "case": "epoll-pg",
+        "exit": 1,
+        "seconds": 7.105904266238213,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/gcc-epoll-pg"
+        ],
+        "logSha256": "245c365d56f560734198ffe2c8f316d6488c2833123ab5a90670fdd31fe31e3e"
+      }
+    ],
+    "error": "RuntimeError('gcc epoll-pg failed')",
+    "seconds": 351.3090133690275
+  },
+  "gccContinuation": {
+    "status": "PASS",
+    "parent": "871ee1a6e82819fa9345d879e9286ce7200d224d",
+    "rows": [
+      {
+        "php": "gcc",
+        "case": "epoll-sqlite",
+        "exit": 0,
+        "seconds": 1.0526551571674645,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "e3431fee035505f35bc7a5cae766be79936d385774e7fb9155e625c854ce2907"
+      },
+      {
+        "php": "gcc",
+        "case": "epoll-maria",
+        "exit": 0,
+        "seconds": 7.2409102926030755,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/gcc-epoll-maria"
+        ],
+        "logSha256": "e44dee132a6805326ca44467911473611d571932a08cd60913b8e1f67e2420fd"
+      },
+      {
+        "php": "gcc",
+        "case": "epoll-oracle",
+        "exit": 0,
+        "seconds": 21.588796920143068,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/gcc-epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "87f00dabdba9e557a9e0ba9a7c0a9730da4569fbbd8ab70e96ae214467eb6e3c"
+      },
+      {
+        "php": "gcc",
+        "case": "poll-sqlite",
+        "exit": 0,
+        "seconds": 0.7054154979996383,
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "tests/database/transactions.php"
+        ],
+        "logSha256": "5669d562eecd377e9509e5bbfeb974e578bfc81833e2333c16186cde847979ea"
+      },
+      {
+        "php": "gcc",
+        "case": "poll-maria",
+        "exit": 0,
+        "seconds": 7.168791421223432,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/gcc-poll-maria"
+        ],
+        "logSha256": "85955063f221ee1339a5b09c1b5da9d5b741a3809ff973727b3ca8fd489dc2b5"
+      },
+      {
+        "php": "gcc",
+        "case": "poll-oracle",
+        "exit": 0,
+        "seconds": 14.491187401115894,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/gcc-poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "logSha256": "3884e3df9ffb22e93dda2918354b2479fd2140733057acdf4bb550c3bfd357ae"
+      }
+    ],
+    "binaries": {
+      "transactions-83.so": "06ae0eb1d8585f6e81a9feb143b8e46a2fe912e5d8edfd56bdbdf37a2d4c6213",
+      "transactions-84.so": "1783a9fd3e70d874a4690a02c4f58ae26052121aca794b8047115b64874ae0b5",
+      "transactions-gcc.so": "d3b260c19010048e9730c65180bf59c4c7213682d88bc134e6911105daf915eb",
+      "transactions-debug.so": "79f1588206fecd1fa6e89e5173b93a9394a782ebb44350e3cb84eb0ed740022a",
+      "transactions-85.so": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181"
+    },
+    "seconds": 52.24775669025257
+  },
+  "integration": {
+    "status": "FAIL",
+    "rows": [
+      {
+        "name": "gcc-pg-old-probe",
+        "exit": 1,
+        "seconds": 6.866008364595473,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/server-protocol-gcc.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/gcc-pg-old-probe",
+          "--probe"
+        ],
+        "environment": {},
+        "logSha256": "c3d5fc87803d70a3de64f318d661f3c17747676aeecf7f909fd0f4f58e2074d1",
+        "status": "FAIL",
+        "classification": "Retained libpq TLS unload finding; ordinary process FAIL, not a clean sanitizer pass"
+      },
+      {
+        "name": "gcc-pg-poll",
+        "exit": 1,
+        "seconds": 7.187153973150998,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-gcc.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/gcc-pg-poll",
+          "--transactions"
+        ],
+        "environment": {},
+        "logSha256": "db938e88e26efca5addeab2406e79a16784b6972eb606aedc00027aeb81ecbd8",
+        "status": "FAIL",
+        "classification": "Retained libpq TLS unload finding; ordinary process FAIL, not a clean sanitizer pass"
+      },
+      {
+        "name": "gate-a",
+        "exit": 0,
+        "seconds": 197.9528141557239,
+        "command": [
+          "python3",
+          "tests/fast/gate_a.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--extension",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--output",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/gate-a"
+        ],
+        "environment": {},
+        "logSha256": "b159ba4e862243c00faf2604d28c4ed2573444a38543c6c7bdbf94ff7e215848",
+        "status": "PASS"
+      },
+      {
+        "name": "epoll-full",
+        "exit": 0,
+        "seconds": 39.281787298154086,
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "ASYNCARA_EXTENSION": "build/transactions-85.so",
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "logSha256": "8ba0ccaf8411741519d4bbb0863ae681533f258ec1698c2b660ecff625f8316e",
+        "status": "PASS"
+      },
+      {
+        "name": "epoll-server-pg",
+        "exit": 0,
+        "seconds": 8.694368401076645,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/epoll-server-pg"
+        ],
+        "environment": {},
+        "logSha256": "55248c8cffcfcddaa6aef49401e1f3348ef07d4bdbe3adf58e82d8a5e69ba594",
+        "status": "PASS"
+      },
+      {
+        "name": "epoll-server-maria",
+        "exit": 0,
+        "seconds": 7.914615045301616,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/epoll-server-maria"
+        ],
+        "environment": {},
+        "logSha256": "e47e983773684698d9964348cdae14be2f2f4dc39ea301fa71857a1497b5c887",
+        "status": "PASS"
+      },
+      {
+        "name": "epoll-server-oracle",
+        "exit": 0,
+        "seconds": 19.8110046479851,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/epoll-server-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {},
+        "logSha256": "b12e77d3b53ae96248d4365644189f4708d82eafbc4e97e4329be61729228f86",
+        "status": "PASS"
+      },
+      {
+        "name": "poll-full",
+        "exit": 0,
+        "seconds": 41.20517582586035,
+        "command": [
+          "bash",
+          "scripts/test.sh"
+        ],
+        "environment": {
+          "PHP_BIN": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "ASYNCARA_EXTENSION": "build/transactions-85.so",
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "logSha256": "3d424757b0b8df6dc7b8a81d1d89c5a67f37f9bd555490aeeb56a1f2526fac72",
+        "status": "PASS"
+      },
+      {
+        "name": "poll-server-pg",
+        "exit": 0,
+        "seconds": 7.677641848567873,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/poll-server-pg"
+        ],
+        "environment": {},
+        "logSha256": "91b4c0c8ec7439580c8f52f83c4505b89618c71b417cd8e62f36271836976b2c",
+        "status": "PASS"
+      },
+      {
+        "name": "poll-server-maria",
+        "exit": 0,
+        "seconds": 8.529909334145486,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/poll-server-maria"
+        ],
+        "environment": {},
+        "logSha256": "cb76b874fed5360d4d4c6c67738c8fd2d7780bdb98c2b7e0bdba2a726782ddad",
+        "status": "PASS"
+      },
+      {
+        "name": "poll-server-oracle",
+        "exit": 0,
+        "seconds": 19.679050823673606,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/poll-server-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {},
+        "logSha256": "da960b0fd8466dbf9fa236d1434e5078f546de850caad9af541b0775c238512b",
+        "status": "PASS"
+      },
+      {
+        "name": "vg-epoll-sqlite",
+        "exit": 0,
+        "seconds": 8.193424620199949,
+        "command": [
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/php-valgrind",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "tests/database/transactions.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "epoll"
+        },
+        "logSha256": "7f24b4c79ff93edd84603231756583e246235713d0a25a7f28927a537b5034f8",
+        "status": "PASS"
+      },
+      {
+        "name": "vg-poll-sqlite",
+        "exit": 0,
+        "seconds": 7.464637660887092,
+        "command": [
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/php-valgrind",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "tests/database/transactions.php"
+        ],
+        "environment": {
+          "ASYNCARA_BACKEND": "poll"
+        },
+        "logSha256": "fe094957569235023405812ea54e11ec02540b9b9c1a7dd4eeccc411b0eb6619",
+        "status": "PASS"
+      },
+      {
+        "name": "vg-oracle",
+        "exit": 1,
+        "seconds": 25.249886406119913,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/php-valgrind",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/vg-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "environment": {},
+        "logSha256": "384c83051251fe97af1959e6ab0db335eedda7f0fae9babe9b89c66f79fd3c08",
+        "status": "FAIL"
+      }
+    ],
+    "parent": "871ee1a6e82819fa9345d879e9286ce7200d224d",
+    "error": "RuntimeError('vg-oracle unexpected exit 1')",
+    "seconds": 405.7074784054421
+  },
+  "finalOwnershipControls": {
+    "status": "PASS",
+    "rows": [
+      {
+        "name": "epoll-pg",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/epoll-pg"
+        ],
+        "seconds": 5.655880245845765,
+        "logSha256": "854a39bc466f70fea83055d0788811a01a5028afc456e7c21534ddbdf6178925"
+      },
+      {
+        "name": "epoll-maria",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/epoll-maria"
+        ],
+        "seconds": 5.250736556947231,
+        "logSha256": "eb72f255537a745f8b55ac69b2d99d75176c7d4df0d72afb6015a71602148a74"
+      },
+      {
+        "name": "epoll-oracle",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/epoll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "seconds": 14.768204930238426,
+        "logSha256": "2c270ee14c11c9a9e70a7b23494bc55ecb5cc3de65acf178291635de969486d4"
+      },
+      {
+        "name": "poll-pg",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_pg.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/poll-pg"
+        ],
+        "seconds": 5.408113050274551,
+        "logSha256": "7d012384d620f6bd57d6e0773391bc1b6bccfc71863799ae6c6457e0cb56cb47"
+      },
+      {
+        "name": "poll-maria",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/poll-maria"
+        ],
+        "seconds": 5.402612103614956,
+        "logSha256": "f818a38b44f9b616fd7f2f927abb5f10e746ec9e13e7a8ce48a16982c2e72ace"
+      },
+      {
+        "name": "poll-oracle",
+        "exit": 0,
+        "command": [
+          "python3",
+          "tests/database/mtls_mysql.py",
+          "--owner-pending",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/poll-oracle",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "seconds": 14.010092133656144,
+        "logSha256": "9cbff29bcca32c35dee6e13ade923da1a34742657b6c30f04ce56d30a999ed7c"
+      },
+      {
+        "name": "vg-oracle-socket",
+        "exit": 0,
+        "command": [
+          "python3",
+          "/home/coder/Asyncara-entities-20261112T064151Z/mysql_memory_socket.py",
+          "--transactions",
+          "--php",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/php-valgrind",
+          "--module",
+          "/home/coder/Asyncara-server-20261109T231953Z/build/transactions-debug.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/vg-oracle-socket",
+          "--oracle-prefix",
+          "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+        ],
+        "seconds": 24.408302037976682,
+        "logSha256": "77beae7e481121a67639d177d67a8b18cee629bd9b4085f89f401165faa68af1"
+      }
+    ],
+    "seconds": 74.90394105855376
+  },
+  "nativeServer": {
+    "requests": 264,
+    "ticksWhilePending": 72,
+    "instances": 12,
+    "reports": {
+      "poll-server-oracle": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "290887a5f50b099028fbe88493e1cb7f773e5336f3ce37e75eb69b5e5d102a93"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "ff0516d5b9b957f271037b1f247a62b6eae33a2eb717f6ecde2eaa66ddc11034"
+          }
+        ],
+        "backend": "poll",
+        "redisExit": 0,
+        "seconds": 2.404557147063315
+      },
+      "epoll-server-oracle": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "f380ed5ea646939ce3db93c14dead193b48ba08a8d2e9bc3d94375ee1247d60a"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "3170a78a5f591ea373382f988b460174f00f3ac7fd64c6557696c0881c5a5930"
+          }
+        ],
+        "backend": "epoll",
+        "redisExit": 0,
+        "seconds": 3.0680460380390286
+      },
+      "epoll-server-pg": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "911b3bc755c5a56b2a86e995ddfd0f24c7b7eea979d2ecb0fc8d3307110bc3f7"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "d6cc2822cba6aef3cd682344a30718a2bb38baf783a5683deabcba60c5443846"
+          }
+        ],
+        "backend": "epoll",
+        "redisExit": 0,
+        "seconds": 3.1500160098075867
+      },
+      "epoll-server-maria": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "a7fdeb3daa8e3b14ef6527f52e7038d48f64208e527fe45e5cdf9067572409de"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "5c889ef45fbe0eb8fee2cdf3e6f8ff321b1a93fa5ad02c1786cedf7e9ed36e04"
+          }
+        ],
+        "backend": "epoll",
+        "redisExit": 0,
+        "seconds": 2.359801980201155
+      },
+      "poll-server-maria": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "55feab5e299e3d1ef5058fb1a3076315613f4780f9b55c68622e670f351cd246"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "8dc0e668eca827419934b76ecd16d7d1b7f26e66cb9d5ac90f50d6028884e917"
+          }
+        ],
+        "backend": "poll",
+        "redisExit": 0,
+        "seconds": 2.664608860388398
+      },
+      "poll-server-pg": {
+        "status": "PASS",
+        "moduleSha256": "bd1df771aa69631365efddeabc210a734a17f9b37dd78492e94dc4a3b0313181",
+        "rows": [
+          {
+            "transport": "curl-multi",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "f3f60943ee8b1daafd58c047ff2799b6d89fe4087dfac2dec357b1c9e3f38d8c"
+          },
+          {
+            "transport": "hyper-prototype",
+            "status": "PASS",
+            "requests": 22,
+            "summary": {
+              "created": 4,
+              "ticks": 6,
+              "completed": 17,
+              "pool": {
+                "size": 4,
+                "pendingLimit": 1024,
+                "borrowers": 0,
+                "availableSlots": 0,
+                "closed": true
+              }
+            },
+            "remainingRedisClients": 0,
+            "remainingRedisKeys": 0,
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/transactions-85.so",
+              "/home/coder/Asyncara-server-20261109T231953Z/tests/database/native_server.php"
+            ],
+            "logSha256": "fdcae4d0d0e42bc6b6e51670263713dda41d35707e2adde6a7dd46b1707acd52"
+          }
+        ],
+        "backend": "poll",
+        "redisExit": 0,
+        "seconds": 2.8700560200959444
+      }
+    }
+  },
+  "valgrind": {
+    "valgrind-1567874.log": {
+      "sha256": "32dc35dd5aebeee65bf2ed63be7609c638eeadf71e942f07e6ae57d774473012",
+      "tail": "==1567874==    by 0x400151B: _dl_catch_exception (dl-catch.c:237)\n==1567874==    by 0x400D163: _dl_open (dl-open.c:905)\n==1567874== \n==1567874== LEAK SUMMARY:\n==1567874==    definitely lost: 0 bytes in 0 blocks\n==1567874==    indirectly lost: 0 bytes in 0 blocks\n==1567874==      possibly lost: 0 bytes in 0 blocks\n==1567874==    still reachable: 3,888 bytes in 13 blocks\n==1567874==         suppressed: 0 bytes in 0 blocks\n==1567874== \n==1567874== For lists of detected and suppressed errors, rerun with: -s\n==1567874== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+    },
+    "valgrind-1565037.log": {
+      "sha256": "54e16973cc33ca28a1ca987e984be20b89de83d99a5c4643c8345b0830aec335",
+      "tail": "==1565037==    by 0x400151B: _dl_catch_exception (dl-catch.c:237)\n==1565037==    by 0x400D163: _dl_open (dl-open.c:905)\n==1565037== \n==1565037== LEAK SUMMARY:\n==1565037==    definitely lost: 0 bytes in 0 blocks\n==1565037==    indirectly lost: 0 bytes in 0 blocks\n==1565037==      possibly lost: 0 bytes in 0 blocks\n==1565037==    still reachable: 3,888 bytes in 13 blocks\n==1565037==         suppressed: 0 bytes in 0 blocks\n==1565037== \n==1565037== For lists of detected and suppressed errors, rerun with: -s\n==1565037== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+    },
+    "valgrind-1565365.log": {
+      "sha256": "4de1222d52cef46976214f009c8dcfa43564d264c29e78f7e2130d49bc32f8db",
+      "tail": "==1565365==    by 0x400151B: _dl_catch_exception (dl-catch.c:237)\n==1565365==    by 0x400D163: _dl_open (dl-open.c:905)\n==1565365== \n==1565365== LEAK SUMMARY:\n==1565365==    definitely lost: 0 bytes in 0 blocks\n==1565365==    indirectly lost: 0 bytes in 0 blocks\n==1565365==      possibly lost: 0 bytes in 0 blocks\n==1565365==    still reachable: 3,888 bytes in 13 blocks\n==1565365==         suppressed: 0 bytes in 0 blocks\n==1565365== \n==1565365== For lists of detected and suppressed errors, rerun with: -s\n==1565365== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+    },
+    "valgrind-1564925.log": {
+      "sha256": "b50cde0336254b180e7c55ef08e8dfc7651cf6b8525c35367f723d9924ea1d92",
+      "tail": "==1564925==    by 0x400151B: _dl_catch_exception (dl-catch.c:237)\n==1564925==    by 0x400D163: _dl_open (dl-open.c:905)\n==1564925== \n==1564925== LEAK SUMMARY:\n==1564925==    definitely lost: 0 bytes in 0 blocks\n==1564925==    indirectly lost: 0 bytes in 0 blocks\n==1564925==      possibly lost: 0 bytes in 0 blocks\n==1564925==    still reachable: 3,888 bytes in 13 blocks\n==1564925==         suppressed: 0 bytes in 0 blocks\n==1564925== \n==1564925== For lists of detected and suppressed errors, rerun with: -s\n==1564925== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)"
+    }
+  },
+  "retainedFailures": {
+    "sqliteDuplicateFinish": {
+      "path": "/home/coder/Asyncara-entities-20261112T064151Z/sqlite-double-end-before.log",
+      "sha256": "5c456629a9355a8fa754d2a13529d0bc106133f51018a15a26c20e250cd77caf"
+    },
+    "oraclePreparedSavepoint": {
+      "path": "/home/coder/Asyncara-entities-20261112T064151Z/transactions-oracle-first/report.json",
+      "sha256": "9b35628b96abf8f9812ecfc6da7f9d8cca70d6b850fbc6655975655b6b45b802"
+    },
+    "gccPostgres": "Functional assertions PASS, ordinary process FAIL with 96 direct +13 indirect bytes at BIO_meth_new; same old-module probe reproduces. Prior independent PHP-free libpq evidence remains applicable. No suppressions.",
+    "valgrindTls": "Original Oracle mTLS workload failed its unchanged 2-second operation deadline. 0 memory errors/lost bytes; failure scope retained. Separate Unix-socket Oracle run passed the same transaction workload/deadline; it is not an mTLS acceptance pass."
+  },
+  "limitations": [
+    "Remote cancellation/commit acknowledgement not established",
+    "Raw SQL/implicit DDL transaction state not tracked",
+    "Existing close-on-active-query-error policy remains for PG/MySQL; savepoints do not permit recovery on an already closed connection",
+    "SQLite retains explicit manual cleanup",
+    "Finish transactions before returning pooled connection; lease lifetime differs from Task lifetime",
+    "No long endurance or overall entity completion claimed"
+  ],
+  "reportHashes": {
+    "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-r1/report.json": "54100ddc9f820181522e707f3fed56fdcbd24ca10b54d3b6ed3f5f57c35eaceb",
+    "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/report.json": "8f68a6480c91f2e8926a47e0a5f44d250112d5afdebb6f0417da9961d53ad836",
+    "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/report.json": "e664e6861719c713d616ce22d0e9e24d84bfa8c69ca70aac9aa78a986d76c6d8",
+    "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/report.json": "cb41f4859461e69f029c2ab80c13f8f6faabaf13706a50b2477513e1818fa387"
+  }
+}

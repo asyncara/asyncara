@@ -198,14 +198,42 @@ rejected. Always finish a manual transaction in `finally`; abandoning one is not
 an implicit rollback/connection-reuse guarantee. The callback transaction helper
 performs shielded commit/rollback cleanup.
 
-PostgreSQL/MySQL currently expose callback transactions with owner/gate affinity.
-Consistent manual state APIs, savepoint helpers and prepared caches remain gaps.
-Do not issue ad hoc `BEGIN` and assume the callback ownership machinery applies.
+PostgreSQL/MySQL expose `beginTransaction()`, `commit()`, `rollback()` and
+`inTransaction()` as well as callback transactions. The calling Task owns a
+manual transaction; owner queries retain the operation gate and other Tasks wait
+on the transaction gate. Overlapping manual begins and nested transaction
+callbacks are rejected. Once started, the COMMIT/ROLLBACK Task shields its
+collection from cancellation of that Task and retains the connection operation
+deadline. Cancellation before the finish Task starts leaves the transaction
+active. A cancelled ordinary waiter does not cancel the shared operation; the
+transaction owner's completion and explicit close retain separate close authority.
+An owner terminating during COMMIT can therefore leave the remote commit outcome
+unknown. Shield the owning Task's begin/finish awaits when it must collect the
+outcome before exiting.
+
+If the PostgreSQL/MySQL owner Task completes with its manual transaction still
+open, the connection is discarded and queued users are woken to observe closure.
+This is not a reusable-connection rollback or remote cancellation acknowledgement.
+Finish transactions before returning a pool lease, preferably using the callback
+helper; pool leases are not Task lifetimes. Explicit close and active-query errors
+also discard these connections. SQLite retains explicit commit/rollback cleanup
+and serialized worker execution; duplicate queued finishes recheck ownership
+before native submission.
+
+All three SQL drivers expose `savepoint(name)`, `rollbackTo(name)` and
+`releaseSavepoint(name)` for the current owner. Names are quoted ASCII identifiers
+of 1..63 bytes. Savepoints do not change existing error policies: PostgreSQL/MySQL
+still close on active-query error, so they do not promise recovery from a failed
+SQL statement by rolling back to a savepoint. `inTransaction()` reports API
+ownership, not arbitrary SQL server state. Ad hoc `BEGIN`, DDL implicit commits or
+raw transaction-control SQL do not update that state. See
+[SQL lifecycle evidence](DATABASE_COMPATIBILITY.md#manual-transactions-and-savepoints).
 Redis MULTI/EXEC pipelines retain Redis semantics, not SQL transaction semantics.
 
 `IO\File` and `SQLite\Connection` reject cloning/serialization of native IDs.
-Other connection objects must also be treated as owned live resources, not value
-objects; equivalent copy guards are not yet uniformly enforced across drivers.
+PostgreSQL/MySQL/Redis connections and ConnectionPool retain their tested
+`NonCopyable` guards. Assignment shares the canonical object; SQL Statement
+clones share that canonical connection and do not duplicate a native owner.
 The common SQL factory chooses SQLite/PG/MySQL; Redis remains separate.
 
 ## Backpressure and memory boundaries

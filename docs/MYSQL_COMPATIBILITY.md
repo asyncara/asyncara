@@ -108,3 +108,13 @@ GCC covers the Connector servers, with positive libpq TLS excluded because the
 retained109-byte ordinary-unload dependency finding would fail. An initial PHP83
 PostgreSQL pending-query disconnect remains unexplained and preserved; this
 later pass does not establish its cause. See [current contracts](PRIORITY_CAPABILITIES.md).
+
+## Manual transaction and savepoint continuation
+
+The public connection now has manual transaction/state/savepoint methods using
+its existing native serialization and asynchronous Connector/C backend. Oracle
+MySQL rejects the savepoint prepared-protocol path accepted by MariaDB; the
+bounded generated savepoint commands now use `MY_CONTROL` and start/continue.
+Other statements retain binding. See the [precise ownership and limitations](DATABASE_COMPATIBILITY.md#manual-transactions-and-savepoints)
+and [executed evidence](phase7/sql-transactions.json). Local cancellation still
+discards the connection and does not acknowledge server-side cancellation.

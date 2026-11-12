@@ -299,3 +299,22 @@ policy; independent proxy tests reject missing/wrong credentials after successfu
 authenticated use. Sensitive native argument arrays and root callbacks prevent
 the reproduced exception-trace disclosure, without changing operation ownership.
 This audit does not count third-party credential copies as ledger-owned memory.
+
+## Manual SQL transaction ownership
+
+PostgreSQL/MySQL manual transactions retain their calling Task identity and the
+existing connection/operation gates. A completion observer discards the connection
+if that Task exits before a manual finish; normal commit/rollback detaches the
+observer. A single guarded release handles explicit close, operation error and
+owner completion. Queued foreign users observe closed state. A finish rechecks
+its authority when its Task starts; SQLite now rechecks inside the operation
+gate before submitting a second queued COMMIT. Savepoints never transfer ownership.
+
+`tests/database/transactions.php` covers shared waiter cancellation, queued foreign
+queries, early cancellation, repeated finish, owner return/cancel, query error,
+explicit close and close-before-begin. Independent SQL fixtures count remaining
+sessions. See [evidence](phase7/sql-transactions.json) and the
+[contract](IO_LIFECYCLE_CONTRACT.md#transactions-and-resource-affinity).
+SQLite still requires explicit manual finish. Returning a pool lease is not Task
+completion; callers must finish before returning it. No remote cancellation
+acknowledgement or arbitrary raw SQL state tracking is promised.

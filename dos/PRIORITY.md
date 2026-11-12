@@ -278,3 +278,13 @@ ASan/UBSan 8.5.12، مع epoll وpoll. تختلف التغطية حسب المج
 البناء المستقل و12 اختبارًا إضافيًا، وأُعيد إنتاج أرشيف مطابق بالبايت.
 [البصمات والأوامر](../docs/phase7/hyper-socks5-package.json).
 تبقى إخفاقات Valgrind الباردة وcurl الموضحة في التقرير محفوظة؛ لم تكتمل الكيانات كلها.
+
+## متابعة 2026-11-12: الخادم ومعاملات SQL
+
+دُفع دعم HTTP/1 half-close الاختياري في `871ee1a` بعد مصفوفة65أمرًا وGate A.
+أضيفت المعاملات اليدوية وحالتها وSavepoints لـPostgreSQL وMySQL/MariaDB،
+وحالة/Savepoints وحماية COMMIT المكرر لـSQLite. صُحح مسار Savepoint الأصلي
+في C للتوافق مع Oracle. اجتاز تكامل Native Server264طلبًا مع HTTP وRedis
+والملفات وقواعد البيانات. [التفاصيل والنتائج](../docs/phase7/sql-transactions.json).
+فشل libpq109بايت وفشل مهلة mTLS تحتValgrind محفوظان؛ لا يعني ذلك اكتمال
+الكيانات كلها أو ترقية الإصدار من EXPERIMENTAL.
