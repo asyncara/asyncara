@@ -625,3 +625,28 @@ Explicit HTTP proxy credentials are captured with client configuration, copied
 at native admission and retained under existing operation/pool lifetimes. The
 [authentication contract](PROXY_AUTHENTICATION.md) preserves cancellation and
 result collection. No proxy network wait is moved to workers.
+
+
+## Closed producer-stream buffers and new HTTP ownership paths
+
+`AsyncStream::close()` cancels and joins its producer inside a shield, then
+releases every unconsumed private queue item and its unfinished-item accounting.
+The iterator still owns the acknowledgement of an item currently yielded to a
+consumer. Repeated close cannot acknowledge that item twice. Producer exceptions
+still propagate after buffered ownership is released. `tests/stream_close.php`
+checks retained closed streams without requiring garbage collection, an active
+yield, repeated close, exceptional and never-started producers.
+
+`HttpClient` client identity reads and redirects retain existing slot/Future
+ownership. Certificate/key files use bounded workers; the first fully read pair
+is retained by that client. A new client is needed to observe rotation. The pair
+is not an atomic filesystem snapshot. Cross-origin mTLS redirects reject;
+ordinary redirects strip standard sensitive headers. One total owner deadline
+covers the chain. A separate cancelled waiter cannot cancel the chain's owner.
+The buffered path still buffers each intermediate body within existing limits;
+response-stream redirects cancel and join the intermediate stream after headers.
+
+Hyper multipart uses one bounded MIME producer and one current file producer.
+Its upload owner cancels and joins both on failure, timeout or early response.
+Disk activity remains worker-backed. See [current evidence and limitations](HYPER_COMPLETION.md);
+none of these guarantees imply whole-entity or long-duration certification.

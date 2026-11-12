@@ -92,6 +92,7 @@ for backend in ['epoll', 'poll']:
     run(backend + '-https-proxy', ['python3', 'tests/http/https_proxy.py',
         '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-https-proxy')], env)
     for transport in (['curl-multi', 'hyper-prototype'] if a.hyper else ['curl-multi']):
+        run(backend + '-mtls-' + transport, ['python3', 'tests/http/client_mtls.py', '--php', a.php, '--module', module, '--backend', backend, '--transport', transport, '--out', out / (backend + '-mtls-' + transport)], env)
         run(backend + '-file-paths-' + transport, ['python3', 'tests/http/file_paths.py',
             '--php', a.php, '--module', module, '--backend', backend, '--transport', transport,
             '--out', out / (backend + '-file-paths-' + transport)], env)
@@ -106,6 +107,9 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
+        run(backend + '-redirect-uri', php + ['tests/http/redirect_uri.php'], env)
+        run(backend + '-hyper-multipart', ['python3', 'tests/http/hyper_multipart.py', '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-hyper-multipart')], env)
+        run(backend + '-hyper-redirects', ['python3', 'tests/http/hyper_redirects.py', '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-hyper-redirects')], env)
         run(backend + '-prototype-compression', ['python3', 'tests/http/hyper_compression.py',
             '--php', a.php, '--module', module, '--backend', backend,
             '--out', out / (backend + '-prototype-compression')], env)

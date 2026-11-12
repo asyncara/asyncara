@@ -16,7 +16,9 @@ extern "C" fn ar_hyper_encoding(_: *mut c_void, coding: i32) -> i32 {
     0
 }
 #[no_mangle]
-extern "C" fn ar_hyper_decoded_end(_: *mut c_void) -> i32 { 0 }
+extern "C" fn ar_hyper_decoded_end(_: *mut c_void) -> i32 {
+    0
+}
 #[no_mangle]
 extern "C" fn ar_hyper_head(job: *mut c_void, status: i32, _: *const u8, n: usize) -> i32 {
     assert!(!job.is_null() && status == 200 && n < 65536);
@@ -568,7 +570,7 @@ fn established_tls_reads_while_application_writes_are_blocked() {
     let ready = Rc::new(Cell::new(false));
     let mut transport = tls::TlsIo::client(
         io.clone(),
-        tls::client_config(&ca).unwrap(),
+        tls::client_config(&ca, &[], &[]).unwrap(),
         "localhost".try_into().unwrap(),
         ready.clone(),
     )

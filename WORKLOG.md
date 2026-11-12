@@ -2772,3 +2772,37 @@ and RELEASE_READINESS agree. Retain scoped implementation/test results, source
 and package identities, and every failure; preserve dated roadmap records.
 This is a documentation correction, not new runtime progress or new test evidence.
 No native/PHP source, tests, thresholds, archives or raw reports changed.
+
+## 2026-11-12 — Whole-entity Hyper completion continuation
+
+Owner explicitly requires completion of each whole priority entity before its
+completion push, starting with Rust Hyper, Native Server, Hyper HTTP Client and
+HTTP Client. Continue from969f294 without reclassifying tested subsets as whole
+entities. Implemented bounded worker-loaded client certificate identity in the
+C/Rust bridge and canonical HttpClient, with exact TLS identity pool separation;
+added Hyper redirect ownership/deadline/credential/stream handling. Tests and
+current executed evidence are in docs/HYPER_COMPLETION.md. Initial35-command
+identity matrix passed; combined validation is still running. New evidence root
+/home/coder/Asyncara-hyper-completion-20261111T235911Z contains durable state,
+source manifests and command/PID records. No whole entity has been marked
+complete or pushed. Phase4 checkout, installed module and LICENSE remain intact.
+
+### 2026-11-12 — Hyper entity continuation, not whole completion
+
+Implemented client certificate identity in Rust/C and worker-read HttpClient
+configuration, owned bounded redirect chains, and Hyper multipart streaming.
+A reproducible closed AsyncStream retained buffered Queue join Futures; close
+now joins the producer then releases only unconsumed private entries. The
+regression retains closed objects and tests active yields without forced GC.
+
+PHP83/84/85 and DEBUG passed focused epoll/poll scopes. Gate A passed244.557s,
+HTTP111checks216.895s and fullPHP85 epoll38.568s/poll39.634s. ASan multipart
+poll and Valgrind redirect poll still failed original deadlines; these are
+retained FAIL results, not passes. Three warmed memory scopes completed with
+zero errors/lost bytes; the fourth reported zero but failed its workload.
+Cold independent rustls controls and an incomplete trace document timing cost
+without attributing every failure to the host.
+
+[Durable source/module/command attestation](docs/phase7/hyper-identity-mime.json)
+and [scope/failures](docs/HYPER_COMPLETION.md). All entities remain partial;
+Phase4 checkout/module/LICENSE unchanged. No entity-completion push yet.

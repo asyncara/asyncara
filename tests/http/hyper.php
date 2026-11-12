@@ -32,7 +32,7 @@ try{
   rejects(fn()=>$c->get('https://127.0.0.1:1/')->await());
   check($c->get($url.'/echo-headers',['X-Marker: value'])->await()->json()['marker']==='value','Custom header');
   rejects(fn()=>$c->get($url.'/small',['Host: attacker.invalid'])->await());
-  rejects(fn()=>$c->get($url.'/small',followRedirects:true)->await());
+  check(strlen($c->get($url.'/small',followRedirects:true)->await()->body)===65536,'Redirect policy on terminal response');
   $post=$c->post($url.'/small',body:'body')->await()->json();
   check($post['method']==='POST'&&$post['bytes']===4&&$post['sha256']===hash('sha256','body'),'Buffered POST');
   rejects(fn()=>(new HttpClient(proxy:'http://127.0.0.1:1'))->get($url)->await());

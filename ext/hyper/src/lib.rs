@@ -479,8 +479,14 @@ struct Op {
     future: Option<Transfer>,
     wake: Arc<Flag>,
 }
+struct ClientPolicy {
+    roots: Vec<u8>,
+    certificate: Vec<u8>,
+    key: zeroize::Zeroizing<Vec<u8>>,
+    config: Arc<rustls::ClientConfig>,
+}
 struct Engine {
-    trust: Vec<(Vec<u8>, Arc<rustls::ClientConfig>)>,
+    trust: Vec<ClientPolicy>,
     poisoned: bool,
     conns: Vec<Option<Conn>>,
     ops: Vec<Op>,
@@ -500,7 +506,14 @@ async fn transfer(
             .method(spec.method)
             .uri(uri.path_and_query().map(|p| p.as_str()).unwrap_or("/"))
             .header("Host", uri.authority().ok_or("Missing authority")?.as_str())
-            .header("Accept-Encoding", if spec.stream_response { "identity" } else { "gzip, deflate" })
+            .header(
+                "Accept-Encoding",
+                if spec.stream_response {
+                    "identity"
+                } else {
+                    "gzip, deflate"
+                },
+            )
             .body(ClientBody::new(job, spec.body, spec.upload_size))
             .map_err(|_| "Invalid request")?;
         request.headers_mut().extend(spec.headers);
@@ -528,13 +541,21 @@ async fn transfer(
             let mut coding = 0;
             for value in values {
                 let value = value.as_bytes().trim_ascii();
-                if value.eq_ignore_ascii_case(b"identity") { continue; }
+                if value.eq_ignore_ascii_case(b"identity") {
+                    continue;
+                }
                 // Preserve repeated identity headers, but do not silently apply
                 // just one layer of a composite/duplicate encoding declaration.
-                if count != 1 { return Err("Unsupported HTTP content encoding chain".into()); }
-                coding = if value.eq_ignore_ascii_case(b"gzip") { 1 }
-                    else if value.eq_ignore_ascii_case(b"deflate") { 2 }
-                    else { return Err("Unsupported HTTP content encoding".into()); };
+                if count != 1 {
+                    return Err("Unsupported HTTP content encoding chain".into());
+                }
+                coding = if value.eq_ignore_ascii_case(b"gzip") {
+                    1
+                } else if value.eq_ignore_ascii_case(b"deflate") {
+                    2
+                } else {
+                    return Err("Unsupported HTTP content encoding".into());
+                };
             }
             if unsafe { ar_hyper_encoding(job as *mut c_void, coding) } != 0 {
                 return Err("HTTP decoder initialization failed".into());
@@ -935,6 +956,8 @@ pub unsafe extern "C" fn ar_hyper_submit(
         std::ptr::null(),
         0,
         -1,
+        &[],
+        &[],
     )
 }
 #[no_mangle]
@@ -965,6 +988,8 @@ pub unsafe extern "C" fn ar_hyper_submit_request(
         std::ptr::null(),
         0,
         -1,
+        &[],
+        &[],
     )
 }
 #[no_mangle]
@@ -982,7 +1007,22 @@ pub unsafe extern "C" fn ar_hyper_submit_http(
     request: *const RequestData,
 ) -> i32 {
     submit(
-        ptr, job, url, len, timeout, connect, addresses, count, ca, ca_len, true, request, 0, -1,
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        true,
+        request,
+        0,
+        -1,
+        &[],
+        &[],
     )
 }
 #[no_mangle]
@@ -1016,6 +1056,66 @@ pub unsafe extern "C" fn ar_hyper_submit_http_stream(
         request,
         streams,
         upload_size,
+        &[],
+        &[],
+    )
+}
+/// Identity bytes are borrowed only for submission and copied into a bounded,
+/// exact-match policy cache. The previous entry points remain ABI compatible.
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_http_identity(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    request: *const RequestData,
+    streams: u32,
+    upload_size: i64,
+    cert: *const u8,
+    cert_len: usize,
+    key: *const u8,
+    key_len: usize,
+) -> i32 {
+    if cert_len > 1048576
+        || key_len > 65536
+        || (cert_len == 0) != (key_len == 0)
+        || (cert_len != 0 && (cert.is_null() || key.is_null()))
+    {
+        return -1;
+    }
+    let cert = if cert_len == 0 {
+        &[]
+    } else {
+        std::slice::from_raw_parts(cert, cert_len)
+    };
+    let key = if key_len == 0 {
+        &[]
+    } else {
+        std::slice::from_raw_parts(key, key_len)
+    };
+    submit(
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        true,
+        request,
+        streams,
+        upload_size,
+        cert,
+        key,
     )
 }
 unsafe fn submit(
@@ -1033,6 +1133,8 @@ unsafe fn submit(
     request: *const RequestData,
     streams: u32,
     upload_size: i64,
+    cert: &[u8],
+    key: &[u8],
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
@@ -1074,7 +1176,7 @@ unsafe fn submit(
             return -1;
         };
         let encrypted = match uri.scheme_str() {
-            Some("http") if ca_len == 0 => false,
+            Some("http") if ca_len == 0 && cert.is_empty() && key.is_empty() => false,
             Some("https") if allow_tls && ca_len > 0 => true,
             _ => return -1,
         };
@@ -1147,20 +1249,23 @@ unsafe fn submit(
         };
         let tls = if encrypted {
             let roots = std::slice::from_raw_parts(ca, ca_len);
-            let index = if let Some(i) = engine
-                .trust
-                .iter()
-                .position(|(pem, _)| pem.as_slice() == roots)
-            {
+            let index = if let Some(i) = engine.trust.iter().position(|policy| {
+                policy.roots == roots && policy.certificate == cert && policy.key.as_slice() == key
+            }) {
                 i
             } else {
                 if engine.trust.len() >= 16 {
                     return -1;
                 }
-                let Ok(config) = tls::client_config(roots) else {
+                let Ok(config) = tls::client_config(roots, cert, key) else {
                     return -1;
                 };
-                engine.trust.push((roots.to_vec(), config));
+                engine.trust.push(ClientPolicy {
+                    roots: roots.to_vec(),
+                    certificate: cert.to_vec(),
+                    key: zeroize::Zeroizing::new(key.to_vec()),
+                    config,
+                });
                 engine.trust.len() - 1
             };
             let Ok(name) = rustls::pki_types::ServerName::try_from(host.to_owned()) else {
@@ -1168,7 +1273,7 @@ unsafe fn submit(
             };
             Some(TlsSettings {
                 id: index + 1,
-                config: engine.trust[index].1.clone(),
+                config: engine.trust[index].config.clone(),
                 name,
             })
         } else {

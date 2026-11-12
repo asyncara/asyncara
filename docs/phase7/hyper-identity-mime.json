@@ -1,0 +1,3235 @@
+{
+  "status": "PARTIALLY_IMPLEMENTED",
+  "baseCommit": "969f29430cf5817dbf9a0c30354eb8ff9a42330b",
+  "release": "EXPERIMENTAL",
+  "reports": [
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/report.json",
+      "sha256": "f93b388292a4f92511b351effbfcc26d0348b1ae73abff34c847172f58a9cada",
+      "evidence": {
+        "status": "PASS",
+        "base": "969f29430cf5817dbf9a0c30354eb8ff9a42330b",
+        "rows": [
+          {
+            "php": "83",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 9.432785296346992,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "83",
+            "case": "epoll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-epoll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.510495617054403,
+            "logSha256": "cbc4fa798500dadb4f665e31c4de5e2ad68116d9f9f6b9aec1d32363a2f83b89"
+          },
+          {
+            "php": "83",
+            "case": "epoll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-epoll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.3128982009366155,
+            "logSha256": "a4d9c72ba2414dafe2e019eba589fd264cefa490576431bf15f264e42ab0fc9a"
+          },
+          {
+            "php": "83",
+            "case": "epoll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-epoll-tls"
+            ],
+            "exit": 0,
+            "seconds": 2.0508187618106604,
+            "logSha256": "c1477deb0f505ca70b8f49bc9365f46f5ba765a7ada602e610cba5611f386d7e"
+          },
+          {
+            "php": "83",
+            "case": "poll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-poll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.8509331638924778,
+            "logSha256": "a7552bc95cde5d1e07f061748bb2a8291627363fd9498bc6deae6ae5ba990087"
+          },
+          {
+            "php": "83",
+            "case": "poll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-poll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.716137679759413,
+            "logSha256": "2d447ec2423fe61eb62945a029d9e7bcc8f71a61342f71ca92b56070befb0201"
+          },
+          {
+            "php": "83",
+            "case": "poll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/83-poll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.6208775429986417,
+            "logSha256": "df2574f6d1c0460b3c6ad26c561d34a9a34e69c8ca49f58eaf44ddcf2fce4ea5"
+          },
+          {
+            "php": "84",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 8.9431191557087,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "84",
+            "case": "epoll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-epoll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.1751281558535993,
+            "logSha256": "7adecc9d56e862dac3001d57250af0cdc30e2d84de5f103a1c83587aa5cc2778"
+          },
+          {
+            "php": "84",
+            "case": "epoll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-epoll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.0678111240267754,
+            "logSha256": "427844f999da9ae5e4bfd8374109fac286098c9ffdae92eab76878101115a3df"
+          },
+          {
+            "php": "84",
+            "case": "epoll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-epoll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.678894785232842,
+            "logSha256": "71d389fe00b662f072a3e348923500c3c797dcb77e76753d8edf5db85cf60fef"
+          },
+          {
+            "php": "84",
+            "case": "poll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-poll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.7640431537292898,
+            "logSha256": "f8adf7d16bd3468e5814f75b5737b209f47878721defbce9af34f25a75d5b7ff"
+          },
+          {
+            "php": "84",
+            "case": "poll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-poll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.8729682969860733,
+            "logSha256": "ea390fc114f07d1efe39f172124117813c97811799f332eda2548c29d654576a"
+          },
+          {
+            "php": "84",
+            "case": "poll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/84-poll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.5775139210745692,
+            "logSha256": "af2ebbe2571bdba12bf60891b19b2369ef4d57f9cf5c05aeb0269175dd83ffb3"
+          },
+          {
+            "php": "85",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 7.986613405868411,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "85",
+            "case": "epoll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-epoll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.5521912081167102,
+            "logSha256": "ddfd963fa40f86542c00a7fd36f997f2a4e51319dad295a03b37bf289b6757f6"
+          },
+          {
+            "php": "85",
+            "case": "epoll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-epoll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.4478886616416276,
+            "logSha256": "a3d624f02ac584b39f1a17fc38123a67ca32aa4b0d1d9cff71b8589d4d5e86ba"
+          },
+          {
+            "php": "85",
+            "case": "epoll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-epoll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.6810990166850388,
+            "logSha256": "47ac745bc638d0f174a1fff1f7d28526b4bc811268ff1ab965ff274bd18a36e0"
+          },
+          {
+            "php": "85",
+            "case": "poll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-poll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.8989068549126387,
+            "logSha256": "5125d96943ca898b39569d90a31014e084634ea5ce936b579623de515bf3646d"
+          },
+          {
+            "php": "85",
+            "case": "poll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-poll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.5990396882407367,
+            "logSha256": "bfe8d5319ad7edcffa1c378e0bdd8eaea7a11197c5c77db3d0fb330e50a2cf92"
+          },
+          {
+            "php": "85",
+            "case": "poll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/85-poll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.5678428779356182,
+            "logSha256": "3090e9660d250e3efe4c0bbccab8079975d01537f19b8eb66c37fe45fafd9962"
+          },
+          {
+            "php": "debug",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 9.307699251919985,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.654790340922773,
+            "logSha256": "dbb5d3254be76676a0b66826e5929206fa47bbaa78415f8532c33941106c6ac8"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.8108825688250363,
+            "logSha256": "2b91f87ecc6e8f894e8e1c15eff30e6528d57449e598c5d8ef0cff2f99e1ee8f"
+          },
+          {
+            "php": "debug",
+            "case": "epoll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.393898787908256,
+            "logSha256": "4164e0197aad6019de9e0bc8a1f7bb351a64f4354bc9be54d045062a328dcf1a"
+          },
+          {
+            "php": "debug",
+            "case": "poll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-poll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.7552664219401777,
+            "logSha256": "ea67c53c6937b8116966524a0f74d3f48e3a996a7513685e3d42008c8e69e5ee"
+          },
+          {
+            "php": "debug",
+            "case": "poll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-poll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.6616008249111474,
+            "logSha256": "cd478d210c39b96eac0118d106d466d861d4c77d5d89fa06f48f1fd8a2b506bf"
+          },
+          {
+            "php": "debug",
+            "case": "poll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-poll-tls"
+            ],
+            "exit": 0,
+            "seconds": 1.3392145880497992,
+            "logSha256": "68baf9da88a6298e3e5d777cffc8c033906ccf612b79711a647880edd55cd888"
+          },
+          {
+            "php": "gcc",
+            "case": "build",
+            "command": [
+              "bash",
+              "scripts/build-local.sh"
+            ],
+            "exit": 0,
+            "seconds": 17.829768863040954,
+            "logSha256": "354fbc147662f3f3c1ffc9704fe47066296837b8f0fdf76105aa26160ad3d19e"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-epoll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 3.242232209071517,
+            "logSha256": "75072477b7f557158dc312aa73c339ec7abace5ff8393162b19d090d2f151949"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-epoll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 4.052022782154381,
+            "logSha256": "57ea29fffef028d7d70091dfc1881bf0509959ca5d7e950c97db763b4786f8bc"
+          },
+          {
+            "php": "gcc",
+            "case": "epoll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-epoll-tls"
+            ],
+            "exit": 0,
+            "seconds": 2.543496035039425,
+            "logSha256": "8ce59b77e86a1229a2d753ba75ffe09d302d58df3eabb567632b05231afa9abe"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-poll-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 3.881363762076944,
+            "logSha256": "479fc3ddb92995d89075ab3bafeeb4edf65c089cde0862bc38eeb54eb5d2703e"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-poll-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 5.524787858128548,
+            "logSha256": "4d1a774c32f247ad801cb1dd4320f5bcd706db986211922f5fb1fcc9e8db927b"
+          },
+          {
+            "php": "gcc",
+            "case": "poll-tls",
+            "command": [
+              "python3",
+              "tests/http/hyper_tls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/gcc-poll-tls"
+            ],
+            "exit": 0,
+            "seconds": 2.499163371976465,
+            "logSha256": "f0028fa54b55db2338b7b5c08479d7b767271002173bc8ef3c39a9224ab61c27"
+          }
+        ],
+        "binaries": {
+          "hyper-completion-gcc.so": "bdab4b072e9ffcb009ff78f2229c884f0c3d3a8a155f9549a782a5df13298056",
+          "hyper-completion-85.so": "7efefde81b9e3425d4080535002734c648cc92044c9916d634891b5ea7875816",
+          "hyper-completion-debug.so": "997043f4611c3c4543b444e205672d23f2612753caba386791f17f06d1c24591",
+          "hyper-completion-83.so": "72b52f05c5d08b84fe8f317dd29f41a1cd84e54f9c8485fc0cdbf243af3911e0",
+          "hyper-completion-r1.so": "7efefde81b9e3425d4080535002734c648cc92044c9916d634891b5ea7875816",
+          "hyper-completion-84.so": "a22dbd7d9489c88f5cc70e5f2ae9df4c1942bd73c1cc76e306b9e06b049db05d"
+        },
+        "seconds": 126.80419423477724
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2-independent-identities.json",
+      "sha256": "44fb0b895e8ad6c5ffa17a9c595986b59d9229e05a0bcfd3e938ebd881292183",
+      "evidence": {
+        "status": "PASS",
+        "commands": 35,
+        "note": "Original report binaries inventory mistakenly lists earlier hyper-completion files. Commands and nested moduleSha256 identify the actual hyper-identity-final modules; inventory corrected here without altering original report.",
+        "binaries": {
+          "hyper-identity-final-85.so": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "hyper-identity-final-gcc.so": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "hyper-identity-final-83.so": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "hyper-identity-final-debug.so": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "hyper-identity-final-84.so": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93"
+        },
+        "reports": {
+          "mtls-matrix-r2/84-poll-curl-multi/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/gcc-poll-curl-multi/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/85-epoll-hyper-prototype/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/83-poll-tls/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/83-epoll-hyper-prototype/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/85-poll-hyper-prototype/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/83-epoll-tls/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/debug-epoll-tls/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "mtls-matrix-r2/85-poll-tls/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/85-epoll-tls/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/84-epoll-curl-multi/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/84-poll-hyper-prototype/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/gcc-poll-hyper-prototype/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/debug-epoll-curl-multi/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "mtls-matrix-r2/83-epoll-curl-multi/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/83-poll-hyper-prototype/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/gcc-epoll-curl-multi/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/gcc-poll-tls/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/85-poll-curl-multi/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/gcc-epoll-hyper-prototype/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/84-poll-tls/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/debug-poll-hyper-prototype/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "mtls-matrix-r2/84-epoll-tls/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/85-epoll-curl-multi/report.json": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+          "mtls-matrix-r2/83-poll-curl-multi/report.json": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+          "mtls-matrix-r2/debug-poll-tls/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "mtls-matrix-r2/debug-epoll-hyper-prototype/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+          "mtls-matrix-r2/84-epoll-hyper-prototype/report.json": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93",
+          "mtls-matrix-r2/gcc-epoll-tls/report.json": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+          "mtls-matrix-r2/debug-poll-curl-multi/report.json": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc"
+        }
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/report.json",
+      "sha256": "7f4dbdfd7c7d8f4e950dcc4b3b6a141817caa2f9e6c20e5979fc1b1cabade4ff",
+      "evidence": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "format",
+            "pid": 1260287,
+            "command": [
+              "rustfmt",
+              "--edition",
+              "2021",
+              "tests/server/rustls_control.rs"
+            ],
+            "environmentOverrides": {},
+            "exit": 0,
+            "seconds": 0.8816667147912085,
+            "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "build",
+            "pid": 1260319,
+            "command": [
+              "cargo",
+              "build",
+              "--release",
+              "--locked",
+              "--manifest-path",
+              "tests/server/crypto-control/Cargo.toml",
+              "--no-default-features",
+              "--features",
+              "aws",
+              "--bin",
+              "rustls-control"
+            ],
+            "environmentOverrides": {},
+            "exit": 0,
+            "seconds": 115.73940270300955,
+            "logSha256": "33eb42e7e3b8572b4e33e0f526a3f1a390b98064f223ae3db38e8e8dc198434a"
+          },
+          {
+            "name": "anonymous-normal",
+            "pid": 1263035,
+            "command": [
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/cargo/release/rustls-control",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-hyper-prototype/certs",
+              "",
+              "TLS12"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_CRYPTO_TIMING": "1"
+            },
+            "exit": 0,
+            "seconds": 0.081215790938586,
+            "logSha256": "f0f35c8ee17c3c837a646f252036c07647736118c1dc828c28a163b692337e43"
+          },
+          {
+            "name": "anonymous-mem",
+            "pid": 1263036,
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--keep-debuginfo=yes",
+              "--track-fds=yes",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/anonymous-mem.memcheck.log",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/cargo/release/rustls-control",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-hyper-prototype/certs",
+              "",
+              "TLS12"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_CRYPTO_TIMING": "1"
+            },
+            "exit": 0,
+            "seconds": 4.656327181961387,
+            "logSha256": "784ca64f087be9aa9277656c7f7194fed1127b198a137dca86f0b070f8aed9e5"
+          },
+          {
+            "name": "mutual-normal",
+            "pid": 1263083,
+            "command": [
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/cargo/release/rustls-control",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-hyper-prototype/certs",
+              "",
+              "TLS12"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_CRYPTO_TIMING": "1",
+              "ASYNCARA_CRYPTO_CLIENT_AUTH": "1"
+            },
+            "exit": 0,
+            "seconds": 0.17448344081640244,
+            "logSha256": "1c590975f40625ea040da31b51c0911c7da903d4260d7bfed0968bafff4f014f"
+          },
+          {
+            "name": "mutual-mem",
+            "pid": 1263084,
+            "command": [
+              "/home/coder/Asyncara/.local/sysroot/usr/bin/valgrind",
+              "--extra-debuginfo-path=/home/coder/Asyncara/.local/debug",
+              "--keep-debuginfo=yes",
+              "--track-fds=yes",
+              "--leak-check=full",
+              "--show-leak-kinds=all",
+              "--errors-for-leak-kinds=definite,indirect",
+              "--error-exitcode=99",
+              "--log-file=/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/mutual-mem.memcheck.log",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/cargo/release/rustls-control",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/mtls-matrix-r2/debug-epoll-hyper-prototype/certs",
+              "",
+              "TLS12"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_CRYPTO_TIMING": "1",
+              "ASYNCARA_CRYPTO_CLIENT_AUTH": "1"
+            },
+            "exit": 0,
+            "seconds": 4.384827982634306,
+            "logSha256": "2a0ecd8e9f0c820f466a5737d3ff720cd0448536f8f1b2541e90fa283b5c8626"
+          },
+          {
+            "name": "epoll-client_mtls",
+            "pid": 1263151,
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/epoll-client_mtls.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/epoll-client_mtls"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_MTLS_MEMORY_WARMUP": "1"
+            },
+            "exit": 0,
+            "seconds": 24.984841967001557,
+            "logSha256": "740cda605228da400cb5da65308f78d773b8774b769eb233b3ddc174daaa40cd"
+          },
+          {
+            "name": "epoll-hyper_redirects",
+            "pid": 1263483,
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/epoll-hyper_redirects.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/epoll-hyper_redirects"
+            ],
+            "environmentOverrides": {},
+            "exit": 1,
+            "seconds": 12.700501363258809,
+            "logSha256": "dabc3f05cc9a339879521de37c2cc08ec1fa1e85b700522e848b1b011671298b"
+          },
+          {
+            "name": "poll-client_mtls",
+            "pid": 1263614,
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/poll-client_mtls.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/poll-client_mtls"
+            ],
+            "environmentOverrides": {
+              "ASYNCARA_MTLS_MEMORY_WARMUP": "1"
+            },
+            "exit": 0,
+            "seconds": 24.244276809040457,
+            "logSha256": "3805b9ba1127156bc905370b81d4729ea11c7d3a1b302db8837df8cfd6f0b001"
+          },
+          {
+            "name": "poll-hyper_redirects",
+            "pid": 1263911,
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/poll-hyper_redirects.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/memory-controls-r1/poll-hyper_redirects"
+            ],
+            "environmentOverrides": {},
+            "exit": 1,
+            "seconds": 13.903997696004808,
+            "logSha256": "841e297bb25a2c8e637aa0b2274563dded102356cf2d18945e56789a334548b5"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/report.json",
+      "sha256": "0802a1d5031d450031d9d02c1eadb82d341f421a96c9df414c90869e12a05714",
+      "evidence": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "83-uri",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.07633742410689592,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "83-epoll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.07556401286274195,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "83-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 16.441738890949637,
+            "logSha256": "bcb1a2919a19471d3bce2c87f67c6f1c7a9d0e42479a646df0e3591123f7dffc"
+          },
+          {
+            "name": "83-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.3872778066433966,
+            "logSha256": "8fa9df0902bff5d1c13c0929db359f387e86335562f870eec0947ecc92dab38c"
+          },
+          {
+            "name": "83-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.489417104050517,
+            "logSha256": "54f31f8d1eaf124a69e3922c473bbcde43c533c7eaa7c3079fb3bd0264ea2d33"
+          },
+          {
+            "name": "83-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.660360726993531,
+            "logSha256": "1c7d8184560fc0f7f761ec85953f8d9db4c5362caefcc48d71b1858a13a7d435"
+          },
+          {
+            "name": "83-poll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06678748270496726,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "83-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 18.279728070367128,
+            "logSha256": "36935e74eb63c19cfeacac0c9cb72f9dce53e35b7a3c22b1681dc189168f2af2"
+          },
+          {
+            "name": "83-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.5665722000412643,
+            "logSha256": "0f30234ae1b18d8514ba08d52723dca18367c52386b0f6834726059893aa0df3"
+          },
+          {
+            "name": "83-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.1478334171697497,
+            "logSha256": "350571ae7f7b2aa16d9afc66ce351160217d97d6b63857e3a5b4da0618efd395"
+          },
+          {
+            "name": "83-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/83-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.7304942929185927,
+            "logSha256": "a027d17a18df9e6b52a08fb61d4518fcbd298964699cf2a37c61325bb1991298"
+          },
+          {
+            "name": "84-uri",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.039796856231987476,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "84-epoll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.07376519264653325,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "84-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 19.21452358458191,
+            "logSha256": "809b68a3194a834b703be1adcca0d9990b48815b6e166c424b6c36446b2744a8"
+          },
+          {
+            "name": "84-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.3667004606686532,
+            "logSha256": "d590e6c9e53fa4100eb5017f84b414026e73ed39ecf84c0a623e4f84f3ca2113"
+          },
+          {
+            "name": "84-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.435844749212265,
+            "logSha256": "ec0585d66f487c7b181698a0b4959571bae6b63bcd273f269c2b662c373fc9c9"
+          },
+          {
+            "name": "84-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.8116423040628433,
+            "logSha256": "81237fc1fdbbd8f9acefe35b7bc0cd6adc538d76b8e1b04446cda0bdf33cf7ad"
+          },
+          {
+            "name": "84-poll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.0668729841709137,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "84-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 21.108730664942414,
+            "logSha256": "96d9915552cd6fbbfaf2b16016c5fc3b42bdc98c9dea3d46398d6dd8aa91d096"
+          },
+          {
+            "name": "84-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.4319910621270537,
+            "logSha256": "8a63064523002734c346063bcc503c688bb9b90c335a9ccfeb444263b282ef34"
+          },
+          {
+            "name": "84-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.0446992670185864,
+            "logSha256": "890de0170f33f403f0ffad401af5235a145f0e82e90bc48503a316ffef08a6ee"
+          },
+          {
+            "name": "84-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/84-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.7751353471539915,
+            "logSha256": "a29f1551a43e1392d6130ba76a6e0569a6ef9d451004929b86f840943c904fcc"
+          },
+          {
+            "name": "85-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.0962368450127542,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "85-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06716520106419921,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "85-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 17.970610013231635,
+            "logSha256": "e0d6a2dbe3f7aa3d6a1339c5bb1e94f851fa6e82b04b87653539b0bcfd1daa3d"
+          },
+          {
+            "name": "85-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.686844048090279,
+            "logSha256": "13bf945006647d575a7204b4553a379fe2765eea07f75f67fe32a925a9bd6746"
+          },
+          {
+            "name": "85-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.2622862588614225,
+            "logSha256": "95dc6e4c2a90bb6c5c3ede9b9e1aca880bb588d3d19ce121fbdafceb3b3fc9dc"
+          },
+          {
+            "name": "85-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.661650560796261,
+            "logSha256": "31d26edc9bccf64da91e8e8f3f880dfe85da37edddcc6d92b63f538535a46782"
+          },
+          {
+            "name": "85-poll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.07406340027227998,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "85-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 16.369862322695553,
+            "logSha256": "25bd703f7caae807a16816fd5b2c3f1b3e08009adadc717126a98b8d67257a46"
+          },
+          {
+            "name": "85-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.4548842017538846,
+            "logSha256": "5cddcbef98c3f11b9f5d3bc777b99da4084571c83bcec9cb49927e55933a57d9"
+          },
+          {
+            "name": "85-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.7822771300561726,
+            "logSha256": "90ed1bd06be8b378f963f52b3cb0eb8fdee78f0c86761953f83709aa97f2390e"
+          },
+          {
+            "name": "85-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/85-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.580424556042999,
+            "logSha256": "6ceb3bfd42157f90f9a661a4b54620441ea30b3f6bc3da1264017378aa1f0c82"
+          },
+          {
+            "name": "debug-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.03942618099972606,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "debug-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06608166778460145,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "debug-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 20.302256477996707,
+            "logSha256": "405fa300dab25f416dbdb83d265d7c476f3c5b469cbbbe270ffeb78da63dfa30"
+          },
+          {
+            "name": "debug-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.7259202348068357,
+            "logSha256": "4425185b365a5b2ac722fd24e4562f8c8da185831d05ff6700a1e79d280930ac"
+          },
+          {
+            "name": "debug-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.027038853149861,
+            "logSha256": "a9bfa4ec7247ab055b132d6580741333e69702e577b06d83c76afdcb5a2ab9f1"
+          },
+          {
+            "name": "debug-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.330964989028871,
+            "logSha256": "d0bfcb0e5bc39d0ade05b69541ae71ec8d2d007ee47922ba45ab5b02b0ea408a"
+          },
+          {
+            "name": "debug-poll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06835618009790778,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "debug-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 18.94793857028708,
+            "logSha256": "d3c25683a57be4336c1d17621676a83239257b0d2a9da4b8865a8ef4465eab9f"
+          },
+          {
+            "name": "debug-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.4559901370666921,
+            "logSha256": "bd070021be907cc7da3dfcad26f2bee4be596af25376633331fddee84c0cec45"
+          },
+          {
+            "name": "debug-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.9030840559862554,
+            "logSha256": "f08a3471f14401be366bf1054358c23c1350892895243c051a7fd57e8cbe0ee1"
+          },
+          {
+            "name": "debug-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/debug-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.6235286560840905,
+            "logSha256": "169c32c0d9efb0093a2f2dc6063a6f44f8d834b5e3e3899c8454acbaccad4264"
+          },
+          {
+            "name": "gcc-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.4961089319549501,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "gcc-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.4302813531830907,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "gcc-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r4/gcc-epoll-multipart"
+            ],
+            "exit": 1,
+            "seconds": 17.249337133951485,
+            "logSha256": "0cfe244a2d4c1856ffa698403ee05f6ba1c12b2e8c9093ac2bb9c1647f6dac62"
+          }
+        ],
+        "error": "RuntimeError('gcc-epoll-multipart failed')",
+        "seconds": 217.96443186188117
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/report.json",
+      "sha256": "eb91d4faebf5a3deb2dc02e6ec7cbabddf53ae9e9cfb69ccc423ab20ea2df297",
+      "evidence": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "83-uri",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.08473200676962733,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "83-epoll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.18084155721589923,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "83-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 8.691748714074492,
+            "logSha256": "de91258804b680c1f16ca3589b53ec3116c9b74ff2a26c88ca9af1b7a9cdf397"
+          },
+          {
+            "name": "83-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 2.120746596250683,
+            "logSha256": "69cf5f2d8a2a6194371d8ebea937e868917775ce7dc3b2fd26943ff0d1d2b4cc"
+          },
+          {
+            "name": "83-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.9385713557712734,
+            "logSha256": "f457a926a8b7bd9047c18852724c01c2a681798889cf00f6370617c822a35c41"
+          },
+          {
+            "name": "83-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 2.9830122352577746,
+            "logSha256": "7afa39931903c34badb7916ea4211e5fdbd46f37efe07950000e1670262f13f6"
+          },
+          {
+            "name": "83-poll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.08010413916781545,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "83-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 8.994497375097126,
+            "logSha256": "06414f522aa211fc41cf442c7a9ff7b64529b0213e35edbf99b3609ae914cc93"
+          },
+          {
+            "name": "83-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.421339547727257,
+            "logSha256": "f972712470af42ae7fa74c1b188b11ed4abf3a17a4d59582ed4dc9c620f441e1"
+          },
+          {
+            "name": "83-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.5043798997066915,
+            "logSha256": "e9bdcfdc110d5d9021f519926ca40dc3d441b0c58833742ea8c81d501cd4a49c"
+          },
+          {
+            "name": "83-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php83/usr/bin/php8.3",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-83.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/83-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.0182268926873803,
+            "logSha256": "d6f329584e64d54faf4540ba8eb605ee3745694901af7f8dc365d689191855fa"
+          },
+          {
+            "name": "84-uri",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.039592177141457796,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "84-epoll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.07998784584924579,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "84-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 7.7376390201970935,
+            "logSha256": "e5d20b8dd94ea6e2b347725a879aaa1a3a938e002ab7bdcc8713e50ba3b784d0"
+          },
+          {
+            "name": "84-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.7273116121068597,
+            "logSha256": "3e7bce2e80b237c1aca208229a4db04f4f52bf9c62ee32a40c93088bfc546880"
+          },
+          {
+            "name": "84-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 1.8202420240268111,
+            "logSha256": "547f42765f928d6f1b7aa367c8962a7e6835cdb1ed8531a0602f2302c8322967"
+          },
+          {
+            "name": "84-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 4.00733322603628,
+            "logSha256": "5d55c1e9c2884a095fd42b60ec6ab8ea518e6a582b3272434b71d75e69c89be4"
+          },
+          {
+            "name": "84-poll-stream-close",
+            "command": [
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.29691502917557955,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "84-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 10.777240181807429,
+            "logSha256": "afbebff6d1308545f87d006a81dfbaff6f61ead2f3230f9d803747217a2465b8"
+          },
+          {
+            "name": "84-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 3.0290067829191685,
+            "logSha256": "785e844195d088420280651422453ba6abfd05de074567e184ef416b5abc12e3"
+          },
+          {
+            "name": "84-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.852825454901904,
+            "logSha256": "a50ff9f778b7dddf957b3076d630885572e804f84fcdcb77680ca44a73247541"
+          },
+          {
+            "name": "84-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara/.local/php84/usr/bin/php8.4",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-84.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/84-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 4.924150398001075,
+            "logSha256": "e4c07f5b1a1c00cf47b5b69acfb8a6f959700a48480b4fabf637f82df5039df2"
+          },
+          {
+            "name": "85-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06620355695486069,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "85-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.08084429800510406,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "85-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 10.254318621009588,
+            "logSha256": "e0022404aef3f3871f1421589593c22490f74afd6b8e4a0e38034ec941f7df6c"
+          },
+          {
+            "name": "85-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 2.771391052287072,
+            "logSha256": "42542ed844f56e6b0a9d4de124137c0792f07c70b9dbf73486c8cc4d70216888"
+          },
+          {
+            "name": "85-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 3.0316708642058074,
+            "logSha256": "99a03265d266e9c5d3c0aa6d57d4b7bb33cdd20995bb3e4c6dcda7abde5ca9f2"
+          },
+          {
+            "name": "85-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.4151487862691283,
+            "logSha256": "d2bf7f1e84937385e2c051a30b022bbe8f8a16cbc9347d97ca331dd6fbcfb590"
+          },
+          {
+            "name": "85-poll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.06611959356814623,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "85-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 8.67957267491147,
+            "logSha256": "4d5a0e207311a26723da98213a2414970f39fd882e7bb5781960cbf12750dabd"
+          },
+          {
+            "name": "85-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 2.922702596988529,
+            "logSha256": "41dbde137ef9378bf805592245559c9ad5c372e7ebdbba1287e4cc41a5c6c361"
+          },
+          {
+            "name": "85-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.314712352119386,
+            "logSha256": "0866ce20ab542cba77998d48833ded8fd2b20289e9b6cacb247a158b6ad70570"
+          },
+          {
+            "name": "85-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/85-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.78553985664621,
+            "logSha256": "07ae103a546ee591d12beeb4262ac42c953c679ebf62a169f309d69836e18b28"
+          },
+          {
+            "name": "debug-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.31786770140752196,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "debug-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.082662058994174,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "debug-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 10.40643448010087,
+            "logSha256": "f8b23cfcdde07b88d2adb3d7e376c1a583248137f826c8add77fb3496cd4ac97"
+          },
+          {
+            "name": "debug-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.7884496371261775,
+            "logSha256": "9bd658dcae6d65a1a65f0c4c3286dc8dc62cdb8f6e2517cd35d4aa6d8dbafc4c"
+          },
+          {
+            "name": "debug-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 2.667987928725779,
+            "logSha256": "2be40c79d85420a3233103db4fe588729d8745fef3f4d81eba04c100eec20feb"
+          },
+          {
+            "name": "debug-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.740634134039283,
+            "logSha256": "df367352ae6b6f588aa26c0c52a76e138b6a41194856df3ac9fccbd54cb165cb"
+          },
+          {
+            "name": "debug-poll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.1531421011313796,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "debug-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-poll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 10.134077456779778,
+            "logSha256": "993811adb7c8471860af96964cce44d817fe5a1a195745aed4d44922f91d06dd"
+          },
+          {
+            "name": "debug-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 1.6183065748773515,
+            "logSha256": "483bd167583575cd766e69840e2d237316be9d723ae701226fb30cc1ee0636b1"
+          },
+          {
+            "name": "debug-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 3.8369169859215617,
+            "logSha256": "6736cb9cda4213b37f8bc6526fe441e93744536db000f226e264d0424c3fc04f"
+          },
+          {
+            "name": "debug-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-debug/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/debug-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 3.878547247964889,
+            "logSha256": "24350010e4ae2a798ef04b5e5d56fe4cf028ebbb8a676551e6332754b449b814"
+          },
+          {
+            "name": "gcc-uri",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "-n",
+              "tests/http/redirect_uri.php"
+            ],
+            "exit": 0,
+            "seconds": 0.6760498350486159,
+            "logSha256": "60d4efa4c61e2d53511b37bd7f83ec19c9525ebf6ad8ec9495333c76e63aa265"
+          },
+          {
+            "name": "gcc-epoll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 1.204823370091617,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "gcc-epoll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/gcc-epoll-multipart"
+            ],
+            "exit": 0,
+            "seconds": 27.253488077316433,
+            "logSha256": "2c9c15d9cf2bfb0359c51a90bc5996aaba4c611564e35bd4c4d4eafa94243da0"
+          },
+          {
+            "name": "gcc-epoll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/gcc-epoll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 2.9976450372487307,
+            "logSha256": "55f926db72dc03cb027805e42786966667e84f3feb9545a3773ef49b358e4df8"
+          },
+          {
+            "name": "gcc-epoll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/gcc-epoll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 4.34356241999194,
+            "logSha256": "18f8f9542be942e92855c1269c7fcfe3b78ffffc985d773210e889b7a4bc0458"
+          },
+          {
+            "name": "gcc-epoll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "epoll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/gcc-epoll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 5.689686296042055,
+            "logSha256": "1e35b52a391f1a84eadc5ed1c055bbe47863f72cf3c5e9fd04d458d8499e6951"
+          },
+          {
+            "name": "gcc-poll-stream-close",
+            "command": [
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "-n",
+              "-d",
+              "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "tests/stream_close.php"
+            ],
+            "exit": 0,
+            "seconds": 0.4203855791129172,
+            "logSha256": "193b56f25a771342bfb6dec2897c523bfbf4e9e92a95a8002e18d0403a374f42"
+          },
+          {
+            "name": "gcc-poll-multipart",
+            "command": [
+              "python3",
+              "tests/http/hyper_multipart.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r5/gcc-poll-multipart"
+            ],
+            "exit": 1,
+            "seconds": 19.275021630339324,
+            "logSha256": "89c2605369deb492c718e89f9d08b783d63aa7d68b54901293427d2d01b6a625"
+          }
+        ],
+        "error": "RuntimeError('gcc-poll-multipart failed')",
+        "seconds": 208.18435687711462
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/report.json",
+      "sha256": "6ca3863ad8b177156f1276d4019114c58d17a561fdfbc5cdba5a188d8e192146",
+      "evidence": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "gcc-poll-redirect",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/gcc-poll-redirect"
+            ],
+            "exit": 0,
+            "seconds": 3.6056594741530716,
+            "logSha256": "b3cd75b3e50f554b6754ee633182391be4177ca51eef9ac4dacf838adb8d0664"
+          },
+          {
+            "name": "gcc-poll-mtls-hyper-prototype",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "hyper-prototype",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/gcc-poll-mtls-hyper-prototype"
+            ],
+            "exit": 0,
+            "seconds": 8.487100734841079,
+            "logSha256": "1c0a743bae7df94389850be702cbda4728676acc0b24f666cb8d65d98be5939f"
+          },
+          {
+            "name": "gcc-poll-mtls-curl-multi",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+              "--backend",
+              "poll",
+              "--transport",
+              "curl-multi",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/gcc-poll-mtls-curl-multi"
+            ],
+            "exit": 0,
+            "seconds": 6.060030726715922,
+            "logSha256": "e87b6e8ec5a820ef6872b8a1bd213ebfd45c09bf175764295bd166b4ee2b61ef"
+          },
+          {
+            "name": "gate-a",
+            "command": [
+              "python3",
+              "tests/fast/gate_a.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--output",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/gate-a"
+            ],
+            "exit": 0,
+            "seconds": 244.55723100807518,
+            "logSha256": "32f9c1b39ec1addb6cbf1912ffd7862a6d2612699bb045bb427ffd5e0a708a9e"
+          },
+          {
+            "name": "http-gate",
+            "command": [
+              "python3",
+              "tests/http/run.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-85.so",
+              "--hyper",
+              "--output",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/http-gate"
+            ],
+            "exit": 0,
+            "seconds": 216.89542371500283,
+            "logSha256": "7abf981fa27fc0533ed378ccb042031e816a8bb9c00ee6f1edef4ae9428dba53"
+          },
+          {
+            "name": "full-epoll",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "exit": 0,
+            "seconds": 38.56777549581602,
+            "logSha256": "418fefffab13870f31254b2ab8d6ee96b6aed4635cd5a95da9581525c5cf229d"
+          },
+          {
+            "name": "full-poll",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ],
+            "exit": 0,
+            "seconds": 39.633607268799096,
+            "logSha256": "661772b29c2a29dada3ae4039dddecb7e48f5a0084146d6b55d9522f4ec105f9"
+          },
+          {
+            "name": "mem-epoll-client_mtls",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-client_mtls.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-client_mtls"
+            ],
+            "exit": 0,
+            "seconds": 26.7119033774361,
+            "logSha256": "7f47ae6e0fc1130b955bcedf0f6b0734f9fd066766278b4408fc6a4779fd9ddd",
+            "memoryMode": "WARMED_MEMORY_DIAGNOSTIC",
+            "memcheck": {
+              "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-client_mtls-1293947.memcheck.log",
+              "sha256": "b7cca61e8d857264f4ea1ddfb2426b609a5a9e5c4050ff7c9517861a0ab197a3",
+              "values": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 5306,
+                "errors": 0
+              }
+            },
+            "policyMemcheck": {
+              "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-client_mtls-1294147.memcheck.log",
+              "sha256": "996b11d158033e7b9106707ac93329ccbb2fe7353f7289fc7b8f6ad0a31a0b3c"
+            }
+          },
+          {
+            "name": "mem-epoll-hyper_redirects",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-hyper_redirects.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-hyper_redirects"
+            ],
+            "exit": 0,
+            "seconds": 18.901618991978467,
+            "logSha256": "bf5a2b9d2180f35e96d1d49e2ce69d1f2d84dda4074e7f551e438cdada9a3781",
+            "memoryMode": "WARMED_MEMORY_DIAGNOSTIC",
+            "memcheck": {
+              "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-epoll-hyper_redirects-1294205.memcheck.log",
+              "sha256": "b5e97757ef0a305e26d9260d5edba515aef0becee26ef6a263bbbc914e5a34cb",
+              "values": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 5306,
+                "errors": 0
+              }
+            }
+          },
+          {
+            "name": "mem-poll-client_mtls",
+            "command": [
+              "python3",
+              "tests/http/client_mtls.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-client_mtls.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-client_mtls"
+            ],
+            "exit": 0,
+            "seconds": 23.51033324189484,
+            "logSha256": "6882691234df6c05e18412b112a5ab1c6459638fa8bcb7cf88f3b7c4020d06c0",
+            "memoryMode": "WARMED_MEMORY_DIAGNOSTIC",
+            "memcheck": {
+              "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-client_mtls-1294412.memcheck.log",
+              "sha256": "4571bc9a12a9d17ad4555c685ba61511e68b6a9225418b6a8a4b989072664989",
+              "values": {
+                "definitely lost": 0,
+                "indirectly lost": 0,
+                "possibly lost": 0,
+                "still reachable": 5306,
+                "errors": 0
+              }
+            },
+            "policyMemcheck": {
+              "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-client_mtls-1294587.memcheck.log",
+              "sha256": "85203f571fbee968c33b2f69c41fdd0787a0297808ec6e482dabfab36e616d50"
+            }
+          },
+          {
+            "name": "mem-poll-hyper_redirects",
+            "command": [
+              "python3",
+              "tests/http/hyper_redirects.py",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-hyper_redirects.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/validation-r6-remaining/mem-poll-hyper_redirects"
+            ],
+            "exit": 1,
+            "seconds": 16.647485624067485,
+            "logSha256": "24f0a077d6c9258fa74c70256d5794cf01698770cdcfa760ba4aa2f041bf644b"
+          }
+        ],
+        "error": "RuntimeError('mem-poll-hyper_redirects failed')",
+        "seconds": 643.5781696587801
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/multipart-timing-r1/report.json",
+      "sha256": "6e5e2d7cff7a42fa4f747059b2958b793d694ecbf1d81548beb2997768ec6768",
+      "evidence": {
+        "status": "FAIL",
+        "mode": "DIAGNOSTIC",
+        "command": [
+          "/tmp/asyncara-phase3-cQBA3H/php-8.5.12-gcc-sanitized/bin/php",
+          "-n",
+          "-d",
+          "extension=/home/coder/Asyncara-server-20261109T231953Z/build/hyper-identity-final-gcc.so",
+          "/home/coder/Asyncara-server-20261109T231953Z/tests/http/hyper_multipart.php",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/multipart-timing-r1/certs",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/multipart-timing-r1",
+          "hyper-prototype"
+        ],
+        "exit": 255,
+        "error": null,
+        "backend": "poll",
+        "transport": "hyper-prototype",
+        "seconds": 27.108198846690357,
+        "moduleSha256": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+        "logSha256": "1a410dd955fefbe1f4642514cdf4b1611c455835d7cbc98933f390b1ffd4f7ea"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/multipart-timing-r1/independent-trace-summary.json",
+      "sha256": "cf12f0c47a605a7156b737dc8a28a05207ed59aca7aebd2853e1ecbfabc41cf7",
+      "evidence": {
+        "complete": false,
+        "attempted": 42150,
+        "overwritten": 38008,
+        "contentionDropped": 46,
+        "retainedSpanSeconds": 2.58713205,
+        "eventTypes": {
+          "11": 331,
+          "12": 330,
+          "13": 331,
+          "61": 331,
+          "33": 341,
+          "35": 274,
+          "38": 273,
+          "32": 340,
+          "34": 267,
+          "60": 330,
+          "10": 330,
+          "20": 67,
+          "57": 130,
+          "21": 67,
+          "22": 68,
+          "23": 67,
+          "24": 68,
+          "26": 68,
+          "36": 73,
+          "37": 6,
+          "25": 1,
+          "41": 1,
+          "31": 1,
+          "3": 1
+        },
+        "matchedWaits": 330,
+        "totalKernelWaitSeconds": 0.499252724,
+        "largestKernelWaits": [
+          {
+            "requestedMs": 1395,
+            "elapsedMs": 71.253682,
+            "returned": 1
+          },
+          {
+            "requestedMs": 1613,
+            "elapsedMs": 68.329544,
+            "returned": 1
+          },
+          {
+            "requestedMs": 9850,
+            "elapsedMs": 50.853953,
+            "returned": 1
+          },
+          {
+            "requestedMs": 43,
+            "elapsedMs": 49.956629,
+            "returned": 0
+          },
+          {
+            "requestedMs": 1474,
+            "elapsedMs": 44.128628,
+            "returned": 1
+          },
+          {
+            "requestedMs": 1758,
+            "elapsedMs": 34.188926,
+            "returned": 1
+          },
+          {
+            "requestedMs": 500,
+            "elapsedMs": 27.087382,
+            "returned": 1
+          },
+          {
+            "requestedMs": 1657,
+            "elapsedMs": 26.174176,
+            "returned": 1
+          },
+          {
+            "requestedMs": 1865,
+            "elapsedMs": 19.284609,
+            "returned": 1
+          },
+          {
+            "requestedMs": 1062,
+            "elapsedMs": 16.860711,
+            "returned": 1
+          }
+        ]
+      }
+    }
+  ],
+  "sourceManifest": {
+    "ext/backend.c": "1b522560e542dc2ab5ece6628971d78e81c68479ce529e0593afa3833b090f99",
+    "ext/mysql.c": "ef989defb83cbac3d5984aa5da2e33b4ae6142bacacfcdee99d01490d58d9e2d",
+    "ext/php_asyncara.h": "f186588897f79369efdb4e4d88b56a7a6351c9a74b451e053b70833e22b1fc3f",
+    "ext/memory.c": "e052f956d3c29b61d854497f432f9b81deb8354eb2dbdf179fe064b9e47c98c8",
+    "ext/server.h": "c6c6c01c4e7b199d80a40efa4ec67b930e20c8f73aeb26e3c14693e296264b4a",
+    "ext/driver_arginfo.h": "c4fb85cbf4efee5b01bbb672cb39163ec696252c0a0033f691e9ae8a5919a953",
+    "ext/hyper_decode.c": "1f4b49afd413106774e49b959ab967b38fa59ab947e340d50cfe314e11a81ed1",
+    "ext/server_php.h": "810f2b1ad35cd82a5426e308b04ff5f3dc32734b8599bb6fc93cc7c57d7e431d",
+    "ext/native.h": "eeffd586f1cc529ae078decdb9a58b90faeb50fd680f34d43e06c946a9a63afa",
+    "ext/config.m4": "13add630e22b6c6592571a966364f62b749fed2af8aba62d9e4e08cdf44eec78",
+    "ext/postgresql.c": "e07c0d43cf73bbe815c2092df008de4f2430c1a8fc7eb39fabca250a0d9a28f3",
+    "ext/workers.c": "3b3ce893ed7c4f846a8597d2c660f3ebbad07ea15b22ac42da4d26d51568ace7",
+    "ext/php_asyncara.c": "c480ba0bb700f69659f968a79d9fcdae0a92d9ea4f8021833bb91be784f7db0f",
+    "ext/hyper/Cargo.toml": "10f3bdddbc84c30b7e8a405159f7c20880dd742cfd1f7dee9bfa0ffa46557939",
+    "ext/hyper/Cargo.lock": "7db5fbaab5f9ddd8e73220637757c47ef595e899f4e457466a9c33805bb22c08",
+    "ext/compat/mariadb/ma_hash.h": "f82dcb02d7c1584f706f3673505f45e3e2024fb1fcd1d58562b1f016113e3b40",
+    "ext/hyper/src/body.rs": "ed1fe5cf8b7f6db87dd9f29b210907a7eafeef1f9592ff4a06b8d07be58c076f",
+    "ext/hyper/src/server.rs": "026eb8755001b69b1940d2f6b613d4b80f2e9f2155bd0f80759ba0c374ce8297",
+    "ext/hyper/src/tests.rs": "33e9e4f40419417d6b6dfca5ad07c4ca3e2c3ab111758777540fdde0ad54d241",
+    "ext/hyper/src/tls.rs": "6a124ac80cbdf03534143b4f988a5a440f61d9dcfb04a2589dc83b226c59780d",
+    "ext/hyper/src/request.rs": "ce1c9170508fe932cade8b035c991b426d739a56872d9ee1094a96c0f9f7837a",
+    "ext/hyper/src/lib.rs": "eb61ceb58aa906fad5cbaf17d2178b65941976493ea577fe1e61e370f3f6cf8b",
+    "src/Asyncara.php": "a5d1a7689b606a10395fd28d325ef2f492cbbe000e0cc9889bf19add9a1d95cc",
+    "src/Asyncara/TaskResult.php": "618b12ac7d1568e323cca108e2bb5d00d1c8e7c0b9a0bca0a65bce7cdf0765b7",
+    "src/Asyncara/Trace.php": "9eaaec49c5e036b628e081a98f8f6cabe7089272aa3a220da077be428c75ecf1",
+    "src/Asyncara/Awaitable.php": "d003105214c8ab72273b7c63d1a00fe61e05ced915150ed461ccb3cff99a773d",
+    "src/Asyncara/Task.php": "73bf493abb351e54a50ce64c9825f46b6b1357ac70f4af785203ba32566e6e9e",
+    "src/Asyncara/Timer.php": "20c9d72501e0fe827b6c41683aaf24183522df753794f1a9bbe9f18630d61d4f",
+    "src/Asyncara/WaitResult.php": "bba1ec8e08b92671763a9bb393ba52d7813625ea1592ee986e8094269f4795f5",
+    "src/Asyncara/TaskGroup.php": "2314aeb6d2c6c6f2aba2ba92a997a73ec256b5103dab734f489aa5d772e1ec2c",
+    "src/Asyncara/Async.php": "da11843ea763a044a529a730702e1eea7d603a14380c81bf743f87df17ce4d25",
+    "src/Asyncara/Scheduler.php": "bce503edc49c7adc24cec2589e55b96e0d74dc4a964104eceb61e205e67d89e8",
+    "src/Asyncara/Future.php": "9effeb81391634304ad8d6adf47a2e70299b11fa319d908312a733b389df7344",
+    "src/Asyncara/CancellationSource.php": "999beac02ec491964df1feb108c2778b9ddeca6a1568adb80b4fe11ab7d54ef5",
+    "src/Asyncara/CancellationToken.php": "785f6ee3395beefcd6e75d7230f442eb4fdcd43ce17f4d53406031b3824259b8",
+    "src/Asyncara/Runtime.php": "3735a0067ff7ba30571713a4cdd87e1931c3e941012a9e4b409917c2aaa24856",
+    "src/Asyncara/App.php": "6d84dc4d40ac9a457d54bd198b7c8faf86674a8824a86742dfccd680a77cc24d",
+    "src/Asyncara/Context.php": "d766d528dd653caa4bb625ce6c6e064ba1b6048b68f3e51e06fdfb0124f295f2",
+    "src/Asyncara/Hook.php": "b9366bf37662e31cbae1532c9d3f24647bad608db814100c2f808ce5c8995654",
+    "src/Asyncara/HookReport.php": "06f8a790e308afa6c0c20121a1f0dff67ead1fe7c37bfb6ce95cab0c65266ef0",
+    "src/Asyncara/Exception/DeadlockException.php": "52ef6358b2d116257d355eadeba77ffd1d0431241b83205c07a49969472d11c2",
+    "src/Asyncara/Exception/CapacityException.php": "b695f34832540361ca6e3b785bd9814f2dfdfef7d9ab12ae357d4a881fcd4746",
+    "src/Asyncara/Exception/QueueClosedException.php": "e3d98bb7566aebf46e048789e99482023bef10518a3525c6c039de1a56839ba4",
+    "src/Asyncara/Exception/FilesystemException.php": "bd4089e9349912ac57d08ff458171c617a90c0916fd97e0db2e1b4d8d83c58ea",
+    "src/Asyncara/Exception/WorkerException.php": "1be907f3dbf939607127659ed47a6dba8d9fa5acd4b0f53810d8e52680c35aa3",
+    "src/Asyncara/Exception/TimeoutException.php": "ac4b1c81e62a026c37b6e3f84f905370c14c395b0315181d02a8980fa00754aa",
+    "src/Asyncara/Exception/CancelledException.php": "7d2ab8a76efb7d442ea3f240a276a481c05d38fda440fa4ce6dce6e6ee6a2c39",
+    "src/Asyncara/Exception/OperationException.php": "b824eb837dc2b65df4c54577ebdee56bbff3c19dbf6c771e8f06e1bb7825fd00",
+    "src/Asyncara/HTTP/ResponseHead.php": "bd8a7fe33d967b35538f780c74a1e23d75f78011b80f5e88c31b66220d59a20b",
+    "src/Asyncara/HTTP/Multipart.php": "f8c34628d9c82025bb93f2df7fce00ccb585968c2e22336244f4d0809d06e579",
+    "src/Asyncara/HTTP/Response.php": "bcde814234d4222422e2b710ba9fe6ad815da027af4bc3fb2a75bb38681b8a65",
+    "src/Asyncara/HTTP/HttpClient.php": "24e19a56439d866a58332aaec06636d566436763cba5ebb700b652706c3e5a24",
+    "src/Asyncara/HTTP/ResponseStream.php": "9c3cf551574e542a523e4aee4172c7d1ea2551461f50e9d9c2939799771b36c0",
+    "src/Asyncara/HTTP/BufferedRequest.php": "2cc04b1415cf698139a8b6edfbaefb2e37de31ac694ee3b6fd82598b3019fa0a",
+    "src/Asyncara/HTTP/Redirect.php": "12d321180b9179c77e5ec374c6f4dc722926c0317cb9c5f8e3ca9483eb4c9497",
+    "src/Asyncara/WebSocket/Client.php": "979e590d8fc76f6b7cf7f77f8da8823a2c340dff96f195b20dc8aedd9843f751",
+    "src/Asyncara/WebSocket/Message.php": "58ac5324d0a38455a6e9f64af5998d1a93283c9bfee62bdb33fdfa06e60fea8a",
+    "src/Asyncara/WebSocket/Connection.php": "8f0d5a65ca104df6bf66f2ae2bd6bac98990483545fb2b60de0a775b23d5535b",
+    "src/Asyncara/WebSocket/Server.php": "83834802239872eca5e86232fe2a9769d889bc97657454491b05405868419375",
+    "src/Asyncara/WebSocket/Handshake.php": "d55f576cff12a37bf741f82ad6dedbaca2ac438a22008af6a66201cf24a0b359",
+    "src/Asyncara/WebSocket/ProtocolException.php": "799713743d9f050405b97d3725d84e6b936648194d1caca89b3bc3ddc10ca4ef",
+    "src/Asyncara/WebSocket/FrameCodec.php": "d784ca548bdbd7d7e72d54a37233422781ac78304ac255c2bb869d5355fae3c7",
+    "src/Asyncara/PostgreSQL/Connection.php": "524fda4d219525a0c6ad45ddf6c135f3d28ee466b4ed26de011bcd15480ccb84",
+    "src/Asyncara/PostgreSQL/Statement.php": "924a28f88f4b812e309ac9843303ff739c9ea0e86db6e6ff39117db58d43a48c",
+    "src/Asyncara/SQLite/Connection.php": "e356e274d47f63873bae3c9351c7933bd703188505ddbb4a26c0f26a315696fc",
+    "src/Asyncara/SQLite/Statement.php": "c5f44d004faf0cf529d961da54aeb3ec367d2f234957d29c4b6be9da3bcbd605",
+    "src/Asyncara/Internal/JsonData.php": "5c063f175f83162bc656ac3708d8716141bb4973d1cb1fed1379325ad4bccd3a",
+    "src/Asyncara/Internal/NotSerializable.php": "fcd38134d28086c98d6195e7e01fb0d27ba1254ea01118d8abcd3bf451da69a1",
+    "src/Asyncara/Internal/NonCopyable.php": "54e963d7d90ba21260ca44cbce7e16f6a440d6769c2129e13dd600ee9722a5c9",
+    "src/Asyncara/Internal/IpcFrame.php": "00c8c25994648e7f236fda3384ddc8077695e01e94ab929e646c0748b048eb4e",
+    "src/Asyncara/Server/Request.php": "47741d8a8bb2b37422bc65fe3af692c0dae3ccec05625f7c02d0c2ba4c5d97d9",
+    "src/Asyncara/Server/Workers.php": "ae0f050c33cb7918c1e422a1cce4c05bfbc6894274f5b584f1a354de7b7773fd",
+    "src/Asyncara/Server/Response.php": "8af4f4568f48ee667292773a25c7b5bec4ccdde0d20c889ab875f3dc2d57e068",
+    "src/Asyncara/Server/Route.php": "b0a35214f456bace5fece05b2cdfba3a80c3738585313bc2122e0d06d3d62b33",
+    "src/Asyncara/Server/StreamResponse.php": "7b7dd71ed877e72a99e81ebf2aa1db3be1c68e4a64ffa1bd42a190cfb7885c90",
+    "src/Asyncara/Server/RequestBodyStream.php": "4e29112fafb161a51ca91f08a64a28dfcba3fe4bbad9069153fc3a9dcc45dafa",
+    "src/Asyncara/Server/RequestBodyException.php": "9f2b313c1b33fb9762cd0ea9119a0589fa9ba7a3be6917c54f9725322f91963d",
+    "src/Asyncara/Server/Inbox.php": "63374f8c892252298acc11d30ba47566a35095de8411e8049a63965e13c39e4a",
+    "src/Asyncara/Database/Database.php": "26a68110e21f3ae8797d644281f1fb66aa5899e64727c5656776e93179455c74",
+    "src/Asyncara/Pool/ConnectionPool.php": "ecb67e0e95fde3f19223697645e13eb9ade6ad8cd5608bfe4cea8c8b54df2b67",
+    "src/Asyncara/Pool/ProcessPool.php": "c8e0337971463c11ec7b59cadb4036878655ec55f1346ea91c884933060deaf3",
+    "src/Asyncara/MySQL/Connection.php": "a77e16e2e39821da5390e3d6c767ff0607d4ce25c3ba2f2ce5d73bf38b3f94ed",
+    "src/Asyncara/MySQL/Statement.php": "5b32c4c4599009a05e674ca59fb314e9debf637ab934b551e7889a4a253995a1",
+    "src/Asyncara/IO/TcpServer.php": "4c113628a42d091f756183726d597a4647a77d1d4f0ee43ac1e5dd98430de84d",
+    "src/Asyncara/IO/File.php": "6db9246fba933448b709c57ea42598943fe8d50055e3ae5ebf245e6870dcb5bd",
+    "src/Asyncara/IO/TcpStream.php": "d0eb2f07a91d4271340fd670e97145657a36d508caad3a755ebcecb9059574e2",
+    "src/Asyncara/IO/Dns.php": "afc2d3ad5736de089ff4eef8cb787dfb46d16c8eec5a44e2965efacc20befb63",
+    "src/Asyncara/IO/UdpSocket.php": "2f8afaa9b9e7063fa7aafcd88c42fba68e20f9420231d457b9209596c989905e",
+    "src/Asyncara/IO/Files.php": "2edb3444a8e6949394b9559856c251f77aef7511cb3df59ba4eef6b62634762e",
+    "src/Asyncara/Concurrency/Lock.php": "e9f7789ff0b823c414e5fb2076e3edf6a566d3e1fe6787bad465423ab491e675",
+    "src/Asyncara/Concurrency/Semaphore.php": "c0430983dcc0891a22edeb45c7a618609148f73d01bcf5609b0fd2b76560c2d0",
+    "src/Asyncara/Concurrency/Queue.php": "0ba79869db31cb014e1f14962ae7b65efeee0e6c90215ec6f6927ae7972834bf",
+    "src/Asyncara/Concurrency/Event.php": "84c6999171129a50d5c43f6892f7ea9bb04b07eaa20be0b31f3fa95a5bb243eb",
+    "src/Asyncara/Redis/Connection.php": "b6fed9b15ddb186ee0804acbacd3124716f7ce5ac4bf199d0f4cbf10fc4c5728",
+    "src/Asyncara/Redis/ServerException.php": "dd0750aac40cbe26d05e04b42ad8b14f10c361f308e7f0fd882ee2a9f421c04e",
+    "src/Asyncara/Stream/Emitter.php": "f5f48bfe9c721e2bf6e83c322159d1164da2f7377e17b2b7402027e0f7d91cc4",
+    "src/Asyncara/Stream/ReadableStream.php": "da36cb1348a95bc6175f2e009b244f6ce3a16b6c2beb739a2e7465b1e9aaea3f",
+    "src/Asyncara/Stream/AsyncStream.php": "5549d11c77117bfaf4d3429ef86a06aa6c41d31a6878638d01f794095935ae6d",
+    "src/Asyncara/HTTP/Psr/Client.php": "837fb6e196dca897298706b9be23321eec4759e64fc57d292365c1193c67e5b5",
+    "src/Asyncara/HTTP/Psr/RequestException.php": "56100425f26abb28200dcd511305f298ada54c9e0d9cd97cf0edef217154ff84",
+    "src/Asyncara/HTTP/Psr/NetworkException.php": "7d651eeb700215933eddbe43f4bc6ee6e3ea923e5bbdaa3b60e4c6d319380c7f",
+    "tests/http/multi_error.c": "5240ac7814283471d85abe097f96a2ced53d2952a0263b7e3cf3767af6addba5",
+    "tests/http/hyper_tls_memory.py": "3b51e5e1b9c979877e913409a1fe05e073268fa12c9d53a686e2daa4c6b575ed",
+    "tests/http/client_mtls_peer.py": "b61889b8b7c85d21d28e2703a93f4f8683438e2a208612330837a31ffc7124ef",
+    "tests/http/fpm_request.php": "c77a642ff83ba0d5bb0b0c551f38bce14f887774a2c5db1fb450f8713f89199b",
+    "tests/http/http2_fpm_request.php": "5a78b18df228d1dac47e114b27126cf1b45a957fd4f5432dee69cae496a5a8c5",
+    "tests/http/completion.php": "9bc919d219bec6d35de9b19437c85975b2a30be39a32242787ecb1b3f12dd66d",
+    "tests/http/https_proxy_fpm.py": "6a0a3214cb5d98c0638df347d44d3e2d8be7af965f9903f39357aca4d81d5d3d",
+    "tests/http/hyper.php": "bcacb0be2830318f1eb6551b9dde699b26a134713aa1e538b52226854ef1b3af",
+    "tests/http/http2_peer.py": "1925bb4ab90945affa5a8ef5359cd84af11daf760dbd3d33c36c790d175962dd",
+    "tests/http/hyper_redirects.py": "413e33e2b212713bdb2488cfc2b4c211ae87642693d2b4d2cb77d1c9a78c04d1",
+    "tests/http/method_native.c": "db28ddb07e1d4464dbd54a7ef1993c81de981e2789f5fc55f7862689c12facb5",
+    "tests/http/curl_trailer_control.py": "33a6e4de5f3a8a0c78d8d7dc1abde7831b16b29d98966babbe948ee31e9cc4e1",
+    "tests/http/curl_h2_control.c": "ad2567f886831784bd127f76593405e4d62a95c5e48e8ac5e3cfdb8bba902174",
+    "tests/http/cancelled_upload_reuse.php": "bb445c5318ec46d63d21c94d0b95c9540e4408327e9e223733bb67d705a1c235",
+    "tests/http/hyper_stream_fpm_request.php": "66ace0dcc9875c79824139f551f0ca995a1b2aff47f099656f7c547823036c34",
+    "tests/http/http2_fpm.py": "1c5258b16acc0cfc54a4c5532fe989cf975f2314717994bccc022f73cd940fcc",
+    "tests/http/hyper_fpm_request.php": "62c7aa6d2faf530393247ecab5fe523a2ad3499548a117b6158b5e7cb45e3d51",
+    "tests/http/methods.php": "e5034555c4a9035002f96870dfd04a35a2eba98e0fd895810c96fb07780d8f7e",
+    "tests/http/hyper_compressed_fpm_request.php": "2e744b5eb334291cf8e9cd52051ae63a693b6ef95bdfe64a9a632531c829e4f2",
+    "tests/http/proxy_auth.php": "1a096907a3b962cb846df4b3965fc584260d5bac828fbe361747f1ff0d952fac",
+    "tests/http/file_paths.py": "b155f247e5e02e27d18f8cedb3e7c76249e9d5f7c954392ed9ce8b7bc4c5f9a4",
+    "tests/http/stage_shutdown.php": "c463a0ea3646c79e2f3d0981b47204e6a32dae29a8b54e32251a7e510dcc434d",
+    "tests/http/http2.php": "a9b5e675b3b6051d245876e7a7b018b7cce1d7c2b27a2e2019c22c24344f223b",
+    "tests/http/https_proxy.py": "56119b90faf69e7e073bf6fd377332334bfe4620277a756392b1996d7cdb603f",
+    "tests/http/hyper_ffi.py": "8a84e60f1e514704dfe3920bc98e5c197760cb302c3afe1e5e2e8abb17999fd2",
+    "tests/http/acquire_cancel.php": "cafe68425c7f3c6685095a186f22045cdda78fec73a22b499746172d1b95f438",
+    "tests/http/hyper_tls_bounds.php": "35b9bb95b810127621df5da82a98e279582dd41600df1d9359723e87ca61dae8",
+    "tests/http/hyper_post_fpm_request.php": "80faf2ae32fc29d094e6f3bd25a6bacf9f87ca5142b6ea3197d0fcfdf84f125c",
+    "tests/http/hyper_compression.php": "1873191b186765fe14693a4371afbcb597299e8cc5e0d506dc07e53df65fdff4",
+    "tests/http/multipart_peer.py": "65ec221d03e97da7f5224cd035ea86351d4cd3bc445dd36502d901565a7a1277",
+    "tests/http/ca_paths.php": "478a0c91fcba19b32812d06e60db5a77adeacc291ed450a32303804832306448",
+    "tests/http/proxy_auth.py": "f0e168c3828ba432d0e60f5f1a0f26614dc491d4934eb179d34103be00a98f5e",
+    "tests/http/hyper_wakeups.php": "534ba685408e062facfa246603dca951a7f3a834e9069340574ec5e55a093825",
+    "tests/http/gate_protocol.php": "34ce5c0238a0032979f2501af85e50b94e8db3633f279e1406ad0cce110d658e",
+    "tests/http/transfer_geometry_server.py": "fef0c6498cdd203d043b7d8b6ce5aa3e66ef5eef8c93bf222c0ed0aee2a22107",
+    "tests/http/hyper_fpm.py": "952bf95906bcb282368ce143903db216c7a24baf23612838016ee65229dc1ccb",
+    "tests/http/hyper_requests_peer.py": "6a68f865800b29854cf5c2256a483da7533e7a121364172a91b6b890cdb3fd76",
+    "tests/http/sdk_identity.py": "6e04259850ab371693d1549f5bb40eeb669d321e3cacaaed1e059fb218707786",
+    "tests/http/hyper_multipart.py": "1a45ebc4fad21225cbdd706460f62b341a504ce3ec2c11b695947facd7fbb135",
+    "tests/http/hyper_tls_memory.php": "d6fc618c44c9de63423af175f8ae55b8aca4df2aa0efa076ac3de59494e0e724",
+    "tests/http/native_completion.c": "7d484613976c142b6a7fd2100828dd0489d638dfcc3f427cb76bafe301456aa4",
+    "tests/http/peer_shutdown.py": "759b044ae58b457143afab3e01dc7cf508542277f7893e714d92368df23518ad",
+    "tests/http/test_multipart_peer.py": "b4e036d0ce791e0735866c2e5ff92ac001155bccd3dd5b68dcc0a831c78b603e",
+    "tests/http/ca_fpm.py": "93b136d8069dc232e6d892f7787116b507bbf9b47e01e3c7fd6fd90b63a40d2b",
+    "tests/http/client_mtls.php": "a4d1dbe638dae315939f9b16e3ff0e6a973823f99d004eed48e9d5d5d666f242",
+    "tests/http/proxy_auth_peer.py": "1521f50038d473c61a1f4ac8b8740fce9c3159849049ab2990407ece0ea62da5",
+    "tests/http/test_multipart_decoder.py": "79f151a45752e155e95342750807393898273efe455297b5a8a85ac8ac9eb62b",
+    "tests/http/hyper_tls_peer.py": "c6119f7503eb1ff7ecf802c0e4c89f94416fe98fde5904eb8ed5b96b57e65a02",
+    "tests/http/headers.php": "355751e97e820df5b951e161d2ec38f66b7786b3fbad965cc9cdf971948a9934",
+    "tests/http/identity_options.php": "95eca099683c71ea972e959d9f19d9725e1f781387677b7488b61a776ee4e771",
+    "tests/http/run.py": "d40056b92c3ea2395f5ff6940a7a2e89b8c2bf183ae3fa30c198e1d6fb9b3f60",
+    "tests/http/stage_shutdown.py": "138d1fe00154c74b4b784680a43e396bf10c5fc38519fffb6dc9ef64431646ef",
+    "tests/http/buffered_owner.php": "3f7a5f63d97c81ea64448bc5eaf374813fa8df533ddfa20c404232493b9280cf",
+    "tests/http/hyper_dns_server.py": "8e089e97f1bbfedf3f366f8428b4c7ca9815f362901029536cc126f555b39ef5",
+    "tests/http/https_proxy_peer.py": "f5c58bc5058b47795f214b9072e892a335a0e095276c8b317f7377db04b24b87",
+    "tests/http/http2.py": "e9921179b2f83a9e123a6d0b4de0ca8533c77a08c95324861080d27fb2796c5d",
+    "tests/http/hyper_uri.php": "79f06e4393b6bbd072dcac36122dd5fc1252f70738701a21bbafe7f7ebf7c462",
+    "tests/http/client_mtls.py": "cb75128fb5e5be3aa7d7e27c2dddcd21c0ac980778573aa2b676821ba4ad7ea4",
+    "tests/http/hyper_stream_memory.php": "9dc18513fae41c8f6e7d5c281d50a8ff026260b0846cd5a333fec51afe35f7cb",
+    "tests/http/https_proxy_io.py": "2314271525aeabd0f871a29c4525405c8c3f2c44c5185d4f69bcce14633ac498",
+    "tests/http/ca_paths.py": "80cc64e85d08886ff867dffd849c4811c35d905f730dabc389e6ace3759ca74b",
+    "tests/http/hyper_requests.py": "2acd3c66902dd6eacecf0634f45c99ceb951633b9a40062fb5e96d369c67fa39",
+    "tests/http/connections.php": "8809696e86b8fa20c6235b8226d444dd07fdc9a3f50e05366110797d3968ac66",
+    "tests/http/hyper_decode.c": "10700965a45cf922a926568717dc1efcae5c73dade57676c2b85cf21a897d05a",
+    "tests/http/dns_gate.c": "f0cab46143100757af7d937758ce3383642af2560aacd5257b9fea0d8db92aee",
+    "tests/http/hyper_redirects.php": "2611a5279c7be48ae77312a4329fbe31b561b51563a5c0ef0b6f77f2d18273fb",
+    "tests/http/proxy.py": "7023c2f1276a770a7637b8e78f32fa0d87911b623a0d7bcc38d26ffe809e991b",
+    "tests/http/redirect_uri.php": "b5620166ac862365df95faf6f91fcf3189fe19550cbe81f0b8656209d321203e",
+    "tests/http/hyper_tls.py": "b7bc092a54bbe3bfae209c0cd403cd1bd4c5a94743b8053442dc23f6d1b2901e",
+    "tests/http/options_lifetime.php": "b87a57cfe2a56007537ea59211b83cc3a81e367586abbc7ab367206ec17dfd5d",
+    "tests/http/transfer_geometry.php": "9c8f02617c452b8258347f28f6a65991908e6dc72d5308052de4b60c065afb15",
+    "tests/http/capacity_server.py": "1d699919f6c9112e48688e07d5dfe1a9395a51f100c6507ba5bd07a005e5c75b",
+    "tests/http/wait_scaling.c": "7140413bfed95501d27d45fad82d464203f345e5b520708270fc4d7763f3062f",
+    "tests/http/wait_observer.php": "361a25d82447cc21a48009f12e070416a76908c1c8669107942d024d6faa7350",
+    "tests/http/hyper_requests.php": "defa9d8d69d5801e6c76e97da30a2ab44a3d504e64ea2685b3d1ac42b6e9eef0",
+    "tests/http/dispatch_native.c": "bf87cfbfe0a769ba2fc9497b1f191295a9718d337e699cf9750a1e3ba1ab575f",
+    "tests/http/method_server.py": "9f04f96c048594376b47872d05ef2e9b3913b2e4f5b05359de03e3003774406e",
+    "tests/http/hyper_stream_bounds.php": "a1bc81d5443bb6aa303180582e1c95deb87c2083dee55d09a309c55e8a52c958",
+    "tests/http/compression_peer.py": "5e63b110bea39c21111b0933efa8034fe970d6782818a77e80765cff53c237dc",
+    "tests/http/http2-requirements.txt": "20542b1b2c86cb1820756ecc3efd4cc02f7afda6a5cadd1c21984245cfcc3e5c",
+    "tests/http/hyper_compression.py": "e2ba096848af9d8dc976cb88862930f940018287eb0a73d69358f78cd5ac1a31",
+    "tests/http/pooling.php": "bfa51860b2f6de9b83b7dbbac3aadab20046b819f2cfd7e2571de92767c92525",
+    "tests/http/fpm_barrier.py": "ba865838a9649d5b5e0c7fbde522b9a39cff21537435d6b50c0f390d794866bd",
+    "tests/http/stage_native.c": "2f7e1b5aa184dabf0c605a586cc64a348d72d9bc6dbf6412884a7df901414235",
+    "tests/http/curl_cache.c": "1c0dd7b8a2561a9a53d847444c4e8f5c4628a92b16647008922ee856028c271e",
+    "tests/http/hyper_redirect_peer.py": "bb8a2c421e29cf384df56bb36b584f11bbaf56b5486ad397546e190e68d380ef",
+    "tests/http/fpm.py": "eac2fb69b0c9057e6b317df52471c458eca1a4ca023fc1b95208003b292996bb",
+    "tests/http/file_paths.php": "cb8eaa85061e6cdc9cc0d74ce2b793ea197c3e81a210bf8877de541d8d71be85",
+    "tests/http/buffer_budget.php": "95c79183906dd39226cdb4b75892d7d56e78ee1e6136eb142c075df428e856fb",
+    "tests/http/hyper_tls.php": "85b2fcfa34db5180a31db0e718bc8c1def79a0672b838c42d86e4519fb12cde7",
+    "tests/http/capacity.php": "b4bf03dad68303185f33a5e8ec922e2c7ad02cb3f82b5b584a4c89244c664cec",
+    "tests/http/curl_trailer_control.c": "114d2609dcbbdec612074753776a7e6d3ff169165e64d4770faa83a3decf20a1",
+    "tests/http/proxy.php": "ef5f08f92c5d15f76ec8a951b2c19292db9674d0ce1be443749f57a3e1dfae84",
+    "tests/http/hyper_encoding.php": "ca7906dfd5be63e80d8427d6790d3cecfca920189b23efdd65fa65927becb881",
+    "tests/http/ca_fpm_request.php": "878b30eb051fb766c0eb01fb1d28baee830277cb390042835311382fe1448478",
+    "tests/http/hyper_multipart.php": "28f029e3abd2520b3ed182b09361ea4c0999e990b38c424116c490b98b89341e",
+    "tests/http/hyper_streaming.py": "1bf01db685f7ba7f30e1b04339030981a4d4bfeca83da545010fa30c383e5555",
+    "tests/http/hyper_streaming.php": "911c72ee8d7efaaea124b91c81b45ef9b8404a10971a5d1b2461e74905e2c9aa",
+    "tests/http/hyper_dns_lifecycle.php": "7fb99c8900ebe94d08e297f0bdf382d684fcaa56924deb2f4990e7f71e012264",
+    "tests/http/hyper_dns_fpm_request.php": "3cdbdbcfa69cdc9fda34538a9f954c46a48d1c5f3273e460e62b5602251e419d",
+    "tests/http/https_proxy_fpm_request.php": "341cd0501bfd0f792926ce78c182c4b5736ed03349a586a42d981f0d4289a477",
+    "tests/http/buffer_capacity.c": "5025d31e79a55f52710c8a1a3220b545aba65bd99deddecef2a5490d1a1f2a90",
+    "tests/http/hyper_dns.php": "9ca0e00025aea1100a5a644b12513846681fa4d7ca61688167cd9ac4f0e3fd24",
+    "tests/http/https_proxy.php": "c8a3c9721e8cb1f952254cac9ba6e9bde634be056f2194cc0861a8cae3c1bff6",
+    "tests/http/start_wait.c": "a45393b9618bc365dcec2e5715797dfbaad8c4ebe57faf7fcf8f40b5170210b3",
+    "tests/http/hyper_faults.c": "bbf4ad344744f6456fcbc07bf091188ee0c5144967d4026108503cdb97f6a8e5",
+    "tests/http/test_https_proxy_io.py": "61b5b094465446910af5f45e300a7a0c43719e56a5a3dd2f606f65d18dcafaee"
+  },
+  "modules": {
+    "build/hyper-identity-final-85.so": "9004bb478c01085567a2b02b96df997be1d2df64f47f33dd09f75212fc478981",
+    "build/hyper-identity-final-gcc.so": "d6a60a540905427672a440e3576f05febe65c1b698dce9f9754135725b635073",
+    "build/hyper-identity-final-83.so": "cf609f02e41bbce7bc6eb14c1dee138d5c062a8a4927c09253131d07b8708342",
+    "build/hyper-identity-final-debug.so": "ca10990276cc17a67e774c7a6ddaa6ae6aebd1502d3f546d375b804d46d6bdbc",
+    "build/hyper-identity-final-84.so": "c498e5e75dacd1a1fba12015327f86503aba596e98e928ccc25eade24411df93"
+  },
+  "limitations": [
+    "GCC poll multipart 32MiB deadline FAIL; not a completed sanitizer matrix",
+    "Cold and warmed poll redirect Valgrind deadline failures retained; zero losses is not a completed workload",
+    "No proxy, HTTP2/3 or Brotli/zstd Hyper implementation in this checkpoint",
+    "Buffered redirect intermediate bodies still buffer within existing limits"
+  ]
+}

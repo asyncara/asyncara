@@ -306,6 +306,7 @@ static bool valid_http_options(ar_value *v) {
         return false;
     bool files = false, multipart = false, legacy_file = false, upload = false;
     bool proxy_ca = false, proxy_user = false, proxy_password = false;
+    bool client_cert = false, client_key = false, redirects = false;
     const char *proxy = NULL;
     int64_t upload_size = -1;
     for (size_t i = 0; i < v->count; i++) {
@@ -316,10 +317,15 @@ static bool valid_http_options(ar_value *v) {
         if (!strcmp(key, "followRedirects") || !strcmp(key, "streamResponse")) {
             if (x->type != V_BOOL)
                 return false;
+            if (!strcmp(key, "followRedirects")) redirects = x->integer != 0;
         } else if (!strcmp(key, "connectTimeoutMs")) {
             if (x->type != V_INT || x->integer < 1 || x->integer > 3600000) return false;
         } else if (!strcmp(key, "caPem")) {
             if (x->type != V_STRING || !x->length || x->length > 1048576 || memchr(x->string, 0, x->length)) return false;
+        } else if (!strcmp(key, "clientCertPem") || !strcmp(key, "clientKeyPem")) {
+            bool cert = !strcmp(key, "clientCertPem");
+            if (x->type != V_STRING || !x->length || x->length > (cert ? 1048576 : 65536) || memchr(x->string, 0, x->length)) return false;
+            if (cert) client_cert = true; else client_key = true;
         } else if (!strcmp(key, "proxyUsername") || !strcmp(key, "proxyPassword")) {
             bool username = !strcmp(key, "proxyUsername");
             if (x->type != V_STRING || x->length > 4096 || (username && !x->length)) return false;
@@ -388,6 +394,9 @@ static bool valid_http_options(ar_value *v) {
     }
     /* Explicit proxy trust must not silently accompany a plaintext proxy or
      * depend on a later environment change choosing the intended endpoint. */
+    /* The public owner validates every redirect origin before reuse. A raw
+     * curl redirect chain cannot enforce that per-hop client identity policy. */
+    if (client_cert != client_key || (client_cert && redirects)) return false;
     if (proxy_ca && (!proxy || strncasecmp(proxy, "https://", 8))) return false;
     if (proxy_user != proxy_password || (proxy_user && (!proxy || strchr(proxy, '@') ||
         (strncasecmp(proxy, "http://", 7) && strncasecmp(proxy, "https://", 8))))) return false;
@@ -963,6 +972,9 @@ PHP_FUNCTION(asyncara_submit) {
             for (size_t i = 0; i < options->count; i++)
                 if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem")) && !e->hyper_requested) {
                     zend_value_error("Resolved addresses and trust bytes are internal to the Hyper transport");
+                    goto error;
+                } else if ((!strcmp(options->keys[i], "clientCertPem") || !strcmp(options->keys[i], "clientKeyPem")) && strncasecmp(j->a, "https://", 8)) {
+                    zend_value_error("Client TLS identity requires HTTPS");
                     goto error;
                 } else if (!strcmp(options->keys[i], "caFile") || !strcmp(options->keys[i], "proxyCaFile")) {
                     /* libcurl can open its trust file after submission returns.
