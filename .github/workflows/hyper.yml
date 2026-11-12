@@ -28,7 +28,7 @@ jobs:
           FPM_PACKAGE: php${{ matrix.php }}-fpm
         run: |
           sudo apt-get update
-          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 zlib1g-dev cmake "$FPM_PACKAGE"
+          sudo apt-get install -y libmariadb3 libcurl4t64 libsqlite3-0 libpq5 zlib1g-dev libbrotli-dev libzstd-dev cmake "$FPM_PACKAGE"
           ./scripts/bootstrap-local.sh
           echo "PHP_INCLUDE_DIR=$(find "$PWD/.local/sysroot/usr/include/php" -mindepth 1 -maxdepth 1 -type d | head -1)" >> "$GITHUB_ENV"
           rustc --version

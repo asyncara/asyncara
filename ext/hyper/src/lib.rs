@@ -511,7 +511,7 @@ async fn transfer(
                 if spec.stream_response {
                     "identity"
                 } else {
-                    "gzip, deflate"
+                    "gzip, deflate, br, zstd"
                 },
             )
             .body(ClientBody::new(job, spec.body, spec.upload_size))
@@ -553,6 +553,10 @@ async fn transfer(
                     1
                 } else if value.eq_ignore_ascii_case(b"deflate") {
                     2
+                } else if value.eq_ignore_ascii_case(b"br") {
+                    3
+                } else if value.eq_ignore_ascii_case(b"zstd") {
+                    4
                 } else {
                     return Err("Unsupported HTTP content encoding".into());
                 };

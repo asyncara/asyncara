@@ -20,6 +20,34 @@ if test "$PHP_ASYNCARA" != "no"; then
     AC_CHECK_HEADER([zlib.h], [], [AC_MSG_ERROR([zlib development headers required for Hyper content decoding])])
     PHP_CHECK_LIBRARY([z], [inflateInit2_], [], [AC_MSG_ERROR([zlib library required for Hyper content decoding])])
     PHP_ADD_LIBRARY([z], [1], [ASYNCARA_SHARED_LIBADD])
+    PKG_CHECK_MODULES([ASYNCARA_CODECS], [libbrotlidec >= 1.0.0 libzstd >= 1.5.0])
+    PHP_EVAL_INCLINE([$ASYNCARA_CODECS_CFLAGS])
+    ASYNCARA_CODECS_LIBS=`$PKG_CONFIG --static --libs libbrotlidec libzstd`
+    dnl Custom-allocation zstd API is static-only. Do not bind it to a shared
+    dnl libzstd or allow another PHP extension to interpose these symbols.
+    ASYNCARA_ZSTD_ARCHIVE=""
+    ASYNCARA_CODEC_LIBS=""
+    for flag in $ASYNCARA_CODECS_LIBS; do
+      case "$flag" in
+        -L*)
+          codec_dir=${flag#-L}
+          if test -z "$ASYNCARA_ZSTD_ARCHIVE" && test -r "$codec_dir/libzstd.a"; then
+            ASYNCARA_ZSTD_ARCHIVE="$codec_dir/libzstd.a"
+          fi
+          ASYNCARA_CODEC_LIBS="$ASYNCARA_CODEC_LIBS $flag" ;;
+        -lzstd) ;;
+        *) ASYNCARA_CODEC_LIBS="$ASYNCARA_CODEC_LIBS $flag" ;;
+      esac
+    done
+    if test -z "$ASYNCARA_ZSTD_ARCHIVE"; then
+      ASYNCARA_ZSTD_ARCHIVE=`$CC -print-file-name=libzstd.a`
+    fi
+    AS_CASE([$ASYNCARA_ZSTD_ARCHIVE], [/*], [], [AC_MSG_ERROR([Matching static libzstd.a required for Hyper content decoding])])
+    if test ! -r "$ASYNCARA_ZSTD_ARCHIVE"; then
+      AC_MSG_ERROR([Matching static libzstd.a required for Hyper content decoding])
+    fi
+    PHP_EVAL_LIBLINE([$ASYNCARA_CODEC_LIBS], [ASYNCARA_SHARED_LIBADD])
+    ASYNCARA_SHARED_LIBADD="$ASYNCARA_SHARED_LIBADD $ASYNCARA_ZSTD_ARCHIVE -Wl,--exclude-libs,libzstd.a:libbrotlidec.a:libbrotlicommon.a"
     AC_DEFINE([HAVE_ASYNCARA_HYPER], [1], [Enable the Rust HTTP bridge])
     dnl workers/backend are standalone C units and do not include PHP config.h.
     ASYNCARA_HYPER_CFLAGS="-DHAVE_ASYNCARA_HYPER=1"

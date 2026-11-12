@@ -131,7 +131,7 @@ relabel either failed broad run as PASS.
 
 ## Still open
 
-Hyper proxy support, HTTP/2/3, remaining multipart/compression parity and broad
+Hyper proxy support, HTTP/2/3, remaining protocol/proxy parity and broad
 interoperability remain unfinished. Native Server's retained failures and wider
 acceptance gates remain separate. No push marking the Hyper entity complete
 has been performed. Historical Phase 4 artifacts and the main checkout are
@@ -145,3 +145,21 @@ report0 errors/definite/indirect/possible losses,5306bytes19blocks reachable.
 Warmed redirect poll failed a deadline with0 errors/lost bytes; its incomplete
 workload remains FAIL. Exact manifests, commands, module/report hashes and
 previous failures are in [the attestation](phase7/hyper-identity-mime.json).
+
+## Multipart producer comparison
+
+Local source checkpoint703bfeb preserves the initial MIME producer. The paired
+`multipart-comparison-r1` uses the same PHP85 binary/module, poll backend,
+32MiB HTTP and HTTPS bodies, assertions and fixture. Three samples per variant
+pass. Median task steps:queued7791,direct6531 (-16.17%); median process duration
+3.99085s versus3.97513s, insufficient evidence of a general throughput gain.
+The direct MIME producer uses Files::open/File::read with shielded Async::using
+cleanup, eliminating one nested file producer/queue. Both keep bounded queues
+and the same native disk workers. The generic stream-close regression remains.
+
+
+Brotli/zstd and direct MIME producer: targeted45-command matrix PASS on PHP83/84/85,
+DEBUG/GCC, both backends. Native codec ASan/UBSan and Valgrind PASS, including
+allocation failures and window/input/output limits. [Codec contract/evidence](HYPER_COMPRESSION.md)
+records exact scope. This is still not whole Hyper completion; proxy/HTTP2/3 and
+remaining acceptance work are open.

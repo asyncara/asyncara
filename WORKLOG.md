@@ -2806,3 +2806,15 @@ without attributing every failure to the host.
 [Durable source/module/command attestation](docs/phase7/hyper-identity-mime.json)
 and [scope/failures](docs/HYPER_COMPLETION.md). All entities remain partial;
 Phase4 checkout/module/LICENSE unchanged. No entity-completion push yet.
+
+### 2026-11-12 — Native Brotli/zstd and bounded MIME scheduling
+
+Added ledger-backed native Brotli/zstd decoders with bounded input/output,
+8MiB HTTP zstd window, allocation cleanup and static-library isolation.
+Old binary rejects Brotli; corrected45-command PHP83/84/85/DEBUG/GCC epoll/poll
+matrix passes. Native ASan/UBSan and ordinary Valgrind0errors/live bytes.
+Direct MIME file reads retain workers/shielded close and remove a nested queue:
+paired3-sample comparison reduces median task steps7791→6531, but does not
+establish a general wall-time improvement. Old deadlines/failures retained.
+[Attestation](docs/phase7/hyper-codecs-mime.json). Overall Hyper remains partial;
+continuing HTTP2/proxy implementation, no completion push.
