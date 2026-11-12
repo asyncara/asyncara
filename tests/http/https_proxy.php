@@ -18,7 +18,11 @@ try{
     chdir($config['originDirectory']);
     $http='http://proxy-target.invalid/small';$tls=$config['origin'];
     chdir($config['proxyDirectory']);
-    $native=Scheduler::current()->native('http',[$http,null,['method'=>'GET','headers'=>[],'proxy'=>$config['proxy'],'proxyCaFile'=>'ca.pem'],5000]);
+    $raw=['method'=>'GET','headers'=>[],'proxy'=>$config['proxy'],'proxyCaFile'=>'ca.pem'];
+    if(asyncara_info()['httpBackend']==='hyper-prototype'){
+        unset($raw['proxyCaFile']);$raw['proxyCaPem']=Async::await(\Asyncara\IO\Files::read('ca.pem'));$raw['resolvedAddresses']=['127.0.0.1'];
+    }
+    $native=Scheduler::current()->native('http',[$http,null,$raw,5000]);
     chdir($config['originDirectory']);verify(strlen($native->await()['body'])===65536,'Native proxy trust snapshot');
     foreach([$http,$tls.'/small']as$url){
         $response=$client->get($url)->await();verify(strlen($response->body)===65536,'Proxy body');

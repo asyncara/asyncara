@@ -8,6 +8,7 @@ mod body;
 use body::ClientBody;
 mod job;
 mod protocol;
+mod proxy;
 use hyper::{body::Bytes, Request, Uri};
 use protocol::{Sender, Setup};
 mod request;
@@ -216,10 +217,59 @@ struct TlsSettings {
 enum ClientIo {
     Plain(Io),
     Tls(Box<tls::TlsIo>),
+    Prefix(Bytes, Box<ClientIo>),
 }
 struct ClientTransport {
     io: ClientIo,
     pending_write: Rc<Cell<bool>>,
+}
+impl hyper::rt::Read for ClientIo {
+    fn poll_read(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        mut buf: hyper::rt::ReadBufCursor<'_>,
+    ) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_read(cx, buf),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
+            Self::Prefix(prefix, io) => {
+                if !prefix.is_empty() {
+                    let n = prefix.len().min(buf.remaining());
+                    buf.put_slice(&prefix.split_to(n));
+                    Poll::Ready(Ok(()))
+                } else {
+                    Pin::new(io.as_mut()).poll_read(cx, buf)
+                }
+            }
+        }
+    }
+}
+impl hyper::rt::Write for ClientIo {
+    fn poll_write(
+        self: Pin<&mut Self>,
+        cx: &mut Context<'_>,
+        bytes: &[u8],
+    ) -> Poll<io::Result<usize>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_write(cx, bytes),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, bytes),
+            Self::Prefix(_, io) => Pin::new(io.as_mut()).poll_write(cx, bytes),
+        }
+    }
+    fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_flush(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
+            Self::Prefix(_, io) => Pin::new(io.as_mut()).poll_flush(cx),
+        }
+    }
+    fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+        match self.get_mut() {
+            Self::Plain(io) => Pin::new(io).poll_shutdown(cx),
+            Self::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
+            Self::Prefix(_, io) => Pin::new(io.as_mut()).poll_shutdown(cx),
+        }
+    }
 }
 impl hyper::rt::Read for ClientTransport {
     fn poll_read(
@@ -227,43 +277,31 @@ impl hyper::rt::Read for ClientTransport {
         cx: &mut Context<'_>,
         buf: hyper::rt::ReadBufCursor<'_>,
     ) -> Poll<io::Result<()>> {
-        match &mut self.get_mut().io {
-            ClientIo::Plain(io) => Pin::new(io).poll_read(cx, buf),
-            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_read(cx, buf),
-        }
+        Pin::new(&mut self.get_mut().io).poll_read(cx, buf)
     }
 }
 impl hyper::rt::Write for ClientTransport {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
-        data: &[u8],
+        bytes: &[u8],
     ) -> Poll<io::Result<usize>> {
         let this = self.get_mut();
-        if !data.is_empty() {
+        if !bytes.is_empty() {
             this.pending_write.set(true);
         }
-        match &mut this.io {
-            ClientIo::Plain(io) => Pin::new(io).poll_write(cx, data),
-            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_write(cx, data),
-        }
+        Pin::new(&mut this.io).poll_write(cx, bytes)
     }
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         let this = self.get_mut();
-        let result = match &mut this.io {
-            ClientIo::Plain(io) => Pin::new(io).poll_flush(cx),
-            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_flush(cx),
-        };
+        let result = Pin::new(&mut this.io).poll_flush(cx);
         if matches!(result, Poll::Ready(Ok(()))) {
             this.pending_write.set(false);
         }
         result
     }
     fn poll_shutdown(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match &mut self.get_mut().io {
-            ClientIo::Plain(io) => Pin::new(io).poll_shutdown(cx),
-            ClientIo::Tls(io) => Pin::new(io.as_mut()).poll_shutdown(cx),
-        }
+        Pin::new(&mut self.get_mut().io).poll_shutdown(cx)
     }
 }
 struct Conn {
@@ -273,6 +311,8 @@ struct Conn {
     pending_write: Rc<Cell<bool>>,
     connecting: bool,
     transport: Option<ClientTransport>,
+    prepare: Option<proxy::Prepare>,
+    proxy_id: usize,
     tls_pending: Option<Rc<Cell<bool>>>,
     trust_id: usize,
     connect_deadline: Instant,
@@ -291,6 +331,8 @@ impl Conn {
         origin: Origin,
         deadline: Instant,
         tls: Option<TlsSettings>,
+        proxy: Option<proxy::Settings>,
+        uri: Uri,
     ) -> io::Result<Self> {
         let fd = unsafe {
             libc::socket(
@@ -363,28 +405,49 @@ impl Conn {
             #[cfg(test)]
             owner_waker: Waker::from(wake.clone()),
         })));
-        let (transport, tls_pending, trust_id) = match tls {
-            Some(settings) => {
-                let ready = Rc::new(Cell::new(false));
-                (
-                    ClientIo::Tls(Box::new(tls::TlsIo::client(
-                        io.clone(),
-                        settings.config,
-                        settings.name,
-                        ready.clone(),
-                    )?)),
-                    Some(ready),
-                    settings.id,
-                )
-            }
-            None => (ClientIo::Plain(io.clone()), None, 0),
-        };
         let pending_write = Rc::new(Cell::new(false));
+        let trust_id = tls.as_ref().map_or(0, |t| t.id);
+        let proxy_id = proxy.as_ref().map_or(0, |p| p.id);
+        let (transport, tls_pending, prepare) = if let Some(proxy) = proxy {
+            let ready = Rc::new(Cell::new(false));
+            let prepare = proxy::prepare(
+                io.clone(),
+                proxy,
+                uri,
+                tls,
+                ready.clone(),
+                pending_write.clone(),
+            );
+            (None, Some(ready), Some(prepare))
+        } else {
+            let (transport, tls_pending) = match tls {
+                Some(settings) => {
+                    let ready = Rc::new(Cell::new(false));
+                    (
+                        ClientIo::Tls(Box::new(tls::TlsIo::client(
+                            io.clone(),
+                            settings.config,
+                            settings.name,
+                            ready.clone(),
+                        )?)),
+                        Some(ready),
+                    )
+                }
+                None => (ClientIo::Plain(io.clone()), None),
+            };
+            (
+                Some(ClientTransport {
+                    io: transport,
+                    pending_write: pending_write.clone(),
+                }),
+                tls_pending,
+                None,
+            )
+        };
         Ok(Self {
-            transport: Some(ClientTransport {
-                io: transport,
-                pending_write: pending_write.clone(),
-            }),
+            transport,
+            prepare,
+            proxy_id,
             pending_write,
             tls_pending,
             trust_id,
@@ -419,10 +482,24 @@ impl Conn {
             }
             self.connecting = false;
         }
+        if let Some(prepare) = &mut self.prepare {
+            match prepare.as_mut().poll(&mut cx) {
+                Poll::Pending => return,
+                Poll::Ready(Err(_)) => {
+                    self.closed = true;
+                    self.prepare = None;
+                    return;
+                }
+                Poll::Ready(Ok(transport)) => {
+                    self.transport = Some(transport);
+                    self.prepare = None;
+                }
+            }
+        }
         if self.setup.is_none() && self.driver.is_none() && self.sender.is_none() {
             let transport = self.transport.as_mut().expect("one transport owner");
             self.multiplexed = match &mut transport.io {
-                ClientIo::Plain(_) => false,
+                ClientIo::Plain(_) | ClientIo::Prefix(_, _) => false,
                 ClientIo::Tls(tls) => match tls.handshake(&mut cx) {
                     Poll::Pending => return,
                     Poll::Ready(Err(_)) => {
@@ -485,6 +562,7 @@ struct Op {
     response_complete: bool,
     request: Option<RequestSpec>,
     tls: Option<TlsSettings>,
+    proxy: Option<proxy::Settings>,
     job: usize,
     uri: Uri,
     origin: Origin,
@@ -505,6 +583,7 @@ struct ClientPolicy {
 }
 struct Engine {
     trust: Vec<ClientPolicy>,
+    proxies: Vec<Rc<proxy::Policy>>,
     poisoned: bool,
     conns: Vec<Option<Conn>>,
     ops: Vec<Op>,
@@ -517,6 +596,7 @@ async fn transfer(
     job: usize,
     callback: job::Job,
     spec: RequestSpec,
+    forward_proxy: Option<proxy::Settings>,
 ) -> (Sender, bool, Result<(), String>) {
     let mut reusable = false;
     let outcome = async {
@@ -524,7 +604,7 @@ async fn transfer(
         let head = spec.method == hyper::Method::HEAD;
         let mut request = Request::builder()
             .method(spec.method)
-            .uri(if h2 {
+            .uri(if h2 || forward_proxy.is_some() {
                 uri.clone()
             } else {
                 uri.path_and_query()
@@ -545,6 +625,12 @@ async fn transfer(
             .body(ClientBody::new(callback, spec.body, spec.upload_size))
             .map_err(|_| "Invalid request")?;
         request.headers_mut().extend(spec.headers);
+        if let Some(proxy) = forward_proxy {
+            if let Some(auth) = proxy.authorization() {
+                request.headers_mut().insert("proxy-authorization", auth);
+            }
+        }
+
         let response = sender
             .send_request(request)
             .await
@@ -744,9 +830,11 @@ impl Engine {
                 let idle = self.conns.iter().position(|c| {
                     c.as_ref().is_some_and(|c| {
                         (c.active == 0 || (c.multiplexed && c.active < 64))
-                            && !c.closed && !c.draining
+                            && !c.closed
+                            && !c.draining
                             && c.sender.as_ref().is_some_and(Sender::is_ready)
                             && &c.origin == origin
+                            && c.proxy_id == self.ops[i].proxy.as_ref().map_or(0, |p| p.id)
                             && c.trust_id == self.ops[i].tls.as_ref().map_or(0, |t| t.id)
                             && self.ops[i].addresses.as_slice().contains(&c.addr)
                     })
@@ -788,7 +876,14 @@ impl Engine {
                         self.finish(i, Some("HTTP operation timed out"));
                         return 1;
                     }
-                    match Conn::new(addr, op.origin.clone(), deadline, op.tls.clone()) {
+                    match Conn::new(
+                        addr,
+                        op.origin.clone(),
+                        deadline,
+                        op.tls.clone(),
+                        op.proxy.clone(),
+                        op.uri.clone(),
+                    ) {
                         Ok(conn) => {
                             self.conns[slot] = Some(conn);
                             slot
@@ -843,7 +938,9 @@ impl Engine {
                         // not submitted: changing connections cannot replay any
                         // request bytes. Existing transfers keep their owner.
                         conn.active -= 1;
-                        if conn.active == 0 { self.conns[at] = None; }
+                        if conn.active == 0 {
+                            self.conns[at] = None;
+                        }
                         self.ops[i].conn = None;
                         progress = true;
                         i += 1;
@@ -866,6 +963,11 @@ impl Engine {
                             op.job,
                             op.callback.clone(),
                             op.request.take().expect("one request owner"),
+                            if op.tls.is_none() {
+                                op.proxy.clone()
+                            } else {
+                                None
+                            },
                         )));
                         op.wake.set();
                         progress = true
@@ -954,6 +1056,7 @@ pub extern "C" fn ar_hyper_new(total: usize, host: usize) -> *mut c_void {
         Box::into_raw(Box::new(Engine {
             poisoned: false,
             trust: Vec::new(),
+            proxies: Vec::new(),
             conns: Vec::new(),
             ops: Vec::new(),
             total,
@@ -1017,6 +1120,7 @@ pub unsafe extern "C" fn ar_hyper_submit(
         -1,
         &[],
         &[],
+        std::ptr::null(),
     )
 }
 #[no_mangle]
@@ -1049,6 +1153,7 @@ pub unsafe extern "C" fn ar_hyper_submit_request(
         -1,
         &[],
         &[],
+        std::ptr::null(),
     )
 }
 #[no_mangle]
@@ -1082,6 +1187,7 @@ pub unsafe extern "C" fn ar_hyper_submit_http(
         -1,
         &[],
         &[],
+        std::ptr::null(),
     )
 }
 #[no_mangle]
@@ -1117,6 +1223,7 @@ pub unsafe extern "C" fn ar_hyper_submit_http_stream(
         upload_size,
         &[],
         &[],
+        std::ptr::null(),
     )
 }
 /// Identity bytes are borrowed only for submission and copied into a bounded,
@@ -1175,6 +1282,65 @@ pub unsafe extern "C" fn ar_hyper_submit_http_identity(
         upload_size,
         cert,
         key,
+        std::ptr::null(),
+    )
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_http_proxy(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    request: *const RequestData,
+    streams: u32,
+    upload_size: i64,
+    cert: *const u8,
+    cert_len: usize,
+    key: *const u8,
+    key_len: usize,
+    proxy: *const proxy::ProxyData,
+) -> i32 {
+    if cert_len > 1048576
+        || key_len > 65536
+        || (cert_len == 0) != (key_len == 0)
+        || (cert_len > 0 && (cert.is_null() || key.is_null()))
+    {
+        return -1;
+    }
+    let cert = if cert_len == 0 {
+        &[]
+    } else {
+        std::slice::from_raw_parts(cert, cert_len)
+    };
+    let key = if key_len == 0 {
+        &[]
+    } else {
+        std::slice::from_raw_parts(key, key_len)
+    };
+    submit(
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        true,
+        request,
+        streams,
+        upload_size,
+        cert,
+        key,
+        proxy,
     )
 }
 unsafe fn submit(
@@ -1194,6 +1360,7 @@ unsafe fn submit(
     upload_size: i64,
     cert: &[u8],
     key: &[u8],
+    proxy: *const proxy::ProxyData,
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
@@ -1273,38 +1440,55 @@ unsafe fn submit(
             None => return -1,
         };
         let host = raw_host.trim_matches(['[', ']']);
-        let (candidates, origin) = if let Ok(ip) = host.parse() {
-            if count != 0 {
-                return -1;
-            } // Numeric origins cannot be redirected.
-            let addr = SocketAddr::new(ip, port);
-            (Addresses::One(addr), Origin::Numeric(addr))
+        let Ok(prepared_proxy) = proxy::copy(proxy, &mut engine.proxies, addresses, count) else {
+            return -1;
+        };
+        let (proxy, candidates, origin) = if let Some((proxy, candidates)) = prepared_proxy {
+            let origin = if let Ok(ip) = host.parse() {
+                Origin::Numeric(SocketAddr::new(ip, port))
+            } else {
+                if !valid_dns_name(host) {
+                    return -1;
+                }
+                Origin::Name(authority.as_str().to_ascii_lowercase())
+            };
+            (Some(proxy), candidates, origin)
         } else {
-            if count == 0 || !valid_dns_name(raw_host) {
-                return -1;
-            }
-            let mut candidates = Vec::with_capacity(count);
-            for address in std::slice::from_raw_parts(addresses, count) {
-                if address.bytes.is_null() || address.length == 0 || address.length > 45 {
+            let (candidates, origin) = if let Ok(ip) = host.parse() {
+                if count != 0 {
+                    return -1;
+                } // Numeric origins cannot be redirected.
+                let addr = SocketAddr::new(ip, port);
+                (Addresses::One(addr), Origin::Numeric(addr))
+            } else {
+                if count == 0 || !valid_dns_name(raw_host) {
                     return -1;
                 }
-                let Ok(text) =
-                    std::str::from_utf8(std::slice::from_raw_parts(address.bytes, address.length))
-                else {
-                    return -1;
-                };
-                let Ok(ip) = text.parse() else {
-                    return -1;
-                };
-                let address = SocketAddr::new(ip, port);
-                if !candidates.contains(&address) {
-                    candidates.push(address);
+                let mut candidates = Vec::with_capacity(count);
+                for address in std::slice::from_raw_parts(addresses, count) {
+                    if address.bytes.is_null() || address.length == 0 || address.length > 45 {
+                        return -1;
+                    }
+                    let Ok(text) = std::str::from_utf8(std::slice::from_raw_parts(
+                        address.bytes,
+                        address.length,
+                    )) else {
+                        return -1;
+                    };
+                    let Ok(ip) = text.parse() else {
+                        return -1;
+                    };
+                    let address = SocketAddr::new(ip, port);
+                    if !candidates.contains(&address) {
+                        candidates.push(address);
+                    }
                 }
-            }
-            (
-                Addresses::Many(candidates),
-                Origin::Name(authority.as_str().to_ascii_lowercase()),
-            )
+                (
+                    Addresses::Many(candidates),
+                    Origin::Name(authority.as_str().to_ascii_lowercase()),
+                )
+            };
+            (None, candidates, origin)
         };
         let tls = if encrypted {
             let roots = std::slice::from_raw_parts(ca, ca_len);
@@ -1342,6 +1526,7 @@ unsafe fn submit(
             callback: job::Job::new(job as usize),
             response_complete: false,
             request: Some(request),
+            proxy,
             tls,
             job: job as usize,
             uri,

@@ -11,7 +11,7 @@ $checks=[];$ticks=0;$streamIds=[];
 Runtime::configure(['httpMaxHostConnections'=>1,'httpMaxConnections'=>4]);
 $work=function()use($config,&$checks,&$ticks,&$streamIds):void{
     verify(asyncara_info()['httpBackend']==='hyper-prototype','Wrong native transport');
-    $url=$config['url'];$client=new HttpClient(concurrency:16,timeout:5,caFile:$config['ca']);
+    $url=$config['url'];$client=new HttpClient(concurrency:16,timeout:5,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null,proxyCredentials:$config['proxyCredentials']??null);
     $warm=$client->get($url.'/ok')->await();verify($warm->headers['x-test-protocol']===['h2'],'Actual HTTP/2 peer');
     verify($warm->headers['x-repeat']===['one','two'],'Repeated HTTP/2 headers');$connection=$warm->headers['x-test-connection'];
     $held=[];for($n=0;$n<4;$n++)$held[]=$client->get($url.'/hold/shared');
@@ -35,7 +35,7 @@ $work=function()use($config,&$checks,&$ticks,&$streamIds):void{
         reject(fn()=>$client->get($url.'/'.$path)->await());verify(!$sibling->isCompleted(),'Failure affected independent held stream');
         $client->get($url.'/release/'.$path)->await();verify($sibling->await()->body==='released','Sibling lost after '.$path);$checks[]=$path.'_rejected_sibling_survives';echo end($checks),"\n";
     }
-    $timed=new HttpClient(concurrency:2,timeout:.2,caFile:$config['ca']);
+    $timed=new HttpClient(concurrency:2,timeout:.2,caFile:$config['ca'],proxy:$config['proxy']??null,proxyCaFile:$config['proxyCA']??null,proxyCredentials:$config['proxyCredentials']??null);
     $deadline=$timed->get($url.'/hold/deadline');
     Async::timeout(2,function()use($client,$url):void{while($client->get($url.'/state/deadline')->await()->json()['held']!==1)Async::sleep(0);});
     reject($deadline->await(...));$checks[]='pending_stream_deadline';echo end($checks),"\n";

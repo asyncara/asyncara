@@ -230,6 +230,11 @@ int ar_hyper_submit_http_identity(void *, void *, const unsigned char *, size_t,
                                  const ar_hyper_address *, size_t, const unsigned char *, size_t,
                                  const ar_hyper_request *, unsigned, int64_t,
                                  const unsigned char *, size_t, const unsigned char *, size_t);
+typedef struct { ar_hyper_address url, roots, user, password; } ar_hyper_proxy;
+int ar_hyper_submit_http_proxy(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
+                               const ar_hyper_address *, size_t, const unsigned char *, size_t,
+                               const ar_hyper_request *, unsigned, int64_t,
+                               const unsigned char *, size_t, const unsigned char *, size_t, const ar_hyper_proxy *);
 int ar_hyper_resume(void *engine, void *job);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);

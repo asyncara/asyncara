@@ -4,6 +4,7 @@ import argparse, concurrent.futures, hashlib, http.client, json, os, pathlib, se
 p=argparse.ArgumentParser()
 for name in ['php','module','out']: p.add_argument('--'+name,required=True)
 p.add_argument('--backend',choices=['epoll','poll'],required=True)
+p.add_argument('--transport',choices=['curl-multi','hyper'],default='curl-multi')
 p.add_argument('--server',action='store_true',help='Run the same checks in a Native Server handler, plus 16 concurrent requests')
 p.add_argument('--server-split',action='store_true',help='Memory diagnostic only: one original proxy group per request, unchanged deadlines')
 a=p.parse_args();a.server=a.server or a.server_split;root=pathlib.Path(__file__).resolve().parents[2]
@@ -12,13 +13,13 @@ sys.path.insert(0,str(root/'tests/server'));from tls import certificates
 certs=certificates(out);sha=lambda f:hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest()
 manifest={str(f.relative_to(root)):sha(f)for d in ['ext','src','tests/http']for f in(root/d).rglob('*')if f.is_file()and '__pycache__'not in f.parts}
 (out/'source-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-(out/'peer-config.json').write_text(json.dumps({'cert':str(certs/'server.pem'),'key':str(certs/'server.key')}))
+(out/'peer-config.json').write_text(json.dumps({'cert':str(certs/'server.pem'),'key':str(certs/'server.key'),'clientCa':str(certs/'ca.pem')}))
 start=time.monotonic();code=None;failure=None;peer=None;child=None;server_checks=[]
 try:
     with(out/'peer.log').open('x')as log:
         peer=subprocess.Popen([sys.executable,str(root/'tests/http/proxy_auth_peer.py'),str(out/'peer-config.json')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=log,text=True)
-    config=json.loads(peer.stdout.readline());config['ca']=str(certs/'ca.pem');(out/'config.json').write_text(json.dumps(config))
-    env=os.environ|{'ASYNCARA_HTTP_BACKEND':'curl-multi','ASYNCARA_BACKEND':a.backend}
+    config=json.loads(peer.stdout.readline());config['ca']=str(certs/'ca.pem');config['clientCert']=str(certs/'client.pem');config['clientKey']=str(certs/'client.key');config['clientFingerprint']=hashlib.sha256(subprocess.check_output(['openssl','x509','-in',str(certs/'client.pem'),'-outform','DER'])).hexdigest();(out/'config.json').write_text(json.dumps(config))
+    env=os.environ|{'ASYNCARA_HTTP_BACKEND':'hyper-prototype'if a.transport=='hyper'else'curl-multi','ASYNCARA_BACKEND':a.backend}
     for key in ['http_proxy','HTTP_PROXY','https_proxy','HTTPS_PROXY','all_proxy','ALL_PROXY']:env.pop(key,None)
     command=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/http/proxy_auth.php'),str(out/'config.json')]
     if a.server:command.append('server-split'if a.server_split else'server')
@@ -69,11 +70,12 @@ try:
     assert code==0 and failure is None,(code,failure)
     assert peer.returncode==0
     stats=json.loads((out/'peer-final.json').read_text())
+    assert stats['proxyClientIdentities']==0 and stats['originClientIdentities']>=2
     assert stats['leaked']==0 and stats['originAuthOnConnect']==0 and stats['held']==0 and stats['rejected']>=8 and stats['connect']>=4 and stats['forward']>=8,stats
     assert all(sha(root/n)==s for n,s in manifest.items()),'Source changed'
     status='PASS'
 except BaseException as e:status='FAIL';failure=repr(e)
-report={'status':status,'exit':code,'failure':failure,'backend':a.backend,'server':a.server,'memoryDiagnosticSplit':a.server_split,'serverChecks':server_checks,'wallSeconds':time.monotonic()-start,'command':command if 'command'in locals()else None,
+report={'status':status,'exit':code,'failure':failure,'backend':a.backend,'transport':a.transport,'server':a.server,'memoryDiagnosticSplit':a.server_split,'serverChecks':server_checks,'wallSeconds':time.monotonic()-start,'command':command if 'command'in locals()else None,
     'moduleSha256':sha(a.module),'manifestSha256':sha(out/'source-manifest.json'),'artifacts':{f.name:sha(f)for f in out.iterdir()if f.suffix=='.log'or f.name in ['peer-final.json','failure-server-stats.json','requests.jsonl']}}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');(out/'active.json').write_text('{"status":"TERMINAL"}\n')
 print(json.dumps(report,indent=2));raise SystemExit(status!='PASS')

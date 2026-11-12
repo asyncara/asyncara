@@ -10,7 +10,8 @@ try{control($body);}catch(DomainException $e){
 }
 $exposed=[];
 foreach(['public'=>static fn()=>Asyncara\Async::run($body),
-    'scheduler'=>static fn()=>(new Asyncara\Scheduler(10))->run($body)]as$name=>$call){
+    'scheduler'=>static fn()=>(new Asyncara\Scheduler(10))->run($body),
+    'semaphore'=>static fn()=>Asyncara\Async::run(static fn()=>(new Asyncara\Concurrency\Semaphore(1))->withPermit($body))]as$name=>$call){
     try{$call();throw new RuntimeException('Missing controlled failure');}
     catch(DomainException $e){$exposed[$name]=str_contains(print_r($e->getTrace(),true),$secret);}
 }

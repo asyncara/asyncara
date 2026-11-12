@@ -261,6 +261,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     for (size_t i = 0; i < sizeof(proxy)/sizeof(*proxy); i++) {
         const char *value = getenv(proxy[i]); if (value && *value) goto unsupported;
     }
+    ar_hyper_proxy proxy_data = {0};
     uint64_t connect = 10000;
     const unsigned char *ca = NULL; size_t ca_len = 0;
     const unsigned char *cert = NULL, *key_bytes = NULL; size_t cert_len = 0, key_len = 0;
@@ -287,6 +288,14 @@ static void hyper_start(ar_engine *e, ar_job *j) {
         else if (!strcmp(key, "followRedirects")) { if (v->integer) goto unsupported; }
         else if (!strcmp(key, "streamResponse") || !strcmp(key, "uploadSize")) { /* validated at submission */ }
         else if (!strcmp(key, "connectTimeoutMs")) connect = v->integer;
+        else if (!strcmp(key, "proxy") || !strcmp(key, "proxyCaPem") || !strcmp(key, "proxyUsername") || !strcmp(key, "proxyPassword")) {
+            if (v->type != V_STRING) goto unsupported;
+            ar_hyper_address data = {(const unsigned char *)v->string, v->length};
+            if (!strcmp(key, "proxy")) proxy_data.url = data;
+            else if (!strcmp(key, "proxyCaPem")) proxy_data.roots = data;
+            else if (!strcmp(key, "proxyUsername")) proxy_data.user = data;
+            else proxy_data.password = data;
+        }
         else if (!strcmp(key, "caPem")) {
             if (v->type != V_STRING || !v->length || v->length > 1048576) goto unsupported;
             ca = (const unsigned char *)v->string; ca_len = v->length;
@@ -315,7 +324,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     /* Rust copies validated addresses synchronously; no borrowed PHP options
      * or resolver buffers survive this call. */
     unsigned streams = (j->stream_response ? 1u : 0u) | (j->stream_upload ? 2u : 0u);
-    int submitted = ar_hyper_submit_http_identity(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request, streams, j->upload_size, cert, cert_len, key_bytes, key_len);
+    int submitted = ar_hyper_submit_http_proxy(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request, streams, j->upload_size, cert, cert_len, key_bytes, key_len, proxy_data.url.bytes ? &proxy_data : NULL);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */

@@ -9,6 +9,8 @@ class Proxy(http.server.BaseHTTPRequestHandler):
     def do_CONNECT(self):
         if self.path!='localhost:'+str(cfg['https']):self.send_error(403);return
         remote=socket.create_connection(('127.0.0.1',cfg['https']),timeout=3)
+        remote.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+        self.connection.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
         with lock:stats['connect']+=1
         self.send_response(200);self.send_header('X-Proxy-Only','outer');self.end_headers();self.wfile.flush();self.close_connection=True
         self.connection.settimeout(3)

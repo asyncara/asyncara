@@ -6,7 +6,7 @@ cfg = json.loads(pathlib.Path(sys.argv[1]).read_text())
 lock = threading.Lock()
 release = threading.Event()
 stop = threading.Event()
-stats = dict(authorized=0, rejected=0, connect=0, forward=0, origin=0, leaked=0, held=0, originAuthOnConnect=0)
+stats = dict(authorized=0, rejected=0, connect=0, forward=0, origin=0, leaked=0, held=0, originAuthOnConnect=0, proxyClientIdentities=0, originClientIdentities=0)
 expected = 'Basic ' + base64.b64encode(b'asyncara-test:synthetic:proxy-secret').decode()
 
 class Quiet(http.server.BaseHTTPRequestHandler):
@@ -25,6 +25,11 @@ class Origin(Quiet):
             with lock:
                 stats['origin'] += 1
                 stats['leaked'] += int(self.headers.get('Proxy-Authorization') is not None)
+            if self.path == '/client-identity':
+                certificate=self.connection.getpeercert(binary_form=True) if isinstance(self.connection,ssl.SSLSocket) else None
+                if not certificate:self.reply(403);return
+                with lock:stats['originClientIdentities']+=1
+                self.reply(200,hashlib.sha256(certificate).hexdigest().encode());return
             if self.path == '/hold':
                 with lock: stats['held'] += 1
                 try:
@@ -55,6 +60,8 @@ def start(handler, tls=False):
         ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ctx.load_cert_chain(cfg['cert'], cfg['key'])
         ctx.set_alpn_protocols(['http/1.1'])
+        if cfg.get('clientCa'):
+            ctx.load_verify_locations(cafile=cfg['clientCa']);ctx.verify_mode=ssl.CERT_OPTIONAL
         server.socket = ctx.wrap_socket(server.socket, server_side=True)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     return server
@@ -63,6 +70,8 @@ origin = start(Origin); secure = start(Origin, True)
 
 class Proxy(Quiet):
     def authenticated(self):
+        if isinstance(self.connection,ssl.SSLSocket) and self.connection.getpeercert(binary_form=True):
+            with lock:stats['proxyClientIdentities']+=1
         ok = self.headers.get('Proxy-Authorization') == expected
         with lock: stats['authorized' if ok else 'rejected'] += 1
         if not ok:
@@ -74,6 +83,11 @@ class Proxy(Quiet):
         target = cfg.get('targetTlsPort', secure.server_port)
         if self.path != 'localhost:' + str(target): self.reply(403); return
         remote = socket.create_connection(('127.0.0.1', target), timeout=3)
+        # Match the independent asyncio origin's TCP policy. Small HTTP/2
+        # WINDOW_UPDATE records must not incur Nagle/delayed-ACK pauses at
+        # either tunnel endpoint. Workload sizes/deadlines remain unchanged.
+        remote.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        self.connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         with lock:
             stats['connect'] += 1
             stats['originAuthOnConnect'] += int(self.headers.get('Authorization') is not None)

@@ -13,6 +13,7 @@ final class HttpClient
     private Semaphore $slots;
     private ?bool $hyper = null;
     private ?string $hyperCaPem = null;
+    private ?string $hyperProxyCaPem = null;
     private ?array $clientIdentityPem = null;
     public function __construct(int $concurrency = 32, private float $timeout = 30, private ?string $proxy = null, private ?string $caFile = null, private float $connectTimeout = 10, private ?string $proxyCaFile = null, #[\SensitiveParameter] private ?array $proxyCredentials = null, private ?string $clientCertFile = null, private ?string $clientKeyFile = null)
     {
@@ -345,7 +346,7 @@ final class HttpClient
         if ($hyper && parse_url($url, PHP_URL_SCHEME) === 'http') unset($options['caFile']);
         $host = parse_url($url, PHP_URL_HOST);
         if (!$hyper || !is_string($host) ||
-            (parse_url($url, PHP_URL_SCHEME) !== 'https' && inet_pton(trim($host, '[]')) !== false)) {
+            (!isset($options['proxy']) && parse_url($url, PHP_URL_SCHEME) !== 'https' && inet_pton(trim($host, '[]')) !== false)) {
             $elapsed = Scheduler::now() - $start;
             if ($elapsed >= min($this->timeout, $this->connectTimeout)) throw new \Asyncara\Exception\TimeoutException('HTTP TLS preparation deadline exceeded');
             $options['connectTimeoutMs'] = (int)ceil(($this->connectTimeout - $elapsed) * 1000);
@@ -354,17 +355,32 @@ final class HttpClient
         $tls = parse_url($url, PHP_URL_SCHEME) === 'https';
         $numeric = inet_pton(trim($host, '[]')) !== false;
         if ($options['followRedirects'] ||
-            isset($options['proxy']) ||
             parse_url($url, PHP_URL_USER) !== null || (!$numeric &&
             (strlen($host) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $host)))) {
             throw new \Asyncara\Exception\OperationException('Invalid or unsupported Hyper origin');
         }
         foreach (['http_proxy', 'HTTP_PROXY', 'https_proxy', 'HTTPS_PROXY', 'all_proxy', 'ALL_PROXY'] as $name) {
-            if (($proxy = getenv($name)) !== false && $proxy !== '') throw new \Asyncara\Exception\OperationException('Hyper proxy is unsupported');
+            if (($proxy = getenv($name)) !== false && $proxy !== '') throw new \Asyncara\Exception\OperationException('Hyper environment proxy selection is unsupported; configure an explicit proxy');
         }
+        // Resolve the connection endpoint, not an origin delegated to a proxy.
+        // Origin TLS identity and trust remain independent of proxy TLS.
+        $endpoint = $host; $proxyTls = false;
+        if (isset($options['proxy'])) {
+            $parts = parse_url($options['proxy']);
+            if (is_array($parts) && isset($parts['scheme'])) $parts['scheme'] = strtolower($parts['scheme']);
+            if (!is_array($parts) || !in_array($parts['scheme'] ?? '', ['http','https'], true) ||
+                !isset($parts['host']) || isset($parts['user']) || isset($parts['pass']) ||
+                isset($parts['query']) || isset($parts['fragment']) || !in_array($parts['path'] ?? '', ['', '/'], true))
+                throw new \Asyncara\Exception\OperationException('Invalid Hyper proxy endpoint');
+            $endpoint = $parts['host']; $proxyTls = $parts['scheme'] === 'https';
+            if (inet_pton(trim($endpoint, '[]')) === false &&
+                (strlen($endpoint) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $endpoint)))
+                throw new \Asyncara\Exception\OperationException('Invalid Hyper proxy hostname');
+        }
+        $numeric = inet_pton(trim($endpoint, '[]')) !== false;
         $budget = min($this->timeout, $this->connectTimeout) - (Scheduler::now() - $start);
         if ($budget <= 0) throw new \Asyncara\Exception\TimeoutException('HTTP TLS preparation deadline exceeded');
-        $addresses = Async::timeout($budget, function () use ($host, $numeric, $tls, &$options): array {
+        $addresses = Async::timeout($budget, function () use ($endpoint, $numeric, $tls, $proxyTls, &$options): array {
             if ($tls) {
                 if ($this->hyperCaPem === null) {
                     // Linux system trust snapshot or explicit caFile. No blocking
@@ -376,7 +392,15 @@ final class HttpClient
                 }
                 unset($options['caFile']); $options['caPem'] = $this->hyperCaPem;
             }
-            return $numeric ? [] : Async::await(\Asyncara\IO\Dns::resolve($host));
+            if ($proxyTls) {
+                if ($this->hyperProxyCaPem === null) {
+                    $path = $this->proxyCaFile ?? (getenv('SSL_CERT_FILE') ?: '/etc/ssl/certs/ca-certificates.crt');
+                    if ($path === '' || str_contains($path, "\0") || str_contains($path, '://')) throw new \ValueError('Proxy CA file must be a local path');
+                    $this->hyperProxyCaPem = $this->readPem($path, 1048576);
+                }
+                unset($options['proxyCaFile']); $options['proxyCaPem'] = $this->hyperProxyCaPem;
+            }
+            return $numeric ? [] : Async::await(\Asyncara\IO\Dns::resolve($endpoint));
         });
         Scheduler::current()->currentCancellation()?->throwIfRequested();
         $addresses = array_values(array_unique($addresses));

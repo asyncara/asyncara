@@ -11,7 +11,6 @@ p.add_argument('--server',action='store_true',help='Run the same Hyper lifecycle
 p.add_argument('--proxy-auth',action='store_true',help='Basic authenticated HTTPS CONNECT; implies --proxy')
 a=p.parse_args();root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.out).resolve();out.mkdir(parents=True,exist_ok=False,mode=0o700)
 if a.proxy_auth:a.proxy=True
-if a.transport=='hyper' and a.proxy:p.error('Hyper proxy support is tested separately when implemented')
 if a.server and (a.transport!='hyper' or a.case!='lifecycle'):p.error('--server requires Hyper lifecycle case')
 sys.path.insert(0,str(root/'tests/server'));from tls import certificates
 (out/'origin').mkdir();certs=certificates(out/'origin');sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();peers=[];start=time.monotonic();code=None;error=None

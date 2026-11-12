@@ -56,11 +56,20 @@ $exercise=function(?string $onlyKind=null)use($cfg,&$checks,&$ticks):void{
         verify($client->get($cfg['origin'].'/ok')->await()->body==='origin-ok','Recovery failed');
         foreach(['Proxy-Authorization: synthetic','pRoXy-AuThOrIzAtIoN;']as$header)
             rejected(fn()=>$client->get($cfg['origin'].'/ok',[$header])->await());
+        $identity=new HttpClient(timeout:5,proxy:$proxy,caFile:$cfg['ca'],proxyCaFile:$trust,proxyCredentials:credentials(),clientCertFile:$cfg['clientCert'],clientKeyFile:$cfg['clientKey']);
+        verify($identity->get($cfg['origin'].'/client-identity')->await()->body===$cfg['clientFingerprint'],'Origin mTLS identity through proxy');
+        verify($client->get($cfg['origin'].'/client-identity')->await()->status===403,'Unconfigured client reused authenticated origin connection');
         $checks[]=$kind.'_forward_connect_stream_upload_redirect_shared_cancel_reuse';
     }
     // Native option ownership: mutate the source after submission.
     $pass=credentials()['password'];$options=['proxy'=>$cfg['httpsProxy'],'proxyCaFile'=>$cfg['ca'],
         'proxyUsername'=>'asyncara-test','proxyPassword'=>&$pass];
+    if(asyncara_info()['httpBackend']==='hyper-prototype'){
+        // Raw Hyper admission accepts prepared trust/address bytes. Public
+        // clients above perform these reads/resolution using native workers.
+        unset($options['proxyCaFile']);$options['proxyCaPem']=Async::await(\Asyncara\IO\Files::read($cfg['ca']));
+        $options['resolvedAddresses']=['127.0.0.1'];
+    }
     $f=Scheduler::current()->native('http',['http://proxy-target.invalid/ok',null,$options,5000]);$pass='wrong';unset($options);
     verify($f->await()['body']==='origin-ok','Native credential snapshot');
     foreach([[],['username'=>'a'],['username'=>'a','password'=>['bad']],['username'=>'a:b','password'=>''],
@@ -79,7 +88,7 @@ $exercise=function(?string $onlyKind=null)use($cfg,&$checks,&$ticks):void{
     $checks[]='bounded_validation_native_snapshot_trace_redaction';
     verify($control->get($cfg['direct'].'/ok')->await()->body==='origin-ok','Direct recovery');
     $stats=$control->get($cfg['control'].'/state')->await()->json();
-    verify($stats['leaked']===0&&$stats['originAuthOnConnect']===0,'Authentication crossed hop boundary');
+    verify($stats['proxyClientIdentities']===0&&$stats['leaked']===0&&$stats['originAuthOnConnect']===0,'Authentication crossed hop boundary');
 };
 if(in_array($argv[2]??'',['server','server-split'],true)){
     $app=new Asyncara\App();
