@@ -76,9 +76,10 @@ if not a.php_only:
         if name == 'start-wait':
             run(name + '-logical-clock', [out / name, '--logical-clock'])
     if a.hyper:
-        run('hyper-codec-build', cc + flags + ['-DHAVE_ASYNCARA_HYPER=1',
+        codecs = json.loads(subprocess.check_output(['python3', 'scripts/hyper-codecs.py'], cwd=ROOT))
+        run('hyper-codec-build', cc + flags + codecs['cflags'] + ['-DHAVE_ASYNCARA_HYPER=1',
             'tests/http/hyper_decode.c', 'ext/hyper_decode.c', 'ext/memory.c',
-            '-pthread', '-lz', '-Wl,--wrap=malloc', '-o', out / 'hyper-codec'])
+            '-pthread', '-lz', '-lbrotlienc', '-Wl,--wrap=malloc'] + codecs['libs'] + ['-lm', '-o', out / 'hyper-codec'])
         run('hyper-codec', [out / 'hyper-codec'])
 php = [a.php, '-n', '-d', 'memory_limit=128M', '-d', 'extension=' + str(module)]
 run('php-identity', php + ['-v'])

@@ -13,13 +13,15 @@ try{
  if(!$bounds)Async::run(function()use($ports,$certs){
   foreach(['http://127.0.0.1:'.$ports['http'],'https://localhost:'.$ports['https']]as$url){
    $client=new HttpClient(concurrency:4,caFile:str_starts_with($url,'https:')?$certs.'/ca.pem':null);
-   foreach(['/gzip','/deflate','/case','/identity','/byte-chunks']as$path){$r=$client->get($url.$path)->await();check(strlen($r->body)===65536&&hash('sha256',$r->body)===$ports['decoded'],'Decoded identity '.$path);}
+   foreach(['/gzip','/deflate','/case','/identity','/byte-chunks','/br','/zstd']as$path){$r=$client->get($url.$path)->await();check(strlen($r->body)===65536&&hash('sha256',$r->body)===$ports['decoded'],'Decoded identity '.$path);}
    check($client->get($url.'/empty')->await()->body==='','Empty compressed member');
+   foreach(['/br-empty','/zstd-empty']as$path)check($client->get($url.$path)->await()->body==='','Empty codec member');
+   check(strlen($client->get($url.'/zstd-concat')->await()->body)===131072,'Concatenated zstd frames');
    $body=$client->get($url.'/concat')->await()->body;check(strlen($body)===131072&&hash('sha256',substr($body,0,65536))===$ports['decoded']&&substr($body,0,65536)===substr($body,65536),'Concatenated gzip members');
    check($client->request('HEAD',$url.'/gzip')->await()->body==='','HEAD representation metadata');
    check($client->get($url.'/not-modified')->await()->body==='','304 representation metadata');
-   check($client->get($url.'/echo')->await()->body==='gzip, deflate','Advertised buffered codecs');
-   foreach(['/truncated','/crc','/junk','/raw-deflate','/unknown','/stacked','/duplicate','/wire-truncated','/bomb']as$path){
+   check($client->get($url.'/echo')->await()->body==='gzip, deflate, br, zstd','Advertised buffered codecs');
+   foreach(['/truncated','/crc','/junk','/raw-deflate','/unknown','/stacked','/duplicate','/wire-truncated','/bomb','/br-concat','/br-truncated','/zstd-truncated','/br-junk','/zstd-junk','/br-bomb','/zstd-bomb','/zstd-window']as$path){
     $failed=false;try{$client->get($url.$path)->await();}catch(OperationException){$failed=true;}
     check($failed,'Malformed/unsupported/oversized input accepted: '.$path);check(asyncara_info()['pendingOperations']===0,'Failed codec operation retained');
     check($client->get($url.'/identity')->await()->status===200,'Recovery after decoding failure');
@@ -41,14 +43,29 @@ try{
    }
    // ResponseStream remains raw encoded bytes, with its existing backpressure.
    $raw=implode('',iterator_to_array($client->getStream($url.'/gzip')));check(hash('sha256',$raw)===$ports['encoded'],'Streaming encoded bytes changed');
+   foreach(['br','zstd']as$coding){
+    $raw=implode('',iterator_to_array($client->getStream($url.'/'.$coding)));check(hash('sha256',$raw)===$ports['codecs'][$coding],'Streaming codec bytes changed');
+    $pending=$client->get($url.'/'.$coding.'-held');$deadline=hrtime(true)+2_000_000_000;
+    while($client->get($url.'/waiting')->await()->body!=='1'){check(hrtime(true)<$deadline,'Codec barrier');Async::sleep(.001);}
+    for($tick=0;$tick<2;$tick++){Async::sleep(.003);check(!$pending->isCompleted(),'Codec preceded ticks');}
+    $client->get($url.'/release')->await();check(hash('sha256',$pending->await()->body)===$ports['decoded'],'Codec held body');
+    $pending=$client->get($url.'/'.$coding.'-held');$deadline=hrtime(true)+2_000_000_000;
+    while($client->get($url.'/waiting')->await()->body!=='1'){check(hrtime(true)<$deadline,'Codec cancellation barrier');Async::sleep(.001);}
+    $pending->cancel();$cancelled=false;try{$pending->await();}catch(CancelledException){$cancelled=true;}check($cancelled,'Codec cancellation');
+    $client->get($url.'/release')->await();$deadline=hrtime(true)+2_000_000_000;
+    while($client->get($url.'/waiting')->await()->body!=='0'){check(hrtime(true)<$deadline,'Codec cancelled peer drain');Async::sleep(.001);}
+    check(!asyncara_info()['pendingOperations']&&!asyncara_info()['nativeMemoryBytes'],'Cancelled codec ownership');
+   }
    $info=asyncara_info();check($info['pendingOperations']===0&&$info['nativeMemoryBytes']===0,'Decoded resources retained');
   }
  });
  if($bounds)Async::run(function()use($ports){
+  foreach(['/bomb','/br-bomb','/zstd-bomb']as$path){
   $client=new HttpClient();$before=asyncara_info()['nativeMemoryRejections'];$error=null;
-  try{$client->get('http://127.0.0.1:'.$ports['http'].'/bomb')->await();}catch(OperationException $e){$error=$e;}
+  try{$client->get('http://127.0.0.1:'.$ports['http'].$path)->await();}catch(OperationException $e){$error=$e;}
   check($error!==null&&str_contains($error->getMessage(),'Native memory'),'Decoded output bypassed aggregate capacity');
   check(asyncara_info()['nativeMemoryRejections']>$before&&asyncara_info()['nativeMemoryBytes']===0,'Codec capacity cleanup');
+  }
  });
  gc_collect_cycles();$info=asyncara_info();check(Future::pendingCount()===0&&$info['pendingOperations']===0&&$info['nativeMemoryBytes']===0,'Final resources retained');
  echo json_encode(['status'=>'PASS','mode'=>$bounds?'bounds':'functional','native'=>$info]),"\n";

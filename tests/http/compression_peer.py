@@ -1,6 +1,25 @@
 #!/usr/bin/env python3
 """Independent gzip/zlib wire producer; no PHP compression extension required."""
 import gzip, hashlib, http.server, json, ssl, sys, threading, urllib.parse, zlib
+import ctypes, ctypes.util
+# Independent upstream encoders; decoded identities are checked by PHP hashes.
+_brotli=ctypes.CDLL(ctypes.util.find_library('brotlienc'))
+_zstd=ctypes.CDLL(ctypes.util.find_library('zstd'))
+_brotli.BrotliEncoderMaxCompressedSize.argtypes=[ctypes.c_size_t];_brotli.BrotliEncoderMaxCompressedSize.restype=ctypes.c_size_t
+_brotli.BrotliEncoderCompress.argtypes=[ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_size_t,ctypes.c_void_p,ctypes.POINTER(ctypes.c_size_t),ctypes.c_void_p];_brotli.BrotliEncoderCompress.restype=ctypes.c_int
+_zstd.ZSTD_compressBound.argtypes=[ctypes.c_size_t];_zstd.ZSTD_compressBound.restype=ctypes.c_size_t
+_zstd.ZSTD_compress.argtypes=[ctypes.c_void_p,ctypes.c_size_t,ctypes.c_void_p,ctypes.c_size_t,ctypes.c_int];_zstd.ZSTD_compress.restype=ctypes.c_size_t
+_zstd.ZSTD_isError.argtypes=[ctypes.c_size_t];_zstd.ZSTD_isError.restype=ctypes.c_uint
+
+def encode(coding,data):
+    if coding=='br':
+        size=ctypes.c_size_t(_brotli.BrotliEncoderMaxCompressedSize(len(data)));out=ctypes.create_string_buffer(size.value)
+        assert _brotli.BrotliEncoderCompress(5,22,0,len(data),data,ctypes.byref(size),out)
+        return out.raw[:size.value]
+    size=_zstd.ZSTD_compressBound(len(data));out=ctypes.create_string_buffer(size)
+    n=_zstd.ZSTD_compress(out,size,data,len(data),3);assert not _zstd.ZSTD_isError(n)
+    return out.raw[:n]
+
 DATA = bytes(range(256)) * 256
 GATE = threading.Semaphore(0)
 WAITING = threading.Event()
@@ -25,11 +44,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 elif path=='/crc':data=data[:-8]+bytes([data[-8]^1])+data[-7:]
                 elif path=='/junk':data+=b'invalid trailing data'
                 elif path=='/raw-deflate':coding='deflate';data=zlib.compress(DATA,wbits=-15)
-                elif path=='/unknown':coding='br'
+                elif path=='/unknown':coding='snappy'
                 elif path=='/stacked':coding='gzip, deflate'
                 elif path=='/bomb':data=gzip.compress(b'x'*(17*1024*1024),mtime=0)
                 elif path=='/case':coding='GZip'
                 elif path=='/identity':coding='identity';data=DATA
+            for name in ['br','zstd']:
+                if path=='/'+name or path.startswith('/'+name+'-'):
+                    coding=name;data=encode(name,b'' if path.endswith('-empty') else b'x'*(17*1048576)if path.endswith('-bomb')else DATA)
+                    if path.endswith('-truncated'):data=data[:-1]
+                    if path.endswith('-junk'):data+=b'invalid trailer'
+                    if path.endswith('-concat'):data+=data
+                    if path.endswith('-window'):data=bytes([0x28,0xb5,0x2f,0xfd,0,0x70,1,0,0])
             self.send_response(304 if path=='/not-modified' else 200)
             if coding:self.send_header('Content-Encoding',coding)
             if path=='/duplicate':self.send_header('Content-Encoding','gzip')
@@ -37,7 +63,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             else:self.send_header('Content-Length',str(len(data)+(7 if path=='/wire-truncated' else 0)))
             self.end_headers()
             if head or path=='/not-modified':return
-            if path=='/held':
+            if path=='/held' or path.endswith('-held'):
                 cut=len(data)//2;self.wfile.write(data[:cut]);self.wfile.flush();WAITING.set()
                 if not GATE.acquire(timeout=10):self.close_connection=True;return
                 WAITING.clear();self.wfile.write(data[cut:]);return
@@ -53,6 +79,6 @@ for secure in [False,True]:
     if secure:
         context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);context.load_cert_chain(sys.argv[1],sys.argv[2]);s.socket=context.wrap_socket(s.socket,server_side=True)
     servers.append(s);threading.Thread(target=s.serve_forever,daemon=True).start()
-print(json.dumps({'http':servers[0].server_port,'https':servers[1].server_port,'decoded':hashlib.sha256(DATA).hexdigest(),'encoded':hashlib.sha256(gzip.compress(DATA,mtime=0)).hexdigest()}),flush=True)
+print(json.dumps({'http':servers[0].server_port,'https':servers[1].server_port,'decoded':hashlib.sha256(DATA).hexdigest(),'encoded':hashlib.sha256(gzip.compress(DATA,mtime=0)).hexdigest(),'codecs':{name:hashlib.sha256(encode(name,DATA)).hexdigest() for name in ['br','zstd']}}),flush=True)
 sys.stdin.read()
 for s in servers:s.shutdown();s.server_close()

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Asyncara\HTTP;
+use Asyncara\Async;
 use Asyncara\IO\Files;
 use Asyncara\Stream\AsyncStream;
 /** @internal Bounded MIME producer for the Hyper transport's ordinary upload path. */
@@ -49,9 +50,17 @@ final class Multipart
             }
             foreach ($this->files as $file) {
                 $emitter->emit('--'.$this->boundary."\r\nContent-Disposition: form-data; name=\"".self::quoted($file['field']).'"; filename="'.self::quoted($file['name'])."\"\r\nContent-Type: ".$file['type']."\r\n\r\n");
-                $stream = Files::readStream($file['path']);
-                try { foreach ($stream as $chunk) $emitter->emit($chunk); }
-                finally { $stream->close(); }
+                // MIME already owns a bounded producer queue. Read into that
+                // queue directly rather than introducing a second producer and
+                // queue for every file. Disk reads and shielded close retain
+                // the same Files/File native worker and ownership paths.
+                Async::using(
+                    static fn() => Files::open($file['path']),
+                    static function ($handle) use ($emitter): void {
+                        while (($chunk = Async::await($handle->read(65536))) !== '') $emitter->emit($chunk);
+                    },
+                    static fn($handle) => $handle->close(),
+                );
                 $emitter->emit("\r\n");
             }
             $emitter->emit('--'.$this->boundary."--\r\n");

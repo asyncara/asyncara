@@ -182,7 +182,7 @@ int ar_hyper_head(void *job, int status, const unsigned char *p, size_t n) {
 int ar_hyper_encoding(void *job, int coding) {
     ar_job *j = job;
     if (!coding) return 0;
-    if (j->stream_response || j->http_decoder || (coding != 1 && coding != 2)) return -1;
+    if (j->stream_response || j->http_decoder || (coding < 1 || coding > 4)) return -1;
     j->http_decoder = ar_http_decoder_new(j->engine, coding);
     if (!j->http_decoder) {
         snprintf(j->error, sizeof(j->error), "Native memory limit or decoder allocation failure");
