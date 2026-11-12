@@ -2834,3 +2834,5 @@ Details: docs/HYPER_HTTP2.md; durable hashes: docs/phase7/hyper-http2.json.
 Hyper proxy five-build matrix PASS86 commands/408.160229s, normal PHP83/84/85 + DEBUG/GCC ASan/UBSan, both backends. Ordinary DEBUG Valgrind six proxy cases PASS,0errors/definite/indirect/possible loss;5354reachable retained. Broad Gate A/HTTP/full regression running against the same native source; docs distinguish scoped completion from partial entities.
 
 Hyper proxy coherent validation PASS: Gate A55/206.860s, HTTP111/221.930s, fullPHP85 epoll40.095s/poll38.816s. Runtime/tests unchanged throughout their manifests. Preserve every earlier failure; continue independent source packaging. Phase4 HEAD/module/LICENSE verified unchanged.
+
+Hyper proxy independent package PASS: b777972,743files, archiveSHA d30d7767160478313078f0be66401e78a6bf39c82d87de198f7e2488af9dd6a9. Fresh Rust/C build and20 protocol/TLS checks PASS234.740928s. No runtime or test changes after checkpoint. Attestation docs/phase7/hyper-proxy-package.json. No whole-entity promotion or GitHub release/push.

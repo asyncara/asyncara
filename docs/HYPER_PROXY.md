@@ -138,3 +138,16 @@ supervisor wall times. All refer to the same runtime manifest and the respective
 isolated native modules. [Source, binary and raw report attestation](phase7/hyper-proxy.json).
 Independent source packaging is recorded separately. No whole entity completion
 or release has been claimed or pushed.
+
+
+## Independent source distribution
+
+Packaged source `b777972e5b50f5f591cc42f85125e43963f0ddc6` contains743 files,
+each compared byte-for-byte with its Git tree before extraction:
+`build/asyncara-0.1.0-dev-hyper-proxy-r1.tar.gz`.
+SHA-256 `d30d7767160478313078f0be66401e78a6bf39c82d87de198f7e2488af9dd6a9`.
+A fresh isolated Cargo target and C build, followed by20 protocol/TLS checks,
+pass in234.740928s total. Independent module SHA-256:
+`3c2253e7b92692f70baae95dedf7ea6ee47c334b157686e83f0e202414465118`.
+[Build/test attestation](phase7/hyper-proxy-package.json). The archive is local,
+not a GitHub release. Its source is distinct from later documentation commits.
