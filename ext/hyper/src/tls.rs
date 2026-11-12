@@ -229,7 +229,7 @@ impl HyperWrite for TlsIo {
 }
 
 // Only supplied trust anchors are used: never a permissive verifier or fallback.
-pub(super) fn client_config(pem: &[u8]) -> io::Result<Arc<ClientConfig>> {
+pub(super) fn client_config(pem: &[u8], cert: &[u8], key: &[u8]) -> io::Result<Arc<ClientConfig>> {
     if pem.is_empty() || pem.len() > 1048576 {
         return Err(io::ErrorKind::InvalidInput.into());
     }
@@ -243,13 +243,36 @@ pub(super) fn client_config(pem: &[u8]) -> io::Result<Arc<ClientConfig>> {
     if roots.is_empty() {
         return Err(io::ErrorKind::InvalidInput.into());
     }
-    let mut config = ClientConfig::builder_with_provider(Arc::new(
+    if cert.is_empty() != key.is_empty() || cert.len() > 1048576 || key.len() > 65536 {
+        return Err(io::ErrorKind::InvalidInput.into());
+    }
+    let builder = ClientConfig::builder_with_provider(Arc::new(
         rustls::crypto::aws_lc_rs::default_provider(),
     ))
     .with_protocol_versions(&[&rustls::version::TLS13, &rustls::version::TLS12])
     .map_err(io::Error::other)?
-    .with_root_certificates(roots)
-    .with_no_client_auth();
+    .with_root_certificates(roots);
+    let mut config = if cert.is_empty() {
+        builder.with_no_client_auth()
+    } else {
+        let mut chain = Vec::new();
+        for cert in rustls_pemfile::certs(&mut &*cert) {
+            if chain.len() >= 32 {
+                return Err(io::ErrorKind::InvalidInput.into());
+            }
+            chain.push(cert?);
+        }
+        // One identity, not an ambiguous bundle of private keys. rustls also
+        // checks that the leaf public key matches the configured signing key.
+        let mut input = key;
+        let key = rustls_pemfile::private_key(&mut input)?.ok_or(io::ErrorKind::InvalidInput)?;
+        if rustls_pemfile::private_key(&mut input)?.is_some() {
+            return Err(io::ErrorKind::InvalidInput.into());
+        }
+        builder
+            .with_client_auth_cert(chain, key)
+            .map_err(io::Error::other)?
+    };
     config.alpn_protocols = vec![b"http/1.1".to_vec()];
     config.resumption = rustls::client::Resumption::disabled();
     config.enable_early_data = false;

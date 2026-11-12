@@ -37,6 +37,18 @@ final class AsyncStream implements ReadableStream
     public function close(): void
     {
         $this->producer->cancel(); $this->queue->close();
-        Async::shield(function (): void { try { $this->producer->await(); } catch (\Asyncara\Exception\CancelledException) {} });
+        Async::shield(function (): void {
+            try { $this->producer->await(); }
+            catch (\Asyncara\Exception\CancelledException) {}
+            finally {
+                // This stream owns its queue. After the producer is joined no
+                // new item can arrive. Release unconsumed payloads and their
+                // join accounting even when a caller retains the closed stream
+                // or an exception retains its producer. An item currently
+                // yielded to a consumer remains owned by that iterator's
+                // taskDone finally block; do not acknowledge it twice.
+                while ($this->queue->count()) { $this->queue->get(); $this->queue->taskDone(); }
+            }
+        });
     }
 }

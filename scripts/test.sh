@@ -17,6 +17,7 @@ python3 scripts/test-fatal-memory.py
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/database/credential_traces.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/database/redis_push_protocol.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/stream_readiness.php
+"${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/stream_close.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/udp_ownership.php
 "${PHP_BIN:-php}" -n -d extension="$PWD/${ASYNCARA_EXTENSION:-build/asyncara.so}" tests/udp_destinations.php
 python3 scripts/test-udp-limits.py

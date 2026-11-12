@@ -54,6 +54,7 @@ for backend in ['epoll','poll']:
  for test in ['deadlines','resources','sqlite_encoding']:
   run(f'{backend}-{test}',php+[f'tests/fast/{test}.php',a.iterations],env)
  run(f'{backend}-buffered-readiness',php+['tests/stream_readiness.php'],env)
+ run(f'{backend}-stream-close',php+['tests/stream_close.php'],env)
  run(f'{backend}-resource-copy',php+['tests/resource_copy.php'],env)
  run(f'{backend}-filesystem-paths',php+['tests/filesystem_paths.php'],env)
 report={'status':'PASS','wallSeconds':time.monotonic()-start,'cpuSeconds':sum(r['cpuSeconds']for r in rows),'iterationsPerPath':a.iterations,'seeds':a.seeds,'commands':rows}

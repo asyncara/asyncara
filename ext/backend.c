@@ -263,6 +263,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     }
     uint64_t connect = 10000;
     const unsigned char *ca = NULL; size_t ca_len = 0;
+    const unsigned char *cert = NULL, *key_bytes = NULL; size_t cert_len = 0, key_len = 0;
     ar_hyper_address addresses[16]; size_t count = 0;
     ar_hyper_address headers[256];
     ar_hyper_request request = {(const unsigned char *)"GET", 3,
@@ -290,6 +291,14 @@ static void hyper_start(ar_engine *e, ar_job *j) {
             if (v->type != V_STRING || !v->length || v->length > 1048576) goto unsupported;
             ca = (const unsigned char *)v->string; ca_len = v->length;
         }
+        else if (!strcmp(key, "clientCertPem")) {
+            if (v->type != V_STRING || !v->length || v->length > 1048576) goto unsupported;
+            cert = (const unsigned char *)v->string; cert_len = v->length;
+        }
+        else if (!strcmp(key, "clientKeyPem")) {
+            if (v->type != V_STRING || !v->length || v->length > 65536) goto unsupported;
+            key_bytes = (const unsigned char *)v->string; key_len = v->length;
+        }
         else if (!strcmp(key, "resolvedAddresses")) {
             if (v->type != V_ARRAY || !v->count || v->count > 16) goto unsupported;
             count = v->count;
@@ -306,7 +315,7 @@ static void hyper_start(ar_engine *e, ar_job *j) {
     /* Rust copies validated addresses synchronously; no borrowed PHP options
      * or resolver buffers survive this call. */
     unsigned streams = (j->stream_response ? 1u : 0u) | (j->stream_upload ? 2u : 0u);
-    int submitted = ar_hyper_submit_http_stream(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request, streams, j->upload_size);
+    int submitted = ar_hyper_submit_http_identity(e->hyper, j, (const unsigned char *)j->a, strlen(j->a), j->length ? j->length : 30000, connect, addresses, count, ca, ca_len, &request, streams, j->upload_size, cert, cert_len, key_bytes, key_len);
     if (submitted == -2) {
         /* Submission may unwind after retaining the new job pointer. Drop all
          * Rust owners before this unadmitted C job can be collected/freed. */
@@ -432,6 +441,15 @@ void ar_http_start(ar_engine *e, ar_job *j) {
                 SET(CURLOPT_PROXYPASSWORD, v->string);
             } else if (!strcmp(key, "caPem")) {
                 snprintf(j->error, sizeof(j->error), "caPem is internal to the Hyper backend"); ar_done(e, j); return;
+            } else if (!strcmp(key, "clientCertPem") || !strcmp(key, "clientKeyPem")) {
+                /* Owned, worker-loaded material; libcurl copies it before the
+                 * job option tree is released. No synchronous key-file read. */
+                struct curl_blob blob = {v->string, v->length, CURL_BLOB_COPY};
+                if (!strcmp(key, "clientCertPem")) {
+                    SET(CURLOPT_SSLCERTTYPE, "PEM"); SET(CURLOPT_SSLCERT_BLOB, &blob);
+                } else {
+                    SET(CURLOPT_SSLKEYTYPE, "PEM"); SET(CURLOPT_SSLKEY_BLOB, &blob);
+                }
             } else if (!strcmp(key, "caFile")) {
                 SET(CURLOPT_CAINFO, v->string);
             } else if (!strcmp(key, "proxyCaFile")) {

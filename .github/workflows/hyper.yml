@@ -58,6 +58,12 @@ jobs:
       - name: Verified Hyper TLS and bounded trust policies
         run: |
           for backend in epoll poll; do
+            php -n tests/http/redirect_uri.php
+            python3 tests/http/hyper_redirects.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-client-tls/"$backend-redirects"
+            python3 tests/http/hyper_multipart.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-client-tls/"$backend-multiparts"
+            for transport in curl-multi hyper-prototype; do
+              python3 tests/http/client_mtls.py --php php --module build/hyper.so --backend "$backend" --transport "$transport" --out build/hyper-client-tls/"$backend-mtls-$transport"
+            done
             python3 tests/http/hyper_tls.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-client-tls/"$backend"
             python3 tests/http/hyper_tls_memory.py --php php --module build/hyper.so --backend "$backend" --certs build/hyper-client-tls/"$backend"/certs --out build/hyper-client-tls/"$backend-lifetime"
             python3 tests/http/hyper_requests.py --php php --module build/hyper.so --backend "$backend" --out build/hyper-requests/"$backend"

@@ -48,23 +48,57 @@ fn main() {
     for c in rustls_pemfile::certs(&mut &*ca) {
         roots.add(c.unwrap()).unwrap();
     }
-    let mut server = ServerConfig::builder_with_provider(provider.clone())
-        .with_safe_default_protocol_versions()
-        .unwrap()
-        .with_no_client_auth()
-        .with_single_cert(certs, key)
+    let timing = std::env::var_os("ASYNCARA_CRYPTO_TIMING").is_some();
+    let mutual = std::env::var_os("ASYNCARA_CRYPTO_CLIENT_AUTH").is_some();
+    let began = std::time::Instant::now();
+    let versions: &[&rustls::SupportedProtocolVersion] =
+        if std::env::args().nth(3).as_deref() == Some("TLS12") {
+            &[&rustls::version::TLS12]
+        } else {
+            &[&rustls::version::TLS13, &rustls::version::TLS12]
+        };
+    let server = ServerConfig::builder_with_provider(provider.clone())
+        .with_protocol_versions(versions)
         .unwrap();
+    let server = if mutual {
+        let verifier = rustls::server::WebPkiClientVerifier::builder_with_provider(
+            Arc::new(roots.clone()),
+            provider.clone(),
+        )
+        .build()
+        .unwrap();
+        server.with_client_cert_verifier(verifier)
+    } else {
+        server.with_no_client_auth()
+    };
+    let mut server = server.with_single_cert(certs, key).unwrap();
     server.send_tls13_tickets = 0;
     server.session_storage = Arc::new(rustls::server::NoServerSessionStorage {});
     let client = ClientConfig::builder_with_provider(provider)
         .with_safe_default_protocol_versions()
         .unwrap()
-        .with_root_certificates(roots)
-        .with_no_client_auth();
+        .with_root_certificates(roots);
+    let client = if mutual {
+        let cert = std::fs::read(path.join("client.pem")).unwrap();
+        let key = std::fs::read(path.join("client.key")).unwrap();
+        let certs = rustls_pemfile::certs(&mut &*cert)
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap();
+        let key = rustls_pemfile::private_key(&mut &*key).unwrap().unwrap();
+        client.with_client_auth_cert(certs, key).unwrap()
+    } else {
+        client.with_no_client_auth()
+    };
+    if timing {
+        println!("config_seconds={:.6}", began.elapsed().as_secs_f64());
+    }
     let mut s = Connection::Server(ServerConnection::new(Arc::new(server)).unwrap());
     let mut c = Connection::Client(
         ClientConnection::new(Arc::new(client), "localhost".try_into().unwrap()).unwrap(),
     );
+    if timing {
+        println!("connection_seconds={:.6}", began.elapsed().as_secs_f64());
+    }
     for _ in 0..10 {
         move_tls(&mut c, &mut s);
         move_tls(&mut s, &mut c);
@@ -73,6 +107,13 @@ fn main() {
         }
     }
     assert!(!s.is_handshaking() && !c.is_handshaking());
+    if timing {
+        println!(
+            "handshake_seconds={:.6} mutual={}",
+            began.elapsed().as_secs_f64(),
+            mutual
+        );
+    }
     println!("cipher: {:?}", c.negotiated_cipher_suite());
     for size in [1, 16, 17, 255, 16384, 16385, 65536] {
         for direction in 0..2 {
