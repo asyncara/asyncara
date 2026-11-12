@@ -2885,3 +2885,12 @@ Evidence: `docs/phase7/server-accept.json`; raw root
 module, LICENSE and historical failures remain unchanged. No FPM campaign or
 benchmark run; no attribution of historical zero-tick/SQL/slow-TLS failures to
 this fix. Native Server and release remain experimental and incompletely certified.
+
+Source checkpoint `b90652d382e77aab79b3a392648b0a44c2b40e16` was pushed and
+verified with `git ls-remote`. Independent package: 763 files, exact Git tree,
+byte-identical repeat, fresh Cargo/native build and 13 commands PASS in
+189.776 seconds. `build/asyncara-0.1.0-dev-server-accept-r1.tar.gz`
+SHA-256 `e6ad26e521a629eb9eb471e6d58323bee24ecbc1eed14e3d2ecc325923b5390e`; independent module
+SHA-256 `af0bc5f3511c61ae0f877ce27a157444bd08ab225abf7df36235c74973a1158e`.
+Attestation: `docs/phase7/server-accept-package.json`. Archive and binaries are
+local artifacts; no GitHub release was published.

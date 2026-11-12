@@ -41,6 +41,8 @@ and GCC ASan/UBSan configurations on epoll/poll. Gate A passed 55 checks in
 commands passed. Native Valgrind returned zero errors and zero live allocations;
 DEBUG returned zero lost bytes, with 4,114 still reachable bytes in each run.
 These are scoped results, not universal memory or endurance certification.
+The [763-file source archive and fresh build](phase7/server-accept-package.json)
+identify `b90652d`; all 13 independent build/test commands passed.
 
 This fix does not establish the cause of the historical FPM zero-tick failure,
 the retained SQL-handler disconnect, or the earlier slow-input TLS reset.

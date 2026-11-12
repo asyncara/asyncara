@@ -7,8 +7,7 @@ milestone is accepted and closed for prioritization. Work now advances to
 Native Server. This decision does not erase the broader technical gaps or
 historical failures listed below, and does not certify HTTP/3 or new platforms.
 
-Updated 2026-11-12 with [native accept-error isolation evidence](phase7/server-accept.json);
-the earlier Hyper package identifies checkpoint `2b90593`. **EXPERIMENTAL**.
+Updated 2026-11-12 against native checkpoint `b90652d` and its [package attestation](phase7/server-accept-package.json). **EXPERIMENTAL**.
 This is the canonical overall-status table for the owner's ten priority areas.
 All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
 substantial implemented and tested capabilities; their outstanding work is not
@@ -39,8 +38,8 @@ closing that work, not by silently redefining the area around tests that pass.
 
 Detailed capability evidence is in [PRIORITY_CAPABILITIES.md](PRIORITY_CAPABILITIES.md);
 the [Arabic priority report](../dos/PRIORITY.md) mirrors these overall statuses.
-The latest independently built source package has 756 verified files and 13
-passing build/test commands: [attestation](phase7/hyper-socks5-package.json).
+The latest independently built source package has 763 verified files and 13
+passing build/test commands: [attestation](phase7/server-accept-package.json).
 Those passes do not close the outstanding work above. PostgreSQL and memory
 findings retain their exact attribution; this table does not relabel an upstream
 finding as an Asyncara defect.

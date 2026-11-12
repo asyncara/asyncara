@@ -1,0 +1,254 @@
+{
+  "release": "EXPERIMENTAL",
+  "sourceCommit": "b90652d382e77aab79b3a392648b0a44c2b40e16",
+  "archiveSourceMatchesGitTree": true,
+  "fileCount": 763,
+  "archiveName": "asyncara-0.1.0-dev-server-accept-r1.tar.gz",
+  "archiveSha256": "e6ad26e521a629eb9eb471e6d58323bee24ecbc1eed14e3d2ecc325923b5390e",
+  "reproducedByteForByte": true,
+  "independentBuild": {
+    "status": "PASS",
+    "commit": "b90652d382e77aab79b3a392648b0a44c2b40e16",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-server-accept-r1.tar.gz",
+    "archiveSha256": "e6ad26e521a629eb9eb471e6d58323bee24ecbc1eed14e3d2ecc325923b5390e",
+    "files": 763,
+    "source": "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev",
+    "rows": [
+      {
+        "name": "fresh-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "exit": 0,
+        "seconds": 154.90889158193022,
+        "logSha256": "d621a59fcfb404fa18c0e226224a9491d00b3fb82b6f019a55c962ef8b53bc6d"
+      },
+      {
+        "name": "fault-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "exit": 0,
+        "seconds": 8.132403595838696,
+        "logSha256": "812d27a07f9223c188d4c781cb3f569c0dbc3ab8700f7fe5c9881602c2cf0be4"
+      },
+      {
+        "name": "accept-budget",
+        "command": [
+          "python3",
+          "tests/server/accept_budget.py",
+          "--library",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/cargo/release/libasyncara_hyper_bridge.a",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/accept-budget"
+        ],
+        "exit": 0,
+        "seconds": 4.40467601781711,
+        "logSha256": "7dc69cc7ac48f62a1e0d5b7642eebaf28a28aea56917e471aa372f02f4787823"
+      },
+      {
+        "name": "epoll-accept",
+        "command": [
+          "python3",
+          "tests/server/accept_fault.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/fault.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/epoll-accept",
+          "--linked-shim"
+        ],
+        "exit": 0,
+        "seconds": 0.6647298308089375,
+        "logSha256": "b69d7b308196f11701202348e88e821d59b81f0e7608d95c9196c29c26f76067"
+      },
+      {
+        "name": "epoll-accept-fatal",
+        "command": [
+          "python3",
+          "tests/server/accept_fault.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/fault.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/epoll-accept-fatal",
+          "--linked-shim",
+          "--fault",
+          "EBADF"
+        ],
+        "exit": 0,
+        "seconds": 0.4795599430799484,
+        "logSha256": "33765c8f349ae97cdb1eb0ce418283cd4f24a79c28be8e3ec256172556fb4976"
+      },
+      {
+        "name": "epoll-server",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/epoll-server"
+        ],
+        "exit": 0,
+        "seconds": 2.1477463580667973,
+        "logSha256": "dc61e103ab797ef8b6e97d083abcc7f6741ca77372d4ff67a96d66abb12079bb"
+      },
+      {
+        "name": "epoll-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/epoll-tls"
+        ],
+        "exit": 0,
+        "seconds": 3.2364363512024283,
+        "logSha256": "9944a8d43bd1d036b6540ed18639032edf8cde3910f04e7188e900b222c9fc68"
+      },
+      {
+        "name": "epoll-input",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/epoll-input",
+          "--tls"
+        ],
+        "exit": 0,
+        "seconds": 4.52173221623525,
+        "logSha256": "f2c7add679d96237fa7493d657dd0f2fc1d92ea0da3891cd28a27feec38a1e22"
+      },
+      {
+        "name": "poll-accept",
+        "command": [
+          "python3",
+          "tests/server/accept_fault.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/fault.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/poll-accept",
+          "--linked-shim"
+        ],
+        "exit": 0,
+        "seconds": 0.49267289228737354,
+        "logSha256": "7f77f0ec0a250210fac7e42117cbdd6071f00d217b7e71415bdbc7d7176f818f"
+      },
+      {
+        "name": "poll-accept-fatal",
+        "command": [
+          "python3",
+          "tests/server/accept_fault.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/fault.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/poll-accept-fatal",
+          "--linked-shim",
+          "--fault",
+          "EBADF"
+        ],
+        "exit": 0,
+        "seconds": 0.48757096799090505,
+        "logSha256": "324764ca26a51e9b18a0b9dbba80214904df38d61f9633f8c5b056a719047f59"
+      },
+      {
+        "name": "poll-server",
+        "command": [
+          "python3",
+          "tests/server/run.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/poll-server"
+        ],
+        "exit": 0,
+        "seconds": 2.2893801941536367,
+        "logSha256": "8a9e376fc276e210b6eefeec5a17a04cf7e01ac305066bda9613f1da5b176a05"
+      },
+      {
+        "name": "poll-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/poll-tls"
+        ],
+        "exit": 0,
+        "seconds": 3.147013759240508,
+        "logSha256": "a06fc0274cc2a4236f10fd7aba46bf98a03b05b52b5eadd29bec242b8365a6cd"
+      },
+      {
+        "name": "poll-input",
+        "command": [
+          "python3",
+          "tests/server/input.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/poll-input",
+          "--tls"
+        ],
+        "exit": 0,
+        "seconds": 4.8634184040129185,
+        "logSha256": "322a86e1c9dfbbd695941d478c6a9408d3a2e45f4ecad66c1c84e2148c28ed2e"
+      }
+    ],
+    "seconds": 189.77623211266473,
+    "module": "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+    "moduleSha256": "af0bc5f3511c61ae0f877ce27a157444bd08ab225abf7df36235c74973a1158e"
+  },
+  "sourceManifest": {
+    "path": "/home/coder/Asyncara-server-accept-20261112T055450Z/package-r1/manifest.json",
+    "sha256": "2e9a9078538449798b0ce3365f66de1d97a7453d06b450809c71988c31694caa"
+  },
+  "reportSha256": "91d43113adaadbba0c9ce6e8900d07713471a2df159cec6d8bd96dba3f8356ff",
+  "productionBinaryNoFaultWrapper": true,
+  "scope": "Fresh source extraction, fresh Cargo output and native module; existing matching SDK/compilers and dependency prefixes reused. Test-only fault module built separately. No GitHub release or binary publication.",
+  "nextCommit": "Documentation/attestation only; the archive identifies the source commit above."
+}
