@@ -650,3 +650,5 @@ Hyper multipart uses one bounded MIME producer and one current file producer.
 Its upload owner cancels and joins both on failure, timeout or early response.
 Disk activity remains worker-backed. See [current evidence and limitations](HYPER_COMPLETION.md);
 none of these guarantees imply whole-entity or long-duration certification.
+
+Explicit SOCKS5 setup belongs to the existing HTTP operation/connection owner. Local DNS and proxy endpoint DNS have separate bounded vectors; cancellation and deadlines cover negotiation before HTTP admission. Shared-waiter cancellation cannot destroy the owner. Retries of address candidates occur only before the HTTP transfer future exists. A late HTTP/2 GOAWAY can reject a request; the API surfaces that failure and does not silently replay it. [Transport details and tests](HYPER_SOCKS5.md).

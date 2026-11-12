@@ -951,22 +951,159 @@ fn proxy_policy_cache_rejects_new_identity_at_capacity_but_reuses_existing() {
         for n in 0..16 {
             let user = format!("user{n}");
             raw.user = data(user.as_bytes());
-            let (settings, _) = proxy::copy(&raw, &mut cache, std::ptr::null(), 0)
-                .unwrap()
-                .unwrap();
+            let (settings, _) = proxy::copy(
+                &raw,
+                &mut cache,
+                std::ptr::null(),
+                0,
+                &"https://localhost/".parse().unwrap(),
+                std::ptr::null(),
+                0,
+            )
+            .unwrap()
+            .unwrap();
             assert_eq!(settings.id, n + 1);
         }
         raw.user = data(b"new");
-        assert!(proxy::copy(&raw, &mut cache, std::ptr::null(), 0).is_err());
+        assert!(proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &"https://localhost/".parse().unwrap(),
+            std::ptr::null(),
+            0
+        )
+        .is_err());
         raw.user = data(b"user0");
-        let (settings, _) = proxy::copy(&raw, &mut cache, std::ptr::null(), 0)
-            .unwrap()
-            .unwrap();
+        let (settings, _) = proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &"https://localhost/".parse().unwrap(),
+            std::ptr::null(),
+            0,
+        )
+        .unwrap()
+        .unwrap();
         assert_eq!(settings.id, 1);
         for user in [b"".as_slice(), b"bad:user", b"bad\nuser", b"\xff"] {
             raw.user = data(user);
-            assert!(proxy::copy(&raw, &mut cache, std::ptr::null(), 0).is_err());
+            assert!(proxy::copy(
+                &raw,
+                &mut cache,
+                std::ptr::null(),
+                0,
+                &"https://localhost/".parse().unwrap(),
+                std::ptr::null(),
+                0
+            )
+            .is_err());
         }
         assert_eq!(cache.len(), 16);
+    }
+}
+#[test]
+fn socks_route_policy_and_target_identity() {
+    unsafe {
+        let view = |bytes: &'static [u8]| Address {
+            bytes: bytes.as_ptr(),
+            length: bytes.len(),
+        };
+        let empty = Address {
+            bytes: std::ptr::null(),
+            length: 0,
+        };
+        let mut raw = proxy::ProxyData {
+            url: view(b"SOCKS5://127.0.0.1"),
+            roots: empty,
+            user: view(b"a:b"),
+            password: view(b"secret"),
+        };
+        let uri: Uri = "https://localhost/".parse().unwrap();
+        let ips = [view(b"::1"), view(b"127.0.0.1")];
+        let mut cache = Vec::new();
+        assert!(proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &uri,
+            std::ptr::null(),
+            0
+        )
+        .is_err());
+        let (mut settings, endpoints) = proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &uri,
+            ips.as_ptr(),
+            ips.len(),
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(endpoints.as_slice()[0].port(), 1080);
+        assert!(!settings.forward());
+        assert!(settings.authorization().is_none());
+        assert_eq!(settings.target(), Some("::1".parse().unwrap()));
+        assert!(settings.accepts_target(Some("127.0.0.1".parse().unwrap())));
+        assert!(!settings.accepts_target(Some("127.0.0.2".parse().unwrap())));
+        assert!(!settings.accepts_target(None));
+        assert!(settings.next_target());
+        assert!(!settings.next_target());
+        // Local DNS is operation state, not a new credential policy entry.
+        let (other, _) = proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &uri,
+            ips[1..].as_ptr(),
+            1,
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(settings.id, other.id);
+        assert_eq!(cache.len(), 1);
+        assert!(proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &"https://127.0.0.1/".parse().unwrap(),
+            ips.as_ptr(),
+            2
+        )
+        .is_err());
+        raw.url = view(b"socks5h://127.0.0.1");
+        assert!(proxy::copy(&raw, &mut cache, std::ptr::null(), 0, &uri, ips.as_ptr(), 2).is_err());
+        let (remote, _) = proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &uri,
+            std::ptr::null(),
+            0,
+        )
+        .unwrap()
+        .unwrap();
+        assert!(remote.accepts_target(None));
+        assert!(remote.authorization().is_none());
+        assert_ne!(settings.id, remote.id);
+        raw.password = view(b"");
+        assert!(proxy::copy(
+            &raw,
+            &mut cache,
+            std::ptr::null(),
+            0,
+            &uri,
+            std::ptr::null(),
+            0
+        )
+        .is_err());
     }
 }

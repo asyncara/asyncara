@@ -11,7 +11,7 @@ are certified. The broad regression gate and independent packaging have separate
 `HttpClient` retains its existing `proxy`, `proxyCaFile` and
 `proxyCredentials` constructor options. `prepareNative()` resolves the proxy
 endpoint through Asyncara DNS workers and reads trust files through filesystem
-workers. It does not resolve an origin delegated to a proxy. Direct origins
+workers. HTTP(S) proxies and SOCKS5h resolve their delegated origins. SOCKS5 local-DNS mode is documented separately in [the SOCKS5 transport record](HYPER_SOCKS5.md). Direct origins
 still use the existing resolver. The native connection budget includes this
 preparation, TCP, proxy TLS, CONNECT and origin TLS; total request deadlines and
 cancellation remain active throughout.
@@ -55,7 +55,7 @@ or Transfer-Encoding cannot create a response body. Extra received bytes belong
 to the tunnel. See [RFC9110 CONNECT](https://www.rfc-editor.org/rfc/rfc9110.html#name-connect)
 and [Basic authentication](https://www.rfc-editor.org/rfc/rfc7617.html).
 
-Environment proxy auto-selection, SOCKS, Digest/NTLM/Negotiate and HTTP/3 remain
+Environment proxy auto-selection, SOCKS4/BIND/UDP, Digest/NTLM/Negotiate and HTTP/3 remain
 unsupported by Hyper. There is no silent fallback to curl. Linux is the tested
 platform. Third-party Rust/TLS/h2 allocations are bounded separately and are
 not all represented by the C allocation ledger.
@@ -151,3 +151,5 @@ pass in234.740928s total. Independent module SHA-256:
 `3c2253e7b92692f70baae95dedf7ea6ee47c334b157686e83f0e202414465118`.
 [Build/test attestation](phase7/hyper-proxy-package.json). The archive is local,
 not a GitHub release. Its source is distinct from later documentation commits.
+
+SOCKS5 TCP CONNECT is a later continuation; see [its own evidence and curl limitations](HYPER_SOCKS5.md). The historical HTTP proxy results above keep their original identities.

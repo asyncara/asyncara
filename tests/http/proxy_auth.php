@@ -78,7 +78,7 @@ $exercise=function(?string $onlyKind=null)use($cfg,&$checks,&$ticks):void{
         ['username'=>'a','password'=>'','extra'=>1]]as$bad){
         rejected(fn()=>new HttpClient(proxy:$cfg['httpProxy'],proxyCredentials:$bad));
     }
-    foreach([null,'socks5://127.0.0.1:1','http://u:p@localhost:1']as$proxy)
+    foreach([null,'socks4://127.0.0.1:1','http://u:p@localhost:1']as$proxy)
         rejected(fn()=>new HttpClient(proxy:$proxy,proxyCredentials:credentials()));
     foreach([['proxyUsername'=>'a'],['proxyPassword'=>credentials()['password']],
         ['proxyUsername'=>'a:b','proxyPassword'=>credentials()['password']],

@@ -235,6 +235,10 @@ int ar_hyper_submit_http_proxy(void *, void *, const unsigned char *, size_t, ui
                                const ar_hyper_address *, size_t, const unsigned char *, size_t,
                                const ar_hyper_request *, unsigned, int64_t,
                                const unsigned char *, size_t, const unsigned char *, size_t, const ar_hyper_proxy *);
+int ar_hyper_submit_http_route(void *, void *, const unsigned char *, size_t, uint64_t, uint64_t,
+                               const ar_hyper_address *, size_t, const unsigned char *, size_t,
+                               const ar_hyper_request *, unsigned, int64_t,
+                               const unsigned char *, size_t, const unsigned char *, size_t, const ar_hyper_proxy *, const ar_hyper_address *, size_t);
 int ar_hyper_resume(void *engine, void *job);
 int ar_hyper_drive(void *engine);
 int ar_hyper_cancel(void *engine, void *job);

@@ -6,10 +6,12 @@ p=argparse.ArgumentParser()
 for key in ['php','module','out']:p.add_argument('--'+key,required=True)
 p.add_argument('--backend',choices=['epoll','poll'],required=True);p.add_argument('--proxy',action='store_true')
 p.add_argument('--transport',choices=['curl-multi','hyper'],default='curl-multi')
-p.add_argument('--case',choices=['lifecycle','early-upload','goaway','declared-size'],default='lifecycle')
+p.add_argument('--case',choices=['lifecycle','early-upload','goaway','goaway-late','declared-size'],default='lifecycle')
 p.add_argument('--server',action='store_true',help='Run the same Hyper lifecycle assertions inside a native App handler')
 p.add_argument('--proxy-auth',action='store_true',help='Basic authenticated HTTPS CONNECT; implies --proxy')
+p.add_argument('--socks5',choices=['local','remote'],help='RFC1929 SOCKS5 tunnel; exclusive with HTTP proxy options')
 a=p.parse_args();root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.out).resolve();out.mkdir(parents=True,exist_ok=False,mode=0o700)
+if a.socks5 and (a.proxy or a.proxy_auth):p.error('Choose one proxy transport')
 if a.proxy_auth:a.proxy=True
 if a.server and (a.transport!='hyper' or a.case!='lifecycle'):p.error('--server requires Hyper lifecycle case')
 if a.case=='declared-size'and a.transport!='hyper':p.error('Early declared-size rejection currently requires Hyper')
@@ -23,7 +25,11 @@ def launch(command,name):
 try:
  origin,ports=launch([sys.executable,str(root/'tests/http/http2_peer.py'),str(certs)],'origin')
  config={'url':'https://localhost:'+str(ports['https']),'ca':str(certs/'ca.pem')}
- if a.proxy:
+ if a.socks5:
+  (out/'socks-config.json').write_text(json.dumps({'ports':[ports['https']]}))
+  proxy,proxy_ports=launch([sys.executable,str(root/'tests/http/socks5_peer.py'),str(out/'socks-config.json')],'proxy')
+  config.update(proxy=proxy_ports['auth'].replace('socks5h://','socks5://'if a.socks5=='local'else'socks5h://'),proxyCredentials={'username':'user:name','password':'synthetic-secret'})
+ elif a.proxy:
   (out/'proxy').mkdir();proxy_certs=certificates(out/'proxy')
   if a.proxy_auth:
    (out/'proxy-config.json').write_text(json.dumps({'cert':str(proxy_certs/'server.pem'),'key':str(proxy_certs/'server.key'),'targetTlsPort':ports['https']}))
@@ -39,6 +45,7 @@ try:
  for key in ['http_proxy','HTTP_PROXY','https_proxy','HTTPS_PROXY','all_proxy','ALL_PROXY','SSL_CERT_FILE','CURL_CA_BUNDLE']:env.pop(key,None)
  fixture='http2_goaway.php'if a.case=='goaway'else 'http2_early_upload.php'if a.case=='early-upload'else('hyper_http2.php'if a.transport=='hyper'else'http2.php')
  if a.case=='declared-size':fixture='declared_size.php'
+ if a.case=='goaway-late':fixture='http2_goaway_late.php'
  command=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/http'/fixture),str(out/'config.json')]
  if a.server:command.append('--server')
  with(out/'php.log').open('x')as log:
@@ -82,9 +89,12 @@ try:
   assert peer['declared']=={'announced':1,'closed':1,'bodyBytesOnAnnounced':0},peer
   assert peer['accepted']==1 and peer['rejectedAlpn']==0,peer
  elif a.case=='goaway':assert len([v for v in peer['requests']if v['path']=='/goaway-drain'])==16 and peer['accepted']>=17,peer
+ elif a.case=='goaway-late':assert len([v for v in peer['requests']if v['path']=='/late-probe'])==16 and peer['accepted']==17,peer
  else:assert peer['earlyResponses']==16 and peer['resets']>=16 and peer['accepted']==1,peer
  if a.proxy:assert json.loads((out/'proxy-final.log').read_text())['connect']>=1
+ if a.socks5:
+  socks=json.loads((out/'proxy-final.log').read_text());assert socks['connect']>=1 and not socks['errors'] and not socks['active'],socks
  status='PASS'
 except BaseException as failure:status='FAIL';error=repr(failure)
-report={'status':status,'failure':error,'exit':code,'backend':a.backend,'transport':a.transport,'case':a.case,'server':a.server,'proxy':a.proxy,'proxyAuth':a.proxy_auth,'wallSeconds':time.monotonic()-start,'h2Version':h2.__version__,'moduleSha256':sha(pathlib.Path(a.module)),'sourceManifestSha256':sha(out/'source-manifest.json'),'artifacts':{f.name:sha(f)for f in out.glob('*.log')},'command':command if 'command'in locals()else None}
+report={'status':status,'failure':error,'exit':code,'backend':a.backend,'transport':a.transport,'case':a.case,'server':a.server,'proxy':a.proxy,'proxyAuth':a.proxy_auth,'socks5':a.socks5,'wallSeconds':time.monotonic()-start,'h2Version':h2.__version__,'moduleSha256':sha(pathlib.Path(a.module)),'sourceManifestSha256':sha(out/'source-manifest.json'),'artifacts':{f.name:sha(f)for f in out.glob('*.log')},'command':command if 'command'in locals()else None}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');(out/'active.json').write_text('{"status":"TERMINAL"}');print(json.dumps(report,indent=2));raise SystemExit(status!='PASS')
