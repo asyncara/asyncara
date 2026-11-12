@@ -7,7 +7,7 @@ milestone is accepted and closed for prioritization. Work now advances to
 Native Server. This decision does not erase the broader technical gaps or
 historical failures listed below, and does not certify HTTP/3 or new platforms.
 
-Updated 2026-11-12 against native checkpoint `b90652d` and its [package attestation](phase7/server-accept-package.json). **EXPERIMENTAL**.
+Updated 2026-11-12 against native checkpoint `7ef1e2d` and its [package attestation](phase7/server-sql-package.json). **EXPERIMENTAL**.
 This is the canonical overall-status table for the owner's ten priority areas.
 All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
 substantial implemented and tested capabilities; their outstanding work is not
@@ -43,8 +43,8 @@ and instrumented TLS-deadline failures remain explicit. Overall gaps stay open.
 
 Detailed capability evidence is in [PRIORITY_CAPABILITIES.md](PRIORITY_CAPABILITIES.md);
 the [Arabic priority report](../dos/PRIORITY.md) mirrors these overall statuses.
-The latest independently built source package has 763 verified files and 13
-passing build/test commands: [attestation](phase7/server-accept-package.json).
+The latest independently built source package has 772 verified files and 11
+passing build/test commands: [attestation](phase7/server-sql-package.json).
 Those passes do not close the outstanding work above. PostgreSQL and memory
 findings retain their exact attribution; this table does not relabel an upstream
 finding as an Asyncara defect.

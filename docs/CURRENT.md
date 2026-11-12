@@ -1,11 +1,24 @@
 # Current isolated HTTP development state
 
+Latest pushed runtime checkpoint (2026-11-12): `7ef1e2d72d06764415d23434dc0d29efe5322f5e`,
+following server checkpoint `871ee1a`. [Server half-close evidence](phase7/server-protocol.json)
+and [SQL lifecycle evidence](phase7/sql-transactions.json) cover new Native Server
+HTTP/1 peer behavior, manual PostgreSQL/MySQL transactions, SQL savepoints,
+SQLite duplicate-finish rejection and the native Oracle savepoint control path.
+Normal PHP83/84/85 and DEBUG compatibility pass; retained GCC/libpq unload and
+instrumented mTLS deadline failures remain explicitly recorded. Native Server
+integration passes264responses with72pending-query ticks. No overall entity or
+performance target is promoted. [Independent source package](phase7/server-sql-package.json):
+772Git-matched files, byte-reproducible, fresh Rust/C build and11checks PASS.
+Phase4 checkout/module and LICENSE are unchanged. Older evidence below is historical.
+
+
 Current entity-completion work (2026-11-12): [Hyper completion record](HYPER_COMPLETION.md)
 tracks client mTLS, owned redirects, bounded multi-file MIME, Brotli/zstd,
 ALPN HTTP/2 stream ownership, [explicit HTTP/HTTPS proxies](HYPER_PROXY.md), TLS read error ownership, callback trace redaction and the stream-close ownership repair. These are working implementation changes with scoped results
 and retained failures; all ten overall entities remain PARTIALLY_IMPLEMENTED.
 Latest continuation adds [SOCKS5 TCP transport](HYPER_SOCKS5.md), strict handshake ownership and current-DNS pool reuse. Its five-build matrix, Gate A, HTTP gate and full PHP 8.5 suites pass; retained cold Valgrind and first broad-gate failures remain documented separately.
-Latest packaged native checkpoint: `2b90593`, 756 Git-matched files; fresh
+Historical SOCKS5 packaged native checkpoint: `2b90593`, 756 Git-matched files; fresh
 Rust/C build and 12 local protocol/server/TLS checks PASS. The package is byte-reproducible.
 [Package identity](phase7/hyper-socks5-package.json). The historical checkpoints below keep their original source/test scope.
 The [early buffered-body admission continuation](HYPER_REQUESTS.md#early-buffered-response-admission-2026-11-12-continuation) has separate before/after, compatibility and retained memory-check evidence.

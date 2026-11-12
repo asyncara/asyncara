@@ -96,3 +96,9 @@ requests), authenticated proxies/HTTP2, copy/trace controls and 14 server scopes
 [Package attestation](phase7/proxy-services-package.json) retains exact commands,
 hashes and limits. This later attestation is not inside the archived source.
 No release publication or remote push was performed.
+
+2026-11-12 continuation: server half-close checkpoint871ee1a and SQL manual
+transaction/savepoint checkpoint7ef1e2d are pushed. [Exact capabilities, retained
+failures and source/build identity](phase7/sql-transactions.json);
+[independent772-file package](phase7/server-sql-package.json). Overall entity
+statuses and remaining gaps continue to follow ROADMAP.md.

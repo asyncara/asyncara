@@ -1,0 +1,204 @@
+{
+  "status": "PASS",
+  "commit": "7ef1e2d72d06764415d23434dc0d29efe5322f5e",
+  "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-server-sql-r1.tar.gz",
+  "archiveSha256": "d4d610f3c5d11100d5d5e9fef809ea4a2a3aefa1edc56e71252f0ef327d42e98",
+  "files": 772,
+  "source": "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev",
+  "rows": [
+    {
+      "name": "fresh-build",
+      "command": [
+        "bash",
+        "scripts/build-hyper-local.sh"
+      ],
+      "exit": 0,
+      "seconds": 145.1754975412041,
+      "logSha256": "207bf2f583c7e9b5905dd40a451a747c83abd9e75547dfe2e8264d55461f309e"
+    },
+    {
+      "name": "epoll-protocol",
+      "command": [
+        "python3",
+        "tests/server/protocol.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/epoll-protocol"
+      ],
+      "exit": 0,
+      "seconds": 1.504356848075986,
+      "logSha256": "0d6ced929505481502cacc653fc968ee930464b0d4889ce3770e9e1846fd05a8"
+    },
+    {
+      "name": "epoll-protocol-stream",
+      "command": [
+        "python3",
+        "tests/server/protocol.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/epoll-protocol-stream",
+        "--stream"
+      ],
+      "exit": 0,
+      "seconds": 1.3466694508679211,
+      "logSha256": "b3d700917e7ee16f602fa7ff4c89cec095c97f9d6773366ace438296b2381685"
+    },
+    {
+      "name": "epoll-run",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/epoll-run"
+      ],
+      "exit": 0,
+      "seconds": 2.29182108072564,
+      "logSha256": "7a25a39ff8c8499cfa6dcec2bd50d2cbd9c1de134cafffcec9df84af24651d8e"
+    },
+    {
+      "name": "epoll-sqlite",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "tests/database/transactions.php"
+      ],
+      "exit": 0,
+      "seconds": 0.12477044761180878,
+      "logSha256": "c3e1686fa9620e77aae113828c0cbfe4b3d227d1c73072c7e06d35f3ef602b21"
+    },
+    {
+      "name": "poll-protocol",
+      "command": [
+        "python3",
+        "tests/server/protocol.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/poll-protocol"
+      ],
+      "exit": 0,
+      "seconds": 1.3429278400726616,
+      "logSha256": "96e4a213043806fe83038179fd006aa59b2b8eb746ed0f7378f9779535ed4bc0"
+    },
+    {
+      "name": "poll-protocol-stream",
+      "command": [
+        "python3",
+        "tests/server/protocol.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/poll-protocol-stream",
+        "--stream"
+      ],
+      "exit": 0,
+      "seconds": 1.5179615910165012,
+      "logSha256": "576b769e920e87119e654c66c9cc9dbec21cdf4885b71efe99cd93988b675932"
+    },
+    {
+      "name": "poll-run",
+      "command": [
+        "python3",
+        "tests/server/run.py",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "poll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/poll-run"
+      ],
+      "exit": 0,
+      "seconds": 2.366383564658463,
+      "logSha256": "40501845bf9ae23eb1ab84d9b5281d48018f526e5597b4fe85c83e41d32ba559"
+    },
+    {
+      "name": "poll-sqlite",
+      "command": [
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "-n",
+        "-d",
+        "extension=/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "tests/database/transactions.php"
+      ],
+      "exit": 0,
+      "seconds": 0.1288345968350768,
+      "logSha256": "c1621bbce03e4a1ff9689acd5d16d24f1b0931065a045b598c5bbdfc20e70e7e"
+    },
+    {
+      "name": "pg-transactions",
+      "command": [
+        "python3",
+        "tests/database/mtls_pg.py",
+        "--transactions",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/pg-transactions"
+      ],
+      "exit": 0,
+      "seconds": 6.168237316887826,
+      "logSha256": "c0a2190957bcb3c11fcf70ca8d343379e75e5e29741d7699f924f69250333b73"
+    },
+    {
+      "name": "oracle-transactions",
+      "command": [
+        "python3",
+        "tests/database/mtls_mysql.py",
+        "--transactions",
+        "--php",
+        "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+        "--module",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+        "--backend",
+        "epoll",
+        "--out",
+        "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/oracle-transactions",
+        "--oracle-prefix",
+        "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root"
+      ],
+      "exit": 0,
+      "seconds": 14.567254312336445,
+      "logSha256": "f0f03a0d98aaba7398e70fecffa90b0fd44f12e5e5159c23e2a81260b29fe0d7"
+    }
+  ],
+  "seconds": 176.53471459029242,
+  "module": "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+  "moduleSha256": "9224732a563d976817df92e4a5c7968af6ab819f931ca4472bd208b59e3f037c",
+  "byteReproducible": true,
+  "repeatArchive": "/home/coder/Asyncara-entities-20261112T064151Z/server-sql-repro.tar.gz",
+  "reportSha256": "9454e8b8fc5f1c2a22dc94520c3bf05473810090be92709589e45d16fb0a44ba",
+  "scriptSha256": "eb35d7a4c674feace740b0d27b83dcdc910cdc37a705454adfcb0a61be60b324",
+  "runtimeAndTestsUnchangedSinceSourceCommit": true
+}

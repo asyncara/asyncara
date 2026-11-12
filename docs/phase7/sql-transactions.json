@@ -1,6 +1,6 @@
 {
   "scope": "Manual SQL transactions/state/savepoints, owner-terminal cleanup, duplicate finish and Oracle native control compatibility",
-  "status": "IMPLEMENTED_AND_TESTED_IN_DOCUMENTED_SCOPE",
+  "status": "IMPLEMENTED_AND_TESTED",
   "release": "EXPERIMENTAL",
   "parent": "871ee1a6e82819fa9345d879e9286ce7200d224d",
   "evidenceRoot": "/home/coder/Asyncara-entities-20261112T064151Z",
@@ -1813,5 +1813,19 @@
     "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail-r1/report.json": "8f68a6480c91f2e8926a47e0a5f44d250112d5afdebb6f0417da9961d53ad836",
     "/home/coder/Asyncara-entities-20261112T064151Z/sql-integration-r1/report.json": "e664e6861719c713d616ce22d0e9e24d84bfa8c69ca70aac9aa78a986d76c6d8",
     "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls-r1/report.json": "cb41f4859461e69f029c2ab80c13f8f6faabaf13706a50b2477513e1818fa387"
+  },
+  "testedSourceCommit": "7ef1e2d72d06764415d23434dc0d29efe5322f5e",
+  "executionScripts": {
+    "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix.py": "c5ab0c0acbb7df886f2e3e8aaecd8de9a49e4c4330202d6742776b3ca875ab74",
+    "/home/coder/Asyncara-entities-20261112T064151Z/transaction-matrix-gcc-tail.py": "da9740e8fbc058eb2b47cc350367c7f7dc3f1fc5acefd4de42347b0715b4db3f",
+    "/home/coder/Asyncara-entities-20261112T064151Z/post_sql.py": "cd1ed6043aa8befd9ab2ccd2082e8e866f3c25139421703ede61a2fbc327a333",
+    "/home/coder/Asyncara-entities-20261112T064151Z/sql-final-controls.py": "5c2c18c53de36df0c0525b9cb8735a0ae1293b87e632244ca0ed9e31ef851487",
+    "/home/coder/Asyncara-entities-20261112T064151Z/mysql_memory_socket.py": "3d16df3ad8cc55af0b0bcc2e3edab7641917007f53d52cc84b19c2d3d268fb10"
+  },
+  "buildConfiguration": {
+    "production": "scripts/build-local.sh -O2 -g -Wall -Wextra -Werror, matching PHP SDKs, HAVE_ASYNCARA_HYPER, release Cargo locked bridge, Connector/C3.4.10",
+    "gcc": "-O1 -fsanitize=address,undefined -fno-omit-frame-pointer; detect_leaks=1; Rust release library is not ASan-instrumented",
+    "debug": "PHP8.5.12 DEBUG and supported Valgrind-annotated Connector/C build",
+    "pathsAndExactFlags": "See execution scripts and retained build logs"
   }
 }
