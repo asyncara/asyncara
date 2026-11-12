@@ -1,0 +1,302 @@
+{
+  "status": "PASS",
+  "scope": "Exact Git-matched archive, independently compiled Rust/C module and 12 protocol/server checks; not full-entity completion or endurance certification",
+  "recordedUtc": "2026-11-12T05:41:47.266662+00:00",
+  "nativeSourceCommit": "2b90593680f0c4be29f7829739154937e0e728e3",
+  "release": "EXPERIMENTAL",
+  "entityStatus": "PARTIALLY_IMPLEMENTED",
+  "archivePublished": false,
+  "report": {
+    "status": "PASS",
+    "commit": "2b90593680f0c4be29f7829739154937e0e728e3",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-hyper-socks5-r1.tar.gz",
+    "archiveSha256": "5a670d2a51b5c9c53c3fafce774579e0c7effbc0053a02426906c8151aebe589",
+    "files": 756,
+    "source": "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev",
+    "rows": [
+      {
+        "name": "fresh-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "exit": 0,
+        "seconds": 164.5146115962416,
+        "logSha256": "363074a9eae5ee79022543f0b3f140ca83cdb3e994ecf35bcf3038ddf7ded544"
+      },
+      {
+        "name": "epoll-socks5",
+        "command": [
+          "python3",
+          "tests/http/socks5.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-socks5"
+        ],
+        "exit": 0,
+        "seconds": 2.868231514003128,
+        "logSha256": "a9f178b691a99cfbfc1800a97822494b15fc2cc92d1940b6cbf38a7eb7d982f8"
+      },
+      {
+        "name": "epoll-h2-local",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "local",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-h2-local"
+        ],
+        "exit": 0,
+        "seconds": 2.8224629098549485,
+        "logSha256": "c1dce0d128fc2ee3277c411b4c810d0dc5e7ed57a7a8b0cc59be25b2a0fd4df2"
+      },
+      {
+        "name": "epoll-h2-server",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "remote",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-h2-server"
+        ],
+        "exit": 0,
+        "seconds": 2.9190270048566163,
+        "logSha256": "f9df4a090f6a0cb38fbc06b79265c8a8108c6233e56b30e85c429d474e555d81"
+      },
+      {
+        "name": "epoll-h2-late",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "remote",
+          "--case",
+          "goaway-late",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-h2-late"
+        ],
+        "exit": 0,
+        "seconds": 2.004568635020405,
+        "logSha256": "14c8e6970ef8dff9b4f70de9775118456c29ec2439e1ac426d8fb58b82546d39"
+      },
+      {
+        "name": "epoll-h2-https-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-h2-https-proxy"
+        ],
+        "exit": 0,
+        "seconds": 3.415333795826882,
+        "logSha256": "f842a3964e568b695f7fb229233a430cd4cc1f90642d43557d3f54f5b1133328"
+      },
+      {
+        "name": "epoll-server-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/epoll-server-tls"
+        ],
+        "exit": 0,
+        "seconds": 3.2980811330489814,
+        "logSha256": "dff377110aa3f52aaee62ebaa95426010e4fed9c37ebd6d71d179016a6e02b68"
+      },
+      {
+        "name": "poll-socks5",
+        "command": [
+          "python3",
+          "tests/http/socks5.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-socks5"
+        ],
+        "exit": 0,
+        "seconds": 1.8259740709327161,
+        "logSha256": "b82f9c52bb91d4c7cf4d5825ca35d3d81ce933ff514f4ae64be4e52f2fd44ddf"
+      },
+      {
+        "name": "poll-h2-local",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "local",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-h2-local"
+        ],
+        "exit": 0,
+        "seconds": 2.574383948929608,
+        "logSha256": "bd98ab4a1f31617a5dc87df404cdf37273df1a652d9ef07efbfa51bb9aae8b0d"
+      },
+      {
+        "name": "poll-h2-server",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "remote",
+          "--server",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-h2-server"
+        ],
+        "exit": 0,
+        "seconds": 2.183768026996404,
+        "logSha256": "7f2a0d3dd7256d9e3719cf0a6062653f8329d02672825c0375c4d7ad9f8eb7c4"
+      },
+      {
+        "name": "poll-h2-late",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--socks5",
+          "remote",
+          "--case",
+          "goaway-late",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-h2-late"
+        ],
+        "exit": 0,
+        "seconds": 1.9312216760590672,
+        "logSha256": "48b9cf93ca2e90da0d9c423107018f5e526fb90cb49a9f707f82002ccfac9c1d"
+      },
+      {
+        "name": "poll-h2-https-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-h2-https-proxy"
+        ],
+        "exit": 0,
+        "seconds": 6.039658734109253,
+        "logSha256": "bdcdcaa6dba2d401ab228cebcbd5fd81b3817c8af20a2b6a04b2e2a637145abb"
+      },
+      {
+        "name": "poll-server-tls",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/poll-server-tls"
+        ],
+        "exit": 0,
+        "seconds": 3.562947189901024,
+        "logSha256": "145a7e8bf0f85310612691fc2f87d2d8041c320c84bbd0d6f810390c5548efb1"
+      }
+    ],
+    "seconds": 199.96027023578063,
+    "module": "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+    "moduleSha256": "1cde483b1a09eb253f5dbb8722e38da7d61019792e632b639416b1bc7abb6b31"
+  },
+  "reportPath": "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/report.json",
+  "reportSha256": "7157e0d0f97ebff48d0e09ed411cea9fa82f6632a281d35076c363e4fd568ef2",
+  "sourceManifestPath": "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/manifest.json",
+  "sourceManifestSha256": "f01c8690e449dc00155730a09c6eec20b82060f0187374f8541760be4fdb3436",
+  "reproduction": {
+    "path": "/home/coder/Asyncara-socks5-20261112T043500Z/package-r1/reproduced.tar.gz",
+    "sha256": "5a670d2a51b5c9c53c3fafce774579e0c7effbc0053a02426906c8151aebe589",
+    "byteIdentical": true
+  },
+  "script": {
+    "path": "/home/coder/Asyncara-socks5-20261112T043500Z/package.py",
+    "sha256": "8769994bfe512f3505947bb3926935bdae7b5c831ab6940ed736b6abc555ca05"
+  },
+  "limitations": [
+    "PHP8.5 NTS Linux independent package build; other PHP branches tested separately in the frozen-source matrix.",
+    "Three historical failure categories remain retained: curl local-DNS fallback, cold Valgrind TLS deadlines, initial curl multipart deadline.",
+    "No additional FPM campaign, throughput comparison, HTTP/3, production release or entity-level completion."
+  ]
+}

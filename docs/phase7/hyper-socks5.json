@@ -5413,7 +5413,7 @@
       ]
     }
   },
-  "packageStatus": "NOT_STARTED; package attestation follows the frozen source commit",
+  "packageStatus": "PASS; separate attestation in hyper-socks5-package.json",
   "scopeLimitations": [
     "Not whole-entity completion or broad remote/platform proxy certification.",
     "Cold DEBUG Valgrind HTTP/2 original TLS deadline failures remain FAIL; the separately warmed diagnostic is not acceptance.",
@@ -5421,5 +5421,6 @@
     "Curl 8.5 local-DNS IPv6-to-IPv4 fallback fails independently; positive curl controls exclude it and malformed-frame certification.",
     "No SOCKS4, GSSAPI, BIND, UDP ASSOCIATE, SOCKS-hop TLS, HTTP/3 or implicit request replay.",
     "New SOCKS-specific mTLS combinations are not separately certified; existing direct/HTTP-proxy mTLS tests passed."
-  ]
+  ],
+  "nativeSourceCommit": "2b90593680f0c4be29f7829739154937e0e728e3"
 }

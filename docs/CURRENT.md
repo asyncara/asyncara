@@ -5,8 +5,9 @@ tracks client mTLS, owned redirects, bounded multi-file MIME, Brotli/zstd,
 ALPN HTTP/2 stream ownership, [explicit HTTP/HTTPS proxies](HYPER_PROXY.md), TLS read error ownership, callback trace redaction and the stream-close ownership repair. These are working implementation changes with scoped results
 and retained failures; all ten overall entities remain PARTIALLY_IMPLEMENTED.
 Latest continuation adds [SOCKS5 TCP transport](HYPER_SOCKS5.md), strict handshake ownership and current-DNS pool reuse. Its five-build matrix, Gate A, HTTP gate and full PHP 8.5 suites pass; retained cold Valgrind and first broad-gate failures remain documented separately.
-Previous packaged native checkpoint: `def382e`,748 Git-matched files; fresh
-Rust/C build and12 local protocol/TLS checks PASS. [Package identity](phase7/hyper-body-admission-package.json). The historical checkpoints below keep their original source/test scope.
+Latest packaged native checkpoint: `2b90593`, 756 Git-matched files; fresh
+Rust/C build and 12 local protocol/server/TLS checks PASS. The package is byte-reproducible.
+[Package identity](phase7/hyper-socks5-package.json). The historical checkpoints below keep their original source/test scope.
 The [early buffered-body admission continuation](HYPER_REQUESTS.md#early-buffered-response-admission-2026-11-12-continuation) has separate before/after, compatibility and retained memory-check evidence.
 
 

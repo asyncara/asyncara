@@ -6,6 +6,10 @@ it is not whole-entity or universal proxy certification.
 
 ## Public interface and execution
 
+Select the optional built Hyper transport with
+`ASYNCARA_HTTP_BACKEND=hyper-prototype`; without that selection the existing
+curl multi transport remains the default. There is no silent transport fallback.
+
 The existing `HttpClient(proxy: ..., proxyCredentials: ...)` interface accepts
 `socks5h://host:port` and `socks5://host:port`. Omitted proxy ports use 1080.
 Scheme names are case-insensitive. URLs cannot contain credentials. Explicit credentials have `username` and
@@ -140,7 +144,7 @@ contain the exact commands, binaries and source manifests. The unchanged-source 
 (228.816 seconds), the HTTP gate has 117 commands (298.610 seconds), and the
 complete PHP 8.5 suites exit zero on epoll (50.172 seconds) and poll
 (53.477 seconds). The first broad failure below remains separate. Independent
-packaging is recorded only after its terminal verification.
+packaging is verified separately below.
 
 The first broad HTTP gate stopped at the existing 32 MiB curl multipart
 request with `Timeout was reached`. Its log is retained at
@@ -152,3 +156,19 @@ timeout. The original 10-second request deadline remains unchanged.
 The new SOCKS-specific mTLS combinations are not separately certified. Existing
 direct and HTTP/HTTPS-proxy mTLS checks pass, and the tunnel retains the origin
 TLS policy, but those results are not a substitute for that missing combination.
+
+## Frozen source and independent distribution
+
+Native/test checkpoint: `2b90593680f0c4be29f7829739154937e0e728e3`.
+`build/asyncara-0.1.0-dev-hyper-socks5-r1.tar.gz` contains 756 tracked files,
+each checked byte-for-byte against that commit. A second packaging run is
+byte-identical. Archive SHA-256:
+`5a670d2a51b5c9c53c3fafce774579e0c7effbc0053a02426906c8151aebe589`.
+
+A fresh Cargo/native build from the extraction and 12 SOCKS, HTTP/2,
+Native Server handler and server TLS checks pass on epoll/poll, taking
+199.960 seconds for the 13 commands. Independent module SHA-256:
+`1cde483b1a09eb253f5dbb8722e38da7d61019792e632b639416b1bc7abb6b31`.
+[Complete build/test attestation](phase7/hyper-socks5-package.json).
+The archive is local; it is not a published GitHub release. Later documentation
+commits do not change the packaged source or the tests it executed.

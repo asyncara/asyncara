@@ -18,7 +18,7 @@
 
 | الكيان | حالة الكيان ككل | أجزاء منفذة ومختبرة ضمنه |
 |---|---|---|
-| Rust Hyper backend | `PARTIALLY_IMPLEMENTED` | محرك HTTP/1.1 الاختياري على Linux، وFFI وDNS وTLS والملكية والحدود |
+| Rust Hyper backend | `PARTIALLY_IMPLEMENTED` | محرك HTTP/1.1 وHTTP/2 الاختياري على Linux، وFFI وDNS وTLS والبروكسيات المختبرة والملكية والحدود |
 | Native Server | `PARTIALLY_IMPLEMENTED` | خادم CLI وHTTP/1.1، وتوجيه الطلبات، وTLS/mTLS، والبث المحدود والعمال |
 | HTTP Client | `PARTIALLY_IMPLEMENTED` | curl multi، والطلبات المتزامنة، وHTTP/2 المخزّن، والبث عبر HTTP/1.1، والبروكسيات المحددة |
 | Hyper HTTP Client | `PARTIALLY_IMPLEMENTED` | واجهة HttpClient على Hyper: الطلبات والأجسام والضغط والبث ضمن الحدود الموثقة |
@@ -259,3 +259,9 @@ ASan/UBSan 8.5.12، مع epoll وpoll. تختلف التغطية حسب المج
 ## متابعة SOCKS5 — 2026-11-12
 
 أضيف مسار TCP غير حاجب إلى Hyper، مع DNS محلي أو لدى الوكيل، ومصادقة محدودة، وTLS وHTTP/2 عبر النفق. الإصلاح المصاحب يمنع تكرار محاولة عنوان DNS فاشل عندما يوجد اتصال صالح لعنوان آخر ما زال ضمن النتيجة الحالية. [التقرير والأدلة والقيود](../docs/HYPER_SOCKS5.md). هذا تقدم في الكيان، وليس إعلان اكتمال Hyper أو HTTP Client أو Native Server. فشل curl 8.5 في fallback المحلي محفوظ، واختباره الإيجابي المنفصل لا يغطي تلك الحالة.
+
+دفعة SOCKS5 ثابتة في `2b90593`: اجتازت مصفوفة 46 أمرًا، وGate A، و117 أمرًا
+لفحص HTTP، ومجموعتي PHP 8.5 على epoll وpoll. الحزمة ذات 756 ملفًا اجتازت
+البناء المستقل و12 اختبارًا إضافيًا، وأُعيد إنتاج أرشيف مطابق بالبايت.
+[البصمات والأوامر](../docs/phase7/hyper-socks5-package.json).
+تبقى إخفاقات Valgrind الباردة وcurl الموضحة في التقرير محفوظة؛ لم تكتمل الكيانات كلها.
