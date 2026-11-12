@@ -5,7 +5,8 @@
 [Explicit Basic proxy authentication](PROXY_AUTHENTICATION.md) now has local
 HTTP/HTTPS forward and CONNECT tests, including buffered HTTP/2 over authenticated
 HTTPS CONNECT. Earlier statements below excluding authentication describe their
-original checkpoints. Hyper still rejects proxies; streaming remains HTTP/1.1.
+original checkpoints. Curl streaming remains HTTP/1.1. Hyper now has separate
+[owned HTTP/2 streaming](HYPER_HTTP2.md) and [explicit proxy validation](HYPER_PROXY.md).
 See the [current capability contracts](PRIORITY_CAPABILITIES.md) for remaining
 protocol and deployment gaps. Historical failed memory/deadline runs remain.
 

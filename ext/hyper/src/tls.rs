@@ -1,6 +1,6 @@
 //! Shared TLS transport; verified client/server configuration stays separate. Socket readiness and the connection's single
 //! driver waker are owned by the existing Asyncara reactor, not an executor.
-use super::{Context, Io, Poll};
+use super::{ClientIo, Context, Io, Poll};
 use hyper::rt::{Read as HyperRead, Write as HyperWrite};
 use rustls::{ClientConfig, ClientConnection, Connection, ServerConfig, ServerConnection};
 use std::{cell::Cell, rc::Rc};
@@ -47,13 +47,13 @@ pub(super) fn config(cert: &[u8], key: &[u8], ca: &[u8]) -> io::Result<Arc<Serve
 }
 
 struct Wire<'a, 'b> {
-    io: &'a Io,
+    io: &'a mut ClientIo,
     cx: &'a mut Context<'b>,
 }
 impl Read for Wire<'_, '_> {
     fn read(&mut self, bytes: &mut [u8]) -> io::Result<usize> {
         let mut buf = hyper::rt::ReadBuf::new(bytes);
-        match Pin::new(&mut self.io.clone()).poll_read(self.cx, buf.unfilled()) {
+        match Pin::new(&mut *self.io).poll_read(self.cx, buf.unfilled()) {
             Poll::Ready(Ok(())) => Ok(buf.filled().len()),
             Poll::Ready(Err(e)) => Err(e),
             Poll::Pending => Err(io::ErrorKind::WouldBlock.into()),
@@ -62,7 +62,7 @@ impl Read for Wire<'_, '_> {
 }
 impl Write for Wire<'_, '_> {
     fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
-        match Pin::new(&mut self.io.clone()).poll_write(self.cx, bytes) {
+        match Pin::new(&mut *self.io).poll_write(self.cx, bytes) {
             Poll::Ready(r) => r,
             Poll::Pending => Err(io::ErrorKind::WouldBlock.into()),
         }
@@ -73,26 +73,36 @@ impl Write for Wire<'_, '_> {
 }
 
 pub(super) struct TlsIo {
-    io: Io,
+    io: ClientIo,
     tls: Connection,
     established: Option<Rc<Cell<bool>>>,
     handshaken: bool,
     closing: bool,
+    deferred_read_error: Option<io::Error>,
 }
 impl TlsIo {
     pub(super) fn new(io: Io, config: Arc<ServerConfig>) -> io::Result<Self> {
         let mut tls = ServerConnection::new(config).map_err(io::Error::other)?;
         tls.set_buffer_limit(Some(65536));
         Ok(Self {
-            io,
+            io: ClientIo::Plain(io),
             tls: Connection::Server(tls),
             established: None,
             handshaken: false,
             closing: false,
+            deferred_read_error: None,
         })
     }
     pub(super) fn client(
         io: Io,
+        config: Arc<ClientConfig>,
+        name: rustls::pki_types::ServerName<'static>,
+        established: Rc<Cell<bool>>,
+    ) -> io::Result<Self> {
+        Self::client_over(ClientIo::Plain(io), config, name, established)
+    }
+    pub(super) fn client_over(
+        io: ClientIo,
         config: Arc<ClientConfig>,
         name: rustls::pki_types::ServerName<'static>,
         established: Rc<Cell<bool>>,
@@ -105,7 +115,20 @@ impl TlsIo {
             established: Some(established),
             handshaken: false,
             closing: false,
+            deferred_read_error: None,
         })
+    }
+    fn read_error(&mut self, error: io::Error, received: usize) -> Poll<io::Result<()>> {
+        // A coalesced read may already have filled the caller's buffer before
+        // discovering an abrupt EOF or a later record failure. Deliver those
+        // bytes once; expose the error on the next read. Never return Err with
+        // initialized plaintext silently discarded from this same call.
+        if received > 0 {
+            self.deferred_read_error = Some(error);
+            Poll::Ready(Ok(()))
+        } else {
+            Poll::Ready(Err(error))
+        }
     }
     pub(super) fn h2(&self) -> bool {
         self.tls.alpn_protocol() == Some(b"h2".as_slice())
@@ -113,9 +136,12 @@ impl TlsIo {
     fn flush_tls(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         for _ in 0..16 {
             if !self.tls.wants_write() {
-                return Poll::Ready(Ok(()));
+                return Pin::new(&mut self.io).poll_flush(cx);
             }
-            match self.tls.write_tls(&mut Wire { io: &self.io, cx }) {
+            match self.tls.write_tls(&mut Wire {
+                io: &mut self.io,
+                cx,
+            }) {
                 Ok(0) => return Poll::Ready(Err(io::ErrorKind::WriteZero.into())),
                 Ok(_) => (),
                 Err(e) if e.kind() == io::ErrorKind::WouldBlock => return Poll::Pending,
@@ -126,7 +152,10 @@ impl TlsIo {
         Poll::Pending
     }
     fn read_tls(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
-        match self.tls.read_tls(&mut Wire { io: &self.io, cx }) {
+        match self.tls.read_tls(&mut Wire {
+            io: &mut self.io,
+            cx,
+        }) {
             Ok(0) if self.tls.is_handshaking() => {
                 Poll::Ready(Err(io::ErrorKind::UnexpectedEof.into()))
             }
@@ -166,6 +195,9 @@ impl HyperRead for TlsIo {
         mut buf: hyper::rt::ReadBufCursor<'_>,
     ) -> Poll<io::Result<()>> {
         std::task::ready!(self.handshake(cx))?;
+        if let Some(error) = self.deferred_read_error.take() {
+            return Poll::Ready(Err(error));
+        }
         // Bounded initialized stack buffer: rustls Read cannot accept uninitialized bytes.
         let mut plain = [0u8; 16384];
         let mut received = 0usize;
@@ -182,16 +214,16 @@ impl HyperRead for TlsIo {
                     continue; // coalesce already-ready records into the caller's bounded buffer
                 }
                 Err(e) if e.kind() == io::ErrorKind::WouldBlock => (),
-                Err(e) => return Poll::Ready(Err(e)),
+                Err(e) => return self.read_error(e, received),
             }
             // Never wait for a later record after delivering available plaintext.
             // Both socket directions still register the canonical driver waker.
             if let Poll::Ready(Err(e)) = self.flush_tls(cx) {
-                return Poll::Ready(Err(e));
+                return self.read_error(e, received);
             }
             match self.read_tls(cx) {
                 Poll::Ready(Ok(())) => (),
-                Poll::Ready(Err(e)) => return Poll::Ready(Err(e)),
+                Poll::Ready(Err(e)) => return self.read_error(e, received),
                 Poll::Pending if received > 0 => return Poll::Ready(Ok(())),
                 Poll::Pending => return Poll::Pending,
             }

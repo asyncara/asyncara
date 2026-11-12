@@ -5,7 +5,7 @@
 [Explicit Basic proxy authentication](PROXY_AUTHENTICATION.md) now has local
 HTTP/HTTPS forward and CONNECT tests, including buffered HTTP/2 over authenticated
 HTTPS CONNECT. Earlier statements below excluding authentication describe their
-original checkpoints. Hyper still rejects proxies. Its new [owned HTTP/2 path](HYPER_HTTP2.md) supports
+original checkpoints. Hyper explicit HTTP/HTTPS proxies have [separate validation](HYPER_PROXY.md). Its new [owned HTTP/2 path](HYPER_HTTP2.md) supports
 buffered/streamed HTTPS; curl streaming remains HTTP/1.1.
 See the [current capability contracts](PRIORITY_CAPABILITIES.md) for remaining
 protocol and deployment gaps. Historical failed memory/deadline runs remain.

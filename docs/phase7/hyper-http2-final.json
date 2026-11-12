@@ -1,0 +1,446 @@
+{
+  "sourceCommit": "b1229f1cdc1eb2a73f48e918d569a731f877c33b",
+  "archive": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen/build/asyncara-0.1.0-dev-hyper-h2-r1.tar.gz",
+  "archiveSha256": "af5934b3ed7a97f1f885dba235cd137e6a0898db45fc0b135bcac570e747f0c0",
+  "files": 736,
+  "archiveMatchesCommit": true,
+  "reports": [
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-build-r1/report.json",
+      "sha256": "9257fec43fbf8d32dc5f28907144c77683a8fa177ba4edf273711a0e6a3431ec",
+      "result": {
+        "parent": "b1229f1cdc1eb2a73f48e918d569a731f877c33b",
+        "status": "PASS",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "pid": 1348285,
+        "supervisorPid": 1348276,
+        "exit": 0,
+        "seconds": 154.3631229409948,
+        "logSha256": "ca8150c46c9e5e65d6eff133ae4fd70a51a30fb14ced7f2455fc62cbcc36fba8",
+        "module": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen/build/h2-frozen.so",
+        "moduleSha256": "51952b3194a764cb9a0460e53a86016a1a24167cb09bfb3f8327009abc9d792b"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-validation-r1/report.json",
+      "sha256": "6153e1ca14c6970253711807458f0ec891f30f0770fc5781877b881ca699b5a1",
+      "result": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "gate-a",
+            "exit": 0,
+            "seconds": 205.94791400060058,
+            "sha256": "3f721bf722f2d1271d878767d386bc9757087828bc3b6e67455b20551214baf6",
+            "command": [
+              "python3",
+              "tests/fast/gate_a.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen/build/h2-frozen.so",
+              "--output",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-validation-r1/gate-a"
+            ]
+          },
+          {
+            "name": "http",
+            "exit": 1,
+            "seconds": 50.365026691928506,
+            "sha256": "18d1e46b5f7ba44eb18a3cfab5fc9aa4a76021f400e5c4b7b101afe12aaae36a",
+            "command": [
+              "python3",
+              "tests/http/run.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen/build/h2-frozen.so",
+              "--output",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-validation-r1/http",
+              "--hyper"
+            ]
+          }
+        ],
+        "error": "RuntimeError('http failed')",
+        "seconds": 256.3129406925291,
+        "moduleSha256": "51952b3194a764cb9a0460e53a86016a1a24167cb09bfb3f8327009abc9d792b"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-validation-r2/report.json",
+      "sha256": "2537f07de4367754742c3711b3a24b34a28bfe5cf79759a81d0d0270b7689d63",
+      "result": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "name": "prepare-fixture-certificates",
+            "exit": 0,
+            "seconds": 0.6375903757289052,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "command": [
+              "bash",
+              "scripts/prepare-test-certs.sh"
+            ]
+          },
+          {
+            "name": "http",
+            "exit": 0,
+            "seconds": 227.18997826287523,
+            "sha256": "7abf981fa27fc0533ed378ccb042031e816a8bb9c00ee6f1edef4ae9428dba53",
+            "command": [
+              "python3",
+              "tests/http/run.py",
+              "--php",
+              "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+              "--extension",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen/build/h2-frozen.so",
+              "--output",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-validation-r2/http",
+              "--hyper"
+            ]
+          },
+          {
+            "name": "full-epoll",
+            "exit": 1,
+            "seconds": 5.931407203897834,
+            "sha256": "c30d208459a03b33fceed91321e8cf501efc54854d4f4ce2559e6039622a4f07",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ]
+          }
+        ],
+        "error": "RuntimeError('full-epoll failed')",
+        "seconds": 233.75897584250197,
+        "moduleSha256": "51952b3194a764cb9a0460e53a86016a1a24167cb09bfb3f8327009abc9d792b"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-frozen-full-r3/report.json",
+      "sha256": "73195fe2665c325f8a9c85b0e7e5dea745116a9490eb98595bc85aed14a482cc",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "name": "full-epoll",
+            "exit": 0,
+            "seconds": 38.283791901078075,
+            "sha256": "c83fd5de11d80c4a234388e4980a20bbe3ac074ef55bb7a775099fa9d11331fc",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ]
+          },
+          {
+            "name": "full-poll",
+            "exit": 0,
+            "seconds": 37.41321270028129,
+            "sha256": "c05b89e346a6372a72bb7ba3de1a15ac301a2556fec3e550b481cd4a7a3e49c6",
+            "command": [
+              "bash",
+              "scripts/test.sh"
+            ]
+          }
+        ],
+        "seconds": 75.69700460135937,
+        "moduleSha256": "51952b3194a764cb9a0460e53a86016a1a24167cb09bfb3f8327009abc9d792b"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/report.json",
+      "sha256": "72dcbb50219d49c39ae5f743b4e64ae371b64d93dc1708d6fba95530b20a520b",
+      "result": {
+        "status": "FAIL",
+        "rows": [
+          {
+            "case": "epoll-lifecycle",
+            "exit": 0,
+            "seconds": 25.28384919371456,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "lifecycle",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-lifecycle.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-lifecycle"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-lifecycle-1362158.memcheck.log",
+                "sha256": "813ae4994ea2c81c0fc17aeb573807846a4ff5ebb609e5f16e5e6dd80e2eded8",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "epoll-early-upload",
+            "exit": 1,
+            "seconds": 10.233536601997912,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "early-upload",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-early-upload.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-early-upload"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-early-upload-1362398.memcheck.log",
+                "sha256": "99c03c9ae436d5a5bfe2c9a9460d17c81d3c5879d9b68594f05d177fd9b8ef1b",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 4946,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "epoll-goaway",
+            "exit": 0,
+            "seconds": 14.527517111971974,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "goaway",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-goaway.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-goaway"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/epoll-goaway-1362498.memcheck.log",
+                "sha256": "97504abf31b6866f6419d8c6c7b4e54587ac0e3eadb4ec3282d0293994396aad",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "poll-lifecycle",
+            "exit": 0,
+            "seconds": 27.34689050167799,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "lifecycle",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-lifecycle.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-lifecycle"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-lifecycle-1362668.memcheck.log",
+                "sha256": "26baef85687e693d28e462e78056351a69261803550bfdd965c53574d3704d5b",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "poll-early-upload",
+            "exit": 1,
+            "seconds": 14.19404505006969,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "early-upload",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-early-upload.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-early-upload"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-early-upload-1362915.memcheck.log",
+                "sha256": "ee4366076b920cb1ac36d32db409df1f8dd1ccf1758ad28f4dd7c13f4a74d056",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 4946,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "poll-goaway",
+            "exit": 0,
+            "seconds": 17.09875584905967,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "goaway",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-goaway.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-goaway"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-memory-r1/poll-goaway-1363046.memcheck.log",
+                "sha256": "4062ef18a283240c4afd5084db50113293beeabe31475d235c00e9c0512826f6",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          }
+        ],
+        "moduleSha256": "a2b835e1da1b3013f139a23c02659e42b71da41571e9a7ef5b2c1709dd2bcc97"
+      }
+    },
+    {
+      "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/report.json",
+      "sha256": "7ca8509ffa6f34ea38c26b281834647e438f4437d69edb448874b4a96b0e3b83",
+      "result": {
+        "status": "PASS",
+        "rows": [
+          {
+            "case": "epoll-early-upload",
+            "exit": 0,
+            "seconds": 14.426123490091413,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "early-upload",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/epoll-early-upload.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "epoll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/epoll-early-upload"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/epoll-early-upload-1363224.memcheck.log",
+                "sha256": "f59001d5e3aba32010e3490eabea8682f754726bba607901c4977a49c4833782",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          },
+          {
+            "case": "poll-early-upload",
+            "exit": 0,
+            "seconds": 13.260725653730333,
+            "command": [
+              "python3",
+              "tests/http/http2.py",
+              "--transport",
+              "hyper",
+              "--case",
+              "early-upload",
+              "--php",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/poll-early-upload.sh",
+              "--module",
+              "/home/coder/Asyncara-server-20261109T231953Z/build/hyper-h2-retirement-debug.so",
+              "--backend",
+              "poll",
+              "--out",
+              "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/poll-early-upload"
+            ],
+            "memory": [
+              {
+                "path": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/h2-retirement-warmed-r1/poll-early-upload-1363360.memcheck.log",
+                "sha256": "8a6ca290bc6381f8bee9df0c3382092f007dfd14a074609460f17ad66575199c",
+                "values": {
+                  "definitely lost": 0,
+                  "indirectly lost": 0,
+                  "possibly lost": 0,
+                  "still reachable": 5354,
+                  "errors": 0
+                }
+              }
+            ]
+          }
+        ],
+        "moduleSha256": "a2b835e1da1b3013f139a23c02659e42b71da41571e9a7ef5b2c1709dd2bcc97"
+      }
+    }
+  ],
+  "entityStatus": "PARTIALLY_IMPLEMENTED"
+}

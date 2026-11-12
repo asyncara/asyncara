@@ -320,8 +320,9 @@ static bool valid_http_options(ar_value *v) {
             if (!strcmp(key, "followRedirects")) redirects = x->integer != 0;
         } else if (!strcmp(key, "connectTimeoutMs")) {
             if (x->type != V_INT || x->integer < 1 || x->integer > 3600000) return false;
-        } else if (!strcmp(key, "caPem")) {
+        } else if (!strcmp(key, "caPem") || !strcmp(key, "proxyCaPem")) {
             if (x->type != V_STRING || !x->length || x->length > 1048576 || memchr(x->string, 0, x->length)) return false;
+            if (!strcmp(key, "proxyCaPem")) proxy_ca = true;
         } else if (!strcmp(key, "clientCertPem") || !strcmp(key, "clientKeyPem")) {
             bool cert = !strcmp(key, "clientCertPem");
             if (x->type != V_STRING || !x->length || x->length > (cert ? 1048576 : 65536) || memchr(x->string, 0, x->length)) return false;
@@ -970,7 +971,7 @@ PHP_FUNCTION(asyncara_submit) {
             j->length = Z_LVAL_P(timeout);
             bool head_request = false;
             for (size_t i = 0; i < options->count; i++)
-                if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem")) && !e->hyper_requested) {
+                if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem") || !strcmp(options->keys[i], "proxyCaPem")) && !e->hyper_requested) {
                     zend_value_error("Resolved addresses and trust bytes are internal to the Hyper transport");
                     goto error;
                 } else if ((!strcmp(options->keys[i], "clientCertPem") || !strcmp(options->keys[i], "clientKeyPem")) && strncasecmp(j->a, "https://", 8)) {

@@ -1,5 +1,9 @@
 # Hyper client TLS continuation
 
+Current continuation: [client identity/redirect/MIME](HYPER_COMPLETION.md),
+[HTTP/2 ownership](HYPER_HTTP2.md) and [explicit proxies](HYPER_PROXY.md) have
+separate source/test identities. The dated scope below is preserved.
+
 Status: IMPLEMENTED_AND_TESTED in the HTTP/1.1 buffered GET scope below.
 Remaining validation and packaging are recorded separately; broader Hyper features remain partial.
 Base5f984ea, isolated phase7-native-server branch. Release EXPERIMENTAL.

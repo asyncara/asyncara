@@ -4,6 +4,7 @@ import argparse,hashlib,json,os,pathlib,subprocess,sys,time,traceback
 p=argparse.ArgumentParser()
 for key in ['php','module','out']:p.add_argument('--'+key,required=True)
 p.add_argument('--backend',choices=['epoll','poll'],required=True)
+p.add_argument('--transport',choices=['curl-multi','hyper'],default='curl-multi')
 a=p.parse_args();root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.out).resolve();out.mkdir(parents=True,exist_ok=False,mode=0o700)
 sys.path.insert(0,str(root/'tests/server'));from tls import certificates
 for name in ['origin','proxy']:(out/name).mkdir(mode=0o700)
@@ -25,7 +26,7 @@ try:
  proxy,ports2=peer(['python3',str(root/'tests/http/https_proxy_peer.py'),str(out/'peer-config.json')],'proxy-peer')
  config={'proxy':'https://localhost:'+str(ports2['proxy']),'mismatchProxy':'https://localhost:'+str(ports2['mismatch']),'origin':'https://localhost:'+str(ports['https']),'originCA':str(origin_certs/'ca.pem'),'proxyCA':str(proxy_certs/'ca.pem'),'proxyDirectory':str(proxy_certs),'originDirectory':str(origin_certs)}
  (out/'config.json').write_text(json.dumps(config))
- env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_HTTP_BACKEND':'curl-multi'}
+ env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_HTTP_BACKEND':'hyper-prototype'if a.transport=='hyper'else'curl-multi'}
  for key in ['http_proxy','HTTP_PROXY','https_proxy','HTTPS_PROXY','all_proxy','ALL_PROXY','SSL_CERT_FILE','CURL_CA_BUNDLE']:env.pop(key,None)
  cmd=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/http/https_proxy.php'),str(out/'config.json')]
  with(out/'php.log').open('x')as log:
@@ -40,5 +41,5 @@ finally:
   except subprocess.TimeoutExpired:child.terminate();child.wait(timeout=5)
   remaining=child.stdout.read();(out/('peer-'+str(child.pid)+'-final.log')).write_text(remaining)
 assert all(sha(root/name)==digest for name,digest in manifest.items()),'Source changed during validation'
-report={'status':'PASS'if code==0 and failure is None and all(p.returncode==0 for p in peers)else'FAIL','command':cmd if 'cmd'in locals()else None,'exit':code,'failure':failure,'backend':a.backend,'wallSeconds':time.monotonic()-start,'peerExits':[p.returncode for p in peers],'moduleSha256':sha(pathlib.Path(a.module)),'logSha256':sha(out/'php.log')if(out/'php.log').exists()else None}
+report={'status':'PASS'if code==0 and failure is None and all(p.returncode==0 for p in peers)else'FAIL','command':cmd if 'cmd'in locals()else None,'exit':code,'failure':failure,'backend':a.backend,'transport':a.transport,'wallSeconds':time.monotonic()-start,'peerExits':[p.returncode for p in peers],'moduleSha256':sha(pathlib.Path(a.module)),'logSha256':sha(out/'php.log')if(out/'php.log').exists()else None}
 (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');(out/'active.json').write_text('{"status":"TERMINAL"}');print(json.dumps(report,indent=2));raise SystemExit(report['status']!='PASS')

@@ -729,8 +729,236 @@ fn revoked_upload_body_never_calls_a_collectible_c_job() {
     callback.revoke();
     let waker = Waker::from(Flag::new());
     let mut cx = Context::from_waker(&waker);
-    assert!(matches!(Pin::new(&mut body).poll_frame(&mut cx), Poll::Ready(Some(Err(_)))));
+    assert!(matches!(
+        Pin::new(&mut body).poll_frame(&mut cx),
+        Poll::Ready(Some(Err(_)))
+    ));
     assert!(body.is_end_stream());
     // The callback consumes state 0. It must not have been reached.
     UPLOAD_SLOT.with(|slot| assert_eq!(slot.borrow().0, 0));
+}
+
+#[test]
+fn proxy_configuration_is_bounded_owned_and_distinct_from_origin() {
+    fn data(bytes: &[u8]) -> Address {
+        Address {
+            bytes: bytes.as_ptr(),
+            length: bytes.len(),
+        }
+    }
+    fn empty() -> Address {
+        Address {
+            bytes: std::ptr::null(),
+            length: 0,
+        }
+    }
+    unsafe {
+        let e = ar_hyper_new(4, 2);
+        let url = b"http://origin.invalid/";
+        let ip = b"127.0.0.1";
+        let ips = data(ip);
+        let mut pass = b"pw:synthetic".to_vec();
+        let mut raw = proxy::ProxyData {
+            url: data(b"http://proxy.invalid:8080"),
+            roots: empty(),
+            user: data(b"user"),
+            password: data(&pass),
+        };
+        let submit = |raw: &proxy::ProxyData, job: usize| {
+            ar_hyper_submit_http_proxy(
+                e,
+                job as *mut c_void,
+                url.as_ptr(),
+                url.len(),
+                1000,
+                500,
+                &ips,
+                1,
+                std::ptr::null(),
+                0,
+                std::ptr::null(),
+                0,
+                -1,
+                std::ptr::null(),
+                0,
+                std::ptr::null(),
+                0,
+                raw,
+            )
+        };
+        assert_eq!(submit(&raw, 1), 0);
+        pass.fill(b'x');
+        let engine = &*e.cast::<Engine>();
+        assert_eq!(engine.ops[0].origin, Origin::Name("origin.invalid".into()));
+        assert_eq!(
+            engine.ops[0].addresses.as_slice(),
+            ["127.0.0.1:8080".parse::<SocketAddr>().unwrap()]
+        );
+        let first = engine.ops[0].proxy.as_ref().unwrap();
+        assert_eq!(
+            first.authorization().unwrap(),
+            "Basic dXNlcjpwdzpzeW50aGV0aWM="
+        );
+        raw.password = data(b"other");
+        assert_eq!(submit(&raw, 2), 0);
+        let engine = &*e.cast::<Engine>();
+        assert_ne!(
+            engine.ops[0].proxy.as_ref().unwrap().id,
+            engine.ops[1].proxy.as_ref().unwrap().id
+        );
+        for bad in [
+            "http://user:secret@proxy.invalid/",
+            "socks5://proxy.invalid/",
+            "http://proxy.invalid:0/",
+            "http://proxy.invalid:65536/",
+            "http://proxy.invalid/path",
+            "http://proxy.invalid/?query",
+            "http://proxy.invalid/#frag",
+            "http://bad..proxy/",
+        ] {
+            raw.url = data(bad.as_bytes());
+            assert_eq!(submit(&raw, 3), -1);
+        }
+        assert_eq!((*e.cast::<Engine>()).ops.len(), 2);
+        ar_hyper_free(e);
+    }
+}
+
+#[test]
+#[ignore = "requires ASYNCARA_TLS_TEST_CERT_DIR from the isolated TLS peer fixture"]
+fn tls_delivers_plaintext_before_abrupt_eof_error() {
+    let dir = std::path::PathBuf::from(std::env::var("ASYNCARA_TLS_TEST_CERT_DIR").unwrap());
+    let cert = std::fs::read(dir.join("server.pem")).unwrap();
+    let key = std::fs::read(dir.join("server.key")).unwrap();
+    let roots = std::fs::read(dir.join("ca.pem")).unwrap();
+    let config = tls::config(&cert, &key, &[]).unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = listener.local_addr().unwrap();
+    let (tx, rx) = std::sync::mpsc::channel();
+    let peer = thread::spawn(move || {
+        let (mut stream, _) = listener.accept().unwrap();
+        stream
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        stream
+            .set_write_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        let mut tls = rustls::ServerConnection::new(config).unwrap();
+        while tls.is_handshaking() {
+            tls.complete_io(&mut stream).unwrap();
+        }
+        tls.writer().write_all(b"completed plaintext").unwrap();
+        while tls.wants_write() {
+            tls.write_tls(&mut stream).unwrap();
+        }
+        // TCP closes after a complete record, intentionally no TLS close_notify.
+        drop(stream);
+        tx.send(()).unwrap();
+    });
+    let stream = TcpStream::connect(addr).unwrap();
+    stream.set_nonblocking(true).unwrap();
+    let fd = stream.as_raw_fd();
+    let flag = Flag::new();
+    let w = Waker::from(flag);
+    let mut cx = Context::from_waker(&w);
+    let io = Io(Rc::new(RefCell::new(Socket {
+        stream,
+        readable: true,
+        writable: true,
+        read: None,
+        write: None,
+        owner_waker: w.clone(),
+    })));
+    let mut tls = tls::TlsIo::client(
+        io.clone(),
+        tls::client_config(&roots, &[], &[]).unwrap(),
+        rustls::pki_types::ServerName::try_from("localhost").unwrap(),
+        Rc::new(Cell::new(false)),
+    )
+    .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    loop {
+        match tls.handshake(&mut cx) {
+            Poll::Ready(r) => {
+                r.unwrap();
+                break;
+            }
+            Poll::Pending => (),
+        }
+        assert!(Instant::now() < deadline);
+        let events = {
+            let s = io.0.borrow();
+            (if s.read.is_some() { libc::POLLIN } else { 0 })
+                | (if s.write.is_some() { libc::POLLOUT } else { 0 })
+        };
+        let mut p = libc::pollfd {
+            fd,
+            events,
+            revents: 0,
+        };
+        assert!(unsafe { libc::poll(&mut p, 1, 100) } >= 0);
+        let mut s = io.0.borrow_mut();
+        if p.revents & (libc::POLLIN | libc::POLLHUP | libc::POLLERR) != 0 {
+            s.readable = true;
+        }
+        if p.revents & (libc::POLLOUT | libc::POLLHUP | libc::POLLERR) != 0 {
+            s.writable = true;
+        }
+    }
+    rx.recv_timeout(Duration::from_secs(5)).unwrap();
+    peer.join().unwrap();
+    io.0.borrow_mut().readable = true;
+    let mut bytes = [0u8; 65536];
+    let mut buf = hyper::rt::ReadBuf::new(&mut bytes);
+    match hyper::rt::Read::poll_read(Pin::new(&mut tls), &mut cx, buf.unfilled()) {
+        Poll::Ready(Ok(())) => (),
+        other => panic!("plaintext was discarded: {other:?}"),
+    }
+    assert_eq!(buf.filled(), b"completed plaintext");
+    let mut buf = hyper::rt::ReadBuf::new(&mut bytes);
+    assert!(
+        matches!(hyper::rt::Read::poll_read(Pin::new(&mut tls),&mut cx,buf.unfilled()),Poll::Ready(Err(e))if e.kind()==io::ErrorKind::UnexpectedEof)
+    );
+}
+
+#[test]
+fn proxy_policy_cache_rejects_new_identity_at_capacity_but_reuses_existing() {
+    fn data(bytes: &[u8]) -> Address {
+        Address {
+            bytes: bytes.as_ptr(),
+            length: bytes.len(),
+        }
+    }
+    let mut cache = Vec::new();
+    let mut raw = proxy::ProxyData {
+        url: data(b"http://127.0.0.1:8080"),
+        roots: Address {
+            bytes: std::ptr::null(),
+            length: 0,
+        },
+        user: data(b"user"),
+        password: data(b"password"),
+    };
+    unsafe {
+        for n in 0..16 {
+            let user = format!("user{n}");
+            raw.user = data(user.as_bytes());
+            let (settings, _) = proxy::copy(&raw, &mut cache, std::ptr::null(), 0)
+                .unwrap()
+                .unwrap();
+            assert_eq!(settings.id, n + 1);
+        }
+        raw.user = data(b"new");
+        assert!(proxy::copy(&raw, &mut cache, std::ptr::null(), 0).is_err());
+        raw.user = data(b"user0");
+        let (settings, _) = proxy::copy(&raw, &mut cache, std::ptr::null(), 0)
+            .unwrap()
+            .unwrap();
+        assert_eq!(settings.id, 1);
+        for user in [b"".as_slice(), b"bad:user", b"bad\nuser", b"\xff"] {
+            raw.user = data(user);
+            assert!(proxy::copy(&raw, &mut cache, std::ptr::null(), 0).is_err());
+        }
+        assert_eq!(cache.len(), 16);
+    }
 }

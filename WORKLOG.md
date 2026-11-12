@@ -2828,3 +2828,9 @@ module then passes16cycles;56-command PHP83/84/85/DEBUG/GCC epoll/poll matrix
 passes. Preserve initial executor leak, observer exception, cold Valgrind
 deadlines and first phpize GOAWAY failure. Full entity remains partial.
 Details: docs/HYPER_HTTP2.md; durable hashes: docs/phase7/hyper-http2.json.
+
+2026-11-12 Hyper proxy continuation: explicit HTTP/HTTPS proxy preparation, bounded CONNECT, independent proxy/origin trust and origin-only client identity implemented on the existing reactor. Confirmed and corrected TLS coalesced-read plaintext loss and semaphore callback trace exposure with failing-before controls. Focused18-command suite PASS both backends; five-build matrix active. Preserve original nested TLS5s timeout and separate TCP_NODELAY fixture diagnosis. See docs/HYPER_PROXY.md. Entity status remains PARTIALLY_IMPLEMENTED; no completion push.
+
+Hyper proxy five-build matrix PASS86 commands/408.160229s, normal PHP83/84/85 + DEBUG/GCC ASan/UBSan, both backends. Ordinary DEBUG Valgrind six proxy cases PASS,0errors/definite/indirect/possible loss;5354reachable retained. Broad Gate A/HTTP/full regression running against the same native source; docs distinguish scoped completion from partial entities.
+
+Hyper proxy coherent validation PASS: Gate A55/206.860s, HTTP111/221.930s, fullPHP85 epoll40.095s/poll38.816s. Runtime/tests unchanged throughout their manifests. Preserve every earlier failure; continue independent source packaging. Phase4 HEAD/module/LICENSE verified unchanged.

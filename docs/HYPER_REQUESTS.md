@@ -1,5 +1,9 @@
 # Hyper buffered request completion
 
+Current continuation: [client identity/redirect/MIME](HYPER_COMPLETION.md),
+[HTTP/2 ownership](HYPER_HTTP2.md) and [explicit proxies](HYPER_PROXY.md) have
+separate source/test identities. The dated scope below is preserved.
+
 EXPERIMENTAL. This continuation starts at `26196e4` after the independently
 verified server-r4 package. Buffered requests are IMPLEMENTED_AND_TESTED in the
 functional/lifecycle scope below; independent packaging is recorded separately.

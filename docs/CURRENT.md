@@ -2,7 +2,7 @@
 
 Current entity-completion work (2026-11-12): [Hyper completion record](HYPER_COMPLETION.md)
 tracks client mTLS, owned redirects, bounded multi-file MIME, Brotli/zstd,
-ALPN HTTP/2 stream ownership and the stream-close ownership repair. These are working implementation changes with scoped results
+ALPN HTTP/2 stream ownership, [explicit HTTP/HTTPS proxies](HYPER_PROXY.md), TLS read error ownership, callback trace redaction and the stream-close ownership repair. These are working implementation changes with scoped results
 and retained failures; all ten overall entities remain PARTIALLY_IMPLEMENTED.
 The historical checkpoints below keep their original source/test scope.
 

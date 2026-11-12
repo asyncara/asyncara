@@ -150,3 +150,26 @@ Server handler cases on both backends. The same13 ordinary Rust tests pass.
 Two fixture-dependent RustTLS tests passed separately on the preceding source;
 the GOAWAY change does not alter their TLS implementation. Final broad, memory
 and independently rebuilt package validation follows this source checkpoint.
+
+## Frozen final verification
+
+Source b1229f1,736-file archive `asyncara-0.1.0-dev-hyper-h2-r1.tar.gz`,
+SHA256 `af5934b3ed7a97f1f885dba235cd137e6a0898db45fc0b135bcac570e747f0c0`.
+Every archived file matches that Git tree. Fresh Cargo/C build in a detached
+verification worktree passes; module SHA256
+`51952b3194a764cb9a0460e53a86016a1a24167cb09bfb3f8327009abc9d792b`.
+Gate A205.947914s, complete HTTP227.189978s and complete PHP85 epoll/poll pass.
+Two fresh-checkout prerequisite failures are retained: missing fixture certificates,
+then missing Composer development packages. Running the existing certificate
+script and locked Composer install resolves those setup failures. No assertions
+or native sources changed. The verification checkout is separate from further
+proxy implementation.
+
+Ordinary DEBUG Valgrind lifecycle and GOAWAY pass on epoll/poll with zero errors
+and definite/indirect/possible losses;5354bytes remain reachable. The cold3s
+early-upload workload still fails before exercising its16uploads. A separately
+labelled warmed-memory control first establishes TLS in a5s request, then runs
+all16 original3s uploads and1s reset assertions; both backends pass with zero
+errors/lost bytes. This does not relabel the cold failures or constitute normal
+acceptance. [Final source/package/evidence attestation](phase7/hyper-http2-final.json).
+The archive is local and has not been published as a GitHub release.

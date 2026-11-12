@@ -32,5 +32,5 @@ class Semaphore
         foreach ($this->waiters as $id => $future) { unset($this->waiters[$id]); $future->resolve(); return; }
         $this->held--; $this->available++;
     }
-    public function withPermit(callable $body): mixed { $this->acquire(); try { return $body(); } finally { $this->release(); } }
+    public function withPermit(#[\SensitiveParameter] callable $body): mixed { $this->acquire(); try { return $body(); } finally { $this->release(); } }
 }
