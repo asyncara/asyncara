@@ -1,0 +1,288 @@
+{
+  "status": "PASS",
+  "release": "EXPERIMENTAL",
+  "entityStatus": "PARTIALLY_IMPLEMENTED",
+  "result": {
+    "status": "PASS",
+    "commit": "def382ec0ca84aba336f20bd9a8d7912be26f6c6",
+    "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/asyncara-0.1.0-dev-hyper-admission-r1.tar.gz",
+    "archiveSha256": "c8e45e3237d198b1e49df58f0149135bb2337f86944511f1a86fbfae9f04ed97",
+    "files": 748,
+    "source": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev",
+    "rows": [
+      {
+        "name": "fresh-build",
+        "command": [
+          "bash",
+          "scripts/build-hyper-local.sh"
+        ],
+        "exit": 0,
+        "seconds": 168.97530141519383,
+        "logSha256": "fc996bda5c1f910e2d5293a0ddb9c2206e5662d7be2147149cc87b21719c8125"
+      },
+      {
+        "name": "epoll-declared-http1",
+        "command": [
+          "python3",
+          "tests/http/declared_size.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-declared-http1"
+        ],
+        "exit": 0,
+        "seconds": 1.1935908407904208,
+        "logSha256": "f72ac35035213f3abe693318b31e224aac6219c3d63045e7b12c5860a72ed480"
+      },
+      {
+        "name": "epoll-h2-declared-size-direct",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--case",
+          "declared-size",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-h2-declared-size-direct"
+        ],
+        "exit": 0,
+        "seconds": 2.852377659175545,
+        "logSha256": "246344e6d1298c36f6a5bbf499c59c041032037b995ced59bff17590f85d32bc"
+      },
+      {
+        "name": "epoll-h2-lifecycle-direct",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--case",
+          "lifecycle",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-h2-lifecycle-direct"
+        ],
+        "exit": 0,
+        "seconds": 1.9723382168449461,
+        "logSha256": "a72e3a1ad78b2adb7671a0f5ba525d41a36946119b60da49901d4a362432e1cf"
+      },
+      {
+        "name": "epoll-h2-declared-size-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--case",
+          "declared-size",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-h2-declared-size-proxy"
+        ],
+        "exit": 0,
+        "seconds": 5.633545356802642,
+        "logSha256": "7b8054eedfe8b8c85158087a2f8a4f68e86f068e930a9fdc4dca56e28f8bf0c2"
+      },
+      {
+        "name": "epoll-h2-lifecycle-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--case",
+          "lifecycle",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-h2-lifecycle-proxy"
+        ],
+        "exit": 0,
+        "seconds": 4.0650522988289595,
+        "logSha256": "e9478758f7bf9fa0501b05a000cde10b636339d31d5e6724e232f0977f664594"
+      },
+      {
+        "name": "epoll-server",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "epoll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/epoll-server"
+        ],
+        "exit": 0,
+        "seconds": 3.088778591249138,
+        "logSha256": "8c6a95d29777cc4d0f7bccd673980c38d183eb091b7fb7f8f682b7c922b5c59c"
+      },
+      {
+        "name": "poll-declared-http1",
+        "command": [
+          "python3",
+          "tests/http/declared_size.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-declared-http1"
+        ],
+        "exit": 0,
+        "seconds": 0.7020667023025453,
+        "logSha256": "28b7d9fbcb3bec6ef5d99617803f6ade28e3a01c4733764d024ea3acf3659175"
+      },
+      {
+        "name": "poll-h2-declared-size-direct",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--case",
+          "declared-size",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-h2-declared-size-direct"
+        ],
+        "exit": 0,
+        "seconds": 2.790698034223169,
+        "logSha256": "c354c22d4843571d5a402f1db44c99e957b052c59886f514d1b6c95e439bd6ad"
+      },
+      {
+        "name": "poll-h2-lifecycle-direct",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--case",
+          "lifecycle",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-h2-lifecycle-direct"
+        ],
+        "exit": 0,
+        "seconds": 1.7226141327992082,
+        "logSha256": "c9c50cd14cf41fdad26da345eebd6dabae5bc568d4ba21a0fadb30e43b60fec7"
+      },
+      {
+        "name": "poll-h2-declared-size-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--case",
+          "declared-size",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-h2-declared-size-proxy"
+        ],
+        "exit": 0,
+        "seconds": 5.6826245142146945,
+        "logSha256": "e881cadd42637d2dc3df6cd2813800be84ac5208d358f6df24f3e84dad1b06fc"
+      },
+      {
+        "name": "poll-h2-lifecycle-proxy",
+        "command": [
+          "python3",
+          "tests/http/http2.py",
+          "--transport",
+          "hyper",
+          "--proxy-auth",
+          "--case",
+          "lifecycle",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-h2-lifecycle-proxy"
+        ],
+        "exit": 0,
+        "seconds": 4.965004716068506,
+        "logSha256": "a17c27617a7d92a24c8982271133b8d4d8e57928ef22f3e0f9686ba0e795faf4"
+      },
+      {
+        "name": "poll-server",
+        "command": [
+          "python3",
+          "tests/server/tls.py",
+          "--php",
+          "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+          "--module",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+          "--backend",
+          "poll",
+          "--out",
+          "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/poll-server"
+        ],
+        "exit": 0,
+        "seconds": 3.6218371149152517,
+        "logSha256": "a65f48050da8f1c56fdc46f23cf0655ee68595188376d373dfd9098bc293eea3"
+      }
+    ],
+    "seconds": 207.26582959340885,
+    "module": "/home/coder/Asyncara-hyper-completion-20261111T235911Z/declared-package-r1/source/asyncara-0.1.0-dev/build/independent.so",
+    "moduleSha256": "0808d5942d76734ebd292eab7fdbdd625c568a16734df489321ff24b43627156"
+  },
+  "reportSha256": "27548f37940c683306ae6ed28c15a5541e5d20b76de2e5de9eeaec0e8d935ae4",
+  "manifestSha256": "422ac0353405d84f2ff54c9f6225e6121777211b2c37ce76184bdedc936a89a6",
+  "launchIdentitySha256": "58d5162d539f98a506ab7f0cb0ff507add89c8d31ea22b3135c43ab6a052e854",
+  "limits": [
+    "Fresh Cargo target and native build, followed by12 local protocol/TLS checks.",
+    "This archive contains source def382e; later package-attestation documentation is not in that archive.",
+    "Functional package acceptance does not erase full Valgrind deadline failures or complete any entity."
+  ]
+}

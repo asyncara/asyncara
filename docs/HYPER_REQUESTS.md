@@ -301,3 +301,5 @@ failure predates this guard. It does not explain every historical timeout or
 certify all memory paths. The separate control does not replace full acceptance.
 
 Coherent normal validation **PASS**: Gate A55 checks207.413931s; HTTP113 checks224.763513s; standard PHP8.5 epoll41.412782s/poll41.085507s. Native and test manifests stayed unchanged during these runs. [Source/binary/raw evidence](phase7/hyper-body-admission.json). Full Valgrind failures above remain failures; independent source packaging is separate.
+
+Independent source package: `build/asyncara-0.1.0-dev-hyper-admission-r1.tar.gz`,748 files from `def382ec0ca84aba336f20bd9a8d7912be26f6c6`, SHA-256 `c8e45e3237d198b1e49df58f0149135bb2337f86944511f1a86fbfae9f04ed97`. Every file matches Git; a fresh Rust/C build and12 local protocol/TLS checks pass in207.265830s total. Independent module SHA-256 `0808d5942d76734ebd292eab7fdbdd625c568a16734df489321ff24b43627156`. [Package attestation](phase7/hyper-body-admission-package.json). No GitHub release or entity-completion push.

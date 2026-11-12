@@ -2,7 +2,7 @@
 
 ## Current priority status
 
-Updated 2026-11-12 against runtime `b777972` / report checkpoint `b694c65`. **EXPERIMENTAL**.
+Updated 2026-11-12 against native checkpoint `def382e` and its package attestation. **EXPERIMENTAL**.
 This is the canonical overall-status table for the owner's ten priority areas.
 All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
 substantial implemented and tested capabilities; their outstanding work is not
@@ -33,8 +33,8 @@ closing that work, not by silently redefining the area around tests that pass.
 
 Detailed capability evidence is in [PRIORITY_CAPABILITIES.md](PRIORITY_CAPABILITIES.md);
 the [Arabic priority report](../dos/PRIORITY.md) mirrors these overall statuses.
-The latest independently built source package has 743 verified files and 21
-passing build/test commands: [attestation](phase7/hyper-proxy-package.json).
+The latest independently built source package has 748 verified files and 13
+passing build/test commands: [attestation](phase7/hyper-body-admission-package.json).
 Those passes do not close the outstanding work above. PostgreSQL and memory
 findings retain their exact attribution; this table does not relabel an upstream
 finding as an Asyncara defect.
