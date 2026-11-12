@@ -50,6 +50,10 @@ jobs:
           python3 -m venv build/http2-venv
           build/http2-venv/bin/python -m pip install --require-hashes --only-binary=:all: -r tests/http/http2-requirements.txt
           for backend in epoll poll; do
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper"
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --case early-upload --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-early-upload"
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --case goaway --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-goaway-upload"
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --server --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-server"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-direct"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy --out build/http2/"$backend-proxy"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy-auth --out build/http2/"$backend-proxy-auth"
