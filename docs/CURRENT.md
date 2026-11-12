@@ -5,6 +5,7 @@ tracks client mTLS, owned redirects, bounded multi-file MIME, Brotli/zstd,
 ALPN HTTP/2 stream ownership, [explicit HTTP/HTTPS proxies](HYPER_PROXY.md), TLS read error ownership, callback trace redaction and the stream-close ownership repair. These are working implementation changes with scoped results
 and retained failures; all ten overall entities remain PARTIALLY_IMPLEMENTED.
 The historical checkpoints below keep their original source/test scope.
+The [early buffered-body admission continuation](HYPER_REQUESTS.md#early-buffered-response-admission-2026-11-12-continuation) has separate before/after, compatibility and retained memory-check evidence.
 
 
 ## Current overall priority status (2026-11-12)

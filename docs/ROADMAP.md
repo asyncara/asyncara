@@ -2,7 +2,7 @@
 
 ## Current priority status
 
-Updated 2026-11-12 against source/report checkpoint `df93bdd`. **EXPERIMENTAL**.
+Updated 2026-11-12 against runtime `b777972` / report checkpoint `b694c65`. **EXPERIMENTAL**.
 This is the canonical overall-status table for the owner's ten priority areas.
 All ten remain **PARTIALLY_IMPLEMENTED at the entity/program level**. They contain
 substantial implemented and tested capabilities; their outstanding work is not
@@ -20,10 +20,10 @@ closing that work, not by silently redefining the area around tests that pass.
 
 | Priority area | Overall status | Implemented and tested capabilities | Remaining work / retained findings |
 |---|---|---|---|
-| Rust Hyper backend | PARTIALLY_IMPLEMENTED | HTTP/1.1 FFI/readiness transport, worker DNS, verified TLS and bounded requests/streams. [Evidence](HYPER_SAFETY_REVIEW.md). | Capability coverage remains partial: no HTTP/3; explicit Hyper proxies are in [active validation](HYPER_PROXY.md); local ALPN HTTP/2 buffered/streamed paths now have [scoped tests](HYPER_HTTP2.md); client redirects and mTLS now exist with scoped evidence in [the active completion record](HYPER_COMPLETION.md). Local tests do not close broader compatibility. |
+| Rust Hyper backend | PARTIALLY_IMPLEMENTED | HTTP/1.1 FFI/readiness transport, worker DNS, verified TLS and bounded requests/streams. [Evidence](HYPER_SAFETY_REVIEW.md). | Capability coverage remains partial: no HTTP/3; explicit Hyper proxies have [executed validation](HYPER_PROXY.md); local ALPN HTTP/2 buffered/streamed paths now have [scoped tests](HYPER_HTTP2.md); client redirects and mTLS now exist with scoped evidence in [the active completion record](HYPER_COMPLETION.md). Local tests do not close broader compatibility. |
 | Native Server | PARTIALLY_IMPLEMENTED | CLI routed Fiber handlers, TLS/mTLS, bounded input/output streams and four-worker checks. [Evidence](SERVER.md). | Retained GCC/poll/TLS slow-input reset and initial SQL-handler disconnect are unexplained; deployment/protocol acceptance and the all-cases Go performance target remain open. |
 | HTTP Client | PARTIALLY_IMPLEMENTED | curl multi, buffered HTTP/2, HTTP/1.1 streams, multiple-file MIME, atomic downloads and Basic proxies. [Evidence](HTTP_ENGINEERING.md), [HTTP/2](HTTP2_CLIENT.md). | HTTP/2 streaming and HTTP/3 are not certified; broader proxy/protocol coverage remains open. The original full nested-proxy Valgrind deadline failure is retained. |
-| Hyper HTTP Client | PARTIALLY_IMPLEMENTED | Bounded methods/headers/bodies, verified HTTPS, gzip/deflate and bounded response/upload streams. [Evidence](HYPER_REQUESTS.md), [streams](HTTP_STREAMING.md). | HTTP/3 remains unavailable; explicit proxies are in [active validation](HYPER_PROXY.md). ALPN HTTP/2 buffered/streamed paths have [scoped tests](HYPER_HTTP2.md). Redirects, client mTLS and bounded multi-file MIME and Brotli/zstd decoding have scoped results and retained validation failures in [the completion record](HYPER_COMPLETION.md). Passing those subsets does not establish client completion. |
+| Hyper HTTP Client | PARTIALLY_IMPLEMENTED | Bounded methods/headers/bodies, verified HTTPS, gzip/deflate and bounded response/upload streams. [Evidence](HYPER_REQUESTS.md), [streams](HTTP_STREAMING.md). | HTTP/3 remains unavailable; explicit proxies have [executed validation](HYPER_PROXY.md). ALPN HTTP/2 buffered/streamed paths have [scoped tests](HYPER_HTTP2.md). Redirects, client mTLS and bounded multi-file MIME and Brotli/zstd decoding have scoped results and retained validation failures in [the completion record](HYPER_COMPLETION.md). Passing those subsets does not establish client completion. |
 | Broad HTTP Protocol/Proxy Certification | PARTIALLY_IMPLEMENTED | Local independent HTTP/1.1, buffered HTTP/2, forward/CONNECT, separate proxy TLS trust and Basic authentication. [Evidence](PROXY_AUTHENTICATION.md). | Digest/NTLM/Negotiate, SOCKS, HTTP/3 and broader remote proxy/platform matrices are unverified or unavailable. |
 | PostgreSQL | PARTIALLY_IMPLEMENTED | Nonblocking libpq, callback transactions, bounded results/notifications, prepared cache, TLS/mTLS and path ownership. [Evidence](DATABASE_COMPATIBILITY.md), [mTLS](POSTGRESQL_MTLS.md). | Remote cancellation acknowledgement and broader remote/rotation acceptance remain open. Preserve the upstream 109-byte TLS-unload finding and the unattributed Native Server pending-query failure. |
 | MySQL / MariaDB | PARTIALLY_IMPLEMENTED | Connector/C async state machine, bound statements, callback transactions/pools and IP-SAN TLS/mTLS; Oracle 8.4.13 and MariaDB 11.8.9 tested separately. [Evidence](MYSQL_COMPATIBILITY.md). | DNS/SNI TLS is unsupported; broader versions/authentication, prepared-cache APIs and cancellation certification remain incomplete. |
@@ -33,8 +33,8 @@ closing that work, not by silently redefining the area around tests that pass.
 
 Detailed capability evidence is in [PRIORITY_CAPABILITIES.md](PRIORITY_CAPABILITIES.md);
 the [Arabic priority report](../dos/PRIORITY.md) mirrors these overall statuses.
-The latest independently built source package has 707 verified files and 29
-passing build/test commands: [attestation](phase7/proxy-services-package.json).
+The latest independently built source package has 743 verified files and 21
+passing build/test commands: [attestation](phase7/hyper-proxy-package.json).
 Those passes do not close the outstanding work above. PostgreSQL and memory
 findings retain their exact attribution; this table does not relabel an upstream
 finding as an Asyncara defect.

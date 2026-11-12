@@ -11,6 +11,14 @@ thread_local! {
     static RESULTS: RefCell<BTreeMap<usize, (usize, bool)>> = const { RefCell::new(BTreeMap::new()) };
 }
 #[no_mangle]
+extern "C" fn ar_hyper_body_size(_: *mut c_void, length: u64) -> i32 {
+    if length > 16 * 1024 * 1024 {
+        -1
+    } else {
+        0
+    }
+}
+#[no_mangle]
 extern "C" fn ar_hyper_encoding(_: *mut c_void, coding: i32) -> i32 {
     assert_eq!(coding, 0); // Real codec and compressed bodies use C integration tests.
     0

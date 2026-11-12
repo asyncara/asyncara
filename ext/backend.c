@@ -179,6 +179,17 @@ int ar_hyper_head(void *job, int status, const unsigned char *p, size_t n) {
     }
     return 0;
 }
+int ar_hyper_body_size(void *job, uint64_t length) {
+    ar_job *j = job;
+    /* This is the existing buffered/encoded-body bound, not a stream-size
+     * limit. Reject an impossible advertised body before allocating/reading
+     * it; receive_buffer and the decoder still bound unknown/decoded lengths. */
+    if (!j->stream_response && length > AR_LIMIT) {
+        snprintf(j->error, sizeof(j->error), "HTTP body limit exceeded");
+        return -1;
+    }
+    return 0;
+}
 int ar_hyper_encoding(void *job, int coding) {
     ar_job *j = job;
     if (!coding) return 0;

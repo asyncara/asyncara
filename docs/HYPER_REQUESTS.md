@@ -242,3 +242,62 @@ epoll/poll. Independent module SHA256:
 `e55adac75d0798a5408a080b926bffa22352876ea2860f858c136bd4574b5ca7`.
 [Build attestation](phase7/server-r5-package.json). No release/push or universal
 performance/endurance certification. Historical archives remain unchanged.
+
+
+## Early buffered response admission (2026-11-12 continuation)
+
+The optional Hyper transport now checks an ordinary final response's advertised
+Content-Length against the existing C-owned16MiB buffered-body bound before
+waiting for its body. `transfer()` calls `ar_hyper_body_size()`; oversized
+buffered responses fail with `OperationException`. This is earlier resource
+admission, not a larger body limit or a claim that the previous implementation
+allowed unbounded body accumulation. Unknown lengths still use the incremental
+receive/decoder limits. Encoded and decoded limits remain separate.
+
+HEAD and304 lengths describe representations and do not trigger this guard.
+204 and HTTP/1 Transfer-Encoding framing are left to the existing protocol
+parser. Streams retain their existing bounded-buffer policy and can transfer
+more than16MiB. Curl behavior is unchanged; the early check is specific to Hyper.
+A failed HTTP/1 operation closes its transport. HTTP/2 resets only that request's
+owned stream, preserving unrelated admitted requests and the shared connection.
+
+`tests/http/declared_size.php` uses a peer that sends an oversized header but
+never sends body bytes. The old module fails the one-second waiter deadline;
+the corrected module must reject with the capacity error instead. Exact16MiB,
+unknown-length overflow,17MiB-class bounded streaming, HEAD/304 and final native
+operation/Future/ledger collection are checked separately. The H2 variant
+requires a held sibling to survive on the same connection. No timeout or
+historical assertion is relaxed. `declared_size.py` runs HTTP/1;
+`http2.py --transport hyper --case declared-size` runs verified TLS H2, optionally
+with `--proxy-auth` for nested TLS. The HTTP gate and CI include these cases.
+
+External evidence root:
+`/home/coder/Asyncara-hyper-completion-20261111T235911Z`.
+`declared-before-r1` preserves the old-module FAIL. The first new HTTP/1 peer
+closed HEAD/304 without declaring Connection:close, racing pool reuse on poll;
+`declared-after-poll-r1` preserves that fixture failure. Its wire declaration
+was corrected, not the runtime retry policy. The five-build matrix passes38 commands in213.312257s: PHP8.3.36/8.4.27/8.5.12,
+8.5.12 DEBUG and GCC ASan/UBSan, each on epoll/poll. This covers HTTP1, H2 direct
+and nested-proxy cases, plus H2 lifecycle controls and15 Rust unit tests. GCC
+instruments PHP/C, not release Rust or AWS-LC. Broad validation is recorded separately.
+The C ledger threshold in the stream test is not a total RSS/Rust allocator cap.
+
+
+Full-workload ordinary DEBUG Valgrind remains **FAIL** in all four declared-size
+cases at the original5s transport deadline. Each report nevertheless has0
+errors/definite/indirect/possible lost bytes; reachable4114bytes for HTTP1 and
+5354 for H2 are retained. These clean allocation summaries do not make failed
+workloads pass. In the separate admission-only memory diagnostic, both HTTP1
+backends and H2/poll PASS with zero errors/loss; H2/epoll FAILs the cold warm-up
+request before admission is exercised. No timeout is increased and no suppression
+is used. See `declared-memory-r1` and `declared-memory-admission-r1` under the
+external evidence root.
+
+An identical bulk-stream-only differential control (`declared-bulk-controls-r1`)
+compares the prior proxy DEBUG module with the candidate. Normal runs complete
+16777217bytes; Valgrind runs time out after4325376 and4175936bytes respectively
+at5.220s/5.229s. This demonstrates that the instrumented streaming deadline
+failure predates this guard. It does not explain every historical timeout or
+certify all memory paths. The separate control does not replace full acceptance.
+
+Coherent normal validation **PASS**: Gate A55 checks207.413931s; HTTP113 checks224.763513s; standard PHP8.5 epoll41.412782s/poll41.085507s. Native and test manifests stayed unchanged during these runs. [Source/binary/raw evidence](phase7/hyper-body-admission.json). Full Valgrind failures above remain failures; independent source packaging is separate.
