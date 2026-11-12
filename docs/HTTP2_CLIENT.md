@@ -5,7 +5,8 @@
 [Explicit Basic proxy authentication](PROXY_AUTHENTICATION.md) now has local
 HTTP/HTTPS forward and CONNECT tests, including buffered HTTP/2 over authenticated
 HTTPS CONNECT. Earlier statements below excluding authentication describe their
-original checkpoints. Hyper still rejects proxies; streaming remains HTTP/1.1.
+original checkpoints. Hyper still rejects proxies. Its new [owned HTTP/2 path](HYPER_HTTP2.md) supports
+buffered/streamed HTTPS; curl streaming remains HTTP/1.1.
 See the [current capability contracts](PRIORITY_CAPABILITIES.md) for remaining
 protocol and deployment gaps. Historical failed memory/deadline runs remain.
 
@@ -76,8 +77,8 @@ These results do not certify every curl build or remote peer.
 
 Response streams and streamed uploads deliberately select HTTP/1.1 to retain
 their tested pause/buffer limits. The h2-only fixture verifies streaming rejection;
-it does not relabel streaming as HTTP/2. Hyper client and Native Server remain
-HTTP/1 in their current implementation. HTTP/3, h2c, server push, proxy auth,
+it does not relabel streaming as HTTP/2. At that checkpoint Hyper client and Native Server remained HTTP/1. The later
+[Hyper HTTP/2 client](HYPER_HTTP2.md) has separate evidence; Native Server remains HTTP/1. HTTP/3, h2c, server push, proxy auth,
 HTTP/2-to-proxy negotiation and broad internet/WAN certification remain outside
 this scope. The TLS proxy carries HTTP/1.1 CONNECT to an HTTP/2 origin.
 

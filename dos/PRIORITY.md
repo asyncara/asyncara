@@ -44,7 +44,7 @@
 [TLS](../docs/HYPER_TLS.md)، واختبارات
 [FFI](../tests/http/hyper_ffi.py) و[TLS](../tests/http/hyper_tls.py).
 التحقق الحالي يتضمن مجموعة HTTP على الخلفيتين وبناء Rust/C مستقلًا من الأرشيف.
-تبقى HTTP/2 وHTTP/3 والبروكسيات والتصديق على macOS/BSD خارج هذا النطاق.
+أُضيف HTTP/2 للعميل عبر ALPN، مع البث وتعدد الطلبات و[اختبارات ملكية التدفقات](../docs/HYPER_HTTP2.md). تبقى HTTP/3 والبروكسيات والتصديق على macOS/BSD خارج هذا النطاق.
 
 ### 2. Native Server
 
@@ -89,7 +89,7 @@ HTTP/3 غير مصدّق.
 [الضغط](../docs/HYPER_COMPRESSION.md)، [البث](../docs/HTTP_STREAMING.md)،
 واختبارات [الطلبات](../tests/http/hyper_requests.py)،
 [الضغط](../tests/http/hyper_compression.py)، و[البث](../tests/http/hyper_streaming.py).
-لا توجد مطابقة كاملة لقدرات curl: البروكسيات وHTTP/2/3 غير متاحة.
+لا توجد مطابقة كاملة لقدرات curl: البروكسيات وHTTP/3 غير متاحة؛ HTTP/2 له نطاق محلي مختبر موثق أعلاه.
 أضيفت إعادة التوجيه وclient mTLS ورفع عدة ملفات وفك ضغط Brotli/zstd؛ تفاصيل الاختبارات والإخفاقات
 المحفوظة في [سجل إكمال Hyper](../docs/HYPER_COMPLETION.md). الكيان كله غير مكتمل.
 

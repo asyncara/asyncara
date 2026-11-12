@@ -2818,3 +2818,13 @@ paired3-sample comparison reduces median task steps7791→6531, but does not
 establish a general wall-time improvement. Old deadlines/failures retained.
 [Attestation](docs/phase7/hyper-codecs-mime.json). Overall Hyper remains partial;
 continuing HTTP2/proxy implementation, no completion push.
+
+
+2026-11-12 Hyper completion: ALPN HTTP/2 with directly owned h2.4.20 streams, retaining Hyper HTTP/1 and the existing reactor/rustls transport. Initial uncommitted Hyper HTTP2 executor prototype reproduced early413/zero-window upload retention (FAIL retained); final request-owned SendStream resets on collection. Five-build epoll/poll matrix36 commands PASS127.680586s, including unchanged curl HTTP2 control and13 Rust unit tests. Broader validation/memory controls continue. No entity-level promotion, release or push. See docs/HYPER_HTTP2.md and external evidence root Asyncara-hyper-completion-20261111T235911Z.
+
+HTTP/2 source milestone: owned SendStream/RecvStream, bounded flow control and
+GOAWAY admission retirement. Deterministic draining regression fails original
+module then passes16cycles;56-command PHP83/84/85/DEBUG/GCC epoll/poll matrix
+passes. Preserve initial executor leak, observer exception, cold Valgrind
+deadlines and first phpize GOAWAY failure. Full entity remains partial.
+Details: docs/HYPER_HTTP2.md; durable hashes: docs/phase7/hyper-http2.json.

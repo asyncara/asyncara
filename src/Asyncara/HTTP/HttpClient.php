@@ -51,7 +51,7 @@ final class HttpClient
         $this->slots = new Semaphore($concurrency);
     }
     public function get(string $url, array $headers = [], bool $followRedirects = false): Future { return $this->request('GET', $url, null, $headers, $followRedirects); }
-    /** Encoded HTTP/1.1 response bytes with bounded buffers. Close on early exit. */
+    /** Encoded response bytes with bounded buffers. Close on early exit. */
     public function getStream(string $url, array $headers = [], bool $followRedirects = false): ResponseStream
     {
         if ($followRedirects && $this->usesOwnedRedirects()) return $this->redirectStream($url, $headers);

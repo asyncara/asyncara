@@ -131,7 +131,7 @@ relabel either failed broad run as PASS.
 
 ## Still open
 
-Hyper proxy support, HTTP/2/3, remaining protocol/proxy parity and broad
+Hyper proxy support, HTTP/3, remaining protocol/proxy parity and broad
 interoperability remain unfinished. Native Server's retained failures and wider
 acceptance gates remain separate. No push marking the Hyper entity complete
 has been performed. Historical Phase 4 artifacts and the main checkout are
@@ -161,5 +161,15 @@ and the same native disk workers. The generic stream-close regression remains.
 Brotli/zstd and direct MIME producer: targeted45-command matrix PASS on PHP83/84/85,
 DEBUG/GCC, both backends. Native codec ASan/UBSan and Valgrind PASS, including
 allocation failures and window/input/output limits. [Codec contract/evidence](HYPER_COMPRESSION.md)
-records exact scope. This is still not whole Hyper completion; proxy/HTTP2/3 and
+records exact scope. This is still not whole Hyper completion; proxy/HTTP3 and
 remaining acceptance work are open.
+
+
+## ALPN HTTP/2 continuation
+
+[HTTP/2 implementation and ownership evidence](HYPER_HTTP2.md) records buffered
+and streamed requests, one-connection multiplexing and early-upload cleanup.
+The initial opaque-executor implementation failed its zero-window early-response
+regression; that failure is preserved. The owned h2 stream implementation passes
+the five-build/backend targeted matrix. This does not close proxies, HTTP/3 or
+whole-entity completion.

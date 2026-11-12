@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Independent hyper-h2 TLS peer; bounded metadata, controlled pending streams."""
 import asyncio,gzip,hashlib,json,pathlib,ssl,sys,time,urllib.parse
-import h2.config,h2.connection,h2.events,h2.errors
+import h2.config,h2.connection,h2.events,h2.errors,h2.settings
+from hyperframe.frame import GoAwayFrame
 certs=pathlib.Path(sys.argv[1]);connections=set();next_id=0
-stats={'accepted':0,'rejectedAlpn':0,'requests':[],'resets':0,'peakHeld':0,'errors':[]}
+stats={'accepted':0,'rejectedAlpn':0,'requests':[],'resets':0,'peakHeld':0,'earlyResponses':0,'errors':[]}
 class Peer:
     def __init__(self,writer,identity):
         self.writer=writer;self.id=identity;self.h2=h2.connection.H2Connection(config=h2.config.H2Configuration(client_side=False,header_encoding='utf-8'))
@@ -45,10 +46,25 @@ class Peer:
                     if g==group:del peer.held[stream];peer.reply(stream,b'released')
                 peer.flush()
             self.reply(sid)
+        elif path=='/zero-window':
+            self.h2.update_settings({h2.settings.SettingCodes.INITIAL_WINDOW_SIZE:0,h2.settings.SettingCodes.MAX_CONCURRENT_STREAMS:1});self.reply(sid)
+        elif path=='/reset-count':self.reply(sid,json.dumps({'resets':stats['resets'],'openUploads':sum(len(p.requests)for p in connections)}).encode())
         elif path=='/echo':self.reply(sid,json.dumps({'bytes':req['bytes'],'sha256':req['digest'].hexdigest(),'method':req['method']}).encode())
         elif path=='/head':self.reply(sid,size=123,head=True)
+        elif path=='/trailers':
+            self.h2.send_headers(sid,[(':status','200'),('content-length','2')]);self.h2.send_data(sid,b'ok');self.h2.send_headers(sid,[('x-trailer','done')],end_stream=True)
+        elif path=='/informational':
+            self.h2.send_headers(sid,[(':status','103'),('link','</fixture>')]);self.reply(sid)
+        elif path=='/goaway-drain':
+            # Keep admitted streams live. Inject a valid GOAWAY without moving
+            # python-h2's server state to CLOSED, so the held stream can finish.
+            self.reply(sid);self.flush();frame=GoAwayFrame(0);frame.last_stream_id=sid;frame.error_code=0;self.writer.write(frame.serialize())
+        elif path=='/goaway':
+            self.reply(sid);self.flush();self.h2.close_connection(error_code=h2.errors.ErrorCodes.NO_ERROR);self.flush();self.writer.close()
+        elif path=='/disconnect':self.writer.transport.abort()
         elif path=='/gzip':self.reply(sid,gzip.compress(bytes(range(256))*256),headers=[('content-encoding','gzip')])
         elif path=='/oversize':self.reply(sid,body=None,size=16777217)
+        elif path=='/large':self.reply(sid,body=None,size=2097152)
         elif path=='/header-limit':self.reply(sid,headers=[('x-padding-'+str(i),'a'*8192)for i in range(9)])
         elif path=='/reset':
             self.h2.send_headers(sid,[(':status','200'),('content-length','100')]);self.h2.send_data(sid,b'partial');self.h2.reset_stream(sid,error_code=h2.errors.ErrorCodes.INTERNAL_ERROR)
@@ -60,9 +76,13 @@ class Peer:
             if isinstance(event,h2.events.RequestReceived):
                 headers=dict(event.headers);self.requests[event.stream_id]={'path':headers[':path'],'method':headers[':method'],'bytes':0,'digest':hashlib.sha256()}
                 if len(self.requests)+len(self.held)>64:raise RuntimeError('Fixture active-stream bound')
+                if headers[':path']=='/early':
+                    stats['earlyResponses']+=1;self.reply(event.stream_id,b'rejected',status='413')
             elif isinstance(event,h2.events.DataReceived):
                 req=self.requests[event.stream_id];req['bytes']+=len(event.data);req['digest'].update(event.data)
                 if req['bytes']>1048576:raise RuntimeError('Fixture upload bound')
+                if req['path']=='/early-started' and not req.get('early'):
+                    req['early']=True;stats['earlyResponses']+=1;self.reply(event.stream_id,b'rejected',status='413')
                 self.h2.acknowledge_received_data(event.flow_controlled_length,event.stream_id)
             elif isinstance(event,h2.events.StreamEnded):self.complete(event.stream_id)
             elif isinstance(event,h2.events.StreamReset):

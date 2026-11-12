@@ -1,4 +1,4 @@
-//! Experimental HTTP/1.1 bridge. HTTP(S) GET; DNS and trust files use Asyncara's
+//! Experimental HTTP/1.1 and ALPN HTTP/2 bridge; DNS and trust files use Asyncara's
 //! existing resolver workers. No Tokio executor or blocking socket calls. Asyncara owns readiness,
 //! request deadlines and response buffers. No Zend API crosses this boundary.
 #[cfg(not(target_os = "linux"))]
@@ -6,7 +6,10 @@ compile_error!("The Asyncara Hyper prototype currently supports Linux only");
 use http_body_util::BodyExt;
 mod body;
 use body::ClientBody;
+mod job;
+mod protocol;
 use hyper::{body::Bytes, Request, Uri};
+use protocol::{Sender, Setup};
 mod request;
 use request::{RequestData, RequestSpec};
 mod server;
@@ -48,21 +51,7 @@ fn fault(point: u32) {
     #[cfg(not(feature = "ffi-fault-tests"))]
     let _ = point;
 }
-type Sender = hyper::client::conn::http1::SendRequest<ClientBody>;
-type Driver = Pin<Box<dyn Future<Output = Result<(), hyper::Error>>>>;
-type Setup = Pin<
-    Box<
-        dyn Future<
-            Output = Result<
-                (
-                    Sender,
-                    hyper::client::conn::http1::Connection<ClientTransport, ClientBody>,
-                ),
-                hyper::Error,
-            >,
-        >,
-    >,
->;
+type Driver = Pin<Box<dyn Future<Output = Result<(), String>>>>;
 type Transfer = Pin<Box<dyn Future<Output = (Sender, bool, Result<(), String>)>>>;
 extern "C" {
     fn ar_hyper_head(job: *mut c_void, status: i32, p: *const u8, n: usize) -> i32;
@@ -291,7 +280,9 @@ struct Conn {
     sender: Option<Sender>,
     driver: Option<Driver>,
     wake: Arc<Flag>,
-    busy: bool,
+    active: usize,
+    multiplexed: bool,
+    draining: bool,
     closed: bool,
 }
 impl Conn {
@@ -406,7 +397,9 @@ impl Conn {
             sender: None,
             driver: None,
             wake,
-            busy: true,
+            active: 0,
+            multiplexed: false,
+            draining: false,
             closed: false,
         })
     }
@@ -427,22 +420,41 @@ impl Conn {
             self.connecting = false;
         }
         if self.setup.is_none() && self.driver.is_none() && self.sender.is_none() {
-            let mut b = hyper::client::conn::http1::Builder::new();
-            // Permit fewer reads for medium bodies without enlarging the header
-            // or trailer acceptance limit. The buffer remains adaptive; small
-            // responses do not eagerly reserve the 128 KiB maximum.
-            b.max_buf_size(131072)
-                .max_header_size(65536)
-                .max_headers(256);
-            self.setup = Some(Box::pin(
-                b.handshake(self.transport.take().expect("one transport owner")),
-            ));
+            let transport = self.transport.as_mut().expect("one transport owner");
+            self.multiplexed = match &mut transport.io {
+                ClientIo::Plain(_) => false,
+                ClientIo::Tls(tls) => match tls.handshake(&mut cx) {
+                    Poll::Pending => return,
+                    Poll::Ready(Err(_)) => {
+                        self.closed = true;
+                        return;
+                    }
+                    Poll::Ready(Ok(())) => tls.h2(),
+                },
+            };
+            let transport = self.transport.take().expect("one transport owner");
+            if self.multiplexed {
+                self.setup = Some(Box::pin(protocol::h2_handshake(transport)));
+            } else {
+                let mut b = hyper::client::conn::http1::Builder::new();
+                b.max_buf_size(131072)
+                    .max_header_size(65536)
+                    .max_headers(256);
+                self.setup = Some(Box::pin(async move {
+                    let (sender, driver) =
+                        b.handshake(transport).await.map_err(|e| e.to_string())?;
+                    Ok((
+                        Sender::H1(sender),
+                        Box::pin(async move { driver.await.map_err(|e| e.to_string()) }) as Driver,
+                    ))
+                }));
+            }
         }
         if let Some(setup) = &mut self.setup {
             match setup.as_mut().poll(&mut cx) {
                 Poll::Ready(Ok((sender, driver))) => {
                     self.sender = Some(sender);
-                    self.driver = Some(Box::pin(driver));
+                    self.driver = Some(driver);
                     self.setup = None
                 }
                 Poll::Ready(Err(_)) => {
@@ -455,15 +467,21 @@ impl Conn {
         if let Some(driver) = &mut self.driver {
             if driver.as_mut().poll(&mut cx).is_ready() {
                 self.closed = true;
-                // Completion does not drop Hyper's dispatch receiver. Release
-                // it now so a response owner waiting for Sender::ready is
-                // notified of EOF instead of waiting until its request deadline.
-                self.driver = None;
             }
+        }
+        // GOAWAY can retire admission while admitted streams still run. Keep
+        // their driver alive, but never assign a new request to this sender.
+        if let Some(sender) = &mut self.sender {
+            self.draining |= sender.draining(&mut cx);
+        }
+        if self.closed {
+            self.driver = None;
+            self.sender = None;
         }
     }
 }
 struct Op {
+    callback: job::Job,
     response_complete: bool,
     request: Option<RequestSpec>,
     tls: Option<TlsSettings>,
@@ -497,14 +515,24 @@ async fn transfer(
     mut sender: Sender,
     uri: Uri,
     job: usize,
+    callback: job::Job,
     spec: RequestSpec,
 ) -> (Sender, bool, Result<(), String>) {
     let mut reusable = false;
     let outcome = async {
+        let h2 = sender.multiplexed();
         let head = spec.method == hyper::Method::HEAD;
         let mut request = Request::builder()
             .method(spec.method)
-            .uri(uri.path_and_query().map(|p| p.as_str()).unwrap_or("/"))
+            .uri(if h2 {
+                uri.clone()
+            } else {
+                uri.path_and_query()
+                    .map(|p| p.as_str())
+                    .unwrap_or("/")
+                    .parse()
+                    .map_err(|_| "Invalid target")?
+            })
             .header("Host", uri.authority().ok_or("Missing authority")?.as_str())
             .header(
                 "Accept-Encoding",
@@ -514,7 +542,7 @@ async fn transfer(
                     "gzip, deflate, br, zstd"
                 },
             )
-            .body(ClientBody::new(job, spec.body, spec.upload_size))
+            .body(ClientBody::new(callback, spec.body, spec.upload_size))
             .map_err(|_| "Invalid request")?;
         request.headers_mut().extend(spec.headers);
         let response = sender
@@ -524,7 +552,7 @@ async fn transfer(
         // A final response may arrive while its request body is still being
         // written. Do not return an explicitly closing transport to the pool
         // or retain the remaining upload waiting for a peer that rejected it.
-        reusable = response.version() == hyper::Version::HTTP_11
+        reusable = (h2 || response.version() == hyper::Version::HTTP_11)
             && !response
                 .headers()
                 .get_all("connection")
@@ -566,7 +594,8 @@ async fn transfer(
             }
         }
         let mut headers = format!(
-            "HTTP/1.1 {} {}\r\n",
+            "{:?} {} {}\r\n",
+            response.version(),
             response.status().as_u16(),
             response.status().canonical_reason().unwrap_or("")
         )
@@ -639,7 +668,7 @@ async fn transfer(
         // flushed. Keep this operation (and its C buffer accounting) alive
         // until Hyper is ready for another request. Closing responses instead
         // drop the connection and cancel the remaining upload at collection.
-        if reusable {
+        if reusable && !h2 {
             reusable = sender.ready().await.is_ok();
         }
         Ok(())
@@ -656,19 +685,31 @@ impl Engine {
             return false;
         }
         if let Some(c) = op.conn.take() {
-            self.conns[c] = None;
+            if let Some(conn) = &mut self.conns[c] {
+                conn.active -= 1;
+                conn.closed = true;
+                if conn.active == 0 {
+                    self.conns[c] = None;
+                }
+            }
         }
         op.address_index += 1;
         true
     }
     fn finish(&mut self, i: usize, error: Option<&str>) {
         let op = self.ops.swap_remove(i);
+        op.callback.revoke(); // Before any C completion can make the job collectible.
         fault(13);
         if let Some(c) = op.conn {
-            if error.is_some() || self.conns[c].as_ref().is_some_and(|x| x.closed) {
-                self.conns[c] = None
-            } else if let Some(conn) = &mut self.conns[c] {
-                conn.busy = false
+            if let Some(conn) = &mut self.conns[c] {
+                conn.active -= 1;
+                if error.is_some() && (!conn.multiplexed || conn.driver.is_none()) {
+                    conn.closed = true;
+                }
+                conn.wake.set();
+                if conn.closed && conn.active == 0 {
+                    self.conns[c] = None;
+                }
             }
         }
         let message = error.unwrap_or("");
@@ -700,20 +741,10 @@ impl Engine {
                 }
                 let addr = self.ops[i].addresses.as_slice()[self.ops[i].address_index];
                 let origin = &self.ops[i].origin;
-                if self
-                    .conns
-                    .iter()
-                    .flatten()
-                    .filter(|c| c.busy && &c.origin == origin)
-                    .count()
-                    >= self.host
-                {
-                    continue;
-                }
                 let idle = self.conns.iter().position(|c| {
                     c.as_ref().is_some_and(|c| {
-                        !c.busy
-                            && !c.closed
+                        (c.active == 0 || (c.multiplexed && c.active < 64))
+                            && !c.closed && !c.draining
                             && c.sender.as_ref().is_some_and(Sender::is_ready)
                             && &c.origin == origin
                             && c.trust_id == self.ops[i].tls.as_ref().map_or(0, |t| t.id)
@@ -723,6 +754,16 @@ impl Engine {
                 let at = if let Some(at) = idle {
                     at
                 } else {
+                    if self
+                        .conns
+                        .iter()
+                        .flatten()
+                        .filter(|c| c.active > 0 && &c.origin == origin)
+                        .count()
+                        >= self.host
+                    {
+                        continue;
+                    }
                     let hole = self.conns.iter().position(Option::is_none);
                     let slot = if let Some(at) = hole {
                         at
@@ -732,7 +773,7 @@ impl Engine {
                     } else if let Some(at) = self
                         .conns
                         .iter()
-                        .position(|c| c.as_ref().is_some_and(|c| !c.busy))
+                        .position(|c| c.as_ref().is_some_and(|c| c.active == 0))
                     {
                         self.conns[at] = None;
                         at
@@ -761,20 +802,20 @@ impl Engine {
                     }
                 };
                 self.ops[i].conn = Some(at);
-                self.conns[at].as_mut().unwrap().busy = true;
+                self.conns[at].as_mut().unwrap().active += 1;
                 progress = true;
             }
             for c in &mut self.conns {
                 if let Some(conn) = c {
                     if !conn.closed && conn.wake.take() {
+                        budget -= 1;
                         conn.poll();
                         progress = true;
-                        budget -= 1;
                         if budget == 0 {
                             return 1;
                         }
                     }
-                    if conn.closed && !conn.busy {
+                    if (conn.closed || conn.draining) && conn.active == 0 {
                         *c = None
                     }
                 }
@@ -797,6 +838,17 @@ impl Engine {
                 }
                 if self.ops[i].future.is_none() {
                     let conn = self.conns[at].as_mut().unwrap();
+                    if conn.draining {
+                        // Assigned before this turn's readiness dispatch, but
+                        // not submitted: changing connections cannot replay any
+                        // request bytes. Existing transfers keep their owner.
+                        conn.active -= 1;
+                        if conn.active == 0 { self.conns[at] = None; }
+                        self.ops[i].conn = None;
+                        progress = true;
+                        i += 1;
+                        continue;
+                    }
                     if conn.closed {
                         if self.next_address(i) {
                             i += 1;
@@ -806,12 +858,13 @@ impl Engine {
                         progress = true;
                         continue;
                     }
-                    if let Some(sender) = conn.sender.take() {
+                    if let Some(sender) = Sender::acquire(&mut conn.sender) {
                         let op = &mut self.ops[i];
                         op.future = Some(Box::pin(transfer(
                             sender,
                             op.uri.clone(),
                             op.job,
+                            op.callback.clone(),
                             op.request.take().expect("one request owner"),
                         )));
                         op.wake.set();
@@ -828,16 +881,18 @@ impl Engine {
                         budget -= 1;
                         if let Poll::Ready((sender, reusable, result)) = result {
                             if let Some(conn) = &mut self.conns[at] {
-                                conn.sender = Some(sender);
-                                conn.closed |= !reusable;
+                                if !conn.multiplexed {
+                                    conn.sender = Some(sender);
+                                    conn.closed |= !reusable;
+                                }
                             }
                             // Sender readiness permits dispatch, not necessarily
                             // a completed wire flush. Retain the job/accounting
                             // until Hyper's flush reaches the actual transport.
                             if result.is_ok()
-                                && self.conns[at]
-                                    .as_ref()
-                                    .is_some_and(|c| !c.closed && c.pending_write.get())
+                                && self.conns[at].as_ref().is_some_and(|c| {
+                                    !c.closed && !c.multiplexed && c.pending_write.get()
+                                })
                             {
                                 op.response_complete = true;
                                 op.future = None;
@@ -1284,6 +1339,7 @@ unsafe fn submit(
             None
         };
         engine.ops.push(Op {
+            callback: job::Job::new(job as usize),
             response_complete: false,
             request: Some(request),
             tls,

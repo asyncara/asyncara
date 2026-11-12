@@ -1,5 +1,6 @@
 //! A bounded upload slot owned by the C job. PHP fills it between drive calls;
 //! only the connection driver consumes it. No application callback runs here.
+use super::job::Job;
 use http_body_util::Full;
 use hyper::body::{Body, Bytes, Frame, SizeHint};
 use std::{
@@ -16,13 +17,13 @@ extern "C" {
 pub(super) enum ClientBody {
     Buffered(Full<Bytes>),
     Streaming {
-        job: usize,
+        job: Job,
         remaining: Option<u64>,
         ended: bool,
     },
 }
 impl ClientBody {
-    pub(super) fn new(job: usize, data: Bytes, size: Option<i64>) -> Self {
+    pub(super) fn new(job: Job, data: Bytes, size: Option<i64>) -> Self {
         match size {
             None => Self::Buffered(Full::new(data)),
             Some(size) => Self::Streaming {
@@ -52,9 +53,13 @@ impl Body for ClientBody {
                 if *ended || *remaining == Some(0) {
                     return Poll::Ready(None);
                 }
+                let Some(pointer) = job.get() else {
+                    *ended = true;
+                    return Poll::Ready(Some(Err(io::ErrorKind::Interrupted.into())));
+                };
                 let mut data = std::ptr::null();
                 let mut length = 0;
-                match unsafe { ar_hyper_upload(*job as *mut c_void, &mut data, &mut length) } {
+                match unsafe { ar_hyper_upload(pointer as *mut c_void, &mut data, &mut length) } {
                     // The C resume entry wakes the canonical connection driver.
                     // No self-wake or polling while waiting for the producer.
                     1 => Poll::Pending,

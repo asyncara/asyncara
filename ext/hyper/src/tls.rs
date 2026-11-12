@@ -107,6 +107,9 @@ impl TlsIo {
             closing: false,
         })
     }
+    pub(super) fn h2(&self) -> bool {
+        self.tls.alpn_protocol() == Some(b"h2".as_slice())
+    }
     fn flush_tls(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         for _ in 0..16 {
             if !self.tls.wants_write() {
@@ -135,7 +138,7 @@ impl TlsIo {
             Err(e) => Poll::Ready(Err(e)),
         }
     }
-    fn handshake(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
+    pub(super) fn handshake(&mut self, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         // After the initial handshake, pending application writes must never
         // gate reads. A peer can reject an upload without consuming its body.
         if self.handshaken {
@@ -273,7 +276,7 @@ pub(super) fn client_config(pem: &[u8], cert: &[u8], key: &[u8]) -> io::Result<A
             .with_client_auth_cert(chain, key)
             .map_err(io::Error::other)?
     };
-    config.alpn_protocols = vec![b"http/1.1".to_vec()];
+    config.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec()];
     config.resumption = rustls::client::Resumption::disabled();
     config.enable_early_data = false;
     Ok(Arc::new(config))

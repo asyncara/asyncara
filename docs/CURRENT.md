@@ -1,8 +1,8 @@
 # Current isolated HTTP development state
 
 Current entity-completion work (2026-11-12): [Hyper completion record](HYPER_COMPLETION.md)
-tracks client mTLS, owned redirects, bounded multi-file MIME and the stream-close
-ownership repair. These are working implementation changes with scoped results
+tracks client mTLS, owned redirects, bounded multi-file MIME, Brotli/zstd,
+ALPN HTTP/2 stream ownership and the stream-close ownership repair. These are working implementation changes with scoped results
 and retained failures; all ten overall entities remain PARTIALLY_IMPLEMENTED.
 The historical checkpoints below keep their original source/test scope.
 

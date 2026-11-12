@@ -3,7 +3,7 @@
 Current scope: IMPLEMENTED_AND_TESTED for the bounded buffered gzip/deflate/Brotli/zstd
 behavior and configurations documented below. Release remains EXPERIMENTAL.
 
-The optional Hyper HTTP/1.1 client advertises `gzip, deflate, br, zstd` for buffered
+The optional Hyper HTTP/1.1 / ALPN HTTP/2 client advertises `gzip, deflate, br, zstd` for buffered
 responses. gzip (including concatenated members) and RFC1950-wrapped deflate
 are decoded by zlib; Brotli uses libbrotlidec and zstd uses a matching private
 static libzstd through `ext/hyper_decode.c`. Rust owns HTTP framing,
