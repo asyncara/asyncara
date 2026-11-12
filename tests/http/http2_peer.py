@@ -8,7 +8,7 @@ stats={'accepted':0,'rejectedAlpn':0,'requests':[],'resets':0,'peakHeld':0,'earl
 class Peer:
     def __init__(self,writer,identity):
         self.writer=writer;self.id=identity;self.h2=h2.connection.H2Connection(config=h2.config.H2Configuration(client_side=False,header_encoding='utf-8'))
-        self.requests={};self.pending={};self.held={};self.timers={};self.h2.initiate_connection()
+        self.requests={};self.pending={};self.held={};self.timers={};self.retire_after=None;self.h2.initiate_connection()
     def flush(self):
         for sid,(body,offset,total) in list(self.pending.items()):
             try:
@@ -68,9 +68,17 @@ class Peer:
         elif path=='/goaway-drain':
             # Keep admitted streams live. Inject a valid GOAWAY without moving
             # python-h2's server state to CLOSED, so the held stream can finish.
-            self.reply(sid);self.flush();frame=GoAwayFrame(0);frame.last_stream_id=sid;frame.error_code=0;self.writer.write(frame.serialize())
+            # Put GOAWAY before END_STREAM. Otherwise a transport can deliver
+            # the complete response before GOAWAY arrives: the next request is
+            # then legitimately admitted before the client knows about retirement.
+            frame=GoAwayFrame(0);frame.last_stream_id=sid;frame.error_code=0;self.writer.write(frame.serialize());self.reply(sid)
         elif path=='/goaway':
-            self.reply(sid);self.flush();self.h2.close_connection(error_code=h2.errors.ErrorCodes.NO_ERROR);self.flush();self.writer.close()
+            frame=GoAwayFrame(0);frame.last_stream_id=sid;frame.error_code=0;self.writer.write(frame.serialize());self.reply(sid);self.flush();self.writer.close()
+        elif path=='/goaway-late':
+            self.retire_after=sid;self.reply(sid)
+        elif path=='/late-probe':
+            assert self.retire_after is not None,'Probe must use old connection before receiving GOAWAY'
+            frame=GoAwayFrame(0);frame.last_stream_id=self.retire_after;frame.error_code=0;self.writer.write(frame.serialize());self.writer.close()
         elif path=='/disconnect':self.writer.transport.abort()
         elif path=='/gzip':self.reply(sid,gzip.compress(bytes(range(256))*256),headers=[('content-encoding','gzip')])
         elif path=='/oversize':self.reply(sid,body=None,size=16777217)

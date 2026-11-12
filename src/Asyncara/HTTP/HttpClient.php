@@ -19,13 +19,17 @@ final class HttpClient
     {
         if ($concurrency < 1 || $concurrency > 256 || $timeout <= 0 || $timeout > 3600 || !is_finite($timeout)) throw new \ValueError('Invalid HTTP limits');
         if ($connectTimeout <= 0 || $connectTimeout > 3600 || !is_finite($connectTimeout)) throw new \ValueError('Invalid HTTP connect timeout');
+        $socks = in_array(strtolower((string)parse_url($proxy ?? '', PHP_URL_SCHEME)), ['socks5','socks5h'], true);
         if ($proxyCredentials !== null) {
-            if ($proxy === null || !in_array(strtolower((string)parse_url($proxy, PHP_URL_SCHEME)), ['http','https'], true) ||
+            if ($proxy === null || !in_array(strtolower((string)parse_url($proxy, PHP_URL_SCHEME)), ['http','https','socks5','socks5h'], true) ||
                 str_contains($proxy, '@') || count($proxyCredentials) !== 2 ||
                 !isset($proxyCredentials['username'], $proxyCredentials['password']))
-                throw new \ValueError('Proxy credentials require an explicit HTTP(S) proxy without URL credentials and username/password keys');
+                throw new \ValueError('Proxy credentials require an explicit HTTP(S) or SOCKS5 proxy without URL credentials and username/password keys');
             foreach ($proxyCredentials as $key => $value) {
-                if (!is_string($value) || strlen($value) > 4096 || preg_match('/[^\x20-\x7e]/', $value) ||
+                if ($socks) {
+                    if (!is_string($value) || $value === '' || strlen($value) > 255 || str_contains($value, "\0"))
+                        throw new \ValueError('SOCKS5 credentials require 1..255 non-NUL bytes per field');
+                } elseif (!is_string($value) || strlen($value) > 4096 || preg_match('/[^\x20-\x7e]/', $value) ||
                     ($key === 'username' && ($value === '' || str_contains($value, ':'))))
                     throw new \ValueError('Proxy Basic credentials must contain at most 4096 printable ASCII bytes; username must be nonempty without colon');
             }
@@ -364,15 +368,16 @@ final class HttpClient
         }
         // Resolve the connection endpoint, not an origin delegated to a proxy.
         // Origin TLS identity and trust remain independent of proxy TLS.
-        $endpoint = $host; $proxyTls = false;
+        $endpoint = $host; $proxyTls = false; $localOriginDns = false;
         if (isset($options['proxy'])) {
             $parts = parse_url($options['proxy']);
             if (is_array($parts) && isset($parts['scheme'])) $parts['scheme'] = strtolower($parts['scheme']);
-            if (!is_array($parts) || !in_array($parts['scheme'] ?? '', ['http','https'], true) ||
+            if (!is_array($parts) || !in_array($parts['scheme'] ?? '', ['http','https','socks5','socks5h'], true) ||
                 !isset($parts['host']) || isset($parts['user']) || isset($parts['pass']) ||
                 isset($parts['query']) || isset($parts['fragment']) || !in_array($parts['path'] ?? '', ['', '/'], true))
                 throw new \Asyncara\Exception\OperationException('Invalid Hyper proxy endpoint');
             $endpoint = $parts['host']; $proxyTls = $parts['scheme'] === 'https';
+            $localOriginDns = $parts['scheme'] === 'socks5' && !$numeric;
             if (inet_pton(trim($endpoint, '[]')) === false &&
                 (strlen($endpoint) > 253 || !preg_match('/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.?$/D', $endpoint)))
                 throw new \Asyncara\Exception\OperationException('Invalid Hyper proxy hostname');
@@ -380,7 +385,7 @@ final class HttpClient
         $numeric = inet_pton(trim($endpoint, '[]')) !== false;
         $budget = min($this->timeout, $this->connectTimeout) - (Scheduler::now() - $start);
         if ($budget <= 0) throw new \Asyncara\Exception\TimeoutException('HTTP TLS preparation deadline exceeded');
-        $addresses = Async::timeout($budget, function () use ($endpoint, $numeric, $tls, $proxyTls, &$options): array {
+        $addresses = Async::timeout($budget, function () use ($endpoint, $numeric, $tls, $proxyTls, $localOriginDns, $host, &$options): array {
             if ($tls) {
                 if ($this->hyperCaPem === null) {
                     // Linux system trust snapshot or explicit caFile. No blocking
@@ -399,6 +404,11 @@ final class HttpClient
                     $this->hyperProxyCaPem = $this->readPem($path, 1048576);
                 }
                 unset($options['proxyCaFile']); $options['proxyCaPem'] = $this->hyperProxyCaPem;
+            }
+            if ($localOriginDns) {
+                $targets = array_values(array_unique(Async::await(\Asyncara\IO\Dns::resolve($host))));
+                if (!$targets || count($targets) > 16) throw new \Asyncara\Exception\OperationException('Hyper origin DNS address limit (1..16)');
+                $options['proxyResolvedAddresses'] = $targets;
             }
             return $numeric ? [] : Async::await(\Asyncara\IO\Dns::resolve($endpoint));
         });

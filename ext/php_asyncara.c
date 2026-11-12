@@ -305,9 +305,10 @@ static bool valid_http_options(ar_value *v) {
     if (!v || v->type != V_ARRAY)
         return false;
     bool files = false, multipart = false, legacy_file = false, upload = false;
-    bool proxy_ca = false, proxy_user = false, proxy_password = false;
+    bool proxy_ca = false, proxy_user = false, proxy_password = false, proxy_targets = false;
     bool client_cert = false, client_key = false, redirects = false;
     const char *proxy = NULL;
+    ar_value *user = NULL, *password = NULL;
     int64_t upload_size = -1;
     for (size_t i = 0; i < v->count; i++) {
         char *key = v->keys[i];
@@ -329,13 +330,10 @@ static bool valid_http_options(ar_value *v) {
             if (cert) client_cert = true; else client_key = true;
         } else if (!strcmp(key, "proxyUsername") || !strcmp(key, "proxyPassword")) {
             bool username = !strcmp(key, "proxyUsername");
-            if (x->type != V_STRING || x->length > 4096 || (username && !x->length)) return false;
-            for (size_t c = 0; c < x->length; c++) {
-                unsigned char ch = (unsigned char)x->string[c];
-                if (ch < 32 || ch > 126 || (username && ch == ':')) return false;
-            }
-            if (username) proxy_user = true; else proxy_password = true;
-        } else if (!strcmp(key, "resolvedAddresses")) {
+            if (x->type != V_STRING || x->length > 4096 || memchr(x->string, 0, x->length)) return false;
+            if (username) { proxy_user = true; user = x; } else { proxy_password = true; password = x; }
+        } else if (!strcmp(key, "resolvedAddresses") || !strcmp(key, "proxyResolvedAddresses")) {
+            if (!strcmp(key, "proxyResolvedAddresses")) proxy_targets = true;
             if (x->type != V_ARRAY || !x->count || x->count > 16) return false;
             for (size_t n = 0; n < x->count; n++) {
                 ar_value *ip = x->items[n];
@@ -399,8 +397,22 @@ static bool valid_http_options(ar_value *v) {
      * curl redirect chain cannot enforce that per-hop client identity policy. */
     if (client_cert != client_key || (client_cert && redirects)) return false;
     if (proxy_ca && (!proxy || strncasecmp(proxy, "https://", 8))) return false;
+    bool socks = proxy && (!strncasecmp(proxy, "socks5://", 9) || !strncasecmp(proxy, "socks5h://", 10));
+    if (proxy_targets && (!proxy || strncasecmp(proxy, "socks5://", 9))) return false;
     if (proxy_user != proxy_password || (proxy_user && (!proxy || strchr(proxy, '@') ||
-        (strncasecmp(proxy, "http://", 7) && strncasecmp(proxy, "https://", 8))))) return false;
+        (!socks && strncasecmp(proxy, "http://", 7) && strncasecmp(proxy, "https://", 8))))) return false;
+    if (proxy_user) {
+        if (!user->length) return false;
+        if (socks) {
+            if (!password->length || user->length > 255 || password->length > 255) return false;
+        } else {
+            ar_value *credentials[] = {user, password};
+            for (size_t field = 0; field < 2; field++) for (size_t c = 0; c < credentials[field]->length; c++) {
+                unsigned char ch = (unsigned char)credentials[field]->string[c];
+                if (ch < 32 || ch > 126 || (!field && ch == ':')) return false;
+            }
+        }
+    }
     if (proxy_user) for (size_t i = 0; i < v->count; i++) {
         if (strcmp(v->keys[i], "headers")) continue;
         ar_value *headers = v->items[i];
@@ -971,7 +983,7 @@ PHP_FUNCTION(asyncara_submit) {
             j->length = Z_LVAL_P(timeout);
             bool head_request = false;
             for (size_t i = 0; i < options->count; i++)
-                if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "caPem") || !strcmp(options->keys[i], "proxyCaPem")) && !e->hyper_requested) {
+                if ((!strcmp(options->keys[i], "resolvedAddresses") || !strcmp(options->keys[i], "proxyResolvedAddresses") || !strcmp(options->keys[i], "caPem") || !strcmp(options->keys[i], "proxyCaPem")) && !e->hyper_requested) {
                     zend_value_error("Resolved addresses and trust bytes are internal to the Hyper transport");
                     goto error;
                 } else if ((!strcmp(options->keys[i], "clientCertPem") || !strcmp(options->keys[i], "clientKeyPem")) && strncasecmp(j->a, "https://", 8)) {

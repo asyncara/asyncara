@@ -1,4 +1,4 @@
-//! Explicit HTTP/1 proxy transport, bounded CONNECT and separate hop trust.
+//! Explicit HTTP/1 and SOCKS5 proxy transport, bounded setup and hop trust.
 //! Prepared addresses/PEM arrive from workers; this module never resolves DNS
 //! or reads files. No application headers or identity reach the CONNECT hop.
 use super::{Address, Addresses, ClientIo, ClientTransport, Io, TlsSettings};
@@ -8,7 +8,15 @@ use hyper::{
     rt::{Read, Write},
     Uri,
 };
-use std::{cell::Cell, future::poll_fn, io, net::SocketAddr, pin::Pin, rc::Rc, sync::Arc};
+use std::{
+    cell::Cell,
+    future::poll_fn,
+    io,
+    net::{IpAddr, SocketAddr},
+    pin::Pin,
+    rc::Rc,
+    sync::Arc,
+};
 #[repr(C)]
 pub struct ProxyData {
     pub url: Address,
@@ -20,6 +28,8 @@ pub(super) struct Policy {
     endpoint: String,
     roots: Vec<u8>,
     auth: zeroize::Zeroizing<String>,
+    socks: bool,
+    socks_auth: zeroize::Zeroizing<Vec<u8>>,
     tls: Option<(
         Arc<rustls::ClientConfig>,
         rustls::pki_types::ServerName<'static>,
@@ -29,8 +39,29 @@ pub(super) struct Policy {
 pub(super) struct Settings {
     pub id: usize,
     policy: Rc<Policy>,
+    targets: Vec<IpAddr>,
+    target_index: usize,
 }
 impl Settings {
+    pub(super) fn forward(&self) -> bool {
+        !self.policy.socks
+    }
+    pub(super) fn target(&self) -> Option<IpAddr> {
+        self.targets.get(self.target_index).copied()
+    }
+    pub(super) fn accepts_target(&self, target: Option<IpAddr>) -> bool {
+        match target {
+            Some(ip) => self.targets.contains(&ip),
+            None => self.targets.is_empty(),
+        }
+    }
+    pub(super) fn next_target(&mut self) -> bool {
+        if self.target_index + 1 >= self.targets.len() {
+            return false;
+        }
+        self.target_index += 1;
+        true
+    }
     pub(super) fn authorization(&self) -> Option<hyper::header::HeaderValue> {
         if self.policy.auth.is_empty() {
             return None;
@@ -65,7 +96,11 @@ pub(super) unsafe fn endpoint(
     }
     let port = match authority.as_str().strip_prefix(raw).ok_or(())? {
         "" => {
-            if uri.scheme_str() == Some("https") {
+            if uri.scheme_str().is_some_and(|s| {
+                s.eq_ignore_ascii_case("socks5") || s.eq_ignore_ascii_case("socks5h")
+            }) {
+                1080
+            } else if uri.scheme_str() == Some("https") {
                 443
             } else {
                 80
@@ -109,8 +144,14 @@ pub(super) unsafe fn copy(
     cache: &mut Vec<Rc<Policy>>,
     addresses: *const Address,
     count: usize,
+    origin: &Uri,
+    targets: *const Address,
+    target_count: usize,
 ) -> Result<Option<(Settings, Addresses)>, ()> {
     if raw.is_null() {
+        if target_count != 0 {
+            return Err(());
+        }
         return Ok(None);
     }
     let raw = &*raw;
@@ -119,12 +160,34 @@ pub(super) unsafe fn copy(
         return Err(());
     }
     let uri = url.parse::<Uri>().map_err(|_| ())?;
-    let secure = match uri.scheme_str() {
-        Some("http") => false,
-        Some("https") => true,
+    let scheme = uri.scheme_str().ok_or(())?.to_ascii_lowercase();
+    let secure = match scheme.as_str() {
+        "http" | "socks5" | "socks5h" => false,
+        "https" => true,
         _ => return Err(()),
     };
     if uri.query().is_some() || !matches!(uri.path(), "" | "/") {
+        return Err(());
+    }
+    let socks = matches!(scheme.as_str(), "socks5" | "socks5h");
+    let local = scheme == "socks5";
+    let host = origin.host().ok_or(())?.trim_matches(['[', ']']);
+    let numeric = host.parse::<IpAddr>().is_ok();
+    let mut resolved = Vec::new();
+    if local && !numeric {
+        if target_count == 0 || target_count > 16 || targets.is_null() {
+            return Err(());
+        }
+        for a in std::slice::from_raw_parts(targets, target_count) {
+            let ip = std::str::from_utf8(bytes(a, 45)?)
+                .map_err(|_| ())?
+                .parse::<IpAddr>()
+                .map_err(|_| ())?;
+            if !resolved.contains(&ip) {
+                resolved.push(ip);
+            }
+        }
+    } else if target_count != 0 {
         return Err(());
     }
     let addresses = endpoint(&uri, addresses, count)?;
@@ -137,7 +200,26 @@ pub(super) unsafe fn copy(
     if raw.user.bytes.is_null() != raw.password.bytes.is_null() {
         return Err(());
     }
+    let mut socks_auth = zeroize::Zeroizing::new(Vec::new());
     let auth = if raw.user.bytes.is_null() {
+        String::new()
+    } else if socks {
+        if user.is_empty()
+            || password.is_empty()
+            || user.len() > 255
+            || password.len() > 255
+            || user.contains(&0)
+            || password.contains(&0)
+        {
+            return Err(());
+        }
+        // Reserve before copying secrets: Vec growth would free an earlier
+        // credential allocation without running Zeroizing's final drop.
+        socks_auth.reserve_exact(user.len() + password.len() + 3);
+        socks_auth.extend_from_slice(&[1, user.len() as u8]);
+        socks_auth.extend_from_slice(user);
+        socks_auth.push(password.len() as u8);
+        socks_auth.extend_from_slice(password);
         String::new()
     } else {
         if user.is_empty()
@@ -159,13 +241,15 @@ pub(super) unsafe fn copy(
     let auth = zeroize::Zeroizing::new(auth);
     let endpoint = format!(
         "{}://{}",
-        if secure { "https" } else { "http" },
+        scheme,
         uri.authority().ok_or(())?.as_str().to_ascii_lowercase()
     );
-    let index = if let Some(i) = cache
-        .iter()
-        .position(|p| p.endpoint == endpoint && p.roots == roots && *p.auth == *auth)
-    {
+    let index = if let Some(i) = cache.iter().position(|p| {
+        p.endpoint == endpoint
+            && p.roots == roots
+            && *p.auth == *auth
+            && *p.socks_auth == *socks_auth
+    }) {
         i
     } else {
         if cache.len() >= 16 {
@@ -186,6 +270,8 @@ pub(super) unsafe fn copy(
             endpoint,
             roots: roots.to_vec(),
             auth,
+            socks,
+            socks_auth,
             tls,
         }));
         cache.len() - 1
@@ -194,6 +280,8 @@ pub(super) unsafe fn copy(
         Settings {
             id: index + 1,
             policy: cache[index].clone(),
+            targets: resolved,
+            target_index: 0,
         },
         addresses,
     )))
@@ -219,6 +307,23 @@ pub(super) fn prepare(
             poll_fn(|cx| tls.handshake(cx)).await?;
             wire = ClientIo::Tls(Box::new(tls));
         }
+        if settings.policy.socks {
+            let host = uri
+                .host()
+                .ok_or(io::ErrorKind::InvalidInput)?
+                .trim_matches(['[', ']']);
+            let port = uri
+                .port_u16()
+                .unwrap_or(if origin.is_some() { 443 } else { 80 });
+            wire = super::socks::connect(
+                wire,
+                host,
+                port,
+                settings.target(),
+                &settings.policy.socks_auth,
+            )
+            .await?;
+        }
         if let Some(origin) = origin {
             let authority = uri.authority().ok_or(io::ErrorKind::InvalidInput)?;
             let target = if authority.port().is_some() {
@@ -226,7 +331,9 @@ pub(super) fn prepare(
             } else {
                 format!("{}:443", authority.as_str())
             };
-            wire = connect(wire, &target, settings.authorization()).await?;
+            if !settings.policy.socks {
+                wire = connect(wire, &target, settings.authorization()).await?;
+            }
             let mut tls = super::tls::TlsIo::client_over(
                 wire,
                 origin.config,

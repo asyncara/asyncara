@@ -9,6 +9,7 @@ use body::ClientBody;
 mod job;
 mod protocol;
 mod proxy;
+mod socks;
 use hyper::{body::Bytes, Request, Uri};
 use protocol::{Sender, Setup};
 mod request;
@@ -314,6 +315,7 @@ struct Conn {
     transport: Option<ClientTransport>,
     prepare: Option<proxy::Prepare>,
     proxy_id: usize,
+    proxy_target: Option<std::net::IpAddr>,
     tls_pending: Option<Rc<Cell<bool>>>,
     trust_id: usize,
     connect_deadline: Instant,
@@ -409,6 +411,7 @@ impl Conn {
         let pending_write = Rc::new(Cell::new(false));
         let trust_id = tls.as_ref().map_or(0, |t| t.id);
         let proxy_id = proxy.as_ref().map_or(0, |p| p.id);
+        let proxy_target = proxy.as_ref().and_then(|p| p.target());
         let (transport, tls_pending, prepare) = if let Some(proxy) = proxy {
             let ready = Rc::new(Cell::new(false));
             let prepare = proxy::prepare(
@@ -449,6 +452,7 @@ impl Conn {
             transport,
             prepare,
             proxy_id,
+            proxy_target,
             pending_write,
             tls_pending,
             trust_id,
@@ -787,7 +791,14 @@ impl Engine {
     // The same connect budget covers every candidate address.
     fn next_address(&mut self, i: usize) -> bool {
         let op = &mut self.ops[i];
-        if op.future.is_some() || op.address_index + 1 >= op.addresses.as_slice().len() {
+        if op.future.is_some() {
+            return false;
+        }
+        if op.address_index + 1 < op.addresses.as_slice().len() {
+            op.address_index += 1;
+        } else if op.proxy.as_mut().is_some_and(|p| p.next_target()) {
+            op.address_index = 0;
+        } else {
             return false;
         }
         if let Some(c) = op.conn.take() {
@@ -799,7 +810,6 @@ impl Engine {
                 }
             }
         }
-        op.address_index += 1;
         true
     }
     fn finish(&mut self, i: usize, error: Option<&str>) {
@@ -855,6 +865,12 @@ impl Engine {
                             && c.sender.as_ref().is_some_and(Sender::is_ready)
                             && &c.origin == origin
                             && c.proxy_id == self.ops[i].proxy.as_ref().map_or(0, |p| p.id)
+                            && self.ops[i]
+                                .proxy
+                                .as_ref()
+                                .map_or(c.proxy_target.is_none(), |p| {
+                                    p.accepts_target(c.proxy_target)
+                                })
                             && c.trust_id == self.ops[i].tls.as_ref().map_or(0, |t| t.id)
                             && self.ops[i].addresses.as_slice().contains(&c.addr)
                     })
@@ -984,7 +1000,7 @@ impl Engine {
                             op.callback.clone(),
                             op.request.take().expect("one request owner"),
                             if op.tls.is_none() {
-                                op.proxy.clone()
+                                op.proxy.clone().filter(|p| p.forward())
                             } else {
                                 None
                             },
@@ -1141,6 +1157,8 @@ pub unsafe extern "C" fn ar_hyper_submit(
         &[],
         &[],
         std::ptr::null(),
+        std::ptr::null(),
+        0,
     )
 }
 #[no_mangle]
@@ -1174,6 +1192,8 @@ pub unsafe extern "C" fn ar_hyper_submit_request(
         &[],
         &[],
         std::ptr::null(),
+        std::ptr::null(),
+        0,
     )
 }
 #[no_mangle]
@@ -1208,6 +1228,8 @@ pub unsafe extern "C" fn ar_hyper_submit_http(
         &[],
         &[],
         std::ptr::null(),
+        std::ptr::null(),
+        0,
     )
 }
 #[no_mangle]
@@ -1244,6 +1266,8 @@ pub unsafe extern "C" fn ar_hyper_submit_http_stream(
         &[],
         &[],
         std::ptr::null(),
+        std::ptr::null(),
+        0,
     )
 }
 /// Identity bytes are borrowed only for submission and copied into a bounded,
@@ -1303,6 +1327,8 @@ pub unsafe extern "C" fn ar_hyper_submit_http_identity(
         cert,
         key,
         std::ptr::null(),
+        std::ptr::null(),
+        0,
     )
 }
 #[no_mangle]
@@ -1325,6 +1351,52 @@ pub unsafe extern "C" fn ar_hyper_submit_http_proxy(
     key: *const u8,
     key_len: usize,
     proxy: *const proxy::ProxyData,
+) -> i32 {
+    ar_hyper_submit_http_route(
+        ptr,
+        job,
+        url,
+        len,
+        timeout,
+        connect,
+        addresses,
+        count,
+        ca,
+        ca_len,
+        request,
+        streams,
+        upload_size,
+        cert,
+        cert_len,
+        key,
+        key_len,
+        proxy,
+        std::ptr::null(),
+        0,
+    )
+}
+#[no_mangle]
+pub unsafe extern "C" fn ar_hyper_submit_http_route(
+    ptr: *mut c_void,
+    job: *mut c_void,
+    url: *const u8,
+    len: usize,
+    timeout: u64,
+    connect: u64,
+    addresses: *const Address,
+    count: usize,
+    ca: *const u8,
+    ca_len: usize,
+    request: *const RequestData,
+    streams: u32,
+    upload_size: i64,
+    cert: *const u8,
+    cert_len: usize,
+    key: *const u8,
+    key_len: usize,
+    proxy: *const proxy::ProxyData,
+    targets: *const Address,
+    target_count: usize,
 ) -> i32 {
     if cert_len > 1048576
         || key_len > 65536
@@ -1361,6 +1433,8 @@ pub unsafe extern "C" fn ar_hyper_submit_http_proxy(
         cert,
         key,
         proxy,
+        targets,
+        target_count,
     )
 }
 unsafe fn submit(
@@ -1381,6 +1455,8 @@ unsafe fn submit(
     cert: &[u8],
     key: &[u8],
     proxy: *const proxy::ProxyData,
+    targets: *const Address,
+    target_count: usize,
 ) -> i32 {
     engine_ffi(ptr, -2, |engine| {
         if ca_len > 1048576 || (ca_len != 0 && ca.is_null()) {
@@ -1460,7 +1536,15 @@ unsafe fn submit(
             None => return -1,
         };
         let host = raw_host.trim_matches(['[', ']']);
-        let Ok(prepared_proxy) = proxy::copy(proxy, &mut engine.proxies, addresses, count) else {
+        let Ok(prepared_proxy) = proxy::copy(
+            proxy,
+            &mut engine.proxies,
+            addresses,
+            count,
+            &uri,
+            targets,
+            target_count,
+        ) else {
             return -1;
         };
         let (proxy, candidates, origin) = if let Some((proxy, candidates)) = prepared_proxy {

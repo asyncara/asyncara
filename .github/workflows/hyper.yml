@@ -58,9 +58,14 @@ jobs:
             python3 tests/http/proxy_auth.py --transport hyper --server --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-proxy-server"
             python3 tests/http/https_proxy.py --transport hyper --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-proxy-trust"
             python3 tests/http/hyper_proxy_failures.py --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-proxy-failures"
-            for case in lifecycle early-upload goaway declared-size; do
+            for dns in local remote; do
+              build/http2-venv/bin/python tests/http/http2.py --transport hyper --socks5 "$dns" --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-socks-$dns"
+            done
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --socks5 remote --server --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-socks-server"
+            for case in lifecycle early-upload goaway goaway-late declared-size; do
               build/http2-venv/bin/python tests/http/http2.py --transport hyper --case "$case" --proxy-auth --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-hyper-proxy-$case"
             done
+            build/http2-venv/bin/python tests/http/http2.py --transport hyper --socks5 remote --case goaway-late --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-socks-late"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --out build/http2/"$backend-direct"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy --out build/http2/"$backend-proxy"
             build/http2-venv/bin/python tests/http/http2.py --php php --module build/hyper.so --backend "$backend" --proxy-auth --out build/http2/"$backend-proxy-auth"

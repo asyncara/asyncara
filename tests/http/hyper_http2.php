@@ -67,6 +67,7 @@ $work=function()use($config,&$checks,&$ticks,&$streamIds):void{
     foreach(['reset','short']as$path){$broken=$client->getStream($url.'/'.$path);reject(fn()=>$broken->consume(static fn($chunk)=>null));}
     verify($client->get($url.'/ok')->await()->headers['x-test-connection']===$connection,'Producer/response failure destroyed siblings');
     verify($client->get($url.'/goaway')->await()->body==='ok','GOAWAY completion');
+    echo "goaway_response_collected\n";
     verify($client->get($url.'/ok')->await()->headers['x-test-connection']!==$connection,'GOAWAY transport reused');
     $pending=$client->get($url.'/hold/disconnect');
     Async::timeout(2,function()use($client,$url):void{while($client->get($url.'/state/disconnect')->await()->json()['held']!==1)Async::sleep(0);});

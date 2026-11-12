@@ -93,6 +93,9 @@ for backend in ['epoll', 'poll']:
     run(backend + '-https-proxy', ['python3', 'tests/http/https_proxy.py',
         '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-https-proxy')], env)
     for transport in (['curl-multi', 'hyper-prototype'] if a.hyper else ['curl-multi']):
+        run(backend + '-socks5-' + transport, ['python3', 'tests/http/socks5.py', '--php', a.php,
+            '--module', module, '--backend', backend, '--transport', 'hyper' if transport == 'hyper-prototype' else transport,
+            '--out', out / (backend + '-socks5-' + transport)] + (['--curl-control'] if transport == 'curl-multi' else []), env)
         run(backend + '-mtls-' + transport, ['python3', 'tests/http/client_mtls.py', '--php', a.php, '--module', module, '--backend', backend, '--transport', transport, '--out', out / (backend + '-mtls-' + transport)], env)
         run(backend + '-file-paths-' + transport, ['python3', 'tests/http/file_paths.py',
             '--php', a.php, '--module', module, '--backend', backend, '--transport', transport,
