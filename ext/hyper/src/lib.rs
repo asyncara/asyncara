@@ -56,6 +56,7 @@ type Driver = Pin<Box<dyn Future<Output = Result<(), String>>>>;
 type Transfer = Pin<Box<dyn Future<Output = (Sender, bool, Result<(), String>)>>>;
 extern "C" {
     fn ar_hyper_head(job: *mut c_void, status: i32, p: *const u8, n: usize) -> i32;
+    fn ar_hyper_body_size(job: *mut c_void, length: u64) -> i32;
     fn ar_hyper_chunk(job: *mut c_void, p: *const u8, n: usize) -> i32;
     fn ar_hyper_encoding(job: *mut c_void, coding: i32) -> i32;
     fn ar_hyper_decoded_end(job: *mut c_void) -> i32;
@@ -649,6 +650,25 @@ async fn transfer(
                         .split(|b| *b == b',')
                         .any(|token| token.trim_ascii().eq_ignore_ascii_case(b"close"))
                 });
+        // HEAD/304 Content-Length describes a representation, not a body.
+        // Let the protocol library own framing precedence and validation;
+        // an HTTP/1 transfer coding overrides a Content-Length declaration.
+        if !head
+            && response.status() != 204
+            && response.status() != 304
+            && !response.headers().contains_key("transfer-encoding")
+        {
+            if let Some(length) = response
+                .headers()
+                .get("content-length")
+                .and_then(|v| v.to_str().ok())
+                .and_then(|v| v.parse::<u64>().ok())
+            {
+                if unsafe { ar_hyper_body_size(job as *mut c_void, length) } != 0 {
+                    return Err("HTTP body limit exceeded".into());
+                }
+            }
+        }
         if !spec.stream_response && !head && response.status() != 204 && response.status() != 304 {
             let values = response.headers().get_all("content-encoding");
             let count = values.iter().count();

@@ -108,6 +108,8 @@ for backend in ['epoll', 'poll']:
     run(backend + '-shutdown', ['python3', 'tests/http/stage_shutdown.py', '--php', a.php,
         '--extension', module, '--output', out / (backend + '-shutdown')], env)
     if a.hyper:
+        run(backend + '-declared-size', ['python3', 'tests/http/declared_size.py', '--php', a.php,
+            '--module', module, '--backend', backend, '--out', out / (backend + '-declared-size')], env)
         run(backend + '-redirect-uri', php + ['tests/http/redirect_uri.php'], env)
         run(backend + '-hyper-multipart', ['python3', 'tests/http/hyper_multipart.py', '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-hyper-multipart')], env)
         run(backend + '-hyper-redirects', ['python3', 'tests/http/hyper_redirects.py', '--php', a.php, '--module', module, '--backend', backend, '--out', out / (backend + '-hyper-redirects')], env)

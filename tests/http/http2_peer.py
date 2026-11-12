@@ -4,7 +4,7 @@ import asyncio,gzip,hashlib,json,pathlib,ssl,sys,time,urllib.parse
 import h2.config,h2.connection,h2.events,h2.errors,h2.settings
 from hyperframe.frame import GoAwayFrame
 certs=pathlib.Path(sys.argv[1]);connections=set();next_id=0
-stats={'accepted':0,'rejectedAlpn':0,'requests':[],'resets':0,'peakHeld':0,'earlyResponses':0,'errors':[]}
+stats={'accepted':0,'rejectedAlpn':0,'requests':[],'resets':0,'peakHeld':0,'earlyResponses':0,'errors':[],'declared':{'announced':0,'closed':0,'bodyBytesOnAnnounced':0}}
 class Peer:
     def __init__(self,writer,identity):
         self.writer=writer;self.id=identity;self.h2=h2.connection.H2Connection(config=h2.config.H2Configuration(client_side=False,header_encoding='utf-8'))
@@ -21,14 +21,24 @@ class Peer:
             except (h2.exceptions.StreamClosedError,h2.exceptions.NoSuchStreamError):self.pending.pop(sid,None)
         data=self.h2.data_to_send()
         if data:self.writer.write(data)
-    def reply(self,sid,body=b'ok',status='200',headers=(),size=None,head=False):
+    def reply(self,sid,body=b'ok',status='200',headers=(),size=None,head=False,known=True):
         total=len(body)if size is None else size
-        self.h2.send_headers(sid,[(':status',status),('content-length',str(total)),('x-test-protocol','h2'),('x-test-connection',str(self.id)),('x-test-stream',str(sid)),*headers],end_stream=head or total==0)
+        self.h2.send_headers(sid,[(':status',status),*([('content-length',str(total))]if known else[]),('x-test-protocol','h2'),('x-test-connection',str(self.id)),('x-test-stream',str(sid)),*headers],end_stream=head or total==0)
         if not head and total:self.pending[sid]=(body,0,total)
     def complete(self,sid):
         req=self.requests.pop(sid);url=urllib.parse.urlsplit(req['path']);path=url.path;group=path.rsplit('/',1)[-1]
         stats['requests'].append({'connection':self.id,'stream':sid,'method':req['method'],'path':path,'bytes':req['bytes']})
         if len(stats['requests'])>400:raise RuntimeError('Fixture request bound')
+        if path.startswith('/declared/'):
+            action=path.rsplit('/',1)[-1]
+            if action=='state':self.reply(sid,json.dumps(stats['declared']).encode())
+            elif action=='announced':
+                stats['declared']['announced']+=1;self.held[sid]='declared'
+                self.h2.send_headers(sid,[(':status','200'),('content-length','16777217')])
+            elif action in ['head','not-modified']:self.reply(sid,status='304'if action=='not-modified'else'200',size=16777217,head=True)
+            elif action in ['exact','stream','unknown']:self.reply(sid,body=None,size=16777216 if action=='exact'else 16777217,known=action!='unknown')
+            else:raise AssertionError(action)
+            return
         if path=='/fpm':
             self.held[sid]='fpm';began=time.time()
             def finish():
@@ -86,6 +96,7 @@ class Peer:
                 self.h2.acknowledge_received_data(event.flow_controlled_length,event.stream_id)
             elif isinstance(event,h2.events.StreamEnded):self.complete(event.stream_id)
             elif isinstance(event,h2.events.StreamReset):
+                if self.held.get(event.stream_id)=='declared':stats['declared']['closed']+=1
                 handle=self.timers.pop(event.stream_id,None)
                 if handle:handle.cancel()
                 self.held.pop(event.stream_id,None);self.pending.pop(event.stream_id,None);self.requests.pop(event.stream_id,None);stats['resets']+=1

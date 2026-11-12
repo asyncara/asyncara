@@ -6,12 +6,13 @@ p=argparse.ArgumentParser()
 for key in ['php','module','out']:p.add_argument('--'+key,required=True)
 p.add_argument('--backend',choices=['epoll','poll'],required=True);p.add_argument('--proxy',action='store_true')
 p.add_argument('--transport',choices=['curl-multi','hyper'],default='curl-multi')
-p.add_argument('--case',choices=['lifecycle','early-upload','goaway'],default='lifecycle')
+p.add_argument('--case',choices=['lifecycle','early-upload','goaway','declared-size'],default='lifecycle')
 p.add_argument('--server',action='store_true',help='Run the same Hyper lifecycle assertions inside a native App handler')
 p.add_argument('--proxy-auth',action='store_true',help='Basic authenticated HTTPS CONNECT; implies --proxy')
 a=p.parse_args();root=pathlib.Path(__file__).resolve().parents[2];out=pathlib.Path(a.out).resolve();out.mkdir(parents=True,exist_ok=False,mode=0o700)
 if a.proxy_auth:a.proxy=True
 if a.server and (a.transport!='hyper' or a.case!='lifecycle'):p.error('--server requires Hyper lifecycle case')
+if a.case=='declared-size'and a.transport!='hyper':p.error('Early declared-size rejection currently requires Hyper')
 sys.path.insert(0,str(root/'tests/server'));from tls import certificates
 (out/'origin').mkdir();certs=certificates(out/'origin');sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();peers=[];start=time.monotonic();code=None;error=None
 manifest={str(f.relative_to(root)):sha(f)for d in ['ext','src','tests/http']for f in(root/d).rglob('*')if f.is_file()and '__pycache__'not in f.parts}
@@ -37,6 +38,7 @@ try:
  env=os.environ|{'ASYNCARA_BACKEND':a.backend,'ASYNCARA_HTTP_BACKEND':'hyper-prototype'if a.transport=='hyper'else'curl-multi'}
  for key in ['http_proxy','HTTP_PROXY','https_proxy','HTTPS_PROXY','all_proxy','ALL_PROXY','SSL_CERT_FILE','CURL_CA_BUNDLE']:env.pop(key,None)
  fixture='http2_goaway.php'if a.case=='goaway'else 'http2_early_upload.php'if a.case=='early-upload'else('hyper_http2.php'if a.transport=='hyper'else'http2.php')
+ if a.case=='declared-size':fixture='declared_size.php'
  command=[a.php,'-n','-d','extension='+str(pathlib.Path(a.module).resolve()),str(root/'tests/http'/fixture),str(out/'config.json')]
  if a.server:command.append('--server')
  with(out/'php.log').open('x')as log:
@@ -76,6 +78,9 @@ try:
   assert peer['peakHeld']>=4 and peer['resets']>=1,peer
   if a.transport=='curl-multi':assert peer['rejectedAlpn']>=1,peer
   else:assert peer['rejectedAlpn']==0 and peer['earlyResponses']>=1,peer
+ elif a.case=='declared-size':
+  assert peer['declared']=={'announced':1,'closed':1,'bodyBytesOnAnnounced':0},peer
+  assert peer['accepted']==1 and peer['rejectedAlpn']==0,peer
  elif a.case=='goaway':assert len([v for v in peer['requests']if v['path']=='/goaway-drain'])==16 and peer['accepted']>=17,peer
  else:assert peer['earlyResponses']==16 and peer['resets']>=16 and peer['accepted']==1,peer
  if a.proxy:assert json.loads((out/'proxy-final.log').read_text())['connect']>=1
