@@ -622,7 +622,11 @@ PHP_FUNCTION(asyncara_info) {
 #else
     add_assoc_string(return_value, "eventLoopBackend", "poll");
 #endif
+#ifdef _WIN32
+    add_assoc_string(return_value, "filesystemBackend", "win32-workers");
+#else
     add_assoc_string(return_value, "filesystemBackend", "pthread-workers");
+#endif
     add_assoc_string(return_value, "networkBackend", "nonblocking-streams+curl-multi");
     add_assoc_string(return_value, "httpBackend", e->hyper_requested ? "hyper-prototype" : "curl-multi");
 #ifdef HAVE_ASYNCARA_HYPER
@@ -714,7 +718,7 @@ ZEND_END_ARG_INFO()
 PHP_FUNCTION(asyncara_trace_configure) {
     zend_long capacity, mask;
     ZEND_PARSE_PARAMETERS_START(2, 2) Z_PARAM_LONG(capacity) Z_PARAM_LONG(mask) ZEND_PARSE_PARAMETERS_END();
-    if (capacity < 16 || capacity > AR_TRACE_MAX || mask < 0 || mask > AR_TRACE_ALL) {
+    if (capacity < 16 || capacity > (zend_long)AR_TRACE_MAX || mask < 0 || mask > (zend_long)AR_TRACE_ALL) {
         zend_value_error("Trace capacity must be 16..4096 and mask 0..127"); RETURN_THROWS();
     }
     ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
@@ -728,7 +732,7 @@ PHP_FUNCTION(asyncara_trace_event) {
     Z_PARAM_LONG(category) Z_PARAM_LONG(code) Z_PARAM_LONG(id) Z_PARAM_LONG(a) Z_PARAM_LONG(b) Z_PARAM_LONG(c)
     ZEND_PARSE_PARAMETERS_END();
     if (!engine) return;
-    if (category < 1 || category > AR_TRACE_ALL || code < 1 || code > 255) {
+    if (category < 1 || category > (zend_long)AR_TRACE_ALL || code < 1 || code > 255) {
         zend_value_error("Invalid diagnostic event"); RETURN_THROWS();
     }
     ar_trace *t = atomic_load_explicit(&engine->trace, memory_order_acquire);
@@ -859,7 +863,7 @@ PHP_FUNCTION(asyncara_submit) {
             } else if (op == OP_FILE_READ) {
                 zval *length = zend_hash_index_find(args, 1);
                 if (!length || Z_TYPE_P(length) != IS_LONG || Z_LVAL_P(length) < 1 ||
-                    Z_LVAL_P(length) > AR_LIMIT) {
+                    Z_LVAL_P(length) > (zend_long)AR_LIMIT) {
                     zend_value_error("Read length must be 1..16777216 bytes");
                     goto error;
                 }
@@ -940,7 +944,7 @@ PHP_FUNCTION(asyncara_submit) {
             j->offset = Z_LVAL_P(off);
             if (op == OP_READ_RANGE) {
                 if (!length || Z_TYPE_P(length) != IS_LONG || Z_LVAL_P(length) < 1 ||
-                    Z_LVAL_P(length) > AR_LIMIT) {
+                    Z_LVAL_P(length) > (zend_long)AR_LIMIT) {
                     zend_value_error("Invalid read length");
                     goto error;
                 }
@@ -1460,7 +1464,11 @@ PHP_MINFO_FUNCTION(asyncara) {
     php_info_print_table_row(2, "Asyncara support", "enabled");
     php_info_print_table_row(2, "Version", PHP_ASYNCARA_VERSION);
     php_info_print_table_row(2, "Event loop", "epoll (Linux), poll fallback");
+#ifdef _WIN32
+    php_info_print_table_row(2, "Filesystem / SQLite / DNS", "bounded native Win32 workers");
+#else
     php_info_print_table_row(2, "Filesystem / SQLite / DNS", "bounded native pthread workers");
+#endif
     php_info_print_table_row(2, "HTTP", "libcurl multi socket");
 #ifdef HAVE_ASYNCARA_HYPER
     php_info_print_table_row(2, "HTTP server", "Hyper HTTP/1; TLS 1.2/1.3; response streaming; CLI; experimental");

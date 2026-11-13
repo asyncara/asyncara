@@ -1,12 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -euo pipefail
 umask 022
+export CONFIG_SHELL="$PREFIX/bin/sh" SHELL="$PREFIX/bin/sh"
 # Native Bionic toolchain only. Do not generate a glibc binary labelled Android.
 test -n "${PREFIX:-}" && { test -e /system/bin/linker64 || test -e /system/bin/linker; }
 : "${PLATFORM_OUT:=/out}"
 mkdir -p "$PLATFORM_OUT"
 cd "$PLATFORM_OUT"
 exec > >(tee build.log) 2>&1
+sed -i "s@/usr/bin/sed@$PREFIX/bin/sed@g" "$PREFIX/bin/php-config"
 php -n -v
 php-config --includes
 clang --version
@@ -30,19 +32,21 @@ done
 sha256sum build/asyncara-core.so > ../core-module.sha256
 if [ "${ASYNCARA_BUILD_HYPER:-1}" = 0 ]; then
   cp build/asyncara-core.so build/asyncara.so
-  bash /work/scripts/platforms/package-android.sh
+  bash scripts/platforms/package-android.sh
   printf 'PASS: core profile\n' > ../result.txt
   exit 0
 fi
 # Build the actual Rust bridge for the same Bionic ABI.
 export CARGO_BUILD_JOBS=2
 cargo build --manifest-path ext/hyper/Cargo.toml --release --locked
-bash /work/scripts/platforms/android-deps.sh
-export PKG_CONFIG_PATH="$PWD/build/deps/pkgconfig:$PREFIX/lib/$(clang -dumpmachine)/pkgconfig:${PKG_CONFIG_PATH:-}"
+bash scripts/platforms/android-deps.sh
+maria_pc=$(find "$PREFIX/lib" -name libmariadb.pc -print -quit)
+export PKG_CONFIG_PATH="$PWD/build/deps/pkgconfig:$(dirname "$maria_pc"):${PKG_CONFIG_PATH:-}"
+export LDFLAGS="-Wl,-rpath,$(pkg-config --variable=libdir libmariadb)"
 cd ext
 phpize
-./configure --enable-asyncara --with-asyncara-pq --with-asyncara-mysql --with-asyncara-hyper="$PWD/hyper/target/release" --with-php-config="$(command -v php-config)"
-make -j2
+"$CONFIG_SHELL" ./configure --enable-asyncara --with-asyncara-pq --with-asyncara-mysql --with-asyncara-hyper="$PWD/hyper/target/release" --with-php-config="$(command -v php-config)"
+make -j2 SHELL="$CONFIG_SHELL"
 cd ..
 cp ext/modules/asyncara.so build/asyncara.so
 for backend in epoll poll; do
@@ -51,5 +55,5 @@ for backend in epoll poll; do
 done
 sha256sum build/asyncara.so > ../module.sha256
 php -n -d extension="$PWD/build/asyncara.so" --ri asyncara > ../extension-info.txt
-bash /work/scripts/platforms/package-android.sh
+bash scripts/platforms/package-android.sh
 printf 'PASS\n' > ../result.txt

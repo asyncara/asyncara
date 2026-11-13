@@ -21,21 +21,20 @@ try {
   $phpLib=(Get-ChildItem "$out/php" -Recurse -Filter php8.lib | Select-Object -First 1).FullName
   if(!$sdk -or !$phpLib) {throw 'PHP SDK headers/import library absent'}
   $vcpkg=Join-Path $env:VCPKG_INSTALLATION_ROOT 'vcpkg.exe'
-  & $vcpkg install "curl[core,ssl]:$Arch-windows" "sqlite3:$Arch-windows" --classic --disable-metrics
+  & $vcpkg install "curl[core,ssl]:$Arch-windows-static-md" "sqlite3:$Arch-windows-static-md" --classic --disable-metrics
   if($LASTEXITCODE) {throw "vcpkg failed $LASTEXITCODE"}
-  $deps=Join-Path $env:VCPKG_INSTALLATION_ROOT "installed/$Arch-windows"
+  $deps=Join-Path $env:VCPKG_INSTALLATION_ROOT "installed/$Arch-windows-static-md"
   $vswhere="${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
   $vs=(& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
   $vcvars=Join-Path $vs "VC/Auxiliary/Build/vcvarsall.bat"
   $target=if($Arch -eq 'x64') {'x86_64-pc-windows-msvc'} else {'i686-pc-windows-msvc'}
-  $clang=Join-Path $env:ProgramFiles 'LLVM/bin/clang-cl.exe'
+  $clang='cl.exe'
   $includes=@($sdk,"$sdk/main","$sdk/Zend","$sdk/TSRM","$root/ext","$deps/include") | ForEach-Object {'/I"'+$_+'"'}
   $sources=@('php_asyncara.c','workers.c','backend.c','memory.c','hyper_decode.c','platform_windows.c','compat/windows/files.c') | ForEach-Object {'"'+"$root/ext/$_"+'"'}
-  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" --target='+$target+' /nologo /LD /MD /O2 /std:c11 /W3 /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib ws2_32.lib bcrypt.lib advapi32.lib' + "`r`nexit /b %errorlevel%`r`n"
+  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" /nologo /LD /MD /O2 /std:c11 /experimental:c11atomics /W3 /DCURL_STATICLIB /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib zlib.lib ws2_32.lib bcrypt.lib advapi32.lib crypt32.lib secur32.lib normaliz.lib wldap32.lib' + "`r`nexit /b %errorlevel%`r`n"
   Set-Content "$out/compile.cmd" $line
   Push-Location $out
   try { & cmd.exe /d /c compile.cmd; if($LASTEXITCODE) {throw "Compilation failed $LASTEXITCODE"} } finally {Pop-Location}
-  Copy-Item "$deps/bin/*.dll" "$out/php/" -Force
   $php="$out/php/php.exe"
   & $php -n -d "extension=$out/php/asyncara.dll" --ri asyncara
   if($LASTEXITCODE){throw 'Extension load failed'}
@@ -48,7 +47,6 @@ try {
   $bundle="$out/asyncara-windows-$Arch-php85-nts-preview"
   New-Item -ItemType Directory $bundle | Out-Null
   Copy-Item "$out/php/asyncara.dll","$out/manifest.json","$root/LICENSE" $bundle
-  Copy-Item "$deps/bin/*.dll" $bundle
   Copy-Item "$root/src" "$bundle/src" -Recurse
   Copy-Item "$root/autoload.php" $bundle
   Copy-Item "$deps/share" "$bundle/dependency-notices" -Recurse

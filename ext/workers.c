@@ -171,7 +171,11 @@ static void stage_file(ar_job *j) {
     if (!slash || !slash[1] || !strcmp(slash + 1, ".") || !strcmp(slash + 1, "..")) { errno = EINVAL; goto error; }
     file->stage_target = ar_strdup(j->engine, slash + 1);
     if (!file->stage_target) { failure(j, "Native memory limit or allocation failure"); goto finish; }
-    if (slash == directory) slash[1] = 0; else *slash = 0;
+    if (slash == directory
+#ifdef _WIN32
+        || (slash == directory + 2 && directory[1] == ':')
+#endif
+    ) slash[1] = 0; else *slash = 0;
     file->directory_fd = open(directory, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
     if (file->directory_fd < 0) goto error;
     for (int attempt = 0; attempt < 16; attempt++) {
@@ -304,7 +308,11 @@ static void do_atomic_write(ar_job *j) {
         goto error;
     }
     base++;
-    if (slash == directory) slash[1] = 0; else *slash = 0;
+    if (slash == directory
+#ifdef _WIN32
+        || (slash == directory + 2 && directory[1] == ':')
+#endif
+    ) slash[1] = 0; else *slash = 0;
     dir = open(directory, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
     if (dir < 0)
         goto error;

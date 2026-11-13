@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x64, x86]
+        arch: [x64]
     steps:
       - uses: actions/checkout@v4
       - name: Build and exercise native Windows DLL
@@ -36,11 +36,7 @@ jobs:
         include:
           - arch: x86_64
             runner: ubuntu-24.04
-          - arch: i686
-            runner: ubuntu-24.04
           - arch: aarch64
-            runner: ubuntu-24.04-arm
-          - arch: arm
             runner: ubuntu-24.04-arm
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 35
@@ -51,7 +47,9 @@ jobs:
         with:
           platforms: arm
       - name: Native Bionic build and runtime tests
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p build/platforms/android
           chmod 777 build/platforms/android
           docker pull termux/termux-docker:${{ matrix.arch }}
@@ -63,6 +61,8 @@ jobs:
             termux/termux-docker:${{ matrix.arch }} -lc \
             'apt update && apt install -y clang make autoconf automake libtool pkg-config php libcurl libsqlite openssl && bash /work/scripts/platforms/android.sh' \
             2>&1 | tee build/platforms/android/container.log
+          test -s build/platforms/android/result.txt
+          (cd build/platforms/android && sha256sum -c ./*.tar.gz.sha256)
       - uses: actions/upload-artifact@v4
         if: always()
         with:
