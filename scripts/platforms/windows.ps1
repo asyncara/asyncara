@@ -24,13 +24,16 @@ try {
   & $vcpkg install "curl[core,ssl]:$Arch-windows-static-md" "sqlite3:$Arch-windows-static-md" --classic --disable-metrics
   if($LASTEXITCODE) {throw "vcpkg failed $LASTEXITCODE"}
   $deps=Join-Path $env:VCPKG_INSTALLATION_ROOT "installed/$Arch-windows-static-md"
+  Get-ChildItem "$deps/lib/*.lib" | Select-Object Name
+  $zlibLib=(Get-ChildItem "$deps/lib/*.lib" | Where-Object { $_.Name -in @('zlib.lib','zlibstatic.lib','zlibstat.lib') } | Select-Object -First 1).FullName
+  if(!$zlibLib){throw 'No release zlib static library found'}
   $vswhere="${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
   $vs=(& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
   $vcvars=Join-Path $vs "VC/Auxiliary/Build/vcvarsall.bat"
     $clang='cl.exe'
   $includes=@($sdk,"$sdk/main","$sdk/Zend","$sdk/TSRM","$root/ext","$deps/include") | ForEach-Object {'/I"'+$_+'"'}
   $sources=@('php_asyncara.c','workers.c','backend.c','memory.c','hyper_decode.c','platform_windows.c','compat/windows/files.c') | ForEach-Object {'"'+"$root/ext/$_"+'"'}
-  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" /nologo /LD /MD /O2 /std:c11 /experimental:c11atomics /W3 /DCURL_STATICLIB /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib zlib.lib ws2_32.lib bcrypt.lib advapi32.lib crypt32.lib secur32.lib normaliz.lib wldap32.lib' + "`r`nexit /b %errorlevel%`r`n"
+  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" /nologo /LD /MD /O2 /std:c11 /experimental:c11atomics /W3 /DCURL_STATICLIB /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib "'+$zlibLib+'" ws2_32.lib bcrypt.lib advapi32.lib crypt32.lib secur32.lib normaliz.lib wldap32.lib' + "`r`nexit /b %errorlevel%`r`n"
   Set-Content "$out/compile.cmd" $line
   Push-Location $out
   try { & cmd.exe /d /c compile.cmd; if($LASTEXITCODE) {throw "Compilation failed $LASTEXITCODE"} } finally {Pop-Location}
