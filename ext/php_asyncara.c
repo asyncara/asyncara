@@ -10,14 +10,20 @@
 #include "main/php_streams.h"
 #include "main/php_network.h"
 #include "native.h"
+#ifndef _WIN32
 #include <arpa/inet.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
+#ifndef _WIN32
 #include <poll.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
+#ifndef _WIN32
 #include <strings.h>
 #include <unistd.h>
+#endif
 #if PHP_VERSION_ID < 80300 || PHP_VERSION_ID >= 80600
 #error Asyncara targets released PHP 8.3 through 8.5
 #endif
@@ -479,7 +485,7 @@ PHP_FUNCTION(asyncara_udp_bind) {
 #endif
     data->socket = socket(storage.ss_family, flags, 0);
     data->is_blocked = false;
-    if (data->socket < 0 || fcntl(data->socket, F_SETFD, FD_CLOEXEC) < 0 ||
+    if (data->socket == (php_socket_t)-1 || ar_socket_noinherit(data->socket) < 0 ||
         php_set_sock_blocking(data->socket, false) != SUCCESS ||
         bind(data->socket, (struct sockaddr *)&storage, size) < 0) {
         int saved = errno;
@@ -1079,20 +1085,20 @@ PHP_FUNCTION(asyncara_poll) {
                 RETURN_THROWS();
             }
             if (Z_TYPE_P(z) == IS_LONG) {
-                if (Z_LVAL_P(z) < 0 || Z_LVAL_P(z) > INT_MAX) {
+                if (Z_LVAL_P(z) < 0 || (uint64_t)Z_LVAL_P(z) > (uint64_t)(sizeof(ar_fd) > 4 ? INT64_MAX : INT_MAX)) {
                     efree(w);
                     zend_value_error("Invalid descriptor");
                     RETURN_THROWS();
                 }
-                w[i++] = (ar_watch){.fd = (int)Z_LVAL_P(z), .events = mode ? POLLOUT : POLLIN, .key = key};
+                w[i++] = (ar_watch){.fd = (ar_fd)Z_LVAL_P(z), .events = mode ? POLLOUT : POLLIN, .key = key};
                 continue;
             }
             php_stream_from_zval_no_verify(stream, z);
-            int fd;
+            php_socket_t fd;
             if (!stream ||
                 php_stream_cast(stream, PHP_STREAM_AS_FD_FOR_SELECT | PHP_STREAM_CAST_INTERNAL, (void *)&fd,
                                 0) != SUCCESS ||
-                fd < 0) {
+                fd == (php_socket_t)-1) {
                 efree(w);
                 zend_value_error("Stream has no pollable descriptor");
                 RETURN_THROWS();

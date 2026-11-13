@@ -1,7 +1,12 @@
 #ifndef ASYNCARA_NATIVE_H
 #define ASYNCARA_NATIVE_H
+#include "platform.h"
 #include <curl/curl.h>
+#ifdef _WIN32
+#include "compat/windows/threads.h"
+#else
 #include <pthread.h>
+#endif
 #include <sqlite3.h>
 #include <stdatomic.h>
 #include <stddef.h>
@@ -146,7 +151,8 @@ typedef struct ar_engine {
     atomic_size_t memory_bytes, memory_peak, memory_rejections;
     size_t memory_limit;
     pthread_t threads[4];
-    int thread_count, stopping, wake[2];
+    int thread_count, stopping;
+    ar_fd wake[2];
     pthread_mutex_t mutex;
     pthread_cond_t condition;
     ar_job *queue_head, *queue_tail, *done_head, *done_tail, *jobs, *allocations;
@@ -170,7 +176,8 @@ typedef struct ar_engine {
     uint64_t epoll_created, epoll_reused;
 } ar_engine;
 typedef struct {
-    int fd, events, ready, buffered;
+    ar_fd fd;
+    int events, ready, buffered;
     long key;
 } ar_watch;
 void *ar_alloc(ar_engine *e, size_t bytes);

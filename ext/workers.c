@@ -1,18 +1,28 @@
 #include "native.h"
+#ifndef _WIN32
 #include <arpa/inet.h>
+#endif
 #include <assert.h>
+#ifndef _WIN32
 #include <dirent.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
+#ifndef _WIN32
 #include <netdb.h>
+#endif
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <sys/random.h>
 #include <unistd.h>
+#else
+#include "compat/windows/files.h"
+#endif
 
 ar_value *ar_value_new(ar_engine *e, ar_type type) {
     ar_value *v = ar_calloc(e, 1, sizeof(*v));
@@ -133,12 +143,20 @@ static int close_file(ar_file *file) {
     if (error) { errno = error; return -1; }
     return 0;
 }
+static char *last_separator(char *path) {
+    char *slash = strrchr(path, '/');
+#ifdef _WIN32
+    char *backslash = strrchr(path, '\\');
+    if (backslash && (!slash || backslash > slash)) slash = backslash;
+#endif
+    return slash;
+}
 static void stage_file(ar_job *j) {
     ar_file *file = j->file;
     file->staging = 1; file->directory_fd = -1;
     char *directory = ar_strdup(j->engine, j->a);
     if (!directory) { failure(j, "Native memory limit or allocation failure"); return; }
-    char *slash = strrchr(directory, '/');
+    char *slash = last_separator(directory);
     if (!slash || !slash[1] || !strcmp(slash + 1, ".") || !strcmp(slash + 1, "..")) { errno = EINVAL; goto error; }
     file->stage_target = ar_strdup(j->engine, slash + 1);
     if (!file->stage_target) { failure(j, "Native memory limit or allocation failure"); goto finish; }
@@ -268,8 +286,8 @@ static void do_atomic_write(ar_job *j) {
         failure(j, "Native memory limit or allocation failure");
         return;
     }
-    const char *base = strrchr(j->a, '/');
-    char *slash = strrchr(directory, '/');
+    const char *base = last_separator(j->a);
+    char *slash = last_separator(directory);
     if (!base || !base[1] || !strcmp(base + 1, ".") || !strcmp(base + 1, "..")) {
         errno = EINVAL;
         goto error;
@@ -723,7 +741,7 @@ void ar_done(ar_engine *e, ar_job *j) {
      * the nonblocking pipe already contains a readable notification. */
     ssize_t ignored;
     do {
-        ignored = write(e->wake[1], &byte, 1);
+        ignored = ar_wake_send(e->wake[1], &byte, 1);
         ar_trace_emit(e, AR_TRACE_JOB, 23, id, ignored, ignored < 0 ? errno : 0, 0);
     } while (ignored < 0 && errno == EINTR);
     (void)ignored;
@@ -783,20 +801,20 @@ ar_engine *ar_engine_new(void) {
     if (!e)
         return NULL;
     atomic_init(&e->trace, NULL);
-    if (pipe2(e->wake, O_NONBLOCK | O_CLOEXEC)) {
+    if (ar_wake_pair(e->wake)) {
         free(e);
         return NULL;
     }
     if (pthread_mutex_init(&e->mutex, NULL)) {
-        close(e->wake[0]);
-        close(e->wake[1]);
+        ar_wake_close(e->wake[0]);
+        ar_wake_close(e->wake[1]);
         free(e);
         return NULL;
     }
     if (pthread_cond_init(&e->condition, NULL)) {
         pthread_mutex_destroy(&e->mutex);
-        close(e->wake[0]);
-        close(e->wake[1]);
+        ar_wake_close(e->wake[0]);
+        ar_wake_close(e->wake[1]);
         free(e);
         return NULL;
     }
@@ -807,7 +825,11 @@ ar_engine *ar_engine_new(void) {
     e->http_max_connections = 64; e->http_max_host_connections = 8;
     const char *http_backend = getenv("ASYNCARA_HTTP_BACKEND");
     e->hyper_requested = http_backend && !strcmp(http_backend, "hyper-prototype");
+#ifdef __linux__
     e->use_epoll = 1;
+#else
+    e->use_epoll = 0;
+#endif
     const char *backend = getenv("ASYNCARA_BACKEND");
     if (backend && !strcmp(backend, "poll"))
         e->use_epoll = 0;
@@ -892,19 +914,23 @@ int ar_submit(ar_engine *e, ar_job *j) {
          * signals before creation so there is no unmasked startup window, then
          * restore exactly the interpreter thread's previous mask. Synchronous
          * fault signals remain available to crash/sanitizer handlers. */
+        #ifndef _WIN32
         sigset_t blocked, previous;
         sigfillset(&blocked);
         const int faults[] = {SIGABRT, SIGBUS, SIGFPE, SIGILL, SIGSEGV, SIGTRAP, SIGSYS};
         for (size_t i = 0; i < sizeof(faults) / sizeof(*faults); i++) sigdelset(&blocked, faults[i]);
         int mask_error = pthread_sigmask(SIG_BLOCK, &blocked, &previous);
         if (mask_error) { errno = mask_error; return -1; }
+        #endif
         for (int i = 0; i < 4; i++) {
             if (pthread_create(&e->threads[i], NULL, worker, e))
                 break;
             e->thread_count++;
         }
+        #ifndef _WIN32
         mask_error = pthread_sigmask(SIG_SETMASK, &previous, NULL);
         if (mask_error) { errno = mask_error; return -1; }
+        #endif
         if (!e->thread_count)
             return -1;
     }
@@ -952,7 +978,7 @@ void ar_cancel(ar_engine *e, long id) {
 }
 ar_job *ar_collect(ar_engine *e) {
     char buf[1024];
-    while (read(e->wake[0], buf, sizeof(buf)) > 0) {
+    while (ar_wake_receive(e->wake[0], buf, sizeof(buf)) > 0) {
     }
     pthread_mutex_lock(&e->mutex);
     ar_job *head = e->done_head;
@@ -1042,8 +1068,8 @@ void ar_engine_free(ar_engine *e) {
         ar_free(file->stage_target);
         ar_free(file);
     }
-    close(e->wake[0]);
-    close(e->wake[1]);
+    ar_wake_close(e->wake[0]);
+    ar_wake_close(e->wake[1]);
     pthread_cond_destroy(&e->condition);
     pthread_mutex_destroy(&e->mutex);
     assert(atomic_load(&e->memory_bytes) == 0);

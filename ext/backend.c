@@ -1,13 +1,17 @@
 #include "native.h"
 #include <errno.h>
 #include <limits.h>
+#ifndef _WIN32
 #include <poll.h>
+#endif
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #ifdef __linux__
 #include <sys/epoll.h>
 #endif
@@ -579,7 +583,7 @@ void ar_http_progress(ar_engine *e) {
  * restarting that budget at the kernel boundary. -1 is infinite, 0 is immediate. */
 static int monotonic_ns(int64_t *value) {
     struct timespec now;
-    if (clock_gettime(CLOCK_MONOTONIC, &now)) return -1;
+    if (ar_platform_clock(&now)) return -1;
     if (now.tv_sec < 0 || (uint64_t)now.tv_sec > (uint64_t)(INT64_MAX - 999999999) / 1000000000) {
         errno = EOVERFLOW;
         return -1;

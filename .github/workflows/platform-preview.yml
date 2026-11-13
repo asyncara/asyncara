@@ -1,0 +1,30 @@
+name: Platform preview builds
+on:
+  push:
+    branches: ['platform/android-windows-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and exercise native Windows DLL
+        shell: pwsh
+        run: ./scripts/platforms/windows.ps1 -Arch '${{ matrix.arch }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-${{ matrix.arch }}-${{ github.sha }}
+          path: |
+            build/platforms/windows-*/build.log
+            build/platforms/windows-*/compile.cmd
+            build/platforms/windows-*/manifest.json
+            build/platforms/windows-*/*.zip
+            build/platforms/windows-*/*.sha256

@@ -3,8 +3,12 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef _WIN32
 #include <sys/mman.h>
 #include <unistd.h>
+#else
+#include "compat/windows/mapping.h"
+#endif
 #include <time.h>
 
 /* Diagnostic storage has a separate hard bound, like transient wait control
@@ -15,7 +19,7 @@ uint64_t ar_trace_clock(void) {
     int saved = errno;
     struct timespec now;
     uint64_t value = 0;
-    if (!clock_gettime(CLOCK_MONOTONIC, &now) && now.tv_sec >= 0 &&
+    if (!ar_platform_clock(&now) && now.tv_sec >= 0 &&
         (uint64_t)now.tv_sec <= (uint64_t)(INT64_MAX - 999999999) / 1000000000)
         value = (uint64_t)now.tv_sec * 1000000000 + now.tv_nsec;
     errno = saved;
