@@ -1,154 +1,190 @@
 # Prebuilt installation
 
-The installer adds `~/.local/bin/asyncara`, backed by a private, versioned bundle
-under `~/.local/share/asyncara/releases/`. No compiler, Cargo, phpize or Docker is
-needed on the application machine. PHP CLI and system runtime libraries are
-prerequisites. No global `php.ini`, PHP installation or shell profile is changed.
+`install.sh` is a self-contained POSIX shell bootstrap with an embedded PHP
+installer. It uses the target PHP interpreter; **Python is not an end-user
+dependency**. No compiler, Cargo, phpize or Docker runs on the application machine.
+No global `php.ini`, PHP installation or shell profile is changed.
 
-**Publication is separate from implementation.** The installer and three amd64
-bundles were tested locally. Their GitHub Release upload has not been verified.
-The source-only `v0.10.0` tag is unchanged. The maintainer must attach the assets
-below before the automatic download command works.
+**Publication is separate from implementation.** Three amd64 bundles and the shell
+installer were tested locally, including a real HTTPS `curl | sh` pipeline.
+GitHub Release asset availability has not been verified. The immutable `v0.10.0`
+source tag is unchanged; attach additional assets to that existing Release.
 
 ## Install
 
-Initial validated binary profile: Ubuntu 24.04 amd64, PHP 8.3.36, 8.4.27 or 8.5.12,
-NTS, non-debug, 64-bit. Match the **exact PHP patch version**, not only the module
-API. A PHP patch upgrade requires a matching bundle. ARM64 has an optional native
-CI build/test job; it is **not yet independently executed**. Other platform
-claims and the owner's Android results are recorded in [PLATFORMS.md](PLATFORMS.md).
+After publication, for a publicly accessible Release:
 
-On Ubuntu 24.04, if the prerequisites are not already installed:
+```sh
+curl -fsSL https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh | sh
+asyncara --check
+asyncara --example 127.0.0.1:8080
+```
+
+Visit `http://127.0.0.1:8080/status`. Run your own application with
+`asyncara app.php`; Asyncara and its production PSR dependencies are autoloaded.
+
+The installer detects the OS/userspace, architecture, exact PHP patch version,
+NTS/ZTS, debug mode and bitness. It chooses one exact binary profile, downloads its
+archive and SHA256 sidecar over HTTPS, verifies the archive and every file against
+the manifest, checks compatibility, and runs the native installation and release
+smoke tests **before** activating the command. No source-build fallback exists.
+Missing packages, missing native dependencies and failed checks return failure.
+
+Initial locally tested profile: **Ubuntu 24.04 amd64; PHP 8.3.36, 8.4.27 or 8.5.12
+NTS, non-debug, 64-bit**. An exact PHP patch upgrade requires a matching bundle.
+NTS/ZTS detection prevents mixing builds; it does not certify ZTS or provide a ZTS
+asset. ARM64 CI is prepared, not yet observed running. Other OS/CPU and owner Android
+results remain in [PLATFORMS.md](PLATFORMS.md).
+
+Prerequisites: PHP CLI 8.3–8.5 with JSON/hash/zlib/SPL/proc_open available under
+`php -n`, POSIX `sh`, `mktemp`, `cat`, `rm`, curl, CA certificates and system runtime
+libraries. There is no separate archive utility requirement. On Ubuntu 24.04,
+install missing runtime prerequisites through your normal package policy:
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y php-cli python3 ca-certificates libcurl4t64 libsqlite3-0 libpq5 libssl3t64 zlib1g
+sudo apt-get install -y php-cli curl ca-certificates libcurl4t64 libsqlite3-0 libpq5 libssl3t64 zlib1g
 ```
 
-Use your chosen PHP package source. The command above does not guarantee an exact
-patch version with a published bundle. `php -v` identifies your installed version.
-Python 3.11+ is required (Ubuntu 24.04 supplies 3.12).
+This does not guarantee that your package source supplies an exact PHP patch with
+a published Asyncara bundle. The installer never installs system packages itself.
 
-After the assets are published, download `install.py` and `install.py.sha256`
-from the [v0.10.0 Release](https://github.com/asyncara/asyncara/releases/tag/v0.10.0).
-In their download directory:
+By default it uses `php` from PATH, installs version directories under
+`~/.local/share/asyncara/releases/`, and activates a symlink named `asyncara` in a
+suitable writable PATH directory (preferring user directories). If there is no
+such directory, it uses `~/.local/bin` and prints the required export. It cannot
+modify the parent shell's PATH. An unrelated existing `asyncara` command is never
+replaced. No automatic sudo is used.
+
+Select another already-installed PHP:
 
 ```sh
-sha256sum -c install.py.sha256
-python3 install.py --version 0.10.0
-~/.local/bin/asyncara --check
-~/.local/bin/asyncara --example 127.0.0.1:8080
+curl -fsSL https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh | ASYNCARA_PHP=/usr/bin/php8.4 sh
 ```
 
-Then visit `http://127.0.0.1:8080/status`. Stop the foreground example with Ctrl-C.
-Run your own application using `~/.local/bin/asyncara app.php`; the bundled
-Composer autoloader loads Asyncara and its production PSR dependencies. A project
-can still load its own additional Composer dependencies normally.
-
-For a public repository, the initial download can use:
+Download and inspect the script first, or select explicit options:
 
 ```sh
-curl -fLO https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.py
-curl -fLO https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.py.sha256
-sha256sum -c install.py.sha256
-python3 install.py --version 0.10.0
+curl -fLO https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh
+curl -fLO https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh.sha256
+sha256sum -c install.sh.sha256
+sh install.sh --version 0.10.0
 ```
 
-For this repository while it is private, use the authenticated browser, or GitHub
-CLI with repository access:
+The pipeline verifies the **binary archive** automatically; the separate command
+above also verifies the installer script before execution. Both rely on the
+release account/HTTPS for authenticity, not an independent signing authority.
+The bootstrap parses its complete function before invocation; a truncated initial
+script fails rather than executing half of the PHP installer.
+
+## Private release or offline installation
+
+An anonymous `curl` command cannot access a private GitHub release. Use a browser
+with access, or authenticated GitHub CLI:
 
 ```sh
 gh auth login
-gh release download v0.10.0 --repo asyncara/asyncara --pattern 'install.py*'
-sha256sum -c install.py.sha256
-python3 install.py --version 0.10.0
+gh release download v0.10.0 --repo asyncara/asyncara --pattern 'install.sh*'
+sha256sum -c install.sh.sha256
+sh install.sh
 ```
 
-The installer tries public HTTPS, then authenticated `gh` if available. It never
-copies a GitHub token into a CDN request or URL. A 404 can mean the asset is missing
-or the repository is private; it is not silently replaced by a source build.
-Checksums detect corruption; their trust is the release/account from which both
-files were obtained, not an independent signature.
+For bundle downloads the installer tries HTTPS, then authenticated `gh` for the
+original GitHub release endpoint. It never puts a token in a CDN URL. Missing
+assets and inaccessible private assets fail explicitly, with no local build.
 
-For an offline/manual install, download the matching `.tar.gz` and adjacent
-`.tar.gz.sha256` as well, then pass the archive explicitly:
+For offline installation, obtain the matching `.tar.gz` and adjacent
+`.tar.gz.sha256` alongside the script, then:
 
 ```sh
-python3 install.py --php /usr/bin/php8.4 \
-  --bundle asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz
+ASYNCARA_PHP=/usr/bin/php8.4 sh install.sh   --bundle asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz
 ```
 
-`--prefix` and `--bin-dir` select other user-owned directories. The installer
-checks every file, PHP/platform identity and the relocated module, then runs the
-release smoke test before activating the command. It refuses to overwrite an
-unrelated `asyncara` command or modified installation. Repeating installation
-of the same verified bundle is safe. It never adds itself to PATH; optionally add
-`export PATH="$HOME/.local/bin:$PATH"` to your own shell configuration.
+`--prefix /absolute/path` and `--bin-dir /absolute/path` override destinations.
+Paths containing spaces are supported and tested. `sh install.sh --check-platform`
+only prints the detected profile. `ASYNCARA_RELEASE_BASE_URL` can select a trusted
+HTTPS mirror; it does not disable integrity or identity checks. Never use a mirror
+you do not trust to supply native executable code.
 
-## Runtime boundaries
+## Installation safety and runtime boundaries
 
-The launcher uses `php -n`: **global PHP ini files and dynamically configured
-extensions are not loaded**. This isolates the bundled Connector/C from another
-PHP extension's database library. Add application-specific PHP options explicitly,
-for example `asyncara -d memory_limit=256M app.php`. Loading extra extensions is
-an additional compatibility choice, not covered by this bundle's acceptance.
-This launcher targets CLI and Native Server; it does not configure PHP-FPM.
+Extraction is bounded to 128 MiB compressed, 256 MiB file contents and 6,000 files.
+Only regular files are accepted. Traversal, links, special files, duplicate paths,
+malformed/truncated archives, invalid manifests and mismatched checksums are
+rejected. A private staging directory and prefix lock prevent partial activation.
+A version directory is renamed into place only after its checks succeed; a final
+launcher check precedes atomic command replacement. Earlier versions remain.
+Repeating an identical verified install is safe. Locally modified installations
+are preserved and rejected rather than overwritten. The original Python installer
+and its tests remain historical source; it is no longer the recommended installer
+or a new Release asset.
 
-The bundle includes Asyncara's PHP library, production Composer packages, the
-native module with Hyper, PostgreSQL and MySQL/MariaDB, and a private Connector/C
-3.4.10 shared library. Common authentication plugins are compiled into that
-shared library for relocation. GSSAPI and PARSEC are not included. PHP itself,
-libcurl, libpq, SQLite, OpenSSL and their system dependencies are **not bundled**.
-A single binary is not portable across arbitrary libc, distro or PHP builds.
+The launcher uses `php -n`: original ini files and their dynamically enabled
+extensions are not loaded. Add explicit application options, for example
+`asyncara -d memory_limit=256M app.php`. This avoids library collisions and leaves
+your original PHP behavior unchanged. Loading additional extensions requires its
+own compatibility testing. The launcher targets CLI/Native Server; it does not
+configure FPM or enable the extension in plain `php` automatically.
 
-Third-party licenses are retained in `notices/` and `runtime/vendor/`. The
-unmodified pinned Connector/C source accompanies its replaceable shared library.
-The project's own LICENSE is unchanged. Release classification is EXPERIMENTAL.
+Bundles contain the PHP library/production Composer packages, native module with
+Hyper/PostgreSQL/MySQL/MariaDB, and private Connector/C 3.4.10. Common authentication
+plugins are compiled in; GSSAPI/PARSEC are not included. PHP itself, libcurl, libpq,
+SQLite, OpenSSL and system dependencies are not bundled. A binary is not portable
+across arbitrary libc, distro or PHP builds. Third-party notices and replaceable
+Connector/C source are retained. The project LICENSE is unchanged; status remains
+EXPERIMENTAL.
 
-## Maintainer: publish the installation assets
+## Maintainer: publish without changing the release tag
 
 Workflow: `.github/workflows/binaries.yml`, **Prebuilt installation bundles**.
-Pushes changing its installer/build paths build three amd64 PHP profiles plus
-a native ARM64/PHP8.4 profile and
-retain assets/logs in Actions. They do not publish a Release automatically.
+It builds immutable release source on disposable runners and validates relocated
+installation. Python/compiler/Cargo here are **builder/test dependencies**, not
+end-user dependencies. Local results do not imply hosted workflow success.
 
-1. Make the workflow available on the repository's default branch through the
-   normal reviewed merge. GitHub's **Run workflow** UI requires that.
-2. Run it for existing tag `v0.10.0`, initially with `publish=false`. Inspect all
-   build and relocated installation results. The default `arm64=true` also runs a native
-   ARM64/PHP8.4 job; lack of runner access is not a passing test.
-3. Run with `publish=true` to attach validated binaries, manifests, checksums,
-   `install.py` and `install.py.sha256` to the **existing** Release. The publisher
-   checks tag/source identity and refuses existing asset-name collisions. It does
-   not move a tag, overwrite an asset or create a different source release.
-4. Alternatively download the successful `binary-ubuntu...` Actions artifacts,
-   extract them, and attach their files manually via **Edit release**. Also attach
-   `scripts/install.py` and its SHA-256 sidecar. Keep the source archive already
-   published; the native bundles are additional assets.
-5. Try the documented install on a separate matching machine before announcing
-   availability. Retain that machine's install/check output.
-
-Local build command on a disposable Ubuntu builder with matching PHP development
-headers and the dependencies listed in the workflow:
+1. Make the workflow available on the default branch through a normal merge.
+2. Run it for `v0.10.0` with `publish=false`; review the PHP83/84/85 amd64 jobs and
+   optional native ARM64/PHP84 job. Lack of runner access is not a pass.
+3. Run with `publish=true` to attach validated bundles, manifests, SHA256 files,
+   `install.sh` and `install.sh.sha256` to the existing Release. The publisher
+   verifies tag/source identity and refuses asset-name collisions. It never moves
+   a tag, overwrites an asset or replaces the original source archive.
+4. Alternatively download the successful Actions binary artifacts and attach
+   their files through **Edit release**. Also upload the generated `scripts/install.sh`
+   as `install.sh` and its SHA256 sidecar. Preserve existing assets.
+5. If bundles are already published, attach **only** the installer and checksum
+   using a fresh staging directory and authenticated GitHub CLI:
 
 ```sh
-bash scripts/distribution/build.sh "$PWD" \
-  4252f83f2cebaaaa2be150984e5ab0fa6d5b1862 "$PWD/build/binaries-new"
+python3 scripts/distribution/publish.py --tag v0.10.0   --assets /absolute/new/installer-assets --installer-only
 ```
 
-Use a fresh output directory. Runtime source comes from `git archive` of the
-specified immutable commit. The standard Cargo/phpize/configure/make pipeline
-runs in that directory. Module relocation and integration must pass before an
-asset is produced by a successful build job. Local evidence for the initial
-bundles is linked from [binary installation results](releases/0.10.0-binaries.json).
+That is a maintainer command. No Python is needed to install the uploaded files.
+The exact script prepared in this execution and checksums are recorded in
+[the shell installer attestation](releases/0.10.0-shell-installer.json).
 
-## Remove or restore
+Finally test the actual published URL on a separate matching machine. Anonymous
+installation requires public asset access. This task does not change repository
+visibility. PIE needs additional upstream/package work; see
+[PIE_INSTALLATION.md](PIE_INSTALLATION.md).
 
-Stop your own running application first. Remove only the installer-owned
-`~/.local/bin/asyncara` symlink and the version directory referenced by its
-`installation.json`. Other version directories remain available. If you changed
-`--prefix`/`--bin-dir`, use those actual paths. No PHP ini reversal is needed.
-Do not delete a pre-existing unrelated executable with that name.
+## Verification and development
 
-Docker remains a separate packaging option; this change does not publish or
-certify a Docker image.
+Regenerate the single release script after changing its embedded implementation:
+
+```sh
+php -n scripts/distribution/render-installer.php
+php -n scripts/distribution/render-installer.php --check
+sh -n scripts/install.sh
+php -n tests/distribution/installer.php
+python3 tests/distribution/integration.py --php /path/to/php --bundle /path/to/bundle.tar.gz --output /new/test-directory
+python3 tests/distribution/shell_https.py --php /path/to/php --bundle /path/to/bundle.tar.gz --output /new/https-directory
+```
+
+The HTTPS test traps Python/compiler/phpize invocations in the installer's PATH,
+checks bare `asyncara` availability, protects a pre-existing php.ini, and rejects
+bad SHA256, missing assets and an incomplete script. Python here hosts the test
+server only. [Earlier binary results](releases/0.10.0-binaries.json) remain intact.
+
+To remove an installation, stop your own application and remove only the owned
+command symlink and its version directory identified by `installation.json`.
+Other versions and PHP configuration remain unaffected. Docker is separate.

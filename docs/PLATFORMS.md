@@ -2,9 +2,9 @@
 
 These are distinct facts: a recognized platform name, a successful source build,
 a runtime test, an owner-reported result, and a published binary. None implies
-all the others. `scripts/install.py --list-platforms` reports all 20 requested
-OS/architecture combinations without trying to install a different platform's
-binary. `--check-platform` only detects the current userspace.
+all the others. The table below records all 20 requested OS/architecture
+combinations. `sh scripts/install.sh --check-platform` detects the current
+userspace without installing a different platform's binary.
 
 | OS | amd64 | arm64 | arm (32-bit) | 386 (32-bit) |
 |---|---|---|---|---|
@@ -69,7 +69,7 @@ available for local execution in this session; no results were fabricated.
 To correlate an existing device test without exposing application data:
 
 ```sh
-python3 install.py --check-platform
+sh install.sh --check-platform
 php -n -d extension=/absolute/path/to/asyncara.so scripts/distribution/platform-report.php
 ```
 

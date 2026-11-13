@@ -2995,3 +2995,45 @@ explicit opt-in Release attachment without overwrite. Hosted execution/publicati
 has not been observed here. Android all-four pass remains the owner's reported
 result, awaiting matching artifacts; other runtime ports are not claimed complete.
 No global package or PHP configuration was modified. Release remains EXPERIMENTAL.
+
+### Shell installation without Python; upstream PIE boundary verified
+
+Replaced the recommended installation entry point with generated `scripts/install.sh`:
+POSIX bootstrap plus embedded target-PHP installer. No end-user Python, compiler,
+Cargo/phpize, tar or Composer invocation. Exact OS/userspace/architecture/PHP patch,
+NTS/ZTS/debug matching; HTTPS download; archive SHA256 and complete file inventory;
+bounded traversal/link-resistant extraction; private version directories; native
+checks before atomic launcher activation. Original ini and unrelated executables
+remain untouched. A suitable writable PATH directory is selected; if unavailable,
+the required parent-shell export is printed. Missing compatible binaries fail closed.
+
+Real relocated installs pass on PHP8.3.36/8.4.27/8.5.12 NTS, both epoll/poll App
+and curl/Hyper client paths. Each also passes repeat installation and negative
+controls preserving modified installed files and foreign commands. Twenty-five
+shell/PHP installer checks pass on each PHP version; the preserved seventeen Python
+installer checks plus four publisher safety controls pass. A real trusted-local-HTTPS
+curl-to-sh test succeeds, invokes no Python/build tool, exposes bare `asyncara`,
+preserves a pre-existing ini, and rejects bad SHA256/missing assets/truncated script.
+Python remains only in maintainer build/test/publication tooling and historical
+installer source, not the recommended end-user path.
+
+Prepared separate binary-only `asyncara/asyncara` php-ext metadata; Composer
+validation passes without renaming asyncara/runtime or editing composer.lock.
+Official PIE1.5.5 PHAR digest verified against its GitHub asset record; unmodified
+upstream classes tested in an isolated contract probe. Unix prebuilt install copies
+only the .so, ignores a supplied wrong SHA256 sidecar, and does not install the PHP
+library/private shared dependency/launcher. Upstream vendor cleanup also removes
+package directories. Exact requested PIE commands are therefore BLOCKED for full
+installation under current upstream semantics; no fake wrapper, source fallback,
+registry publication or end-to-end PASS. Retained the initial CLI probe failure
+(--with-php-path is unsupported on Unix) separately; it is not runtime evidence.
+Packagist package endpoint returns404 in this observation.
+
+Release workflow now validates and attaches install.sh/checksum; --installer-only
+supports adding those two assets without replacing older bundles. Publisher rejects
+name collisions and tag/source mismatch. Hosted execution/upload is not claimed:
+GitHub CLI API credentials are unavailable; SSH repository access is separate.
+Native ext/src, originalLICENSE, 0.10.0 tag/source archive, three native bundles and
+Phase4 checkout/module remain unchanged. New shell script and report identities:
+docs/releases/0.10.0-shell-installer.json. Release remains EXPERIMENTAL; no additional
+platform/ZTS certification, memory/endurance or performance claim.

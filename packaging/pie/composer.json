@@ -1,0 +1,17 @@
+{
+  "name": "asyncara/asyncara",
+  "description": "Asyncara native PHP extension (PIE binary-only distribution metadata)",
+  "type": "php-ext",
+  "license": "proprietary",
+  "homepage": "https://github.com/asyncara/asyncara",
+  "require": {
+    "php": "8.3.36 || 8.4.27 || 8.5.12"
+  },
+  "php-ext": {
+    "extension-name": "asyncara",
+    "support-nts": true,
+    "support-zts": false,
+    "os-families": ["linux"],
+    "download-url-method": ["pre-packaged-binary"]
+  }
+}

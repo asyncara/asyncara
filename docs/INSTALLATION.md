@@ -6,13 +6,16 @@ patch upgrade. No global PHP configuration change is required.
 
 ## Install without compiling
 
-Use the [prebuilt per-user installer](BINARY_INSTALLATION.md) for a matching
+Use the [single-file shell installer](BINARY_INSTALLATION.md), without Python or
+local compilation, for a matching
 Ubuntu24.04/PHP bundle. It includes the Hyper client/server and native SQL drivers,
 installs an `asyncara` CLI command, and leaves global PHP configuration untouched.
 Release assets must be published separately; local validation is not proof that
 GitHub hosts them. See [platform evidence](PLATFORMS.md) for other requested OS/CPU
 combinations and the owner's Android results. The sections below describe the
-alternative **source build**, which still requires development tools.
+alternative **source build**, which still requires development tools. The requested
+`pie install asyncara/asyncara` interface is tracked separately in
+[PIE installation status](PIE_INSTALLATION.md); it is not yet a full runtime installer.
 
 ## Requirements
 

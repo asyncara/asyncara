@@ -31,36 +31,56 @@ or all-workload benchmark claims are not made.
 
 ## Easy installation — no local compilation
 
-Install a prebuilt extension and the PHP library with the per-user installer.
-It provides an `asyncara` command and does not change global `php.ini`.
-Initial tested bundles: **Ubuntu 24.04 amd64, PHP 8.3.36 / 8.4.27 / 8.5.12 NTS**.
-PHP CLI, Python 3.11+ and system runtime libraries are prerequisites.
+The single-file installer uses **sh + the installed PHP + curl**. No Python,
+compiler, Cargo, phpize or Docker is required. It installs the native extension,
+PHP library and `asyncara` command without changing your original `php.ini`.
 
-**The binary assets must first be attached to the Release by the maintainer.**
-Local builds/installations are tested; hosted asset availability is not yet
-verified. Download `install.py` and `install.py.sha256` from the
-[v0.10.0 Release](https://github.com/asyncara/asyncara/releases/tag/v0.10.0), then:
+**Target command, after the maintainer attaches the assets to the Release:**
 
 ```sh
-sha256sum -c install.py.sha256
-python3 install.py --version 0.10.0
-~/.local/bin/asyncara --check
-~/.local/bin/asyncara --example 127.0.0.1:8080
+curl -fsSL https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh | sh
+asyncara --check
+asyncara --example 127.0.0.1:8080
 ```
 
-Open `http://127.0.0.1:8080/status`, or run your application with
-`~/.local/bin/asyncara app.php`. The launcher loads the bundled Composer autoloader
-and uses `php -n`; global PHP ini/extensions are not loaded. Private repositories
-need authenticated GitHub CLI access or a manually downloaded matching bundle.
-Exact PHP patch matching is enforced; there is no hidden compilation fallback.
+This exact pipeline was tested against a local HTTPS release fixture. **GitHub
+publication has not been verified; the URL is not claimed available yet.** Private
+releases require authenticated downloads. See [publication steps and private/offline
+installation](docs/BINARY_INSTALLATION.md).
 
-See [binary installation](docs/BINARY_INSTALLATION.md) for prerequisites, private
-repository/offline commands, upgrades and **maintainer publication steps**.
-The [platform matrix](docs/PLATFORMS.md) covers every requested Windows, Linux,
-macOS, Android and FreeBSD architecture. Android's four architectures are recorded
-as owner-reported passes; matching binary identities are still needed. Ubuntu
-ARM64 CI is prepared but not yet executed. Other OS ports are not claimed complete.
-Docker packaging is separate; this change does not publish a Docker image.
+The installer detects OS/userspace, architecture, exact PHP version, NTS/ZTS and
+debug mode. It verifies the downloaded archive's SHA256 and every packaged file,
+runs installation checks, then activates the command. It fails if a matching
+binary is unavailable; it never compiles locally or substitutes an incompatible
+module. Tested bundles: **Ubuntu 24.04 amd64, PHP 8.3.36 / 8.4.27 / 8.5.12 NTS**.
+PHP CLI and system runtime libraries must already be installed. Detecting ZTS or
+another platform does not mean a matching tested binary is available.
+
+The command is installed in a suitable writable directory already on `PATH`.
+If none exists, the installer uses `~/.local/bin` and prints the one required
+`export PATH=...` command; a child installer cannot change its parent's environment.
+Run your app with `asyncara app.php`. The launcher supplies the bundled Composer
+autoloader and uses `php -n`; original PHP configuration remains untouched.
+
+### PIE installation status
+
+Requested interface:
+
+```sh
+pie install asyncara/asyncara
+pie install asyncara/asyncara:0.10.0
+```
+
+**Not available as a complete Asyncara installation yet.** Binary-only package
+metadata is prepared, but upstream PIE 1.5.5 on Unix copies only the extension,
+not Asyncara's PHP runtime, private library or CLI. It also does not verify the
+release's prebuilt SHA256 sidecar. No package publication or successful complete
+PIE install is claimed. See [the tested PIE contract and remaining prerequisites](docs/PIE_INSTALLATION.md).
+
+The [platform matrix](docs/PLATFORMS.md) covers Windows, Linux, macOS, Android and
+FreeBSD architectures. Android's four architectures retain owner-reported passes;
+matching binary identities are still needed. Ubuntu ARM64 CI is prepared, not
+reported executed. Docker remains a separate option.
 
 ## Build from source (alternative)
 

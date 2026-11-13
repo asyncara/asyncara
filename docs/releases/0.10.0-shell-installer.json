@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "project": "Asyncara",
+  "version": "0.10.0",
+  "classification": "EXPERIMENTAL",
+  "recordedAt": "2026-11-13T22:46:55.579021+00:00",
+  "changeScope": "Installation/distribution/tests/documentation only; native runtime and immutable release source unchanged",
+  "branch": "release/0.10.0",
+  "parentCommit": "101f5a8957838f27a3285bd5b2fe1b526e8fa9ac",
+  "runtimeCommit": "4252f83f2cebaaaa2be150984e5ab0fa6d5b1862",
+  "tag": "v0.10.0",
+  "originalSourceArchive": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/build/releases/0.10.0/asyncara-0.10.0.tar.gz",
+    "sha256": "f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498"
+  },
+  "licenseSha256": "6bac39195fe5606e6fdfdaf88d5b4ff13002a8d2658747ce1f4263136f2e4cb7",
+  "implementationFiles": {
+    "scripts/install.sh": "4a24b404b3840a16c2e3079cf5395dbd5d879ea27296c231aa22f0be0f3cf1e7",
+    "scripts/distribution/install-runtime.php": "2679303b08a3cadb05fcd976cc6d2d7bbe442b90e580b6ab84a8cd5bebfc8c7a",
+    "scripts/distribution/render-installer.php": "11a3005a7b791676fae22a4b3c47540b7e55a9b1a365241bf4dbcd621594f971",
+    "scripts/distribution/publish.py": "185399ead007a86da8d797cbdfb4d14fe86c1c29f981ab808037c2fbf87d4452",
+    "tests/distribution/installer.php": "1ea014d2473ff2d9433d92c28543b4cf4c24189afc924eadea3bdd6adb00c9a0",
+    "tests/distribution/integration.py": "4c421e200c60a36c680c1c29f5b5ed41bf4d4ed46b88f906102fbbf08e7d2c54",
+    "tests/distribution/shell_https.py": "d9c1d0570fb67e632a107be8b8131d72001f05b433d0f23de788d34d7b016671",
+    "tests/distribution/pie_contract.php": "4659a94fb6c7e839888111c9f2982c977317566022e19c903814dadce26374dc",
+    "tests/distribution/test_publish.py": "478c6cec10b0c2ca6367b4db33ba96d34f21a3e211b977f96701d0fa126db92d",
+    "packaging/pie/composer.json": "23b4653578618513e912dbfaeb086bd75dc4ab150994c2188f58e0fe517347a2",
+    ".github/workflows/binaries.yml": "5a5caf8e98333d9ca9fbf9424743665ff8b0965cc1e8b940105b3a14fe9d3506"
+  },
+  "releaseAssets": [
+    {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/release-assets/install.sh",
+      "sha256": "4a24b404b3840a16c2e3079cf5395dbd5d879ea27296c231aa22f0be0f3cf1e7"
+    },
+    {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/release-assets/install.sh.sha256",
+      "sha256": "a44131627948d3c4ba436c3a77179bc8138b12dbf30127b3961b441701abca94"
+    }
+  ],
+  "shellInstaller": {
+    "status": "IMPLEMENTED_AND_TESTED",
+    "endUserPythonRequired": false,
+    "localCompilation": false,
+    "originalIniModified": false,
+    "exactPhpPatchRequired": true,
+    "ntsZtsDetected": true,
+    "ztsBinaryCertified": false,
+    "testedPlatform": "Ubuntu 24.04 amd64 NTS non-debug",
+    "versions": [
+      {
+        "php": "8.3.36",
+        "status": "PASS",
+        "installerTests": 25,
+        "seconds": 2.6191830546595156,
+        "moduleSha256": "a7198c653847797a20789dd284256dafed74b6b35943faee620372c3968d60d2",
+        "archiveSha256": "7f45e3ff3864b82845a2d5cd3dad689d85967e847aaf9e35adcd9c9a06bcc27b",
+        "integration": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/install-final-83/report.json",
+          "sha256": "b5c7785902641788f3475cd7821ea668f57c5e159af5289671c749efdc681e9f"
+        },
+        "unitLog": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/unit-final-83.log",
+          "sha256": "7666599c8fdf23ee82d7bd5b19007a1aaa3c828bb89e928e1cb23e5f5d4a5b10"
+        },
+        "negativeControls": [
+          "modified installation rejected and preserved",
+          "unrelated command rejected and preserved"
+        ]
+      },
+      {
+        "php": "8.4.27",
+        "status": "PASS",
+        "installerTests": 25,
+        "seconds": 1.8165761451236904,
+        "moduleSha256": "46866678e4d57cb8c10fd2f20ba3532700762af22004291785ef93869611e36f",
+        "archiveSha256": "9445e207bc8ee2ff0cfa429f30c4f42ad08112f661aca6da9b7b3a41d38f029d",
+        "integration": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/install-final-84/report.json",
+          "sha256": "e8989751e5b804742295158943bd0c6374c309551fdbc7171047684ec15c05e6"
+        },
+        "unitLog": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/unit-final-84.log",
+          "sha256": "2b622a5f90389d5f9bcc53e70f2af8efb9157cae67524e39fcc4c4faabe03346"
+        },
+        "negativeControls": [
+          "modified installation rejected and preserved",
+          "unrelated command rejected and preserved"
+        ]
+      },
+      {
+        "php": "8.5.12",
+        "status": "PASS",
+        "installerTests": 25,
+        "seconds": 2.2394700748845935,
+        "moduleSha256": "0698499520c3b3533ccd124429451432c217e94ece5f5997c1ae9600150b5403",
+        "archiveSha256": "487380ed374645d5057a363311c3c649f8fa5e79ba4f85f63c69d95dc7704430",
+        "integration": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/install-final-85/report.json",
+          "sha256": "c08aeb9da35964c58032533bd20d0001224341404bcb2a191e356e590ec770b7"
+        },
+        "unitLog": {
+          "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/unit-final-85.log",
+          "sha256": "560d2734ec6f58b6d7dd0e3d49d17dccdeed6bd9bc3e7aa7285001cec9e0f962"
+        },
+        "negativeControls": [
+          "modified installation rejected and preserved",
+          "unrelated command rejected and preserved"
+        ]
+      }
+    ],
+    "httpsReport": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/https-final/report.json",
+      "sha256": "43895d9938b4c59d423f35b2c5d0bdb20188e28bd1cee6ac3cf4715f63921e56"
+    },
+    "httpsResult": {
+      "status": "PASS",
+      "seconds": 1.5442815641872585,
+      "php": "/tmp/asyncara-phase3-cQBA3H/php-latest/root/usr/bin/php8.5",
+      "scriptSha256": "4a24b404b3840a16c2e3079cf5395dbd5d879ea27296c231aa22f0be0f3cf1e7",
+      "bundleSha256": "487380ed374645d5057a363311c3c649f8fa5e79ba4f85f63c69d95dc7704430",
+      "cases": [
+        {
+          "case": "good",
+          "expected": "PASS",
+          "exit": 0,
+          "iniUnchanged": true,
+          "log": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/https-final/good.log"
+        },
+        {
+          "case": "bad-sha",
+          "expected": "REJECT",
+          "exit": 1,
+          "iniUnchanged": true,
+          "log": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/https-final/bad-sha.log"
+        },
+        {
+          "case": "missing",
+          "expected": "REJECT",
+          "exit": 1,
+          "iniUnchanged": true,
+          "log": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/https-final/missing.log"
+        }
+      ],
+      "requests": [
+        {
+          "mode": "good",
+          "path": "/v0.10.0/install.sh"
+        },
+        {
+          "mode": "good",
+          "path": "/v0.10.0/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz"
+        },
+        {
+          "mode": "good",
+          "path": "/v0.10.0/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.sha256"
+        },
+        {
+          "mode": "bad-sha",
+          "path": "/v0.10.0/install.sh"
+        },
+        {
+          "mode": "bad-sha",
+          "path": "/v0.10.0/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz"
+        },
+        {
+          "mode": "bad-sha",
+          "path": "/v0.10.0/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.sha256"
+        },
+        {
+          "mode": "missing",
+          "path": "/v0.10.0/install.sh"
+        },
+        {
+          "mode": "missing",
+          "path": "/v0.10.0/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz"
+        }
+      ],
+      "pythonOrCompilerInvocations": 0,
+      "bareCommandReadyOnPath": true,
+      "originalIniUnchanged": true,
+      "truncatedScriptRejected": true,
+      "scope": "Local HTTPS with a trusted test CA; not proof of GitHub publication"
+    },
+    "unitPublisherTests": {
+      "status": "PASS",
+      "count": 21,
+      "log": {
+        "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/all-unit-final.log",
+        "sha256": "8dad7848a42166c8230cee3bf47857e24b2dade53d3f58d2f42a764314327b86"
+      }
+    },
+    "negativeTestNote": "Integration fixtures intentionally modify only their installed autoload.php after runtime checks, then verify reinstall preserves/rejects it. Original archives/modules are unchanged."
+  },
+  "pie": {
+    "status": "BLOCKED",
+    "reason": "Upstream prebuilt Unix install does not install ancillary runtime/library/CLI or verify supplied release SHA256; package is not published",
+    "version": "1.5.5",
+    "phar": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/pie.phar",
+      "sha256": "2ca0dff6868f1b53c095625674deef38ac698588e0a25e4321cd834a5b7553bc"
+    },
+    "verifiedGitHubAssetDigest": "sha256:2ca0dff6868f1b53c095625674deef38ac698588e0a25e4321cd834a5b7553bc",
+    "metadataValidation": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/pie-metadata-final.log",
+      "sha256": "605f76aefc3ab32b3a49eaf9b90259e583fe8393c4e967cb6da0316491fdd17a"
+    },
+    "contractProbe": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/pie-contract-r1/report.json",
+      "sha256": "d48aaaa2732dd61408368e9aa80d368e3e0d1ef390ca4cc67743ba0cf8c9c123"
+    },
+    "contractResult": {
+      "status": "PASS",
+      "scope": "Upstream PIE 1.5.5 contract probe; not end-to-end publication or full Asyncara installation",
+      "package": "asyncara/asyncara",
+      "sourceFallback": false,
+      "assetNames": [
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-glibc.zip",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-glibc.tgz",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-glibc-nts.zip",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-glibc-nts.tgz",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-anylibc.zip",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-anylibc.tgz",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-anylibc-nts.zip",
+        "php_asyncara-0.10.0_php8.5-x86_64-linux-anylibc-nts.tgz"
+      ],
+      "extensionCopied": true,
+      "ancillaryFilesCopied": false,
+      "suppliedWrongSha256SidecarRejected": false,
+      "iniModified": false,
+      "iniNote": "Probe explicitly disables ini setup; the ordinary PIE command may change PHP configuration",
+      "moduleSha256": "0698499520c3b3533ccd124429451432c217e94ece5f5997c1ae9600150b5403",
+      "upstreamSources": {
+        "src/Installing/UnixInstall.php": "354de5918b9221c4ae7f7645fdc1c0ee1191e98a8eb8d0e5fd65953f9977f3ad",
+        "src/ComposerIntegration/VendorCleanup.php": "023425467c20075d83293553771c717b81d5c2d483cb604ef2fab8db8ed9b2e4",
+        "src/ComposerIntegration/Listeners/OverrideDownloadUrlInstallListener.php": "9769a43f5eaff21736f18c04e5a69c766af3b80957d950188b95d188172332a9"
+      }
+    },
+    "initialCliProbe": {
+      "exit": 1,
+      "log": {
+        "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/pie-cli.log",
+        "sha256": "a68c2be947ce448a282c8f8b0d9fcd85340dcd3f135e30cd0d204dc1aa7c02ad"
+      },
+      "classification": "CLI option rejected before any package install; not an end-to-end test"
+    },
+    "packagist": {
+      "httpStatus": 404,
+      "url": "https://repo.packagist.org/p2/asyncara/asyncara.json",
+      "response": {
+        "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/packagist-response.json",
+        "sha256": "392115b382d6c23d526906ca001ab18cc94e43607a022c0beeadb63a034cce85"
+      }
+    }
+  },
+  "githubPublication": {
+    "status": "NOT_VERIFIED",
+    "releaseApiInspectionExit": 4,
+    "log": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/shell-pie-20261113T222553Z/github-release-inspection.log",
+      "sha256": "69f5519080eaf4c3a8900ff6c94fe8295d61829c17161fb23806005b55bc84b9"
+    },
+    "reason": "GitHub CLI API authentication unavailable; SSH Git access does not imply Release API access",
+    "hostedWorkflow": "NOT_EXECUTED",
+    "installerTargetUrl": "https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh"
+  },
+  "protectedPhase4": {
+    "path": "/home/coder/Asyncara",
+    "head": "6a7e0f45cb64577b3ba0cf30e160bd98901e4d90",
+    "moduleSha256": "b6d7354f186dab6128961235a4e4219572a5e6474370ce7ebd5ed772a478eb0c",
+    "status": [
+      "?? tests/soak/campaign_review.py",
+      "?? tests/soak/response_order.py",
+      "?? tests/soak/test_campaign_review.py"
+    ]
+  },
+  "limits": [
+    "Full PIE installation remains blocked by upstream capabilities and publication",
+    "Public curl URL requires published publicly accessible assets",
+    "No writable suitable PATH directory requires parent-shell export",
+    "No new ZTS/platform certification",
+    "SHA256 sidecar trusts the Release account; not an independent signature",
+    "No new native runtime, sanitizer or endurance claim"
+  ]
+}
