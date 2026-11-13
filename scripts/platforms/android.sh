@@ -52,7 +52,10 @@ cp ext/modules/asyncara.so build/asyncara.so
 for backend in epoll poll; do
   ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/asyncara.so" tests/release/smoke.php
   ASYNCARA_BACKEND="$backend" php -n -d extension="$PWD/build/asyncara.so" tests/platforms/core.php
+  ASYNCARA_BACKEND="$backend" ASYNCARA_HTTP_BACKEND=hyper-prototype php -n -d extension="$PWD/build/asyncara.so" tests/platforms/network.php
+  python tests/server/run.py --php "$(command -v php)" --module "$PWD/build/asyncara.so" --out "$PLATFORM_OUT/server-$backend" --backend "$backend"
 done
+php -n -d extension="$PWD/build/asyncara.so" tests/server/api.php
 sha256sum build/asyncara.so > ../module.sha256
 php -n -d extension="$PWD/build/asyncara.so" --ri asyncara > ../extension-info.txt
 bash scripts/platforms/package-android.sh

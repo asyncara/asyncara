@@ -1,0 +1,51 @@
+name: Android Hyper native builds
+on:
+  push:
+    branches: ['platform/android-windows-*']
+    paths: ['ext/**', 'scripts/platforms/android*.sh', 'scripts/platforms/package-android.sh', 'scripts/platforms/notices.php', '.github/workflows/android-hyper-preview.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  android-hyper:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test Bionic C and Rust runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/platforms/android
+          chmod 777 build/platforms/android
+          docker pull termux/termux-docker:${{ matrix.arch }}
+          docker image inspect termux/termux-docker:${{ matrix.arch }} > build/platforms/android/image.json
+          docker run --name android-hyper --user 1000:1000 --cpus=2 --memory=4g \
+            --entrypoint /data/data/com.termux/files/usr/bin/bash \
+            -e SOURCE_COMMIT=${{ github.sha }} -e ASYNCARA_BUILD_HYPER=1 \
+            -v "$PWD:/work:ro" -v "$PWD/build/platforms/android:/out" \
+            termux/termux-docker:${{ matrix.arch }} -lc \
+            'apt update && apt install -y clang make autoconf automake libtool pkg-config rust php libcurl libsqlite openssl postgresql mariadb zlib brotli zstd cmake perl git && bash /work/scripts/platforms/android.sh' \
+            2>&1 | tee build/platforms/android/container.log
+          test -s build/platforms/android/result.txt
+          (cd build/platforms/android && sha256sum -c ./*.tar.gz.sha256)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-hyper-${{ matrix.arch }}-${{ github.sha }}
+          path: |
+            build/platforms/android/*.log
+            build/platforms/android/*.json
+            build/platforms/android/*.txt
+            build/platforms/android/*.sha256
+            build/platforms/android/*.tar.gz
+            build/platforms/android/server-*/*.json
+            build/platforms/android/server-*/*.log

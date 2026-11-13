@@ -2,6 +2,7 @@ name: Platform preview builds
 on:
   push:
     branches: ['platform/android-windows-*']
+    paths: ['ext/**', 'scripts/platforms/**', 'tests/platforms/**', '.github/workflows/platform-preview.yml']
   workflow_dispatch:
 permissions:
   contents: read
