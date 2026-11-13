@@ -84,3 +84,13 @@ passed mixed/FPM1h with its recorded dependencies. Local FPM failed responsivene
 and is under a new isolated retry. PHP8.3/8.4 and poll remain functionally tested
 on the r4 archive; those results are not promoted to equivalent long-duration
 coverage. Source/archive identities and host-specific limits: PHASE4_DELIVERY.md.
+
+### Binary installer and additional platform reports (2026-11-13)
+
+The [prebuilt installer](BINARY_INSTALLATION.md) has local relocated-installation
+and real App/curl/Hyper evidence on Ubuntu24.04 amd64 and PHP8.3.36/8.4.27/8.5.12
+NTS. See [attestation](releases/0.10.0-binaries.json); GitHub asset publication is
+separate. The owner reports successful Android tests on amd64, arm64, arm and
+386. Exact build/userspace identities and logs are not yet correlated locally.
+[PLATFORMS.md](PLATFORMS.md) keeps those owner reports distinct from local results
+and lists the remaining Windows/macOS/FreeBSD and Linux architecture work.

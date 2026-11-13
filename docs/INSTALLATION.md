@@ -4,6 +4,16 @@ For the initial **0.10.0** release, start with [RELEASE_0.10.md](RELEASE_0.10.md
 The Git tag and supplied source archive pin this version; rebuild after a PHP
 patch upgrade. No global PHP configuration change is required.
 
+## Install without compiling
+
+Use the [prebuilt per-user installer](BINARY_INSTALLATION.md) for a matching
+Ubuntu24.04/PHP bundle. It includes the Hyper client/server and native SQL drivers,
+installs an `asyncara` CLI command, and leaves global PHP configuration untouched.
+Release assets must be published separately; local validation is not proof that
+GitHub hosts them. See [platform evidence](PLATFORMS.md) for other requested OS/CPU
+combinations and the owner's Android results. The sections below describe the
+alternative **source build**, which still requires development tools.
+
 ## Requirements
 
 Supported source range: PHP 8.3–8.5, 64-bit Unix-like environment. Tested: Linux x86_64 NTS. Required libraries: pthreads, SQLite 3 and libcurl >= 7.85 with asynchronous DNS (threaded resolver or c-ares). Required PHP features: Fibers, streams, JSON, SPL, proc_open; OpenSSL for explicit TLS streams. Optional native drivers use libpq >= 12 and MariaDB Connector/C >= 3.1 plus OpenSSL >= 3.0 development libraries. Strict MariaDB TLS requires Connector/C with the TLS callback/status API (tested 3.4.10) and the OpenSSL 3 backend; older clients fail closed for TLS. See MYSQL_COMPATIBILITY.md. PostgreSQL/MariaDB PHP extensions are not required. ext-curl is not required by the runtime; benchmarks use it as a synchronous baseline.

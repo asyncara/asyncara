@@ -2959,3 +2959,39 @@ or benchmark claim; no assertion/threshold change. Evidence:docs/releases/0.10.0
 GitHub API authentication is unavailable, so publication is source branch/tag via
 SSH, not a GitHub Release with uploaded assets. Historical Phase4 and license
 fingerprints remain unchanged. Release classification remainsEXPERIMENTAL.
+
+### Prebuilt installation and requested platform inventory — in progress
+
+Adding an isolated per-user binary installer, bounded archive validation, runtime
+probes before activation, relocatable private Connector/C and a GitHub Actions
+build/optional attach-assets workflow. Immutable 0.10 tag/runtime/license remain
+unchanged. First real PHP8.5 relocated install, App routes and curl/Hyper clients
+pass on epoll/poll; installer negative controls pass. An initial packaging attempt
+stopped on missing license notices for an unused target dependency; preserved the
+failure and restricted dependency notices to Cargo's actual host resolve graph.
+No third-party notice for a linked dependency is dropped. PHP83/84 checks follow.
+Owner requests all 20 OS/CPU combinations and reports Android tests pass on all
+four architectures. Record those as USER_REPORTED_PASS, distinct from local tests;
+exact Android source/userspace/PHP/binary identities are not yet supplied. Native
+ARM64 CI is prepared, not reported executed. Windows/macOS/FreeBSD require actual
+native ports; no platform guard removed or compatibility claimed from detection.
+
+### Prebuilt installer validation completed locally
+
+Three 0.10.0 Ubuntu24.04 amd64 bundles pass real relocated installation on exact
+PHP8.3.36/8.4.27/8.5.12 NTS, including repeat installation, autoloaded applications,
+App routes/POST/auth and curl/Hyper on epoll/poll. Release smoke covers timers,
+Tasks, filesystem atomic replacement, SQLite transactions and zero retained
+native resources. Relocated PHP8.5 mTLS tests independently pass on MariaDB11.8.9,
+Oracle MySQL8.4.13 and PostgreSQL16.15. Private Connector/C3.4.10 uses compiled-in
+common auth plugins, origin-relative loader paths and a distinct SONAME. Runtime
+PHP/core source is unchanged; ext/src trees of tested43d23e5 and tagged4252f83
+are byte-identical. Packaging PHP8.5 twice produces identical archives. Seventeen
+installer tests pass; mock probes in negative tests are not runtime evidence.
+Final installer real integration also passes. Source archive/tag/LICENSE and the
+Phase4 checkout/module are preserved. Full attestation:docs/releases/0.10.0-binaries.json.
+GitHub workflow has amd64 PHP83/84/85 and ARM64/PHP84 build/installation jobs, plus
+explicit opt-in Release attachment without overwrite. Hosted execution/publication
+has not been observed here. Android all-four pass remains the owner's reported
+result, awaiting matching artifacts; other runtime ports are not claimed complete.
+No global package or PHP configuration was modified. Release remains EXPERIMENTAL.

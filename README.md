@@ -29,7 +29,40 @@ Historical FPM responsiveness failures and scoped dependency/memory findings
 remain in [release readiness](docs/RELEASE_READINESS.md). Faster-than-every-runtime
 or all-workload benchmark claims are not made.
 
-## Build and run
+## Easy installation — no local compilation
+
+Install a prebuilt extension and the PHP library with the per-user installer.
+It provides an `asyncara` command and does not change global `php.ini`.
+Initial tested bundles: **Ubuntu 24.04 amd64, PHP 8.3.36 / 8.4.27 / 8.5.12 NTS**.
+PHP CLI, Python 3.11+ and system runtime libraries are prerequisites.
+
+**The binary assets must first be attached to the Release by the maintainer.**
+Local builds/installations are tested; hosted asset availability is not yet
+verified. Download `install.py` and `install.py.sha256` from the
+[v0.10.0 Release](https://github.com/asyncara/asyncara/releases/tag/v0.10.0), then:
+
+```sh
+sha256sum -c install.py.sha256
+python3 install.py --version 0.10.0
+~/.local/bin/asyncara --check
+~/.local/bin/asyncara --example 127.0.0.1:8080
+```
+
+Open `http://127.0.0.1:8080/status`, or run your application with
+`~/.local/bin/asyncara app.php`. The launcher loads the bundled Composer autoloader
+and uses `php -n`; global PHP ini/extensions are not loaded. Private repositories
+need authenticated GitHub CLI access or a manually downloaded matching bundle.
+Exact PHP patch matching is enforced; there is no hidden compilation fallback.
+
+See [binary installation](docs/BINARY_INSTALLATION.md) for prerequisites, private
+repository/offline commands, upgrades and **maintainer publication steps**.
+The [platform matrix](docs/PLATFORMS.md) covers every requested Windows, Linux,
+macOS, Android and FreeBSD architecture. Android's four architectures are recorded
+as owner-reported passes; matching binary identities are still needed. Ubuntu
+ARM64 CI is prepared but not yet executed. Other OS ports are not claimed complete.
+Docker packaging is separate; this change does not publish a Docker image.
+
+## Build from source (alternative)
 
 For the local Debian/Ubuntu build, dependencies are extracted without global installation. Select a PHP interpreter and development SDK with the same patch version; the final validation used PHP 8.3.36, 8.4.27 and 8.5.12. When using an isolated interpreter, set `PHP_BIN` to its absolute path first:
 

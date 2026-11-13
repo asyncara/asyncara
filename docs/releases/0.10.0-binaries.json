@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "version": "0.10.0",
+  "classification": "EXPERIMENTAL",
+  "verifiedAtUtc": "2026-11-13T21:23:30.820586+00:00",
+  "branch": "release/0.10.0",
+  "toolingBaseCommit": "53c9df5392c8e54c3257c798b0792531f5f20fbb",
+  "runtimeSourceCommit": "4252f83f2cebaaaa2be150984e5ab0fa6d5b1862",
+  "originalModuleBuildCommit": "43d23e5a1777cca1cd6a7cc704fb4fe19f436dd0",
+  "runtimeTreesIdenticalBetweenCandidateAndRelease": true,
+  "runtimeTree": {
+    "ext": "bf8268c482f2b8ae1d3ea1c07c9284dd982173fe",
+    "src": "6aeffc9a8e1c68c5cadac99f7045a3dd9685bc68"
+  },
+  "runtimeManifest": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/runtime-source-manifest.json",
+    "sha256": "078c6b713bc8437ace4d345e549538c324b886e6d8c5738196be39c1c7cde46f"
+  },
+  "sourceArchive": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/build/releases/0.10.0/asyncara-0.10.0.tar.gz",
+    "sha256": "f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498"
+  },
+  "environment": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "machine": "x86_64",
+    "python": "3.12.3"
+  },
+  "installedBundles": [
+    {
+      "php": "8.3.36",
+      "status": "PASS",
+      "seconds": 2.3955003768205643,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/integration-83-r1/report.json",
+      "reportSha256": "afb56064ce67b724ae8dc9b54b3603b56a50be9ea184f2de8887e5f89c948af1",
+      "moduleSha256": "a7198c653847797a20789dd284256dafed74b6b35943faee620372c3968d60d2",
+      "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz",
+      "archiveSha256": "7f45e3ff3864b82845a2d5cd3dad689d85967e847aaf9e35adcd9c9a06bcc27b",
+      "cases": [
+        "real install",
+        "idempotence",
+        "automatic Composer autoload",
+        "epoll/poll App routes, POST, auth",
+        "curl/Hyper HTTP requests"
+      ]
+    },
+    {
+      "php": "8.4.27",
+      "status": "PASS",
+      "seconds": 2.4779933793470263,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/integration-84-r1/report.json",
+      "reportSha256": "adfe4640ddc91d413fc3e445f8290c98151a6713898f9a8582cf18824b32cbc7",
+      "moduleSha256": "46866678e4d57cb8c10fd2f20ba3532700762af22004291785ef93869611e36f",
+      "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz",
+      "archiveSha256": "9445e207bc8ee2ff0cfa429f30c4f42ad08112f661aca6da9b7b3a41d38f029d",
+      "cases": [
+        "real install",
+        "idempotence",
+        "automatic Composer autoload",
+        "epoll/poll App routes, POST, auth",
+        "curl/Hyper HTTP requests"
+      ]
+    },
+    {
+      "php": "8.5.12",
+      "status": "PASS",
+      "seconds": 2.8097163778729737,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/integration-85-r1/report.json",
+      "reportSha256": "c37c1401931068079ea25334f1ed6255b338947ffaa55d2d2bb83a093cd10416",
+      "moduleSha256": "0698499520c3b3533ccd124429451432c217e94ece5f5997c1ae9600150b5403",
+      "archive": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz",
+      "archiveSha256": "487380ed374645d5057a363311c3c649f8fa5e79ba4f85f63c69d95dc7704430",
+      "cases": [
+        "real install",
+        "idempotence",
+        "automatic Composer autoload",
+        "epoll/poll App routes, POST, auth",
+        "curl/Hyper HTTP requests"
+      ]
+    }
+  ],
+  "relocatedDatabaseTests": [
+    {
+      "name": "mariadb",
+      "status": "PASS",
+      "server": "mariadbd  Ver 11.8.9-MariaDB-ubu2404 for debian-linux-gnu on x86_64 (mariadb.org binary distribution)",
+      "backend": "epoll",
+      "php": "8.5.12",
+      "seconds": 6.804044349119067,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/mariadb/report.json",
+      "reportSha256": "3047c2fc9eb248b6f579f0d1501dc3d3c79bd71c9dfc5a272fcd128fcf1d50d8"
+    },
+    {
+      "name": "oracle",
+      "status": "PASS",
+      "server": "/tmp/asyncara-phase3-cQBA3H/oracle-mysql/root/usr/sbin/mysqld  Ver 8.4.13 for Linux on x86_64 (MySQL Community Server - GPL)",
+      "backend": "epoll",
+      "php": "8.5.12",
+      "seconds": 20.460627818014473,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/oracle/report.json",
+      "reportSha256": "e46752fdd41a9e29f0ee8190219a2c47625b11c303380066f6b8e9ea31483998"
+    },
+    {
+      "name": "postgresql",
+      "status": "PASS",
+      "server": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+      "backend": "epoll",
+      "php": "8.5.12",
+      "seconds": 6.570462821051478,
+      "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/postgresql/report.json",
+      "reportSha256": "912d716b90d7032dc51bad7be6650d80eb723a5b36c3ef64dc873a0031b7bdc4"
+    }
+  ],
+  "installerTests": {
+    "status": "PASS",
+    "tests": 17,
+    "log": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/unit-final.log",
+    "sha256": "7e17ef8fc5b27120aab1d872f7bfdb7505372cc604034ad8f9a63e8e0d5d76ce",
+    "scope": "Archive/platform/activation controls; mock native probes in unit tests are not runtime certification"
+  },
+  "finalInstallerIntegration": {
+    "status": "PASS",
+    "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/integration-85-r2/report.json",
+    "sha256": "9c28595ef1cc17e1f7506acb98d12f3427394a55969ff501a72189087892e3f5"
+  },
+  "byteReproduciblePackaging": {
+    "status": "PASS",
+    "php": "8.5.12",
+    "report": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/reproduction.log",
+    "sha256": "2766ba785dfe65bef8fcc1c6af0ff6b9d8d34debc98b4c7fbaa4080cd07f08ad"
+  },
+  "connector": {
+    "version": "3.4.10",
+    "sourceSha256": "28c38b597a51e8eddd685c675420dd15e290f72d89834a97063e50cdc386f500",
+    "auth": "mysql_native_password plus static caching_sha2_password, sha256_password, client_ed25519, mysql_clear_password, dialog",
+    "notIncluded": [
+      "auth_gssapi_client",
+      "parsec"
+    ],
+    "newRuntimeLibrary": "libasyncara-mariadb.so.3; origin-relative lookup"
+  },
+  "retainedFailures": [
+    {
+      "log": "/home/coder/Asyncara-server-20261109T231953Z/build/installer-20261113T210032Z/package-85.log",
+      "sha256": "64a72c53e32fd9dce52e2d6d50266d9edc2634af5a11fdd0b7a02cd57dcaff24",
+      "cause": "Packaging included unused target dependency without top-level license; corrected host dependency resolve selection"
+    }
+  ],
+  "sourceRuntimeChanges": [],
+  "githubHostedBuilds": "NOT_VERIFIED",
+  "githubReleaseAssetUpload": "NOT_VERIFIED",
+  "linuxArm64": "NOT_VERIFIED; native CI job prepared",
+  "android": {
+    "status": "USER_REPORTED_PASS",
+    "architectures": [
+      "amd64",
+      "arm64",
+      "arm",
+      "386"
+    ],
+    "independentVerification": false,
+    "missing": [
+      "exact source commit",
+      "PHP versions",
+      "native Bionic versus GNU/Linux proot environment",
+      "binaries/checksums",
+      "test commands/logs"
+    ]
+  },
+  "otherPlatforms": "Windows/macOS/FreeBSD ports and Linux ARM/386 not completed; see docs/PLATFORMS.md",
+  "limitations": [
+    "No bundled PHP interpreter",
+    "Exact PHP patch/NTS/non-debug required",
+    "Ubuntu24.04 ABI, not universal Linux",
+    "Launcher uses php -n",
+    "No Docker image published",
+    "No new sanitizer, FPM endurance or broad OS certification",
+    "Original 0.10 integration findings retained"
+  ]
+}

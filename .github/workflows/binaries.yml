@@ -1,0 +1,128 @@
+name: Prebuilt installation bundles
+on:
+  push:
+    paths: ['scripts/install.py', 'scripts/distribution/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+  pull_request:
+    paths: ['scripts/install.py', 'scripts/distribution/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag
+        default: v0.10.0
+        required: true
+      publish:
+        description: Attach validated assets to the EXISTING GitHub Release (no overwrite)
+        type: boolean
+        default: false
+      arm64:
+        description: Validate native Ubuntu ARM64 (disable only when runner access is unavailable)
+        type: boolean
+        default: true
+permissions:
+  contents: read
+jobs:
+  installer:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s tests/distribution -p 'test_*.py' -v
+  build:
+    needs: installer
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: tools
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || 'v0.10.0' }}
+          path: runtime
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+      - name: Builder dependencies (disposable runner only)
+        env:
+          PHP_DEV_PACKAGE: php${{ matrix.php }}-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y "$PHP_DEV_PACKAGE" build-essential autoconf pkg-config cmake perl patchelf libcurl4-openssl-dev libsqlite3-dev libpq-dev libssl-dev zlib1g-dev libbrotli-dev libzstd-dev
+          phpize --version
+          cargo --version
+      - name: Build immutable source and test relocated installation
+        shell: bash
+        run: |
+          bash tools/scripts/distribution/build.sh "$PWD/runtime" "$(git -C runtime rev-parse HEAD)" "$PWD/bundle-build"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-ubuntu24.04-amd64-php${{ matrix.php }}
+          path: bundle-build/assets/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: binary-evidence-php${{ matrix.php }}
+          path: |
+            bundle-build/build.log
+            bundle-build/installed-test/**/*.log
+            bundle-build/installed-test/report.json
+  arm64:
+    if: github.event_name != 'workflow_dispatch' || inputs.arm64
+    needs: installer
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: tools
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || 'v0.10.0' }}
+          path: runtime
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y php8.4-dev build-essential autoconf pkg-config cmake perl patchelf libcurl4-openssl-dev libsqlite3-dev libpq-dev libssl-dev zlib1g-dev libbrotli-dev libzstd-dev
+          bash tools/scripts/distribution/build.sh "$PWD/runtime" "$(git -C runtime rev-parse HEAD)" "$PWD/bundle-build"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-ubuntu24.04-arm64-php8.4
+          path: bundle-build/assets/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: binary-evidence-arm64
+          path: |
+            bundle-build/build.log
+            bundle-build/installed-test/**/*.log
+            bundle-build/installed-test/report.json
+  publish:
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && needs.build.result == 'success' && (needs.arm64.result == 'success' || needs.arm64.result == 'skipped')
+    needs: [build, arm64]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: binary-ubuntu*
+          merge-multiple: true
+          path: release-assets
+      - name: Verify tag identity and attach assets without overwriting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          python3 scripts/distribution/publish.py --tag "$RELEASE_TAG" --assets release-assets
