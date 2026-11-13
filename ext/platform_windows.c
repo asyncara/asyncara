@@ -28,7 +28,7 @@ int ar_platform_clock(struct timespec *now) {
     return 0;
 }
 int ar_socket_noinherit(ar_fd fd) {
-    if (!SetHandleInformation((HANDLE)fd,HANDLE_FLAG_INHERIT,0)) { errno=EIO; return -1; }
+    if (!SetHandleInformation((HANDLE)fd,HANDLE_FLAG_INHERIT,0)) { errno=EIO; WSASetLastError(WSAEINVAL); return -1; }
     return 0;
 }
 int ar_wake_pair(ar_fd fds[2]) {

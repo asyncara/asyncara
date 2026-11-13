@@ -486,12 +486,20 @@ PHP_FUNCTION(asyncara_udp_bind) {
 #endif
     data->socket = socket(storage.ss_family, flags, 0);
     data->is_blocked = false;
+#ifdef _WIN32
+    int exclusive = 1;
+#endif
     if (data->socket == (php_socket_t)-1 || ar_socket_noinherit(data->socket) < 0 ||
         php_set_sock_blocking(data->socket, false) != SUCCESS ||
+#ifdef _WIN32
+        setsockopt(data->socket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (const char *)&exclusive, sizeof(exclusive)) == SOCKET_ERROR ||
+#endif
         bind(data->socket, (struct sockaddr *)&storage, size) < 0) {
-        int saved = errno;
+        int saved = php_socket_errno();
+        char message[256];
+        php_socket_strerror(saved, message, sizeof(message));
         php_stream_close(stream);
-        zend_throw_exception_ex(zend_ce_exception, saved, "UDP bind: %s", strerror(saved));
+        zend_throw_exception_ex(zend_ce_exception, saved, "UDP bind: %s", message);
         RETURN_THROWS();
     }
     php_stream_to_zval(stream, return_value);

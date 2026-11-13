@@ -10,6 +10,10 @@ Async::run(static function():void {
     $peer=Async::spawn(static function()use($server,&$ticks):void {
         $stream=$server->accept();
         try {
+            if(PHP_INT_SIZE===8){
+                $key=(1<<40)+7;
+                demand(asyncara_poll([],[$key=>$stream->resource()],0)['write']===[$key],'64-bit watcher identity truncated');
+            }
             $head='';
             while(!str_contains($head,"\r\n\r\n"))$head.=$stream->read();
             // Peer cannot release its actual socket response until two timer
@@ -28,7 +32,11 @@ Async::run(static function():void {
     demand($ticks>=2,'two pending-I/O timer ticks required');
     $peer->await();$timer->await();
     $a=new UdpSocket('127.0.0.1');$b=new UdpSocket('127.0.0.1');
-    try{demand($a->send('packet',$b->address())===6,'UDP write');demand($b->receive()['data']==='packet','UDP read');}
+    try{
+        $port=(int)substr(strrchr($b->address(),':'),1);
+        try{new UdpSocket('127.0.0.1',$port);throw new RuntimeException('Duplicate UDP binding accepted');}
+        catch(Asyncara\Exception\OperationException $error){demand($error->getCode()!==0,'Socket error code lost');}
+        demand($a->send('packet',$b->address())===6,'UDP write');demand($b->receive()['data']==='packet','UDP read');}
     finally{$a->close();$b->close();}
 });
 demand(Runtime::information()->pendingOperations===0,'native operation leak');
