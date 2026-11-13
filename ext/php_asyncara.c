@@ -165,7 +165,7 @@ static char *string_arg(ar_engine *e, HashTable *args, zend_ulong index, bool bi
         ZVAL_DEREF(z);
     if (!z || Z_TYPE_P(z) != IS_STRING || Z_STRLEN_P(z) > AR_LIMIT ||
         (!binary && memchr(Z_STRVAL_P(z), 0, Z_STRLEN_P(z)))) {
-        zend_value_error("Argument array index %lu must contain a bounded %sstring", index,
+        zend_value_error("Argument array index " ZEND_ULONG_FMT " must contain a bounded %sstring", index,
                          binary ? "" : "NUL-free ");
         return NULL;
     }

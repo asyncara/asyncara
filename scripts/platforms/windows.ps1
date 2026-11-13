@@ -31,7 +31,7 @@ try {
   $clang=Join-Path $env:ProgramFiles 'LLVM/bin/clang-cl.exe'
   $includes=@($sdk,"$sdk/main","$sdk/Zend","$sdk/TSRM","$root/ext","$deps/include") | ForEach-Object {'/I"'+$_+'"'}
   $sources=@('php_asyncara.c','workers.c','backend.c','memory.c','hyper_decode.c','platform_windows.c','compat/windows/files.c') | ForEach-Object {'"'+"$root/ext/$_"+'"'}
-  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" --target='+$target+' /nologo /LD /MD /O2 /std:c11 /W3 /DCOMPILE_DL_ASYNCARA /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib ws2_32.lib bcrypt.lib advapi32.lib' + "`r`nexit /b %errorlevel%`r`n"
+  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" --target='+$target+' /nologo /LD /MD /O2 /std:c11 /W3 /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib ws2_32.lib bcrypt.lib advapi32.lib' + "`r`nexit /b %errorlevel%`r`n"
   Set-Content "$out/compile.cmd" $line
   Push-Location $out
   try { & cmd.exe /d /c compile.cmd; if($LASTEXITCODE) {throw "Compilation failed $LASTEXITCODE"} } finally {Pop-Location}

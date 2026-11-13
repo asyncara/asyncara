@@ -111,7 +111,7 @@ int ar_fs_renameat(int from,const char *oldname,int to,const char *newname) {
     FILE_RENAME_INFO *info=calloc(1,size);if(!info){free(p);CloseHandle(h);errno=ENOMEM;return -1;}
     info->ReplaceIfExists=TRUE;info->RootDirectory=target;info->FileNameLength=(DWORD)n;memcpy(info->FileName,p,n);
     set_fn set=(set_fn)(void *)GetProcAddress(GetModuleHandleW(L"ntdll.dll"),"NtSetInformationFile");IO_STATUS_BLOCK ios;
-    NTSTATUS status=set?set(h,&ios,info,(ULONG)size,FileRenameInformation):(NTSTATUS)0xc0000002;
+    NTSTATUS status=set?set(h,&ios,info,(ULONG)size,(FILE_INFORMATION_CLASS)10 /* FileRenameInformation (WDK) */):(NTSTATUS)0xc0000002;
     free(info);free(p);CloseHandle(h);return status<0?nt_error(status):0;
 }
 int ar_fs_fstat(int fd,struct ar_fs_stat *st) {

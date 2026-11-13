@@ -143,6 +143,17 @@ static int close_file(ar_file *file) {
     if (error) { errno = error; return -1; }
     return 0;
 }
+/* Bionic exposes getrandom only from API 28. arc4random_buf is available
+ * from API 21 and obtains cryptographic bytes through Bionic, including its
+ * supported fallback on older Android kernels. This runs on a file worker. */
+static ssize_t secure_random(void *bytes, size_t length) {
+#if defined(__ANDROID__) && __ANDROID_API__ < 28
+    arc4random_buf(bytes, length);
+    return (ssize_t)length;
+#else
+    return getrandom(bytes, length, 0);
+#endif
+}
 static char *last_separator(char *path) {
     char *slash = strrchr(path, '/');
 #ifdef _WIN32
@@ -166,7 +177,7 @@ static void stage_file(ar_job *j) {
     for (int attempt = 0; attempt < 16; attempt++) {
         unsigned char random[16]; size_t offset = 0;
         while (offset < sizeof(random)) {
-            ssize_t n = getrandom(random + offset, sizeof(random) - offset, 0);
+            ssize_t n = secure_random(random + offset, sizeof(random) - offset);
             if (n < 0 && errno == EINTR) continue;
             if (n <= 0) { if (!n) errno = EIO; goto error; }
             offset += (size_t)n;
@@ -306,7 +317,7 @@ static void do_atomic_write(ar_job *j) {
         unsigned char random[16];
         size_t offset = 0;
         while (offset < sizeof(random)) {
-            ssize_t count = getrandom(random + offset, sizeof(random) - offset, 0);
+            ssize_t count = secure_random(random + offset, sizeof(random) - offset);
             if (count < 0 && errno == EINTR) continue;
             if (count <= 0) { if (!count) errno = EIO; goto error; }
             offset += (size_t)count;

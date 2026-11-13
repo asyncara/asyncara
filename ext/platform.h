@@ -21,8 +21,12 @@ void ar_wake_close(ar_fd fd);
 int ar_socket_noinherit(ar_fd fd);
 int ar_platform_poll(struct pollfd *fds, size_t count, int timeout);
 #define poll ar_platform_poll
+#ifndef strcasecmp
 #define strcasecmp _stricmp
+#endif
+#ifndef strncasecmp
 #define strncasecmp _strnicmp
+#endif
 #ifndef ENOTSUP
 #define ENOTSUP EINVAL
 #endif

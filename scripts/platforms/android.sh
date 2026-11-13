@@ -1,7 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -euo pipefail
+umask 022
 # Native Bionic toolchain only. Do not generate a glibc binary labelled Android.
-test -n "${PREFIX:-}" && test -e /system/bin/linker64
+test -n "${PREFIX:-}" && { test -e /system/bin/linker64 || test -e /system/bin/linker; }
 : "${PLATFORM_OUT:=/out}"
 mkdir -p "$PLATFORM_OUT"
 cd "$PLATFORM_OUT"
@@ -9,7 +10,7 @@ exec > >(tee build.log) 2>&1
 php -n -v
 php-config --includes
 clang --version
-rustc --version
+if command -v rustc >/dev/null; then rustc --version; fi
 mkdir source
 (cd /work && tar --exclude=.git --exclude=.local --exclude=build --exclude=vendor -cf - .) | (cd source && tar -xf -)
 cd source
@@ -27,10 +28,17 @@ for backend in epoll poll; do
   done
 done
 sha256sum build/asyncara-core.so > ../core-module.sha256
+if [ "${ASYNCARA_BUILD_HYPER:-1}" = 0 ]; then
+  cp build/asyncara-core.so build/asyncara.so
+  bash /work/scripts/platforms/package-android.sh
+  printf 'PASS: core profile\n' > ../result.txt
+  exit 0
+fi
 # Build the actual Rust bridge for the same Bionic ABI.
 export CARGO_BUILD_JOBS=2
 cargo build --manifest-path ext/hyper/Cargo.toml --release --locked
-apt install -y zstd-static
+bash /work/scripts/platforms/android-deps.sh
+export PKG_CONFIG_PATH="$PWD/build/deps/pkgconfig:$PREFIX/lib/$(clang -dumpmachine)/pkgconfig:${PKG_CONFIG_PATH:-}"
 cd ext
 phpize
 ./configure --enable-asyncara --with-asyncara-pq --with-asyncara-mysql --with-asyncara-hyper="$PWD/hyper/target/release" --with-php-config="$(command -v php-config)"
@@ -43,4 +51,5 @@ for backend in epoll poll; do
 done
 sha256sum build/asyncara.so > ../module.sha256
 php -n -d extension="$PWD/build/asyncara.so" --ri asyncara > ../extension-info.txt
+bash /work/scripts/platforms/package-android.sh
 printf 'PASS\n' > ../result.txt

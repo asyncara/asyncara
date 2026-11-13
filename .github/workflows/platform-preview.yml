@@ -28,3 +28,48 @@ jobs:
             build/platforms/windows-*/manifest.json
             build/platforms/windows-*/*.zip
             build/platforms/windows-*/*.sha256
+
+  android:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: i686
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+          - arch: arm
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+        if: matrix.arch == 'arm'
+        with:
+          platforms: arm
+      - name: Native Bionic build and runtime tests
+        run: |
+          mkdir -p build/platforms/android
+          chmod 777 build/platforms/android
+          docker pull termux/termux-docker:${{ matrix.arch }}
+          docker image inspect termux/termux-docker:${{ matrix.arch }} > build/platforms/android/image.json
+          docker run --name android-build --user 1000:1000 --cpus=2 --memory=4g \
+            --entrypoint /data/data/com.termux/files/usr/bin/bash \
+            -e SOURCE_COMMIT=${{ github.sha }} -e ASYNCARA_BUILD_HYPER=0 \
+            -v "$PWD:/work:ro" -v "$PWD/build/platforms/android:/out" \
+            termux/termux-docker:${{ matrix.arch }} -lc \
+            'apt update && apt install -y clang make autoconf automake libtool pkg-config php libcurl libsqlite openssl && bash /work/scripts/platforms/android.sh' \
+            2>&1 | tee build/platforms/android/container.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-${{ matrix.arch }}-${{ github.sha }}
+          path: |
+            build/platforms/android/*.log
+            build/platforms/android/*.json
+            build/platforms/android/*.txt
+            build/platforms/android/*.sha256
+            build/platforms/android/*.tar.gz
