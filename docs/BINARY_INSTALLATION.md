@@ -136,6 +136,62 @@ EXPERIMENTAL.
 
 ## Maintainer: publish without changing the release tag
 
+### Upload all remaining 0.10.0 files in one run
+
+For the already validated local 0.10.0 assets, run:
+
+```sh
+gh auth login --hostname github.com
+sh scripts/distribution/publish-0.10.0.sh
+```
+
+Use the `release/0.10.0` checkout containing this script. It finds the original
+local artifact directories automatically; the prepared portable kit instead has
+`publish.sh` beside an `assets/` directory. Either entry point needs only PHP CLI
+8.3+ and `gh` (plus curl for public download verification), without Python/build
+tools. `--assets /absolute/directory` selects a flat directory containing all 13
+files. These ignored build artifacts are not included in an ordinary Git clone.
+
+The pinned plan is `packaging/releases/0.10.0-assets.json`:
+
+- Original source archive and checksum: two files, normally already uploaded.
+- PHP8.3.36/8.4.27/8.5.12 NTS bundles, each with manifest and checksum: nine files.
+- `install.sh` and its checksum: two files. The obsolete Python installer is not
+  among the uploads.
+
+If the source pair already matches, exactly **11 missing files** are uploaded.
+The script checks the live asset list instead of assuming that number. It verifies
+all local bytes, the remote tag's exact source commit and the existing published
+Release. It downloads existing matching names and verifies SHA256 before any
+upload, then uploads only missing assets without `--clobber`. A conflict stops the
+run; existing unrelated files, release metadata, visibility and tags are preserved.
+The shell installer is uploaded last, after its binary assets.
+
+After uploading, all 13 assets are downloaded afresh and checked. Public repositories
+also get an anonymous HTTPS download/checksum check for every asset. Private
+repositories get `PUBLISHED_VERIFIED_PRIVATE`, explicitly stating that anonymous
+`curl` is unavailable; the script does not change visibility. A SHA256 conflict,
+missing/incomplete asset, inaccessible repository, changed tag, draft or locked
+Release prevents a false success.
+
+An interrupted run retains completed uploads. Run the **same command again**;
+matching files are skipped after verification. A failed/incomplete GitHub asset
+with a conflicting name requires inspection, never automatic deletion. Each run
+retains its snapshots, downloads, command exits and report under a new directory
+in `~/.local/state/asyncara/`; the exact path is printed first. Options:
+
+```sh
+sh scripts/distribution/publish-0.10.0.sh --check-local  # no GitHub access
+sh scripts/distribution/publish-0.10.0.sh --dry-run     # read-only remote preview
+```
+
+This publisher does not install Asyncara on the maintainer's machine, register a
+PIE package, build new binaries or claim other OS/PHP profiles. Its isolated tests
+use simulated GitHub operations; real publication still occurs when the maintainer
+runs it after login. See [publisher validation](releases/0.10.0-publisher.json).
+
+### Build new binary profiles through CI
+
 Workflow: `.github/workflows/binaries.yml`, **Prebuilt installation bundles**.
 It builds immutable release source on disposable runners and validates relocated
 installation. Python/compiler/Cargo here are **builder/test dependencies**, not

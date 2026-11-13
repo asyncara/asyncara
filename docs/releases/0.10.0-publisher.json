@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "version": "0.10.0",
+  "classification": "EXPERIMENTAL",
+  "baseCommit": "e2276e1c39c0db2016a704b39f9552010adfa834",
+  "recordedAt": "2026-11-13T22:59:24.287964+00:00",
+  "scope": "Release publication tool and tests; no native runtime or installer payload changes",
+  "tool": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/scripts/distribution/publish-0.10.0.sh",
+    "sha256": "7952a1f3f8dc0f1f334fd35e6234f5cdf22c9a0614c57b4669473fc1eeb64c79"
+  },
+  "implementation": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/scripts/distribution/publish-release.php",
+    "sha256": "d702ae74ba95c7e28b4f9d885c702223a70d280f15ff0a89a2353ce9bb941d90"
+  },
+  "renderer": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/scripts/distribution/render-publisher.php",
+    "sha256": "2c38bd08f74043fbb740cd780b120c210db5ee017fa29ad740471257b2d605d9"
+  },
+  "plan": {
+    "path": "/home/coder/Asyncara-server-20261109T231953Z/packaging/releases/0.10.0-assets.json",
+    "sha256": "3e356e91ae26635523e7a5d1986e000c4e469229b5da6f9e60fd5a5b7d89cbc7"
+  },
+  "expectedAssets": 13,
+  "sourceAssets": 2,
+  "newBinaryAndInstallerAssets": 11,
+  "kitDirectory": "/home/coder/publish-asyncara-0.10.0",
+  "kitScript": {
+    "path": "/home/coder/publish-asyncara-0.10.0/publish.sh",
+    "sha256": "7952a1f3f8dc0f1f334fd35e6234f5cdf22c9a0614c57b4669473fc1eeb64c79"
+  },
+  "kitArchive": {
+    "path": "/home/coder/publish-asyncara-0.10.0.tar.gz",
+    "sha256": "d49c2b8f0d776113ddab2c89a6138bab6262fb019084562a4ef7b75a0a3996c4"
+  },
+  "localVerification": {
+    "status": "LOCAL_VERIFIED",
+    "assets": 13,
+    "report": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/release-publisher-20261113T225440Z/local-check/report.json",
+      "sha256": "09b41e749d5a71ea9c85342eb0ae573b78d8c3f554b78b7660923d004014e227"
+    },
+    "portableKitReport": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/release-publisher-20261113T225440Z/kit-local-check/report.json",
+      "sha256": "b36d0304e2a8f81a5fb25361b767aa38e0c7f1e4c652359c3fa36cbf9367f803"
+    }
+  },
+  "controlTests": {
+    "status": "PASS",
+    "executions": 15,
+    "seconds": 64.99840121669695,
+    "report": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/release-publisher-20261113T225440Z/scenarios/report.json",
+      "sha256": "ad69e84cd1c78d3f00cd4efb6fd405bd9894670e582d1550dfe34f0cfc66fb50"
+    },
+    "scope": "Real pinned local assets and generated publisher; gh/curl simulated in private fixtures. No GitHub publication or real public URL verification claimed."
+  },
+  "existingTests": {
+    "status": "PASS",
+    "count": 21,
+    "log": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/release-publisher-20261113T225440Z/existing-tests.log",
+      "sha256": "2a829762ccdc3a6d7a32d4264d333c81bb45106d17b05a480546d868878e5151"
+    }
+  },
+  "liveGitHubPreview": {
+    "status": "PLAN_VERIFIED",
+    "mode": "dry-run; authenticated reads only",
+    "releaseId": 444717112,
+    "private": true,
+    "sourceCommit": "4252f83f2cebaaaa2be150984e5ab0fa6d5b1862",
+    "existingVerified": {
+      "asyncara-0.10.0.tar.gz": {
+        "id": 745111163,
+        "sha256": "f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498",
+        "bytes": 2787278,
+        "status": "VERIFIED"
+      },
+      "asyncara-0.10.0.tar.gz.sha256": {
+        "id": 745111544,
+        "sha256": "f5f8b0a31fe221888dee6c96cc35026475f2d80d4c849c8b44016605f3fb26f7",
+        "bytes": 89,
+        "status": "VERIFIED"
+      }
+    },
+    "missing": [
+      "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz",
+      "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz",
+      "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz",
+      "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "install.sh.sha256",
+      "install.sh"
+    ],
+    "uploaded": [],
+    "report": {
+      "path": "/home/coder/Asyncara-server-20261109T231953Z/build/release-publisher-20261113T225440Z/live-preview/report.json",
+      "sha256": "c5d489b095099a7ea023f25aa26fc0ca4bdb504a0959bd2dce4a29eb97da0d9c"
+    }
+  },
+  "realPublication": "NOT_EXECUTED; user will authenticate/run prepared script",
+  "publicInstallerUrl": "UNAVAILABLE_PRIVATE_REPOSITORY_AND_ASSET_NOT_UPLOADED",
+  "sourceAndTagRewritten": false,
+  "PIEPackagePublished": false
+}

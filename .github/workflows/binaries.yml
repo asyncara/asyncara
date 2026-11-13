@@ -1,9 +1,9 @@
 name: Prebuilt installation bundles
 on:
   push:
-    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/pie/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
   pull_request:
-    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/pie/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
   workflow_dispatch:
     inputs:
       tag:
@@ -30,6 +30,9 @@ jobs:
           php -n scripts/distribution/render-installer.php --check
           php -n tests/distribution/installer.php
           sh -n scripts/install.sh
+          php -n scripts/distribution/render-publisher.php --check
+          sh -n scripts/distribution/publish-0.10.0.sh
+          sh scripts/distribution/publish-0.10.0.sh --help
   build:
     needs: installer
     runs-on: ubuntu-24.04

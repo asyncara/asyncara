@@ -3037,3 +3037,31 @@ Native ext/src, originalLICENSE, 0.10.0 tag/source archive, three native bundles
 Phase4 checkout/module remain unchanged. New shell script and report identities:
 docs/releases/0.10.0-shell-installer.json. Release remains EXPERIMENTAL; no additional
 platform/ZTS certification, memory/endurance or performance claim.
+
+### Complete resumable v0.10.0 Release asset publisher
+
+Prepared a single executable shell/PHP publisher and a portable kit containing all
+13 pinned assets. It needs gh authentication, PHP and curl, no Python/build tools.
+The original source pair is retained; the remaining11 are three PHP NTS bundles
+with their manifests/checksums plus install.sh/checksum. The obsolete install.py
+pair is excluded. Immutable runtime/tag/install-script/bundle identities are unchanged.
+Local assets are snapshotted and hash-checked. Remote source ancestry and Release
+identity are verified, all existing collisions are downloaded/checked before upload,
+only missing names are uploaded without clobber, then all13 are downloaded again
+and independently hashed. Public HTTPS is verified separately when applicable.
+Private repositories remain private. Draft/immutable releases, changed tags,
+corruption, conflicting names and failed verification stop the run. Partial uploads
+are retained; rerunning verifies/skips them and resumes without deletion.
+
+Fifteen isolated executions with real pinned local bytes and simulated gh/curl pass,
+covering two-existing/11-missing, idempotence, interruption/resume, local and remote
+corruption, wrong tag, missing auth, draft/immutable Release, public/private behavior
+and bad post-upload/public downloads. This is publisher-control evidence, not a
+claim that assets were uploaded. Existing21 distribution unit tests still pass;
+generated-script checks are included in CI. The portable kit independently passes
+local verification of all13 files. A real read-only GitHub preview now succeeds:
+Release444717112, v0.10.0, private=true, exactly two matching source assets and11
+missing installer/binary files. No release mutation was executed. Prepared kit:
+/home/coder/publish-asyncara-0.10.0. User will run publish.sh after gh login.
+Detailed identities/results:docs/releases/0.10.0-publisher.json. No native build,
+PHP configuration change, release promotion or new PIE support is claimed.
