@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.24)
+project(AsyncaraWindows C)
+if(NOT WIN32 OR NOT MSVC)
+  message(FATAL_ERROR "This build uses the Microsoft Windows PHP ABI")
+endif()
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+find_package(CURL REQUIRED)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+get_filename_component(ASYNCARA_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+add_library(asyncara SHARED
+  ${ASYNCARA_ROOT}/ext/php_asyncara.c ${ASYNCARA_ROOT}/ext/workers.c
+  ${ASYNCARA_ROOT}/ext/backend.c ${ASYNCARA_ROOT}/ext/memory.c
+  ${ASYNCARA_ROOT}/ext/hyper_decode.c ${ASYNCARA_ROOT}/ext/platform_windows.c
+  ${ASYNCARA_ROOT}/ext/compat/windows/files.c)
+target_include_directories(asyncara PRIVATE "${PHP_SDK_INCLUDE}" "${PHP_SDK_INCLUDE}/main" "${PHP_SDK_INCLUDE}/Zend" "${PHP_SDK_INCLUDE}/TSRM")
+target_compile_definitions(asyncara PRIVATE COMPILE_DL_ASYNCARA PHP_WIN32 ZEND_WIN32 ZEND_DEBUG=0 ZEND_ENABLE_STATIC_TSRMLS_CACHE=1 ENABLE_INTSAFE_SIGNED_FUNCTIONS _CRT_SECURE_NO_WARNINGS _WIN32_WINNT=0x0602 CURL_STATICLIB)
+target_compile_options(asyncara PRIVATE /W3 /experimental:c11atomics)
+target_link_libraries(asyncara PRIVATE "${PHP_LIBRARY}" CURL::libcurl unofficial::sqlite3::sqlite3 ws2_32 bcrypt advapi32)
+set_target_properties(asyncara PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PHP_RUNTIME_DIR}" PREFIX "")
+add_executable(platform-native ${ASYNCARA_ROOT}/tests/platforms/windows_native.c ${ASYNCARA_ROOT}/ext/platform_windows.c ${ASYNCARA_ROOT}/ext/compat/windows/files.c)
+target_include_directories(platform-native PRIVATE ${ASYNCARA_ROOT}/ext)
+target_compile_definitions(platform-native PRIVATE _CRT_SECURE_NO_WARNINGS _WIN32_WINNT=0x0602)
+target_compile_options(platform-native PRIVATE /W3 /UNDEBUG)
+target_link_libraries(platform-native PRIVATE ws2_32 bcrypt advapi32)
+set_target_properties(platform-native PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${PHP_RUNTIME_DIR}")

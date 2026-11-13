@@ -24,23 +24,14 @@ try {
   & $vcpkg install "curl[core,ssl]:$Arch-windows-static-md" "sqlite3:$Arch-windows-static-md" --classic --disable-metrics
   if($LASTEXITCODE) {throw "vcpkg failed $LASTEXITCODE"}
   $deps=Join-Path $env:VCPKG_INSTALLATION_ROOT "installed/$Arch-windows-static-md"
-  Get-ChildItem "$deps/lib/*.lib" | Select-Object Name
-  $zlibLib=(Get-ChildItem "$deps/lib/*.lib" | Where-Object { $_.Name -in @('zlib.lib','zlibstatic.lib','zlibstat.lib') } | Select-Object -First 1).FullName
-  if(!$zlibLib){throw 'No release zlib static library found'}
-  $vswhere="${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
-  $vs=(& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
-  $vcvars=Join-Path $vs "VC/Auxiliary/Build/vcvarsall.bat"
-    $clang='cl.exe'
-  $includes=@($sdk,"$sdk/main","$sdk/Zend","$sdk/TSRM","$root/ext","$deps/include") | ForEach-Object {'/I"'+$_+'"'}
-  $sources=@('php_asyncara.c','workers.c','backend.c','memory.c','hyper_decode.c','platform_windows.c','compat/windows/files.c') | ForEach-Object {'"'+"$root/ext/$_"+'"'}
-  $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" /nologo /LD /MD /O2 /std:c11 /experimental:c11atomics /W3 /DCURL_STATICLIB /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib "'+$zlibLib+'" ws2_32.lib bcrypt.lib advapi32.lib crypt32.lib secur32.lib normaliz.lib wldap32.lib' + "`r`nexit /b %errorlevel%`r`n"
-  Set-Content "$out/compile.cmd" $line
-  Push-Location $out
-  try { & cmd.exe /d /c compile.cmd; if($LASTEXITCODE) {throw "Compilation failed $LASTEXITCODE"} } finally {Pop-Location}
-  $nativeLine='call "'+$vcvars+'" '+$Arch+"`r`n"+'cl.exe /nologo /MD /O2 /std:c11 /W3 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 /I"'+$root+'/ext" "'+$root+'/tests/platforms/windows_native.c" "'+$root+'/ext/platform_windows.c" "'+$root+'/ext/compat/windows/files.c" /link /OUT:"'+$out+'/native-test.exe" ws2_32.lib bcrypt.lib advapi32.lib'+"`r`nexit /b %errorlevel%`r`n"
-  Set-Content "$out/native-compile.cmd" $nativeLine
-  Push-Location $out
-  try { & cmd.exe /d /c native-compile.cmd; if($LASTEXITCODE){throw 'Native platform test build failed'}; & ./native-test.exe; if($LASTEXITCODE){throw 'Native platform test failed'} } finally {Pop-Location}
+  Write-Host ((Get-ChildItem "$deps/lib/*.lib").Name -join ', ')
+  $machine=if($Arch -eq 'x64') {'x64'} else {'Win32'}
+  & cmake -S "$root/scripts/platforms/windows-cmake" -B "$out/cmake" -G 'Visual Studio 17 2022' -A $machine "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=$Arch-windows-static-md" -DVCPKG_MANIFEST_MODE=OFF "-DPHP_SDK_INCLUDE=$sdk" "-DPHP_LIBRARY=$phpLib" "-DPHP_RUNTIME_DIR=$out/php"
+  if($LASTEXITCODE){throw 'CMake configuration failed'}
+  & cmake --build "$out/cmake" --config Release --parallel 2
+  if($LASTEXITCODE){throw 'Native Windows build failed'}
+  & "$out/php/platform-native.exe"
+  if($LASTEXITCODE){throw 'Native platform regression failed'}
   $php="$out/php/php.exe"
   function Invoke-CheckedPhp([string[]]$Arguments,[string]$Label) {
     $start=[System.Diagnostics.ProcessStartInfo]::new()
@@ -64,7 +55,7 @@ try {
   }
   $identity=@{source=(& git -C $root rev-parse HEAD);arch=$Arch;os='windows';php=(& $php -n -r 'echo PHP_VERSION;');threadSafety='nts';module=(Get-FileHash "$out/php/asyncara.dll").Hash.ToLowerInvariant();status='PASS';hyper=$false;postgresql=$false;mysql=$false}
   $identity | ConvertTo-Json | Set-Content "$out/manifest.json"
-  $bundle="$out/asyncara-windows-$Arch-php85-nts-preview"
+  $bundle="$out/asyncara-0.10.0-windows-$Arch-php8.5.12-nts-core-preview"
   New-Item -ItemType Directory $bundle | Out-Null
   Copy-Item "$out/php/asyncara.dll","$out/manifest.json","$root/LICENSE" $bundle
   Copy-Item "$root/src" "$bundle/src" -Recurse
