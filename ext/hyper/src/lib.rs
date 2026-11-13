@@ -1,8 +1,8 @@
 //! Experimental HTTP/1.1 and ALPN HTTP/2 bridge; DNS and trust files use Asyncara's
 //! existing resolver workers. No Tokio executor or blocking socket calls. Asyncara owns readiness,
 //! request deadlines and response buffers. No Zend API crosses this boundary.
-#[cfg(not(target_os = "linux"))]
-compile_error!("The Asyncara Hyper prototype currently supports Linux only");
+#[cfg(not(any(target_os = "linux", target_os = "android")))]
+compile_error!("The Asyncara Hyper transport requires Linux/Android readiness APIs");
 use http_body_util::BodyExt;
 mod body;
 use body::ClientBody;
