@@ -2938,3 +2938,24 @@ deadline hypothesis is not proof. No production source, test assertion or deadli
 was changed. Release notes explicitly retain this limit; no blanket integration
 or memory/endurance certification. Remaining release commands are recorded only
 when completed in the final attestation.
+
+
+### 0.10 final source and installation verification
+
+Final source4252f83 changes only release notes/WORKLOG relative to tested43d23e5.
+776-file final archive `build/releases/0.10.0/asyncara-0.10.0.tar.gz` SHA256
+`f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498`, Git-tree
+matched and byte-reproducible. Final extracted Cargo/phpize/configure/make/staged
+installation and both-backend smoke/server/curl+Hyper HTTP2 checks:14commandsPASS,
+46.588s. Installed moduleSHA256`50e699d30b8c1f1220feaa1bdd08eb63c9b3ca375f07c595ab9e8eddc70dda0b`.
+The upstream obsoleteAC_PROG_LIBTOOL macro warning remains visible. No global
+installation/configuration changes. PHP83/84/85 targeted checks and full85 suites
+pass; HTTP gate100commandsPASS257.946s. curl-only build and smoke also pass.
+Composer validate and locked installs pass; no composer.lock/license edits.
+Preserved original missing-dev-package failure, invalid SQL-runner invocation,
+and actual Oracle/Hyper/poll timeout500 failure with separate unchanged-repeatPASS.
+The cause of that original exception remains unresolved. No new sanitizer/endurance
+or benchmark claim; no assertion/threshold change. Evidence:docs/releases/0.10.0.json.
+GitHub API authentication is unavailable, so publication is source branch/tag via
+SSH, not a GitHub Release with uploaded assets. Historical Phase4 and license
+fingerprints remain unchanged. Release classification remainsEXPERIMENTAL.

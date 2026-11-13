@@ -2,6 +2,16 @@
 
 ## 0.10 initial release
 
+Final source/tag: `4252f83` / `v0.10.0`; tested program `43d23e5` (the final source
+changes only release notes/WORKLOG). Archive: 776 files,
+SHA-256: `f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498`.
+Fresh three-PHP builds/targeted epoll/poll checks, full PHP 8.5 suites, 100 HTTP checks
+and 14 final-source Cargo/phpize/install/smoke/server/HTTP2 commands pass.
+The original Oracle/MySQL + Hyper + poll timeout integration FAIL is retained;
+its unchanged repeat and a separate diagnostic pass do not establish its cause.
+See [the full release attestation](releases/0.10.0.json). This is an initial
+release with known limits, not clean universal integration or production acceptance.
+
 The owner selected a bounded initial release instead of waiting for every entity
 to be complete. Version **0.10.0** uses the existing tested Native API First
 architecture. [Release scope, installation and exclusions](RELEASE_0.10.md)
