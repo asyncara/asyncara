@@ -2920,3 +2920,21 @@ Updated current installation/README claims to the implemented Hyper capabilities
 and codec prerequisites. Release scope remains EXPERIMENTAL; historical findings
 and entity-level partial statuses remain. Fresh build/test and archive attestation
 will be recorded after commands finish; no unexecuted checks are marked PASS.
+
+
+### 0.10 candidate validation and retained Oracle finding
+
+Candidate43d23e5: fresh Cargo/C build; PHP83/84/85 epoll/poll server protocol/TLS,
+SQLite/manual transaction and release smoke checks pass. Composer validation and
+production installation pass. First full-suite attempt lacked the Nyholm dev-only
+factory; preserved FAIL, installed locked require-dev packages, unchanged full85
+suites pass on both backends. A separate invalid combination of SQL runner flags
+was rejected before execution and retained; corrected the invocation only.
+The Oracle/poll server integration then returned500 at `/pending/timeout` under
+Hyper after the curl case passed. Preserved the original rawFAIL. The exact
+uninstrumented repeat passes; separate diagnostic-only App exception logging also
+passes. Original exception/root cause is not recovered; a100ms TLS connect/query
+deadline hypothesis is not proof. No production source, test assertion or deadline
+was changed. Release notes explicitly retain this limit; no blanket integration
+or memory/endurance certification. Remaining release commands are recorded only
+when completed in the final attestation.

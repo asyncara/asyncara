@@ -32,7 +32,14 @@ See [lifecycle contract](IO_LIFECYCLE_CONTRACT.md) for complete semantics.
 ## Build, check and start
 
 Use the supplied `asyncara-0.10.0.tar.gz` and checksum sidecar, or Git tag
-`v0.10.0`. With the archive and checksum in the same directory:
+`v0.10.0`. For an authenticated Git checkout:
+
+```sh
+git clone --branch v0.10.0 --depth 1 https://github.com/asyncara/asyncara.git asyncara-0.10.0
+cd asyncara-0.10.0
+```
+
+Or, with the supplied archive and checksum in the same directory:
 
 ```sh
 sha256sum -c asyncara-0.10.0.tar.gz.sha256
@@ -74,12 +81,26 @@ run Composer with the newly built extension loaded:
 php -d extension="$PWD/ext/modules/asyncara.so" /path/to/composer install --no-dev
 ```
 
+For the **complete development test suite**, install the locked development
+dependencies with `composer install` (omit `--no-dev`); the PSR regression needs
+Nyholm's test factory. The standalone installation checker and release smoke
+above work without development dependencies.
+
 No global configuration edits or privileged installation are required for these
 steps. A source release contains no portable precompiled PHP module: rebuild for
 the exact interpreter, architecture and dependencies you deploy. Keep TLS
 verification enabled. Do not reuse fixture certificates in an application.
 
 ## Known retained findings
+
+- **0.10 candidate observation:** Oracle MySQL 8.4.13 mTLS + Hyper client + poll
+  inside Native Server returned HTTP500 at `/pending/timeout` once. The unchanged
+  uninstrumented repeat passed; a separate diagnostic pass also passed. Neither
+  identifies the original exception. The fixture uses a100ms connection/operation
+  deadline, but attributing the failure to it is still a hypothesis. Do not treat
+  this combination's timeout path as certified for unattended use. Use the default
+  epoll/curl profile as the initial baseline and validate application timeouts;
+  those passes do not prove the failure impossible on another profile.
 
 - Historical local FPM one-hour PASS and six-hour FAIL retain their original
   evidence. Current short tests do not certify long-duration stability.
@@ -101,7 +122,7 @@ applications and controlled evaluation, not as an assertion of production readin
 The predecessor `7ef1e2d` / final documentation `004306d` passed the scoped
 PHP 8.3/8.4/8.5 epoll/poll SQL/server compatibility tests, full PHP 8.5 suites,
 and an independent source build. Those are historical inputs, not substitute
-tests for this version. The 0.10 release attestation records fresh builds,
+tests for this version. The [0.10 release attestation](https://github.com/asyncara/asyncara/blob/release/0.10.0/docs/releases/0.10.0.json) records fresh builds,
 executed tests, archive and binary hashes separately. Compiler/sanitizer and
 endurance findings retain their original source identities.
 
