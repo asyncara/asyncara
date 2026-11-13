@@ -1,9 +1,13 @@
 # Installation and verification
 
+For the initial **0.10.0** release, start with [RELEASE_0.10.md](RELEASE_0.10.md).
+The Git tag and supplied source archive pin this version; rebuild after a PHP
+patch upgrade. No global PHP configuration change is required.
+
 ## Requirements
 
 Supported source range: PHP 8.3–8.5, 64-bit Unix-like environment. Tested: Linux x86_64 NTS. Required libraries: pthreads, SQLite 3 and libcurl >= 7.85 with asynchronous DNS (threaded resolver or c-ares). Required PHP features: Fibers, streams, JSON, SPL, proc_open; OpenSSL for explicit TLS streams. Optional native drivers use libpq >= 12 and MariaDB Connector/C >= 3.1 plus OpenSSL >= 3.0 development libraries. Strict MariaDB TLS requires Connector/C with the TLS callback/status API (tested 3.4.10) and the OpenSSL 3 backend; older clients fail closed for TLS. See MYSQL_COMPATIBILITY.md. PostgreSQL/MariaDB PHP extensions are not required. ext-curl is not required by the runtime; benchmarks use it as a synchronous baseline.
-The optional Hyper client/server build additionally requires zlib development headers and library (for bounded buffered gzip/deflate decoding); the default curl-only build does not add this dependency.
+The optional Hyper client/server build additionally requires Cargo/Rust, zlib, Brotli >= 1.0 and zstd >= 1.5 development packages, including the matching static `libzstd.a`. `pkg-config` must locate the codec packages. The default curl-only build does not add these codec dependencies.
 
 
 You need development headers matching your PHP interpreter. Do not load a binary built for a different PHP module API, ZTS mode or architecture. A downloaded PHP 8.5.12 pgsql extension failed to load in the host's 8.5.11 CLI; matching module API alone is not proof of compatibility. Asyncara itself was compiled and executed on the versions in COMPATIBILITY.md.
@@ -27,7 +31,7 @@ No `make install` is needed to test. For a system installation, an administrator
 ## Optional native HTTP server / Hyper build
 
 The default C/libcurl client build is preserved. To include the Linux native
-server (HTTP/1.1, optional TLS, response streaming) and experimental Hyper client,
+server (HTTP/1.1, optional TLS, response streaming) and opt-in Hyper client,
 first build the pinned Rust static library, then use the matching PHP SDK.
 The AWS-LC provider also needs a C compiler, CMake and Perl during the Cargo
 build; no FIPS certification is claimed for this ordinary provider:
@@ -47,10 +51,11 @@ php -n -d extension="$PWD/modules/asyncara.so" --ri asyncara
 built from this checkout's Cargo.lock/source. It neither installs Cargo nor
 changes global PHP configuration. Normal SQL configure options remain optional.
 Run with an exact matching PHP patch/SDK, as required by the native loader.
-Alternatively `scripts/build-hyper-local.sh` remains available. Server TLS
-support does not add TLS to the separate experimental Hyper client backend.
-See [server contracts and limits](SERVER.md) and the [current validation
-record](COMPLETION_STATUS.md).
+Alternatively `scripts/build-hyper-local.sh` remains available. Both the server
+and Hyper client support verified TLS within their documented configurations.
+The client additionally has scoped HTTP/2 support; the server remains HTTP/1.1.
+See [server contracts and limits](SERVER.md), [Hyper client](HYPER_COMPLETION.md)
+and the [release scope](RELEASE_0.10.md).
 
 ## Isolated build used on the development host
 
@@ -71,6 +76,24 @@ PHP_BIN=/path/to/php8.4 ASYNCARA_EXTENSION=build/asyncara84.so ./scripts/test.sh
 ```
 
 The locally extracted 8.3 and 8.4 binaries are not installed globally. Their package versions and results are recorded in WORKLOG.md.
+
+## Verify an installation
+
+From the extracted source root, choose the module you just built:
+
+```sh
+php -n -d extension="$PWD/ext/modules/asyncara.so" scripts/check-install.php --require-hyper
+php -n -d extension="$PWD/ext/modules/asyncara.so" tests/release/smoke.php
+ASYNCARA_BACKEND=poll php -n -d extension="$PWD/ext/modules/asyncara.so" tests/release/smoke.php
+php -n -d extension="$PWD/ext/modules/asyncara.so" examples/server.php 127.0.0.1:8080
+```
+
+For a curl-only build omit `--require-hyper` and the server command. Add
+`--require-sql` to require PostgreSQL and MySQL native drivers. This check reports
+loaded capabilities and source/SDK agreement; it does not certify runtime behavior.
+The smoke test checks Tasks, timers, files, SQLite transactions and cleanup.
+The example is a foreground process; stop it normally with Ctrl-C. In another
+terminal, `curl http://127.0.0.1:8080/status` checks the served response.
 
 ## Composer and examples
 

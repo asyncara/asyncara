@@ -2906,3 +2906,17 @@ Pushed and independently verified server half-close checkpoint871ee1a. Added man
 SQL verification complete to scoped delivery: normal83/84/85 andDEBUG all SQL drivers bothbackends PASS; GCC SQLite/MariaDB/Oracle PASS, PG functionalPASS but processFAIL109-byte libpq unload independently reproduced by old-module probe. GateA55PASS197.660s; fullPHP85bothPASS; NativeServer12instances264requests72pending ticksPASS; six locked-query owner-terminal controlsPASS. ValgrindSQLiteboth/OracleUnix0errors/0lost3888reachable; originalOraclemTLSValgrindFAIL unchanged2sdeadline retained, no TLS memory-pass claim. Added pending-owner CI fixture. Runtime hashes unchanged across final validations; tests extended only. See docs/phase7/sql-transactions.json. Checkpoint and push follow.
 
 SQL source7ef1e2d pushed and GitHub hash independently matched. Source archive asyncara-0.1.0-dev-server-sql-r1.tar.gz:772files, SHA256 d4d610f3c5d11100d5d5e9fef809ea4a2a3aefa1edc56e71252f0ef327d42e98. Repeat is byte-identical; extracted tree matches source commit exactly. Fresh Rust/C build and11checks PASS/176.535s, independentmoduleSHA 9224732a563d976817df92e4a5c7968af6ab819f931ca4472bd208b59e3f037c. Documentation-only attestation follows; native sources/tests unchanged. No release publication.
+
+
+## 2026-11-13 — 0.10 initial release preparation
+
+Owner requested a useful initial version without completing the entire production
+roadmap. Created `release/0.10.0` from `004306d`; protected Phase4 unchanged.
+Set native/Rust package identity to0.10.0 without changing dependency pins or runtime
+behavior. Packaging derives its archive root/name from the native version; the
+existing archive-install auditor accepts validated versioned roots. Added a read-only
+installation checker and a release smoke exercising Tasks/files/SQLite/cleanup.
+Updated current installation/README claims to the implemented Hyper capabilities
+and codec prerequisites. Release scope remains EXPERIMENTAL; historical findings
+and entity-level partial statuses remain. Fresh build/test and archive attestation
+will be recorded after commands finish; no unexecuted checks are marked PASS.

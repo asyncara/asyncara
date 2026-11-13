@@ -1,5 +1,16 @@
 # Implementation status
 
+## 0.10 initial release
+
+The owner selected a bounded initial release instead of waiting for every entity
+to be complete. Version **0.10.0** uses the existing tested Native API First
+architecture. [Release scope, installation and exclusions](RELEASE_0.10.md)
+define this milestone. Classification remains **EXPERIMENTAL**. Broader entity
+statuses below remain partial; a release number does not close their remaining
+work or erase historical failures. This release introduces no scheduler, protocol,
+hook or database behavior changes beyond the preceding tested checkpoint.
+
+
 ## Current priority status
 
 Owner progression decision (2026-11-12): the delivered Rust Hyper backend

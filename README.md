@@ -1,27 +1,33 @@
-# Asyncara
+# Asyncara 0.10
 
-**Independent audit:** [findings, repaired defects and evidence](docs/INDEPENDENT_AUDIT.md). Release assessment: **EXPERIMENTAL**. The preserved original source archive contains known defects; the corrected audit snapshot is separately named.
+**0.10.0 is an initial, EXPERIMENTAL release for early application development
+and controlled deployments on Linux x86_64 / PHP 8.3–8.5 NTS.** It is a usable
+checkpoint of the existing runtime, not completion of every roadmap item or a
+production-readiness guarantee. Start with the [0.10 release guide](docs/RELEASE_0.10.md)
+and [installation instructions](docs/INSTALLATION.md).
 
-**Phase 4 continuation:** [verified source, endurance results and remaining gates](docs/PHASE4_DELIVERY.md). Corrected-source mixed 1h/6h/24h and hosted FPM 1h passed; longer FPM and broader compatibility remain incomplete.
+Asyncara combines a native PHP extension with a Fiber-based PHP library. Its
+primary interfaces are its own APIs; transparent hooks are optional. Included:
 
-**Native reliability continuation:** [native fixes, fast gates and ownership evidence](docs/NATIVE_RELIABILITY_PROGRAM.md). The historical local FPM one-hour stage passed; the six-hour stage failed and its zero-tick cause remains unresolved. New short gates do not certify long-duration stability.
+- Tasks, Futures, cancellation, timers, groups, synchronization and process pools.
+- epoll/poll TCP/UDP, worker DNS, verified TLS and WebSocket client functionality.
+- The default curl multi HTTP client; opt-in Rust Hyper client with bounded
+  bodies/streams, verified HTTPS, compression, redirects, proxies and scoped HTTP/2.
+- `Asyncara\App`: HTTP/1.1 server, routed Fiber handlers, middleware, TLS/mTLS,
+  bounded input/output streaming and optional prefork workers.
+- Worker-backed files/SQLite; nonblocking libpq, Connector/C and Redis clients.
+  SQL manual/callback transactions and savepoints are available.
 
-**HTTP server development:** [App routes, Fiber handlers, bounded Hyper transport and prefork workers](docs/SERVER.md). Experimental HTTP/1 server with optional HTTPS/mTLS, bounded response streaming and opt-in handler-owned request streaming, separately built; [runnable example](examples/server.php). Performance acceptance against Go is separate from functional validation.
+Use [the runnable server](examples/server.php), [HTTP guide](docs/HTTP_STREAMING.md),
+[database compatibility](docs/DATABASE_COMPATIBILITY.md) and
+[resource lifecycle contract](docs/IO_LIFECYCLE_CONTRACT.md). Build the optional
+Rust bridge to use `App` or select Hyper; curl remains the default client.
 
-**HTTP continuation:** [current native improvements, validation and measured performance](docs/HTTP_PERFORMANCE_WORK.md). Curl remains the default. The opt-in [Hyper prototype](docs/HYPER_REQUESTS.md) now has bounded HTTP/1.1 methods, headers and buffered bodies over HTTP/verified HTTPS, with worker-backed DNS. Its exact validation and remaining capabilities are documented; it is not a production replacement. Requested speed targets remain NOT_MET.
-
-The [Hyper safety review](docs/HYPER_SAFETY_REVIEW.md) records FFI panic containment,
-the repeated Content-Encoding correction, tested wakeup ownership, and the separate
-system-libcurl trailer leak. The [DNS continuation](docs/HYPER_DNS.md) adds owned
-worker resolution and origin-safe fallback. The [TLS continuation](docs/HYPER_TLS.md)
-adds verified HTTPS. [Bounded streaming](docs/HTTP_STREAMING.md#hyper-client-streaming-continuation-2026-11-10) now covers responses, uploads and downloads. Hyper decompression, proxies, redirects and HTTP/2/3
-remain unavailable. The isolated curl repair does not update the host library.
-
-**Phase 3 delivery:** [verified changes, archive checksum, CI results and remaining work](docs/PHASE3_DELIVERY.md).
-
-Asyncara combines a native PHP extension with a Fiber-based Composer library for asynchronous I/O and process parallelism. **This is an experimental development build.** It targets PHP 8.3–8.5 on Linux; the current test matrix is in [COMPATIBILITY](docs/COMPATIBILITY.md).
-
-Implemented paths include native epoll/poll waits, bounded native filesystem/DNS/SQLite workers, curl multi HTTP with bounded streaming and file uploads, TCP/UDP/TLS streams, Tasks/Futures/cancellation, structured groups, synchronization, explicit context, process pools, optional libpq and MariaDB drivers, Redis RESP2/RESP3, and a PSR-18 adapter. Transparent hooks currently cover ordinary `sleep()` and `usleep()` calls inside the runtime. There is no universal PDO or PHP-stream hook claim.
+The [roadmap](docs/ROADMAP.md) retains broader gaps. HTTP/3, server HTTP/2,
+Redis Cluster/Sentinel, io_uring and universal transparent hooks are unavailable.
+Historical FPM responsiveness failures and scoped dependency/memory findings
+remain in [release readiness](docs/RELEASE_READINESS.md). Faster-than-every-runtime
+or all-workload benchmark claims are not made.
 
 ## Build and run
 
