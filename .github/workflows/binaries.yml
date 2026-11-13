@@ -1,9 +1,9 @@
 name: Prebuilt installation bundles
 on:
   push:
-    paths: ['scripts/install.py', 'scripts/distribution/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/pie/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
   pull_request:
-    paths: ['scripts/install.py', 'scripts/distribution/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
+    paths: ['scripts/install.sh', 'scripts/install.py', 'scripts/distribution/**', 'packaging/pie/**', 'tests/distribution/**', '.github/workflows/binaries.yml']
   workflow_dispatch:
     inputs:
       tag:
@@ -26,6 +26,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m unittest discover -s tests/distribution -p 'test_*.py' -v
+      - run: |
+          php -n scripts/distribution/render-installer.php --check
+          php -n tests/distribution/installer.php
+          sh -n scripts/install.sh
   build:
     needs: installer
     runs-on: ubuntu-24.04
@@ -59,6 +63,9 @@ jobs:
         shell: bash
         run: |
           bash tools/scripts/distribution/build.sh "$PWD/runtime" "$(git -C runtime rev-parse HEAD)" "$PWD/bundle-build"
+          for bundle in bundle-build/assets/*.tar.gz; do
+            python3 tools/tests/distribution/shell_https.py --php "$(command -v php)" --bundle "$bundle" --output "$PWD/bundle-build/https-test"
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: binary-ubuntu24.04-amd64-php${{ matrix.php }}
@@ -72,6 +79,8 @@ jobs:
             bundle-build/build.log
             bundle-build/installed-test/**/*.log
             bundle-build/installed-test/report.json
+            bundle-build/https-test/*.log
+            bundle-build/https-test/report.json
   arm64:
     if: github.event_name != 'workflow_dispatch' || inputs.arm64
     needs: installer
