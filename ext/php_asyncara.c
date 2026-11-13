@@ -121,7 +121,8 @@ static bool export_value(ar_value *v, zval *z) {
         break;
     }
     case V_ARRAY:
-        array_init_size(z, v->count);
+        if (v->count > UINT32_MAX) return false;
+        array_init_size(z, (uint32_t)v->count);
         for (size_t i = 0; i < v->count; i++) {
             zval item;
             if (!export_value(v->items[i], &item)) {
@@ -722,7 +723,7 @@ PHP_FUNCTION(asyncara_trace_configure) {
         zend_value_error("Trace capacity must be 16..4096 and mask 0..127"); RETURN_THROWS();
     }
     ar_engine *e = get_engine(); if (!e) RETURN_THROWS();
-    if (ar_trace_configure(e, capacity, mask)) {
+    if (ar_trace_configure(e, (size_t)capacity, (unsigned)mask)) {
         zend_throw_exception_ex(zend_ce_exception, errno, "Trace configuration failed (capacity is fixed per request): %s", strerror(errno)); RETURN_THROWS();
     }
 }
@@ -737,7 +738,7 @@ PHP_FUNCTION(asyncara_trace_event) {
     }
     ar_trace *t = atomic_load_explicit(&engine->trace, memory_order_acquire);
     if (t && code == 30) atomic_store_explicit(&t->scope, id, memory_order_relaxed);
-    ar_trace_emit(engine, category, code, id, a, b, c);
+    ar_trace_emit(engine, (unsigned)category, (unsigned)code, id, a, b, c);
 }
 PHP_FUNCTION(asyncara_trace_snapshot) {
     ZEND_PARSE_PARAMETERS_NONE();
@@ -1094,7 +1095,7 @@ PHP_FUNCTION(asyncara_poll) {
                     zend_value_error("Invalid descriptor");
                     RETURN_THROWS();
                 }
-                w[i++] = (ar_watch){.fd = (ar_fd)Z_LVAL_P(z), .events = mode ? POLLOUT : POLLIN, .key = key};
+                w[i++] = (ar_watch){.fd = (ar_fd)Z_LVAL_P(z), .events = mode ? POLLOUT : POLLIN, .key = (intptr_t)key};
                 continue;
             }
             php_stream_from_zval_no_verify(stream, z);
@@ -1109,7 +1110,7 @@ PHP_FUNCTION(asyncara_poll) {
             }
             /* Casting a TLS stream may move SSL_pending bytes into PHP's
              * buffer. Kernel readiness alone then loses the wakeup. */
-            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = key,
+            w[i++] = (ar_watch){.fd = fd, .events = mode ? POLLOUT : POLLIN, .key = (intptr_t)key,
                                .buffered = !mode && (stream->writepos > stream->readpos || stream->eof)};
         }
         ZEND_HASH_FOREACH_END();

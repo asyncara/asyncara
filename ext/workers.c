@@ -737,7 +737,7 @@ finish:
     sqlite3_progress_handler(db->handle, 0, NULL, NULL);
 }
 void ar_done(ar_engine *e, ar_job *j) {
-    long id = j->id;
+    intptr_t id = j->id;
     int local_completion = j->op == OP_HTTP;
     ar_trace_emit(e, AR_TRACE_JOB, 22, id, j->op, j->error[0] != 0, atomic_load(&j->cancelled));
     pthread_mutex_lock(&e->mutex);
@@ -913,13 +913,13 @@ void ar_job_free(ar_job *j) {
     ar_value_free(j->result);
     ar_free(j);
 }
-ar_db *ar_db_find(ar_engine *e, long id) {
+ar_db *ar_db_find(ar_engine *e, intptr_t id) {
     for (ar_db *d = e->dbs; d; d = d->next)
         if (d->id == id)
             return d;
     return NULL;
 }
-ar_file *ar_file_find(ar_engine *e, long id) {
+ar_file *ar_file_find(ar_engine *e, intptr_t id) {
     for (ar_file *file = e->files; file; file = file->next)
         if (file->id == id)
             return file;
@@ -975,7 +975,7 @@ int ar_submit(ar_engine *e, ar_job *j) {
     pthread_mutex_unlock(&e->mutex);
     return 0;
 }
-void ar_cancel(ar_engine *e, long id) {
+void ar_cancel(ar_engine *e, intptr_t id) {
     for (ar_job *j = e->jobs; j; j = j->next)
         if (j->id == id) {
             ar_trace_emit(e, AR_TRACE_JOB, 25, id, j->op, 0, 0);

@@ -60,13 +60,13 @@ typedef struct ar_value {
     char **keys;
 } ar_value;
 typedef struct ar_db {
-    long id;
+    intptr_t id;
     sqlite3 *handle;
     int busy;
     struct ar_db *next;
 } ar_db;
 typedef struct ar_file {
-    long id;
+    intptr_t id;
     int fd, busy;
     int staging, directory_fd;
     char stage_name[64];
@@ -107,7 +107,7 @@ typedef struct {
     size_t index;
 } ar_http_part;
 typedef struct ar_job {
-    long id;
+    intptr_t id;
     ar_op op;
     char *a, *b;
     size_t b_len;
@@ -157,7 +157,7 @@ typedef struct ar_engine {
     pthread_cond_t condition;
     ar_job *queue_head, *queue_tail, *done_head, *done_tail, *jobs, *allocations;
     size_t pending;
-    long next_id, next_db, next_file;
+    intptr_t next_id, next_db, next_file;
     ar_db *dbs;
     ar_file *files;
     void *hyper;
@@ -178,7 +178,7 @@ typedef struct ar_engine {
 typedef struct {
     ar_fd fd;
     int events, ready, buffered;
-    long key;
+    intptr_t key;
 } ar_watch;
 void *ar_alloc(ar_engine *e, size_t bytes);
 void *ar_calloc(ar_engine *e, size_t count, size_t bytes);
@@ -203,13 +203,13 @@ void ar_engine_free(ar_engine *e);
 ar_job *ar_job_new(ar_engine *e, ar_op op);
 void ar_job_free(ar_job *j);
 int ar_submit(ar_engine *e, ar_job *j);
-void ar_cancel(ar_engine *e, long id);
+void ar_cancel(ar_engine *e, intptr_t id);
 int ar_wait(ar_engine *e, ar_watch *w, size_t n, int timeout);
 int ar_wait_initialize(ar_engine *e);
 void ar_wait_cleanup(ar_engine *e);
 ar_job *ar_collect(ar_engine *e);
-ar_db *ar_db_find(ar_engine *e, long id);
-ar_file *ar_file_find(ar_engine *e, long id);
+ar_db *ar_db_find(ar_engine *e, intptr_t id);
+ar_file *ar_file_find(ar_engine *e, intptr_t id);
 void ar_http_start(ar_engine *e, ar_job *j);
 void ar_http_progress(ar_engine *e);
 #ifdef HAVE_ASYNCARA_HYPER

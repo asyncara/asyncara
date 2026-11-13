@@ -23,6 +23,8 @@ typedef intptr_t ar_ssize_t;
 struct ar_fs_stat { int64_t st_size; int st_mode; time_t st_mtime; uint64_t st_dev,st_ino; };
 struct dirent { char d_name[1024]; };
 typedef struct ar_directory DIR;
+ar_ssize_t ar_fs_read(int,void *,size_t);
+ar_ssize_t ar_fs_write(int,const void *,size_t);
 int ar_fs_open(const char *,int,...);
 int ar_fs_openat(int,const char *,int,...);
 int ar_fs_stat(const char *,struct ar_fs_stat *);
@@ -58,8 +60,8 @@ int ar_fs_closedir(DIR *);
 #define opendir ar_fs_opendir
 #define readdir ar_fs_readdir
 #define closedir ar_fs_closedir
-#define read _read
-#define write _write
+#define read ar_fs_read
+#define write ar_fs_write
 #define close _close
 #define lseek _lseeki64
 #endif

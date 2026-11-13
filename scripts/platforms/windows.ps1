@@ -27,20 +27,37 @@ try {
   $vswhere="${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
   $vs=(& $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)
   $vcvars=Join-Path $vs "VC/Auxiliary/Build/vcvarsall.bat"
-  $target=if($Arch -eq 'x64') {'x86_64-pc-windows-msvc'} else {'i686-pc-windows-msvc'}
-  $clang='cl.exe'
+    $clang='cl.exe'
   $includes=@($sdk,"$sdk/main","$sdk/Zend","$sdk/TSRM","$root/ext","$deps/include") | ForEach-Object {'/I"'+$_+'"'}
   $sources=@('php_asyncara.c','workers.c','backend.c','memory.c','hyper_decode.c','platform_windows.c','compat/windows/files.c') | ForEach-Object {'"'+"$root/ext/$_"+'"'}
   $line='call "'+$vcvars+'" '+$Arch+"`r`n"+'"'+$clang+'" /nologo /LD /MD /O2 /std:c11 /experimental:c11atomics /W3 /DCURL_STATICLIB /DCOMPILE_DL_ASYNCARA /DENABLE_INTSAFE_SIGNED_FUNCTIONS /DPHP_WIN32 /DZEND_WIN32 /DZEND_DEBUG=0 /DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 '+($includes -join ' ')+' '+($sources -join ' ')+' /link /OUT:"'+$out+'/php/asyncara.dll" "'+$phpLib+'" /LIBPATH:"'+$deps+'/lib" libcurl.lib sqlite3.lib zlib.lib ws2_32.lib bcrypt.lib advapi32.lib crypt32.lib secur32.lib normaliz.lib wldap32.lib' + "`r`nexit /b %errorlevel%`r`n"
   Set-Content "$out/compile.cmd" $line
   Push-Location $out
   try { & cmd.exe /d /c compile.cmd; if($LASTEXITCODE) {throw "Compilation failed $LASTEXITCODE"} } finally {Pop-Location}
+  $nativeLine='call "'+$vcvars+'" '+$Arch+"`r`n"+'cl.exe /nologo /MD /O2 /std:c11 /W3 /D_CRT_SECURE_NO_WARNINGS /D_WIN32_WINNT=0x0602 /I"'+$root+'/ext" "'+$root+'/tests/platforms/windows_native.c" "'+$root+'/ext/platform_windows.c" "'+$root+'/ext/compat/windows/files.c" /link /OUT:"'+$out+'/native-test.exe" ws2_32.lib bcrypt.lib advapi32.lib'+"`r`nexit /b %errorlevel%`r`n"
+  Set-Content "$out/native-compile.cmd" $nativeLine
+  Push-Location $out
+  try { & cmd.exe /d /c native-compile.cmd; if($LASTEXITCODE){throw 'Native platform test build failed'}; & ./native-test.exe; if($LASTEXITCODE){throw 'Native platform test failed'} } finally {Pop-Location}
   $php="$out/php/php.exe"
-  & $php -n -d "extension=$out/php/asyncara.dll" --ri asyncara
-  if($LASTEXITCODE){throw 'Extension load failed'}
+  function Invoke-CheckedPhp([string[]]$Arguments,[string]$Label) {
+    $start=[System.Diagnostics.ProcessStartInfo]::new()
+    $start.FileName=$php; $start.UseShellExecute=$false
+    $start.RedirectStandardOutput=$true; $start.RedirectStandardError=$true
+    foreach($arg in @('-n','-d',"extension=$out/php/asyncara.dll")+$Arguments){$start.ArgumentList.Add($arg)}
+    $process=[System.Diagnostics.Process]::new();$process.StartInfo=$start
+    $watch=[System.Diagnostics.Stopwatch]::StartNew()
+    if(!$process.Start()){throw "Cannot start $Label"}
+    $stdout=$process.StandardOutput.ReadToEndAsync();$stderr=$process.StandardError.ReadToEndAsync()
+    if(!$process.WaitForExit(60000)){$process.Kill($true);$process.WaitForExit();throw "Timed out: $Label"}
+    $text=$stdout.GetAwaiter().GetResult();$errors=$stderr.GetAwaiter().GetResult()
+    Write-Host $text;Write-Host $errors
+    if($process.ExitCode){throw "$Label exited $($process.ExitCode)"}
+    Write-Host "PASS $Label in $($watch.Elapsed.TotalSeconds)s"
+    $process.Dispose()
+  }
+  Invoke-CheckedPhp -Arguments @('--ri','asyncara') -Label 'module-load'
   foreach($test in @('tests/release/smoke.php','tests/platforms/core.php','tests/platforms/network.php')) {
-    & $php -n -d "extension=$out/php/asyncara.dll" "$root/$test"
-    if($LASTEXITCODE){throw "Test failed: $test"}
+    Invoke-CheckedPhp -Arguments @("$root/$test") -Label $test
   }
   $identity=@{source=(& git -C $root rev-parse HEAD);arch=$Arch;os='windows';php=(& $php -n -r 'echo PHP_VERSION;');threadSafety='nts';module=(Get-FileHash "$out/php/asyncara.dll").Hash.ToLowerInvariant();status='PASS';hyper=$false;postgresql=$false;mysql=$false}
   $identity | ConvertTo-Json | Set-Content "$out/manifest.json"

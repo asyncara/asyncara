@@ -13,6 +13,8 @@
 #ifndef ENOTSUP
 #define ENOTSUP EINVAL
 #endif
+ar_ssize_t ar_fs_read(int fd,void *p,size_t n) {return _read(fd,p,(unsigned)(n>INT_MAX?INT_MAX:n));}
+ar_ssize_t ar_fs_write(int fd,const void *p,size_t n) {return _write(fd,p,(unsigned)(n>INT_MAX?INT_MAX:n));}
 static int win_error(DWORD e) {
     switch(e) {
     case ERROR_FILE_NOT_FOUND:case ERROR_PATH_NOT_FOUND:errno=ENOENT;break;

@@ -98,7 +98,14 @@ int ar_trace_read(ar_engine *e, ar_trace_event *events, ar_trace_status *status)
  * worker joins and buffer destruction precede engine destruction. Library-owned
  * allocations (curl, SQLite, TLS, connector internals) are outside this ledger. */
 typedef union {
+#ifdef _WIN32
+    /* MSVC C11 has no max_align_t; the Windows malloc contract provides
+     * MEMORY_ALLOCATION_ALIGNMENT (16 on x64, 8 on x86). Keep the payload
+     * offset and header alignment at that same boundary. */
+    __declspec(align(MEMORY_ALLOCATION_ALIGNMENT)) unsigned char alignment[MEMORY_ALLOCATION_ALIGNMENT];
+#else
     max_align_t alignment;
+#endif
     struct {
         ar_engine *engine;
         size_t bytes;
