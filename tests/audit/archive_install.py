@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Extract, independently phpize/build/install and exercise every supplied PHP SDK."""
-import argparse,hashlib,json,os,pathlib,shutil,subprocess,tarfile,time
+import argparse,hashlib,json,os,pathlib,shutil,subprocess,tarfile,time,re
 parser=argparse.ArgumentParser();parser.add_argument('--archive',required=True);parser.add_argument('--output',required=True);parser.add_argument('--dependencies',required=True);parser.add_argument('--variants',required=True)
 a=parser.parse_args();archive=pathlib.Path(a.archive).resolve();out=pathlib.Path(a.output).resolve();deps=pathlib.Path(a.dependencies).resolve();variants=json.loads(pathlib.Path(a.variants).read_text())
 if out.exists():parser.error('Use a new evidence directory')
@@ -17,11 +17,15 @@ try:
         name=variant['name'];folder=out/name;folder.mkdir();record={'name':name,'steps':[]};report['variants'].append(record)
         with tarfile.open(archive)as package:
             members=package.getmembers()
+            prefixes={pathlib.PurePosixPath(m.name).parts[0] for m in members if pathlib.PurePosixPath(m.name).parts}
+            if len(prefixes)!=1:raise RuntimeError('Expected one source archive root')
+            prefix=prefixes.pop()
+            if not re.fullmatch(r'asyncara-[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?',prefix):raise RuntimeError('Invalid versioned archive root')
             for m in members:
                 path=pathlib.PurePosixPath(m.name)
-                if not m.isfile()or path.is_absolute()or'..'in path.parts or path.parts[0]!='asyncara-0.1.0-dev':raise RuntimeError('Unsafe/non-source archive member '+m.name)
+                if not m.isfile()or path.is_absolute()or'..'in path.parts or path.parts[0]!=prefix:raise RuntimeError('Unsafe/non-source archive member '+m.name)
             package.extractall(folder,filter='data');record['sourceFiles']=len(members)
-        source=folder/'asyncara-0.1.0-dev';local=source/'.local';(local/'sysroot').mkdir(parents=True);(local/'bin').mkdir()
+        source=folder/prefix;local=source/'.local';(local/'sysroot').mkdir(parents=True);(local/'bin').mkdir()
         packages=base+[pathlib.Path(variant['devPackage']).resolve()]
         record['developmentPackages']={p.name:hashlib.sha256(p.read_bytes()).hexdigest()for p in packages}
         for package in packages:subprocess.run(['dpkg-deb','-x',str(package),str(local/'sysroot')],check=True)

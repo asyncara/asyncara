@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Package tracked working-tree source; omit toolchains, secrets and binaries."""
-import argparse, gzip, hashlib, io, pathlib, subprocess, tarfile
+import argparse, gzip, hashlib, io, pathlib, subprocess, tarfile, re
 
 root = pathlib.Path(__file__).resolve().parent.parent
+match = re.search(r'^#define PHP_ASYNCARA_VERSION "([0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?)"$',
+                  (root / 'ext/php_asyncara.h').read_text(), re.M)
+if not match:
+    raise SystemExit('Invalid native release version')
+prefix = 'asyncara-' + match[1]
 parser = argparse.ArgumentParser()
-parser.add_argument('--output', default='build/asyncara-0.1.0-dev.tar.gz')
+parser.add_argument('--output', default='build/' + prefix + '.tar.gz')
 parser.add_argument('--include-untracked', action='store_true', help='Include reviewed, non-ignored new source files')
 options = parser.parse_args()
 paths = sorted(p for p in subprocess.check_output(['git', '-C', str(root), 'ls-files', '-z']).decode().split('\0') if p)
@@ -23,7 +28,7 @@ with target.open('xb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw
             if not path.is_file() or path.is_symlink():
                 raise SystemExit('Expected a regular source file: '+name)
             data = path.read_bytes()
-            info = tarfile.TarInfo('asyncara-0.1.0-dev/' + name)
+            info = tarfile.TarInfo(prefix + '/' + name)
             info.size = len(data)
             # Preserve executable intent, not the checkout user's umask/group
             # permissions. Clean checkouts must produce identical archives.
@@ -33,7 +38,7 @@ digest = hashlib.sha256(target.read_bytes()).hexdigest()
 target.with_suffix(target.suffix + '.sha256').write_text(digest+'  '+target.name+'\n')
 with tarfile.open(target) as archive:
     for name in paths:
-        data = archive.extractfile('asyncara-0.1.0-dev/' + name).read()
+        data = archive.extractfile(prefix + '/' + name).read()
         if data != (root/name).read_bytes():
             raise SystemExit('Archive verification failed: '+name)
 print(str(target)+'\n'+digest+'\n'+str(len(paths))+' source files verified')

@@ -26,7 +26,7 @@ static inline zend_string *ar_php_string_init(const char *value, size_t length) 
     }
     return string;
 }
-#define PHP_ASYNCARA_VERSION "0.1.0-dev"
+#define PHP_ASYNCARA_VERSION "0.10.0"
 extern zend_module_entry asyncara_module_entry;
 #define phpext_asyncara_ptr &asyncara_module_entry
 #endif
