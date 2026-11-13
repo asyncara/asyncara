@@ -1,0 +1,234 @@
+<?php
+declare(strict_types=1);
+// Embedded with a pinned asset plan in publish-0.10.0.sh. No Python/build tools.
+final class ReleasePublisher
+{
+    private array $report = [];
+    private string $output;
+    private string $repo;
+    private array $plan;
+    private int $releaseId;
+
+    private function save(): void
+    {
+        $this->report['updatedAt'] = gmdate('c');
+        $json = json_encode($this->report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n";
+        file_put_contents($this->output.'/report.next', $json);
+        rename($this->output.'/report.next', $this->output.'/report.json');
+    }
+
+    private function command(array $argv, int $timeout = 300): string
+    {
+        $number = count($this->report['commands']);
+        $log = sprintf('command-%03d.log', $number);
+        $this->report['commands'][] = ['argv'=>$argv, 'status'=>'RUNNING', 'log'=>$log];
+        $this->save();
+        $p = proc_open($argv, [0=>['file','/dev/null','r'],1=>['pipe','w'],2=>['pipe','w']], $pipes);
+        if (!is_resource($p)) throw new RuntimeException('Cannot execute '.$argv[0]);
+        $state = proc_get_status($p);
+        $this->report['commands'][$number]['pid'] = $state['pid'];
+        $this->save();
+        stream_set_blocking($pipes[1], false); stream_set_blocking($pipes[2], false);
+        $stdout = ''; $stderr = ''; $start = hrtime(true); $exit = -1;
+        try {
+            do {
+                $stdout .= stream_get_contents($pipes[1], 65536);
+                $stderr .= stream_get_contents($pipes[2], 65536);
+                if (strlen($stdout)+strlen($stderr)>2097152) throw new RuntimeException('Command output exceeded limit');
+                if (!$state['running']) { $exit=$state['exitcode']; break; }
+                if ((hrtime(true)-$start)/1e9>$timeout) throw new RuntimeException('Command timed out: '.$argv[0]);
+                usleep(10000); $state=proc_get_status($p);
+            } while (true);
+        } finally {
+            if (proc_get_status($p)['running']) {
+                proc_terminate($p); usleep(20000);
+                if (proc_get_status($p)['running']) proc_terminate($p,9);
+            }
+            fclose($pipes[1]); fclose($pipes[2]); $closed=proc_close($p);
+            if ($exit<0) $exit=$closed;
+            file_put_contents($this->output.'/'.$log, $stdout."\n--- stderr ---\n".$stderr);
+            $this->report['commands'][$number]['status']='FINISHED';
+            $this->report['commands'][$number]['exit']=$exit;
+            $this->report['commands'][$number]['seconds']=(hrtime(true)-$start)/1e9;
+            $this->report['commands'][$number]['sha256']=hash_file('sha256',$this->output.'/'.$log);
+            $this->save();
+        }
+        if ($exit!==0) throw new RuntimeException(basename($argv[0]).' exited '.$exit.': '.substr($stderr.$stdout,-2500));
+        return $stdout;
+    }
+
+    private function api(string $path): array
+    {
+        $r=json_decode($this->command(['gh','api','--hostname','github.com','--method','GET','repos/'.$this->repo.'/'.$path]), true, 64, JSON_THROW_ON_ERROR);
+        if (!is_array($r)) throw new RuntimeException('Unexpected GitHub API response');
+        return $r;
+    }
+
+    private function assertSource(): void
+    {
+        $r=$this->api('git/ref/tags/'.$this->plan['tag']); $object=$r['object']??[];
+        for ($n=0; ($object['type']??null)==='tag' && $n<8; $n++) {
+            if (!preg_match('/\A[0-9a-f]{40}\z/', $object['sha']??'')) throw new RuntimeException('Invalid annotated tag');
+            $object=$this->api('git/tags/'.$object['sha'])['object']??[];
+        }
+        if (($object['type']??null)!=='commit' || ($object['sha']??null)!==$this->plan['sourceCommit']) {
+            throw new RuntimeException('Remote tag does not match the tested source; nothing will be rewritten');
+        }
+    }
+
+    private function release(): array
+    {
+        $r=$this->api('releases/tags/'.$this->plan['tag']);
+        if (($r['tag_name']??null)!==$this->plan['tag'] || !is_int($r['id']??null) || ($r['draft']??true)) {
+            throw new RuntimeException('An existing published (not draft) v0.10.0 Release is required');
+        }
+        if (isset($this->releaseId) && $this->releaseId!==$r['id']) throw new RuntimeException('Release identity changed during publication');
+        $this->releaseId=$r['id']; return $r;
+    }
+
+    private function assets(): array
+    {
+        $result=[];
+        for ($page=1;$page<=100;$page++) {
+            $batch=$this->api('releases/'.$this->releaseId.'/assets?per_page=100&page='.$page);
+            if (!array_is_list($batch)) throw new RuntimeException('Invalid asset list');
+            foreach ($batch as $asset) {
+                if (!is_string($asset['name']??null) || !is_int($asset['id']??null) || isset($result[$asset['name']])) throw new RuntimeException('Ambiguous release assets');
+                $result[$asset['name']]=$asset;
+            }
+            if (count($batch)<100) return $result;
+        }
+        throw new RuntimeException('Release asset listing exceeds limit');
+    }
+
+    private function checkFile(string $path, array $expected): void
+    {
+        if (is_link($path) || !is_file($path) || filesize($path)!==$expected['bytes'] || !hash_equals($expected['sha256'],hash_file('sha256',$path))) {
+            throw new RuntimeException('Size/SHA256 mismatch or missing file: '.$path);
+        }
+    }
+
+    private function downloadCheck(array $asset, array $expected, string $phase): void
+    {
+        if (($asset['state']??null)!=='uploaded' || ($asset['size']??null)!==$expected['bytes']) throw new RuntimeException('Existing asset is incomplete or has conflicting size: '.$expected['name']);
+        $dir=$this->output.'/'.$phase.'/'.$expected['name']; mkdir($dir,0700,true);
+        $this->command(['gh','release','download',$this->plan['tag'],'--repo','github.com/'.$this->repo,'--pattern',$expected['name'],'--dir',$dir]);
+        $this->checkFile($dir.'/'.$expected['name'],$expected);
+        $this->report[$phase][$expected['name']]=['id'=>$asset['id'],'sha256'=>$expected['sha256'],'bytes'=>$expected['bytes'],'status'=>'VERIFIED'];
+        $this->save();
+    }
+
+    public function run(array $argv, array $plan): int
+    {
+        $options=['assets'=>null,'output'=>null]; $mode='publish';
+        for ($n=1;$n<count($argv);$n++) {
+            if ($argv[$n]==='--help') {
+                echo "Usage: sh publish-0.10.0.sh [--assets DIRECTORY] [--output NEW_DIRECTORY] [--check-local | --dry-run]\nDefault: authenticate with gh, verify existing release, upload missing assets, re-download and verify. Never overwrites/deletes assets or changes tags.\n";
+                return 0;
+            }
+            if (in_array($argv[$n],['--check-local','--dry-run'],true)) {
+                if ($mode!=='publish') throw new InvalidArgumentException('Choose one inspection mode');
+                $mode=substr($argv[$n],2); continue;
+            }
+            $key=substr($argv[$n],2);
+            if (!str_starts_with($argv[$n],'--') || !array_key_exists($key,$options) || !isset($argv[$n+1])) throw new InvalidArgumentException('Unknown/incomplete option: '.$argv[$n]);
+            $options[$key]=$argv[++$n];
+        }
+        umask(0077);
+        $home=getenv('HOME'); if (!$home) throw new RuntimeException('HOME is required');
+        $this->output=$options['output']??$home.'/.local/state/asyncara/publication-'.gmdate('Ymd\THis\Z').'-'.bin2hex(random_bytes(4));
+        if (file_exists($this->output) || is_link($this->output) || !mkdir($this->output,0700,true)) throw new RuntimeException('Use a new output directory');
+        $this->output=realpath($this->output); $this->plan=$plan; $this->repo=$plan['repository'];
+        $this->report=['status'=>'RUNNING','mode'=>$mode,'repository'=>$this->repo,'tag'=>$plan['tag'],'sourceCommit'=>$plan['sourceCommit'],'startedAt'=>gmdate('c'),'commands'=>[],'uploaded'=>[],'missing'=>[]];
+        echo 'Report: '.$this->output."/report.json\n"; $this->save();
+        try {
+            $this->publish($options,$mode);
+            $this->save(); return 0;
+        } catch (Throwable $error) {
+            $this->report['status']='FAIL'; $this->report['error']=$error->getMessage(); $this->save();
+            fwrite(STDERR,"Publication stopped: ".$error->getMessage()."\nExisting assets were not overwritten or deleted. Successful partial uploads remain; rerun to resume.\nReport: ".$this->output."/report.json\n");
+            return 1;
+        }
+    }
+
+    private function publish(array $options, string $mode): void
+    {
+        $script=getenv('ASYNCARA_PUBLISH_SCRIPT_DIR');
+        if (!$script || count($this->plan['assets'])!==13) throw new RuntimeException('Run the generated publish-0.10.0.sh');
+        $names=[]; mkdir($this->output.'/snapshot',0700);
+        foreach ($this->plan['assets'] as $file) {
+            $name=$file['name'];
+            if (!preg_match('/\A[a-zA-Z0-9_.-]+\z/',$name) || isset($names[$name])) throw new RuntimeException('Invalid asset plan');
+            $names[$name]=true;
+            $paths=$options['assets']!==null?[$options['assets'].'/'.$name]:[$script.'/assets/'.$name,dirname($script,2).'/'.$file['localPath']];
+            $source=null; foreach($paths as $path) if (is_file($path)||is_link($path)) { $source=$path; break; }
+            if ($source===null) throw new RuntimeException('Missing local asset '.$name.'. Use --assets /path/to/complete/assets; no rebuilding or substitute download is attempted');
+            $this->checkFile($source,$file);
+            $dest=$this->output.'/snapshot/'.$name;
+            if (!copy($source,$dest)) throw new RuntimeException('Could not snapshot '.$name);
+            $this->checkFile($dest,$file);
+            $this->report['local'][$name]=['source'=>realpath($source),'sha256'=>$file['sha256'],'bytes'=>$file['bytes']];
+        }
+        echo "Local validation: 13/13 files match the tested fingerprints.\n"; $this->save();
+        if ($mode==='check-local') { $this->report['status']='LOCAL_VERIFIED'; echo "No GitHub access or upload performed.\n"; return; }
+        // Do not log credentials or permit inherited gh debug HTTP header dumps.
+        putenv('GH_DEBUG'); putenv('GH_HOST=github.com'); putenv('GH_PROMPT_DISABLED=1'); putenv('GH_PAGER=cat');
+        try { $this->command(['gh','auth','status','--hostname','github.com']); }
+        catch (Throwable $e) { throw new RuntimeException('Run gh auth login --hostname github.com, then rerun this script. '.$e->getMessage()); }
+        $repository=json_decode($this->command(['gh','api','--hostname','github.com','--method','GET','repos/'.$this->repo]),true,64,JSON_THROW_ON_ERROR);
+        if (($repository['full_name']??null)!==$this->repo || !is_bool($repository['private']??null)) throw new RuntimeException('Wrong or invalid repository identity');
+        $this->report['private']=$repository['private'];
+        $this->assertSource(); $release=$this->release(); $before=$this->assets();
+        $this->report['releaseId']=$this->releaseId;
+        $this->report['releaseUrl']='https://github.com/'.$this->repo.'/releases/tag/'.$this->plan['tag'];
+        $this->report['unmanagedAssets']=array_values(array_diff(array_keys($before),array_keys($names)));
+        foreach($this->plan['assets'] as $file) {
+            if (isset($before[$file['name']])) $this->downloadCheck($before[$file['name']],$file,'before');
+            else $this->report['missing'][]=$file['name'];
+        }
+        echo 'Existing matching files: '.(13-count($this->report['missing'])).'; missing: '.count($this->report['missing']).".\n";
+        $this->save();
+        if ($mode==='dry-run') { $this->report['status']='PLAN_VERIFIED'; echo "Dry run: no uploads performed.\n"; return; }
+        if (($release['immutable']??false) && $this->report['missing']) throw new RuntimeException('GitHub marks this Release immutable; adding assets is unavailable');
+        // Validate ALL existing collisions before the first mutation. Before each
+        // upload recheck tag/release identity and concurrent additions. No clobber.
+        foreach($this->plan['assets'] as $file) {
+            if (!in_array($file['name'],$this->report['missing'],true)) continue;
+            $this->assertSource(); $this->release(); $current=$this->assets();
+            if (isset($current[$file['name']])) { $this->downloadCheck($current[$file['name']],$file,'concurrent'); continue; }
+            $local=$this->output.'/snapshot/'.$file['name']; $this->checkFile($local,$file);
+            echo 'Uploading: '.$file['name']."\n";
+            $this->command(['gh','release','upload',$this->plan['tag'],'--repo','github.com/'.$this->repo,$local]);
+            $this->report['uploaded'][]=$file['name']; $this->save();
+        }
+        $this->assertSource(); $this->release(); $after=$this->assets();
+        foreach($this->plan['assets'] as $file) {
+            if (!isset($after[$file['name']])) throw new RuntimeException('Asset absent after upload: '.$file['name']);
+            $this->downloadCheck($after[$file['name']],$file,'after');
+        }
+        $this->report['authenticatedDownloadVerification']='PASS';
+        if ($repository['private']) {
+            $this->report['anonymousDownloadVerification']='UNAVAILABLE_PRIVATE_REPOSITORY';
+            $this->report['status']='PUBLISHED_VERIFIED_PRIVATE';
+            echo "SUCCESS: 13/13 release assets verified. Repository is private; anonymous curl cannot access it. Visibility was not changed. Use authenticated gh release download.\n";
+        } else {
+            mkdir($this->output.'/public',0700);
+            foreach($this->plan['assets'] as $file) {
+                $url='https://github.com/'.$this->repo.'/releases/download/'.$this->plan['tag'].'/'.$file['name'];
+                $path=$this->output.'/public/'.$file['name'];
+                $this->command(['curl','-q','--fail','--silent','--show-error','--location','--proto','=https','--proto-redir','=https','--connect-timeout','15','--max-time','180','--max-filesize',(string)$file['bytes'],'--output',$path,$url]);
+                $this->checkFile($path,$file);
+                $this->report['public'][$file['name']]=['sha256'=>$file['sha256'],'status'=>'VERIFIED']; $this->save();
+            }
+            $this->report['anonymousDownloadVerification']='PASS'; $this->report['status']='PUBLISHED_VERIFIED_PUBLIC';
+            echo "SUCCESS: 13/13 release assets verified through gh and anonymous HTTPS.\n";
+            echo 'curl -fsSL https://github.com/'.$this->repo.'/releases/download/'.$this->plan['tag']."/install.sh | sh\n";
+        }
+        echo "Bundles: Ubuntu 24.04 amd64, PHP 8.3.36 / 8.4.27 / 8.5.12 NTS. No new platform certification or PIE package publication.\n";
+    }
+}
+if (!defined('ASYNCARA_PUBLICATION_TEST')) {
+    set_error_handler(static function(int $severity,string $message,string $file,int $line):never { throw new ErrorException($message,0,$severity,$file,$line); });
+    try { exit((new ReleasePublisher())->run($argv,json_decode(ASYNCARA_PUBLICATION_PLAN,true,64,JSON_THROW_ON_ERROR))); }
+    catch(Throwable $e) { fwrite(STDERR,$e->getMessage()."\n"); exit(1); }
+}

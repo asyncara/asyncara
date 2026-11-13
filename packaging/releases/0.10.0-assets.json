@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "repository": "asyncara/asyncara",
+  "tag": "v0.10.0",
+  "sourceCommit": "4252f83f2cebaaaa2be150984e5ab0fa6d5b1862",
+  "assets": [
+    {
+      "name": "asyncara-0.10.0.tar.gz",
+      "sha256": "f698c948f558b6ea8104a109ccb40b4cbb769784c813d60698faaed9178a4498",
+      "bytes": 2787278,
+      "localPath": "build/releases/0.10.0/asyncara-0.10.0.tar.gz"
+    },
+    {
+      "name": "asyncara-0.10.0.tar.gz.sha256",
+      "sha256": "f5f8b0a31fe221888dee6c96cc35026475f2d80d4c849c8b44016605f3fb26f7",
+      "bytes": 89,
+      "localPath": "build/releases/0.10.0/asyncara-0.10.0.tar.gz.sha256"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz",
+      "sha256": "7f45e3ff3864b82845a2d5cd3dad689d85967e847aaf9e35adcd9c9a06bcc27b",
+      "bytes": 5888845,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "sha256": "39aa4be9d2ceedf50f5bb8d95c8e95165412fbab2f51145f7c81b1ebc99e43a5",
+      "bytes": 26758,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.manifest.json"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "sha256": "545c01bfd836d9d231c64640caf176d0768c41fe477c87d0cb2f6d2bd2da665a",
+      "bytes": 122,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.3.36-nts-ubuntu24.04-x86_64.tar.gz.sha256"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz",
+      "sha256": "9445e207bc8ee2ff0cfa429f30c4f42ad08112f661aca6da9b7b3a41d38f029d",
+      "bytes": 5889787,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "sha256": "3461511a79ecbdedce8bd6fcac35937cad195e8752a6c226f68e71f57f75595c",
+      "bytes": 26758,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.manifest.json"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "sha256": "42a6d0062dac77543c31c186d9b3a4f031c423f6ccd3b5273def4361bdb9d5db",
+      "bytes": 122,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.4.27-nts-ubuntu24.04-x86_64.tar.gz.sha256"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz",
+      "sha256": "487380ed374645d5057a363311c3c649f8fa5e79ba4f85f63c69d95dc7704430",
+      "bytes": 5889940,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.manifest.json",
+      "sha256": "bf841d92e8db650203e28f87a9854acff5198ee2166f502abee43e25879e31fb",
+      "bytes": 26758,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.manifest.json"
+    },
+    {
+      "name": "asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.sha256",
+      "sha256": "25958a84d6241668b656af98c504ef08f71da2a2586ab36e456c1e64bb36fea5",
+      "bytes": 122,
+      "localPath": "build/installer-20261113T210032Z/assets/asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz.sha256"
+    },
+    {
+      "name": "install.sh.sha256",
+      "sha256": "a44131627948d3c4ba436c3a77179bc8138b12dbf30127b3961b441701abca94",
+      "bytes": 77,
+      "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh.sha256"
+    },
+    {
+      "name": "install.sh",
+      "sha256": "4a24b404b3840a16c2e3079cf5395dbd5d879ea27296c231aa22f0be0f3cf1e7",
+      "bytes": 19900,
+      "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh"
+    }
+  ]
+}
