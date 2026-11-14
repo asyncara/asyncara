@@ -1,0 +1,53 @@
+name: Public binary installation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Runtime libraries on disposable runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4t64 libsqlite3-0 libpq5 libssl3t64 zlib1g libbrotli1 libzstd1
+      - name: Anonymous public install with forbidden-tool traps
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/public-install"
+          mkdir -p "$output/bin" "$output/forbidden"
+          php -v > "$output/php.txt"
+          for tool in gh python python3 gcc cc clang make cmake cargo rustc phpize php-config; do
+            printf '#!/bin/sh\necho forbidden-tool >&2\nexit 97\n' > "$output/forbidden/$tool"
+            chmod +x "$output/forbidden/$tool"
+          done
+          export PATH="$output/forbidden:$output/bin:$PATH"
+          base=https://github.com/asyncara/asyncara/releases/download/v0.10.0
+          curl -q -fsSL "$base/install.sh" -o "$output/install.sh"
+          curl -q -fsSL "$base/install.sh.sha256" -o "$output/install.sh.sha256"
+          (cd "$output"; sha256sum -c install.sh.sha256)
+          curl -q -fsSL "$base/install.sh" | sh -s -- --prefix "$output/runtime" --bin-dir "$output/bin" 2>&1 | tee "$output/install.log"
+          asyncara --check > "$output/check.json"
+          asyncara --version
+          php -n -r '$r=json_decode(file_get_contents($argv[1]),true,512,JSON_THROW_ON_ERROR); if($r["status"]!=="PASS") exit(1);' "$output/check.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-install-${{ matrix.runner }}-php${{ matrix.php }}
+          path: |
+            ${{ runner.temp }}/public-install/*.txt
+            ${{ runner.temp }}/public-install/*.log
+            ${{ runner.temp }}/public-install/*.json
+            ${{ runner.temp }}/public-install/install.sh*
