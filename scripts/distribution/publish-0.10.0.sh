@@ -81,15 +81,15 @@ const ASYNCARA_PUBLICATION_PLAN = <<<'ASYNCARA_ASSET_PLAN'
     },
     {
       "name": "install.sh.sha256",
-      "sha256": "a44131627948d3c4ba436c3a77179bc8138b12dbf30127b3961b441701abca94",
+      "sha256": "96d138917398f6bf2786e6af7cf985c4d2a518dbee891562348457b71f0367d0",
       "bytes": 77,
-      "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh.sha256"
+      "localPath": "scripts/install.sh.sha256"
     },
     {
       "name": "install.sh",
-      "sha256": "4a24b404b3840a16c2e3079cf5395dbd5d879ea27296c231aa22f0be0f3cf1e7",
-      "bytes": 19900,
-      "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh"
+      "sha256": "eda6a74e689e34871a0537d86aa68aac0f1c16799fc7a483997cb055f78859cd",
+      "bytes": 20279,
+      "localPath": "scripts/install.sh"
     }
   ],
   "tagCommit": "a7511fdde440ebe0f566661b9cd34145f5c5bd6c",

@@ -82,16 +82,25 @@ function removeOwned(string $path): void {
     foreach (new FilesystemIterator($path,FilesystemIterator::SKIP_DOTS) as $entry) removeOwned($entry->getPathname());
     rmdir($path);
 }
-function download(string $url,string $target,string $tag,string $name,bool $github): void {
+function download(string $url,string $target,string $name): void {
     $curl=executable('curl'); if (!$curl) fail('curl is required to download release assets');
     try {
-        command([$curl,'--fail','--silent','--show-error','--location','--proto','=https','--proto-redir','=https',
-            '--connect-timeout','15','--max-time','180','--max-filesize',(string)MAX_ARCHIVE,'--output',$target,$url],190);
+        // Ignore curlrc: installation is an anonymous HTTPS download, never a login flow.
+        $status=trim(command([$curl,'-q','--silent','--show-error','--location','--proto','=https','--proto-redir','=https',
+            '--connect-timeout','15','--max-time','180','--max-filesize',(string)MAX_ARCHIVE,
+            '--output',$target,'--write-out','%{http_code}',$url],190));
     } catch (RuntimeException $e) {
         if (is_file($target)) unlink($target);
-        $gh=$github ? executable('gh') : null;
-        if (!$gh) fail('No accessible matching release asset: '.$name.'. Private GitHub releases require gh auth login or --bundle; no source build fallback. '.$e->getMessage());
-        command([$gh,'release','download',$tag,'--repo',REPOSITORY,'--pattern',$name,'--dir',dirname($target)],190);
+        fail('Could not download '.$name.'. Check network access and TLS trust. '.$e->getMessage());
+    }
+    if ($status!=='200') {
+        if (is_file($target)) unlink($target);
+        if ($status==='404') {
+            if (str_ends_with($name,'.sha256')) fail('Checksum file is not published: '.$name.'. Installation stopped without loading the package.');
+            fail('No prebuilt package is published for the detected PHP and platform: '.$name.
+                '. See https://asyncara.github.io/docs/guide/operations/compatibility/ for available packages. No local build fallback.');
+        }
+        fail('Download failed for '.$name.' (HTTP '.$status.'). Check the release URL and retry when the service is available.');
     }
     if (!is_file($target) || filesize($target)>MAX_ARCHIVE) fail('Invalid or oversized download');
 }
@@ -214,10 +223,9 @@ function main(array $argv): void {
     } else {
         $base=getenv('ASYNCARA_RELEASE_BASE_URL')?:'https://github.com/'.REPOSITORY.'/releases/download/v'.$version;
         $url=parse_url($base);if(!$url || ($url['scheme']??null)!=='https' || !isset($url['host']) || isset($url['user'])||isset($url['pass'])||isset($url['query'])||isset($url['fragment']))fail('Release base URL must be HTTPS without credentials/query/fragment');
-        $github=$base==='https://github.com/'.REPOSITORY.'/releases/download/v'.$version;
         $archive=$temp.'/'.$name;$sidecar=$archive.'.sha256';
-        download(rtrim($base,'/').'/'.$name,$archive,'v'.$version,$name,$github);
-        download(rtrim($base,'/').'/'.$name.'.sha256',$sidecar,'v'.$version,$name.'.sha256',$github);
+        download(rtrim($base,'/').'/'.$name,$archive,$name);
+        download(rtrim($base,'/').'/'.$name.'.sha256',$sidecar,$name.'.sha256');
     }
     $checksum=readSmall($sidecar,4096);
     if(!preg_match('/\A([0-9a-f]{64})[ \t]+\*?'.preg_quote($name,'/').'\n?\z/',$checksum,$matches))fail('Invalid SHA256 sidecar');

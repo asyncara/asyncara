@@ -31,7 +31,7 @@ class Server(http.server.BaseHTTPRequestHandler):
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Server);context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);context.load_cert_chain(out/'cert',out/'key');server.socket=context.wrap_socket(server.socket,server_side=True)
 thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f'https://127.0.0.1:{server.server_port}/v0.10.0'
 traps=out/'forbidden';traps.mkdir();marker=out/'forbidden-invocations.log'
-for tool in ['python','python3','gcc','cc','clang','make','cmake','cargo','rustc','phpize','php-config']:
+for tool in ['gh','python','python3','gcc','cc','clang','make','cmake','cargo','rustc','phpize','php-config']:
  f=traps/tool;f.write_text('#!/bin/sh\necho "$0" >> '+shlex.quote(str(marker))+'\nexit 97\n');f.chmod(0o755)
 results=[]
 try:
@@ -49,7 +49,7 @@ try:
   (out/(mode+'.log')).write_bytes(stdout+stderr+curl_stderr)
   assert curl_code==0,curl_stderr
   assert hashlib.sha256(ini.read_bytes()).hexdigest()==before
-  assert not marker.exists(),'Installation invoked Python or a build tool'
+  assert not marker.exists(),'Installation invoked gh, Python or a build tool'
   if mode=='good':
    assert installer.returncode==0,stderr
    executable=shutil.which('asyncara',path=env['PATH']);assert executable==str(home/'bin/asyncara')
@@ -58,7 +58,7 @@ try:
   else:
    assert installer.returncode!=0
    assert not (home/'bin/asyncara').exists()
-   assert (b'SHA256 mismatch' if mode=='bad-sha' else b'No accessible matching') in stderr,stderr
+   assert (b'SHA256 mismatch' if mode=='bad-sha' else b'No prebuilt package') in stderr,stderr
   results.append({'case':mode,'expected':'PASS'if mode=='good'else'REJECT','exit':installer.returncode,'iniUnchanged':True,'log':str(out/(mode+'.log'))})
  # An interrupted download must not invoke the function holding the installer.
  incomplete=script[:len(script)//2];r=subprocess.run(['/bin/sh'],input=incomplete,capture_output=True,env=env,timeout=10);assert r.returncode!=0

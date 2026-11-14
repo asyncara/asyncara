@@ -19,6 +19,14 @@ FILES = ['extension/asyncara.so','lib/libasyncara-mariadb.so.3','runtime/autoloa
          'runtime/vendor/autoload.php','runtime/scripts/check-install.php','runtime/tests/release/smoke.php','runtime/LICENSE']
 
 class Installer(unittest.TestCase):
+    def test_download_failure_never_invokes_gh(self):
+        for status in [401, 403, 404, 500]:
+            error = i.urllib.error.HTTPError('https://github.com/asyncara/asyncara', status, 'fixture', {}, None)
+            with self.subTest(status=status), patch.object(i.urllib.request, 'urlopen', side_effect=error), patch.object(i, 'run') as run:
+                with self.assertRaisesRegex(RuntimeError, 'No prebuilt package' if status == 404 else f'HTTP {status}'):
+                    i.download('0.10.0', 'package.tar.gz', self.root)
+                run.assert_not_called()
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name); self.dest=self.root/'extract'; self.dest.mkdir()
