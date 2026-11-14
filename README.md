@@ -7,13 +7,13 @@ files, networking and parallel process jobs. Version **0.10.0 is EXPERIMENTAL**:
 it is an initial usable release, not a production-readiness guarantee.
 
 **[Developer documentation](https://asyncara.github.io/docs/)** ·
-**[العربية](https://asyncara.github.io/docs/ar/)** ·
 **[Installation](https://asyncara.github.io/docs/guide/installation/)** ·
 **[Runnable examples](https://github.com/asyncara/docs/tree/main/examples)**
 
 ## Install a prebuilt bundle
 
-For a published matching Linux/PHP package:
+Public v0.10.0 downloads are currently unavailable. Once the matching package is
+available on the release page, install with:
 
 ```sh
 curl -fsSL https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh | sh
@@ -28,19 +28,13 @@ printed PATH instruction when necessary. A missing supported tuple is an error,
 not an implicit source build.
 
 The initial Linux bundles target Ubuntu 24.04 x86_64 and PHP 8.3.36, 8.4.27 or
-8.5.12 NTS. Android 64-bit preview assets have separate requirements and a later
-source identity; see the [compatibility matrix](https://asyncara.github.io/docs/guide/operations/compatibility/).
-Windows and 32-bit packages are deferred. PIE metadata exists, but a complete
-`pie install asyncara/asyncara` installation is not yet verified.
+8.5.12 NTS. Android 64-bit preview packages have separate requirements; see the [compatibility matrix](https://asyncara.github.io/docs/guide/operations/compatibility/).
+Windows and 32-bit packages are unavailable. PIE is not a complete supported
+installation method for v0.10.0; use the package containing the extension, PHP
+library and launcher.
 
-Anonymous downloads require public release access. For an authorized private
-repository installation:
-
-```sh
-gh release download v0.10.0 --repo asyncara/asyncara --pattern 'install.sh*'
-sha256sum -c install.sh.sha256
-sh install.sh
-```
+If you already have a matching package and installer, follow the
+[offline installation steps](https://asyncara.github.io/docs/guide/installation/).
 
 ## Start a server
 
@@ -110,14 +104,10 @@ Tests, deterministic local fixtures, allocation audits and CI remain in this
 repository. Developer guides live exclusively in
 [asyncara/docs](https://github.com/asyncara/docs).
 
-## Branches and release identity
+## Development branches
 
-`x.0` is the default release line; `x.0-dev` carries subsequent development.
-The public Git history was cleaned of internal engineering reports. Existing
-release assets retain their original source manifests and checksums; a rewritten
-Git tag does not rebuild or change those assets. Short validation gates are not
-long-duration endurance certification. Historical FPM reliability and memory
-investigation limitations are not erased by documentation cleanup.
+`x.0` is the default release line; `x.0-dev` contains ongoing development.
+For application setup and examples, use the [developer documentation](https://asyncara.github.io/docs/).
 
 ## License
 
