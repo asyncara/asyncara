@@ -2,7 +2,7 @@ name: Android Hyper native builds
 on:
   push:
     branches: ['platform/android-windows-*']
-    paths: ['ext/**', 'scripts/platforms/android*.sh', 'scripts/platforms/package-android.sh', 'scripts/platforms/notices.php', '.github/workflows/android-hyper-preview.yml']
+    paths: ['ext/**', '!ext/compat/windows/**', '!ext/platform_windows.c', 'scripts/platforms/android*.sh', 'scripts/platforms/package-android.sh', 'scripts/platforms/notices.php', '.github/workflows/android-hyper-preview.yml']
   workflow_dispatch:
 permissions:
   contents: read

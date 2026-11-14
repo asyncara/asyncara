@@ -24,7 +24,9 @@ int main(void) {
     snprintf(renamed,sizeof(renamed),"asyncara-native-%lu.done",GetCurrentProcessId());
     for(int i=0;i<100;i++){
         int dir=ar_fs_open(directory,O_RDONLY|O_DIRECTORY);assert(dir>=0);
-        int fd=ar_fs_openat(dir,child,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);assert(fd>=0);
+        int fd=ar_fs_openat(dir,child,O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);
+        if(fd<0)fprintf(stderr,"create iteration %d: errno=%d WinError=%lu\n",i,errno,GetLastError());
+        assert(fd>=0);
         assert(_write(fd,"safe",4)==4);assert(ar_fs_sync(fd)==0);assert(_close(fd)==0);
         assert(ar_fs_renameat(dir,child,dir,renamed)==0);
         fd=ar_fs_openat(dir,renamed,O_RDONLY|O_NOFOLLOW);assert(fd>=0);

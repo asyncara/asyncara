@@ -16,6 +16,7 @@
 ar_ssize_t ar_fs_read(int fd,void *p,size_t n) {return _read(fd,p,(unsigned)(n>INT_MAX?INT_MAX:n));}
 ar_ssize_t ar_fs_write(int fd,const void *p,size_t n) {return _write(fd,p,(unsigned)(n>INT_MAX?INT_MAX:n));}
 static int win_error(DWORD e) {
+    SetLastError(e);
     switch(e) {
     case ERROR_FILE_NOT_FOUND:case ERROR_PATH_NOT_FOUND:errno=ENOENT;break;
     case ERROR_ACCESS_DENIED:case ERROR_SHARING_VIOLATION:errno=EACCES;break;
@@ -59,7 +60,7 @@ int ar_fs_open(const char *path,int flags,...) {
      * block at open before the regular-file guard. Reject them explicitly. */
     if(!strncmp(path,"\\\\.\\",4)||!strncmp(path,"\\\\?\\GLOBALROOT",14)){errno=EINVAL;return -1;}
     wchar_t *p=wide(path);if(!p)return -1;
-    DWORD access=(flags&O_RDWR)?GENERIC_READ|GENERIC_WRITE:((flags&O_WRONLY)?GENERIC_WRITE:GENERIC_READ);
+    DWORD access=FILE_READ_ATTRIBUTES|((flags&O_RDWR)?GENERIC_READ|GENERIC_WRITE:((flags&O_WRONLY)?GENERIC_WRITE:GENERIC_READ));
     DWORD creation=(flags&O_CREAT)?((flags&O_EXCL)?CREATE_NEW:((flags&O_TRUNC)?CREATE_ALWAYS:OPEN_ALWAYS)):((flags&O_TRUNC)?TRUNCATE_EXISTING:OPEN_EXISTING);
     DWORD attributes=FILE_ATTRIBUTE_NORMAL|((flags&O_DIRECTORY)?FILE_FLAG_BACKUP_SEMANTICS:0)|((flags&O_NOFOLLOW)?FILE_FLAG_OPEN_REPARSE_POINT:0);
     PSECURITY_DESCRIPTOR sd=private_acl(flags,mode);if(sd==(void *)-1){free(p);return -1;}
@@ -90,7 +91,7 @@ static HANDLE relative_open(int directory,const char *name,ACCESS_MASK access,UL
 }
 int ar_fs_openat(int directory,const char *name,int flags,...) {
     int mode=0666;if(flags&O_CREAT){va_list ap;va_start(ap,flags);mode=va_arg(ap,int);va_end(ap);}
-    ACCESS_MASK access=(flags&O_RDWR)?GENERIC_READ|GENERIC_WRITE:((flags&O_WRONLY)?GENERIC_WRITE:GENERIC_READ);
+    ACCESS_MASK access=FILE_READ_ATTRIBUTES|((flags&O_RDWR)?GENERIC_READ|GENERIC_WRITE:((flags&O_WRONLY)?GENERIC_WRITE:GENERIC_READ));
     ULONG disposition=(flags&O_CREAT)?((flags&O_EXCL)?FILE_CREATE:FILE_OPEN_IF):FILE_OPEN;
     PSECURITY_DESCRIPTOR sd=private_acl(flags,mode);if(sd==(void *)-1)return -1;
     HANDLE h=relative_open(directory,name,access,disposition,FILE_NON_DIRECTORY_FILE|FILE_OPEN_REPARSE_POINT,sd);
