@@ -1,0 +1,1402 @@
+{
+  "schema": 1,
+  "release": "v0.10.0",
+  "asOf": "2026-11-14",
+  "classification": "EXPERIMENTAL",
+  "runtimeSource": "a7511fdde440ebe0f566661b9cd34145f5c5bd6c",
+  "os": "Linux",
+  "libc": "glibc >=2.38",
+  "phpBuild": "64-bit NTS non-debug; exact PHP SDK per package",
+  "phpVersions": [
+    "8.3.0",
+    "8.3.1",
+    "8.3.2",
+    "8.3.3",
+    "8.3.4",
+    "8.3.6",
+    "8.3.7",
+    "8.3.8",
+    "8.3.9",
+    "8.3.10",
+    "8.3.11",
+    "8.3.12",
+    "8.3.13",
+    "8.3.14",
+    "8.3.15",
+    "8.3.16",
+    "8.3.17",
+    "8.3.19",
+    "8.3.20",
+    "8.3.21",
+    "8.3.22",
+    "8.3.23",
+    "8.3.24",
+    "8.3.25",
+    "8.3.26",
+    "8.3.27",
+    "8.3.28",
+    "8.3.29",
+    "8.3.30",
+    "8.3.31",
+    "8.3.32",
+    "8.3.33",
+    "8.3.35",
+    "8.3.36",
+    "8.4.1",
+    "8.4.2",
+    "8.4.3",
+    "8.4.4",
+    "8.4.5",
+    "8.4.6",
+    "8.4.7",
+    "8.4.8",
+    "8.4.10",
+    "8.4.11",
+    "8.4.12",
+    "8.4.13",
+    "8.4.14",
+    "8.4.15",
+    "8.4.16",
+    "8.4.17",
+    "8.4.18",
+    "8.4.19",
+    "8.4.20",
+    "8.4.21",
+    "8.4.22",
+    "8.4.23",
+    "8.4.24",
+    "8.4.25",
+    "8.4.26",
+    "8.4.27",
+    "8.5.0",
+    "8.5.1",
+    "8.5.2",
+    "8.5.3",
+    "8.5.4",
+    "8.5.5",
+    "8.5.6",
+    "8.5.7",
+    "8.5.8",
+    "8.5.9",
+    "8.5.10",
+    "8.5.11",
+    "8.5.12"
+  ],
+  "scope": "Installation, task/file/SQLite smoke, epoll/poll App routes and curl/Hyper HTTP; not universal OS or production certification. Future PHP versions need separate matching builds.",
+  "bundles": [
+    {
+      "php": "8.3.0",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.0-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618833,
+      "sha256": "8ff61cb7452aa7f1017d50b92352c218d99ac04e405d035f68632eb27a8a6bf7",
+      "moduleSha256": "fb8f3996ae6f47b40f0cf0886b6bd8674055e2061d35ffbac74ac8600b2d83c3",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.3.0",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.0-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802128,
+      "sha256": "8ae189d5eb815f56e5dea139ee03af634748facd5cde357e05ef796bba22299f",
+      "moduleSha256": "af342bf6ac34be4eb8c72007363c9626079e05c66c265675c1d83aacccf6d71a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.3.1",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.1-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618824,
+      "sha256": "f6376d4be865e688b26d1bf8a4d89da74d072843dd247764bc02d06bd4eaaf2a",
+      "moduleSha256": "09a9d94dcdb714fd928a1f9f3b7c5b4629f75b72f452d2ac2519cfb3f511eb1a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.1",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.1-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802125,
+      "sha256": "bc7dd1d7fa8ebc6dda5b585659a76bc0995e9ecbd435219e6d44afe7d58f9fba",
+      "moduleSha256": "b153c188d07b3bd9d3a1af5cb2c664fc12047072665d2609dcc04f01f89a42c8",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.2",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.2-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618828,
+      "sha256": "230028b240e3e6e38a52d7322e711ab4507b415bd620b395c1f4f6d4af20b2cf",
+      "moduleSha256": "7df4c294de6ccaff2ce5c64a19f905bd8bc3021e41d3f6724328dfa7a7a44918",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.2",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.2-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802128,
+      "sha256": "eee7b810cdc12031c8c3d54ec0670755cd5828720d91668d7a92a4128a337872",
+      "moduleSha256": "3e854cb78b8e678b93f3509f6b3f47767d1fc58ffe5391b5d46cfb5e51007cf7",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.3",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.3-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618833,
+      "sha256": "a96c812ddc908c3d17c813d623ac068ed92cd49a2a756ef5fe14145c090bfdd0",
+      "moduleSha256": "83a0dc597ca53f95c95cc963414a614f932c9acdcb6d9a5aafff0fe6caff1134",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.3",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.3-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802130,
+      "sha256": "ebbfa4b41f069d8612218d62236c89c575509fde7e703afc40ba131291b660c1",
+      "moduleSha256": "77a2260f42b4757fbee03187a574f634ef6f493e2a5ff998ee7c9369d5e84cf3",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.4",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.4-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618823,
+      "sha256": "6e96e5f7419a8f7371d5cbb7e2921a8c31dc3fae34bd2b67642dc82ef7ab82fe",
+      "moduleSha256": "4c6aea3f0ae032129cd7da581e63dd68c9967c785843776258fb035f488951ea",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.4",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.4-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802127,
+      "sha256": "8971e684f024e0696706c08060fc405bc722e07635ee4519b4fb12186beb4a13",
+      "moduleSha256": "b7ee47e0e998282d80967859ee093866b3a1b320389aba9c009a8a5e1b970f5a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.6",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.6-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618832,
+      "sha256": "0181d5d7d44229848d87eb1bd81417dfb97d7debe9fa6acca1b3dd4e6f4c9b4f",
+      "moduleSha256": "d0ac452407a109e787f498ea67bdd87cd8f1546da2b277603fc05a9053a63868",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.6",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.6-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802129,
+      "sha256": "4eb0e85f7b3266999f9db24bedca0fe522761779b9721db0630945bf20692d30",
+      "moduleSha256": "4245ca29134a9118e03ead7c26401af57f655548e2f13402e2a90ce70c32c970",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.7",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.7-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618824,
+      "sha256": "e7e88ef84cad6599b6a8ea4500a3089ea33d1d314ec1e69696e55c8a43da67a2",
+      "moduleSha256": "4ae54ca112fdac1d5027f23d412e830f56673a1041e639ca2f670c930cf2765b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.7",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.7-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802131,
+      "sha256": "9a7e315b56f06491142e87937121ea08b6911bce9513995c19161419b0566fb3",
+      "moduleSha256": "3f3f01b34378ed50ce5fae170466cf41ea416c4cda544a460a76b172ffb18253",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.8",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.8-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618825,
+      "sha256": "f555b725cb089f0d9a61884b972f48923d6d853accef301af6ab7e8201b762ac",
+      "moduleSha256": "2aa8681fe92afd1032dc58553bcf120daf2df7fa9db71200153f380eed9ca82d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.8",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.8-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802129,
+      "sha256": "6b4e779af98baa3b6b3f5f98a5434f414230ba1c459aebff4e03b9cef222c3d2",
+      "moduleSha256": "35049a51fa9336522cc4e9afa080687f77955874154909e6a5e4a486d81cb920",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.9",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.9-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618828,
+      "sha256": "9cbfd20e60c2ba09fe5e7efcf0d643c8615e7e983773a1548f21ec4378ef7430",
+      "moduleSha256": "e868613c6ea57f4b92f8a96118e3d70a1200d57d5772bd9645b70b75017eb08d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.9",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.9-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802131,
+      "sha256": "de601c2b0adfb13c84d2a51bcd1daa817ef784f610cd6ef8007d1152e61589c1",
+      "moduleSha256": "64eb9a0cb54f87f16ed672d601ea488ef38685bed66c8cbced475b7f077c4b72",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.10",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.10-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618820,
+      "sha256": "0ecf9a4487b07ab49f84d18c6c8c9340c849af2496cfc5a8ecbb7cff64a81592",
+      "moduleSha256": "5fd59bbf7833dd0800d696ff2803516e584e6d7da41aaebfab1d49356c2e678b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.10",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.10-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "eff2aa8bd298a42093625c56d33e02b6d4c67f326c6fc62e85ca6ed106b80805",
+      "moduleSha256": "3bc2ee1b1f9c19b8148cc89ba118ebdc50c7dcd7e511eed1868f9160f0fb9b9b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.11",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.11-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618828,
+      "sha256": "5fe608786054a384bfa712888db07fd147154ad9f8d7cd59573a75a6752237db",
+      "moduleSha256": "f257ab0a010c08c9de5b5d5b73a1937041dc482ac69708c6437a2cc0b86b79e1",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.11",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.11-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802155,
+      "sha256": "bca1e31ae2abe02b236719103818cba9f273b00ecaefb437303438b2891dff66",
+      "moduleSha256": "0d603e8bd70f803cc259602278254a81f4cc7f4599e01968430803164c22122c",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.12",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.12-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618828,
+      "sha256": "55c4e9503aed3179e678ad1fe8508d513fcb90e97a59a1e01c9105af01ed6cbb",
+      "moduleSha256": "f02c27bc72451f65b98aa6b8784dd8c76feda0a9e4152d48630eb12e6ee96353",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.12",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.12-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802157,
+      "sha256": "c0ebdb70abfcd20d4f600625425d16bffc8499b911e9733c003b8c03a9d13abc",
+      "moduleSha256": "b63c2a3ba9bfdaa2bb02e2ba9e63042e6c31feec6ed378cad571cfea1c036b34",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.13",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.13-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618831,
+      "sha256": "b23617bc752f7283453c398e724b1697c65f76db7b8ba556c112ebd5d1ee666a",
+      "moduleSha256": "714cc6ed69bdee7e0a7ae235359be1e379498981db40c7786376b82b7fe41e48",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.13",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.13-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802148,
+      "sha256": "af0b28edf895952189f69d6164d06fe16f5f468a7ca9f2fa65d831a51fd70f25",
+      "moduleSha256": "9ff6a66b0204fe47c0c6351e31fec7accb1c80fa882f181f9d0e55c6766dcf0a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.14",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.14-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618836,
+      "sha256": "3a160365df9f116151d7a81ccea56377338c054cbd48d6e0b6e9eda60b88fb8f",
+      "moduleSha256": "6a8bc844eca076240c54743839ae4ca3e3695a3ee5db986622e73b09b28bbe20",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.14",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.14-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802155,
+      "sha256": "f6a4250881c7f19d5a5c1cbfe64ab66f8ae908421b38be54c06c834efd6efa34",
+      "moduleSha256": "cdb7f35d23898a573d1603497c23d442622b2ede4eb7a81d2bfe7ca455dbeaab",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.15",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.15-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618839,
+      "sha256": "0c2c6725fa204f9f9ac2440f16cc26534b2e409e7084931cedf9e063606472d5",
+      "moduleSha256": "1f361e4c0b91aad4b3fd176333c782374b1d556b9ac0434662f5d058aaf3db35",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.15",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.15-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "3a176491e7d29056e59a241b365747c10217997165fd1f79a76d1a4d50e51d4f",
+      "moduleSha256": "b516731cf688236fcc287c5d7123aa2096f2f65b23dcebe9cbb9eb4f73054064",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.16",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.16-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618840,
+      "sha256": "77b99ff9b1b790f7730068589b31aec1ebca6036de7717b9dadf035f9e618e2a",
+      "moduleSha256": "0aef8df335d0a8d0698c34b2afe2e8c36622b68c9673ac71b5e5728a1c6f73b0",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.16",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.16-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802157,
+      "sha256": "da5b0bfdb6b779d508780142b1aad9b38981ea2ba3359701af8631b7e424e743",
+      "moduleSha256": "9c1556161da4d202b8e643dfe6e0c156256f216b2daf0449852dd410b84651a8",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.17",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.17-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618845,
+      "sha256": "5f2f17dd59829da381264050432c965666fd54a26189cd56afe5f7222844e208",
+      "moduleSha256": "2b02f7132be52d8be270b3e4bcee0e222bf21ad8d1f47ba72e4db55bda7fbde1",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.17",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.17-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802154,
+      "sha256": "c017d3e9390f9428b9db251755888e448f70936c7e7fb65823ec7cb575dc4a3f",
+      "moduleSha256": "ab3ad7e03a5572d5105c50b7a883fed1aae76a41cb6952cf8e751f6112fa4548",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.19",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.19-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618845,
+      "sha256": "65308c48300789006db16277538fa8eeb7e4e2cea9ae000ce2e6825b3aebd007",
+      "moduleSha256": "da0a43861ffa9c222fd82dea0a2e08451d95db8f5c34f12250634f4c41d413e2",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.19",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.19-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802153,
+      "sha256": "ac30a2b3351b9bbcbbb31a66d463be6c9c86ae47f91d1de43af2b9f1035b858d",
+      "moduleSha256": "1f43babbe3011f5048af45b8d3d1bcc1fe046ffa49411218ebd8f85eb0f294ff",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.20",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.20-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618847,
+      "sha256": "0b637fc2129129f6a045664913e20a0e5771e2f95bb7e745b0d5f6dfa452f8c6",
+      "moduleSha256": "2727780972ee76b9295c7a4eadc1eff00a46250f634d4f5aaf5636353240fa8d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.20",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.20-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "57ece61ed90de89c0534c49606c25f3c600fac7bd17f022c8f10a0aa1e9bb1bf",
+      "moduleSha256": "ed978ce60de6360b56d48fe54dad537394d5aa7d7b48cc5c24d805d3ca88b11a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.21",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.21-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618845,
+      "sha256": "ab68922b3f01d8d58dc7751b402cd99142ce3c643b5540ff5bfed92129e71314",
+      "moduleSha256": "ff10c99d4d7d074d7de55b3c8109177f275af1d20ec2f126a035656040e667ab",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.21",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.21-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802151,
+      "sha256": "d77d9b1d9ed6d4d612e45e2b9a7dd13d49c0bfcfa15a71dcff2a8e5e63dfacd8",
+      "moduleSha256": "87a7194a2e7ae3f256f7e14b5088b0506ad684c8abae8b878fed1555fbd0b61f",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.22",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.22-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618847,
+      "sha256": "a2ec7607edbf4aa75f4cad00a1b0c20950e48b4875bd25e49fc8885ce50fc8d3",
+      "moduleSha256": "70a254f693ad1508ae3d1d02d2006cdc5b953dbc71756dca5d96c16f5233cc85",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.22",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.22-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802158,
+      "sha256": "f7219cd5595f4068a444de577e9051658004ad15fddd7ef8e92e62c2e1982de6",
+      "moduleSha256": "e0cb2676b87766c5dc84d2fbff01973798ba6b51e263ec16e713c26b5bcfdb88",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.23",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.23-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618848,
+      "sha256": "fc11bee020abad66c759a12adc9829bc39950fda8086a4570d4e4ced03ca1136",
+      "moduleSha256": "af15ef294e32e6a9ae270db843c5fa7e6867e4960cb0e9ce84b4d592bfb99a8d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.23",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.23-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802158,
+      "sha256": "42dff18d59da683671be8259161e62ba2e89f9179974182a291029d6d18e5d3c",
+      "moduleSha256": "2b4f34de9a8559ea5601ad6f00c68e3faf391fd58af5fbdb3102bdc62e4e3371",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.24",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.24-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618761,
+      "sha256": "c58b42f8de9f11705a294e5c151c873dac19cf121fda09209940d9bc7c1f13d3",
+      "moduleSha256": "f9f4687beaa4696443ef048d0506f3e5b95682e3e7a118ea57d45921bdc3af5e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.24",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.24-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802146,
+      "sha256": "4abd907b9252f029bebe4975db1fe484386ae6b0388dbdd56a375cda67164a7d",
+      "moduleSha256": "e2be559caee18251cdb0cc5e7cba6e979c5b5428af949b0163388e5c8b3eea49",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.25",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.25-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618762,
+      "sha256": "3483cabe312efe2a06ab9e1b1b0804f9bbc3d6b621f16db5895a03379a7e1756",
+      "moduleSha256": "4049e59d2922f21d89cfffd4d258c7cccfb30d02136fef92260ebc54f404ac07",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.25",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.25-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802156,
+      "sha256": "0a5892e2cb1b6cb8121ea650b9103f6239e3e3c3cbb745e52d465d8840b12a81",
+      "moduleSha256": "706311430d1b723f2eb193532e55f998899621b71e8bc30121d02bb5d515f359",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.26",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.26-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618763,
+      "sha256": "8e56b43ad3008864150e13b9cd521b7fb64c4c6a39d7e45772286d3814fa0b2d",
+      "moduleSha256": "44b42a00c544892b27fe059f442c1bbe635ba50706e37c803043d897bfe4f69e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.26",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.26-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802154,
+      "sha256": "73a1e7260cc066eb071b52f2798887cff9c559cca2e9ffb5cb4e427259d1c3e7",
+      "moduleSha256": "5aba19430445f68995c992a80fb78c7dfca26e0fd6886cbe6a3a91cedbab8978",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.27",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.27-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618759,
+      "sha256": "b03dc8ea5c319606f50fad430b7e1854c562c2ac863edee54bc5a59e486a2b0c",
+      "moduleSha256": "999ec7cd4792d1562314b217005e2959b8af72ee5c862cca3ea7495bb3693709",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.27",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.27-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802159,
+      "sha256": "952da3937e49f65632cbd332c5458894e9358b923b80d5d1843be8281464ab45",
+      "moduleSha256": "a8843b79974387f28221779b16f314abd47a8ef8f261797e1b65a978bf45ea78",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.28",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.28-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618766,
+      "sha256": "fd78e8c64cf4fe707485b9c3ce3cf69cd0acecfb6547882d4fe067424a555ed8",
+      "moduleSha256": "5d5735fdc773307914e96b965f2c75e09d77f8bc5d5578bf818723540824cb00",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.28",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.28-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802152,
+      "sha256": "6c16afd54480681d66da337169eba328d0bc895a35018b4fd7e4d6504c7219f3",
+      "moduleSha256": "cdfd341327bbba2b63b0b2e46f901c70e19dc8b61db5bd284b24fb9bb62f5b0e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.29",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.29-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618763,
+      "sha256": "c4aeed3d3c9c432e60ccaeb87a4de81c27cb962f4b46d853ceb3eb2df5c33f12",
+      "moduleSha256": "3657cbf2a28fea124311868478e0b7b884d6f9499850c4b0625bee7abd11adec",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.29",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.29-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802155,
+      "sha256": "8e30e1204ca03f007b3bf9ae00fb49bcdc06abbececcf1b2af9b17f8442cf710",
+      "moduleSha256": "b4f520d2ddfc08f0872971019f616560526bcf6d69b829e758054a5bc312b5b7",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.30",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.30-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618758,
+      "sha256": "c79f04949b608c71461242ec1a5d78bedb7d7b61139b1f90c59557215e02b764",
+      "moduleSha256": "0b745878f19f8f0cfd838653ddcb272cd7693b9d6f3a479753749b9c8de8862d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.30",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.30-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "6e31f11c65cf5609975faf2071d38bc7b5ec63ce623755b44734ce2f83df22e2",
+      "moduleSha256": "4d6df53c9461bfd6d13a06c5823658590a21b9399e306f93dd2a3566f1af70ff",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.31",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.31-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618764,
+      "sha256": "89bb6c32ab268d5be761c72868360c4c405b9fc43185b484c3ecc7003737253a",
+      "moduleSha256": "8946cbabb76f3270e611a9d50d424f7e4c78e02436d40dd30fbf719ec87a99b1",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.31",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.31-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "2400b01503428886cca3ef5a31c7bcadc2c9b31b078e97128772f64ca5c26727",
+      "moduleSha256": "87e226ae658196b8ee672f6c6bf5b7bee68a5548963578c153252ba96d8bc555",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.32",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.32-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618760,
+      "sha256": "672208e8b4f1d332065610d5670def8947fb89fc1596e82dc1e47a7d75077ec8",
+      "moduleSha256": "6b54c9914f812a731c28d1508898c4fe2bee8946f912866a8b1471e93a9a81a4",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.32",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.32-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "dbc705af4fe5536f3e2fe638a319c8f1e6c6c3332929ed742ab0ffa3f0b72e74",
+      "moduleSha256": "a33b154c4c9ded3d69db3bb47c41f7c72db8413f866551befb22d96f3ad9f89b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.33",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.33-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618766,
+      "sha256": "9e9008332170492664cd0fc6824c72c431ca2fdaf42ca2750798db4dd619a155",
+      "moduleSha256": "0b1bf82a742224bcf88d8217eb8759efc16d1ce8c8571edaa89eb9631d16ccf2",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.33",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.33-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802153,
+      "sha256": "6f17a4f2e8b1b199cb03f3d6fd449ea3855c0a41a25ad16982142b449551fb90",
+      "moduleSha256": "9c27e03e755b156575dfcdd7ec158733dbc0ebd3196c20564a90d1e6da47540d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.35",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.35-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5618758,
+      "sha256": "521b874f2d65691a37c143b5be3c1b726010521a73131c3d8fd4c8eab0ca3eaf",
+      "moduleSha256": "739f331f1a86d1bb0d0aad363b958270cbf582e997c870213d53385cf97cafd8",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.35",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.35-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5802150,
+      "sha256": "887749f078b8eb13d05c56b05445044109f0adf07534955b11b64d581f4c0e2a",
+      "moduleSha256": "9d8a4472a49607a6018de823a4efddf073c4fa96376b872a1eff4db8f602d1f8",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.3.36",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.3.36-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5619639,
+      "sha256": "08963ca3c69e13aecfbb751da824e7319e2a324c9124e93439198ec67147e21e",
+      "moduleSha256": "27bd8e696c79c45555f4c3df5890f172c543d12e7c70d1e614f7fe71147e27c4",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    },
+    {
+      "php": "8.3.36",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.3.36-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5804647,
+      "sha256": "91f7eba82ef8387f8955c9bbb2d1694fcc3d795734e5b2e52b9881bb87671aeb",
+      "moduleSha256": "4460adb0e7ffc9cc451d12c3d77f0359a714807fda8c1e7023aabcb91927a53d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    },
+    {
+      "php": "8.4.1",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.1-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621813,
+      "sha256": "09db56ffcdc54183ae381d76c9ab2aeabdc0d5d769ffadd7a06481c7608b319f",
+      "moduleSha256": "14341e4448ae1ba2f337f5640fba438613d6dc231fd79b95d3f49f5ea44cebb5",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.1",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.1-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808333,
+      "sha256": "46637f51c799bd1ba60874fd54a9d7c288d3eff2815984d4adea5ecd79529800",
+      "moduleSha256": "ab252357567794e0de019a2a80a90ed064c54f8b996aa0890a5e0011b63ed533",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.2",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.2-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621826,
+      "sha256": "883504d264d22ba136f99424caaee5be1e5c961c06afb860421fbc5aa5ab5c37",
+      "moduleSha256": "716737ae7bd050c177a7bc55d550e7dce5c4f9f911aad2f7db98ca2f3ab130d0",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.2",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.2-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808332,
+      "sha256": "3c81b66df57983adf0355daa4f2dea6920be8b89db1b05c13bdee1c09c980d2d",
+      "moduleSha256": "9de4c1f7d1edc5032f3fa14cb7c511617f08d2f316a6754974e7ff880e9ab5dd",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.3",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.3-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621809,
+      "sha256": "9088a337f8d387bd8f3c3ff6fbf5433e3b87731f7186cdf888e1c168b450e927",
+      "moduleSha256": "8b7e75f0c5783574d943864906a8569b427e8412b06851bd014314503ac224c2",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.3",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.3-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808315,
+      "sha256": "85d8f80136c2e4c56339eb51fa5423e9bae18e70be8e90b40024c37866690dc9",
+      "moduleSha256": "7c9c968b950e7375d8c8f76c56b6806680d0124254c4b036772eaa76b91e8f83",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.4",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.4-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621815,
+      "sha256": "fa2f9e1468a8649215379dd3182d05c6f715cc09dccabfb440b68f78b3d3fdf9",
+      "moduleSha256": "784287f5d6ed2dc8b296a279279b968e30958d5f950c2f6052c98ab103903373",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.4",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.4-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808314,
+      "sha256": "de3a5d0ac0613b7775368fa7e82896ca422dc702a67e8d01e2a8e8b180006a52",
+      "moduleSha256": "41111fa54d0036369ec3ea95f3479b6ff54bef600fb9a62b41c763f671b2034d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.5",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.5-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621810,
+      "sha256": "e60fb4f01d24c4ed6c9395ed824d7509b2d05d3ae514d2a669a23f5492075c96",
+      "moduleSha256": "402cdc8a39cdb70148587f6b8ce671ea15c596dfea71f497c4d9874abef5b77e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.5",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.5-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808322,
+      "sha256": "27c91037fe6bd5a6b2c26c668d66ebbd6c457771b0e271f1d2bae9a870d77eac",
+      "moduleSha256": "a7c34c42b761114ceed2ae0f735115654dfe98d3a64026fbac2e755fde1bd089",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.6",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.6-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621814,
+      "sha256": "05f09f596deba6dc3d7311223e12421ad31477723e73cdf3688fc83b29857f32",
+      "moduleSha256": "f34029542833afdf4bfcb136b1d310af58eccd6af2a8856d841c76be788f0605",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.6",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.6-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808317,
+      "sha256": "c1969f29265e0acc32d91fa2498ad1c05356a02f53cf5e465f2b8d5cef4e5891",
+      "moduleSha256": "0d9f70a990a878b122846568cdc88fbb52287fc31ea138ac25513041bba5bd22",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.7",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.7-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621807,
+      "sha256": "fd0fcc8a18f499a241cdf3393ccf41f959121fc52600896419c261751d528088",
+      "moduleSha256": "0aff0c9c33b39ba6a648b1f23cc99a42e7103daf2b1f774f6472f5e62ffd0d32",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.7",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.7-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808323,
+      "sha256": "2a88c394ee65cba97bc0fe7c047ced51333d3b4829e4b2756a36569088308d8f",
+      "moduleSha256": "665e52b00f420cca19bb5d52ea1d0577bde29aebbaf18e3b0334e78a486a4681",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.8",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.8-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621807,
+      "sha256": "ab2a55228bb4dd0a9629f3c41ca80c6d1ab4ced8ea3fb2d5738c4f5548c255d2",
+      "moduleSha256": "1bc944be89c30fe4f8622b049b01f778c55d9f497b79f68169edb84986d7069e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.8",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.8-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808320,
+      "sha256": "1abcfe7caad20acbc76f7fc588c887c344d8de465449c0adb5991038b78eeaa7",
+      "moduleSha256": "b52b3fda542f773bfbd70ed6c01f25dbabdc8d6cfbe8a9c634c727c32381619c",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.10",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.10-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621806,
+      "sha256": "108c9485dcde5a24c00a6963ea58c45c1ddf9971b376d9f26c122cc76493268c",
+      "moduleSha256": "ad89c88ebcbc33a7dcb301105f8c3a32aed84376bbbb4e842452eca3e3029548",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.10",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.10-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808338,
+      "sha256": "49db964a73f808365837a43b8044a58ade9838b14fd14dc677cf01d59728147d",
+      "moduleSha256": "8b28d4e88986db5bbd144ffd9adbc7c355001d859740a7e00bc24a44cf1f003c",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.11",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.11-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621761,
+      "sha256": "135e380acfefa3ba85f75302a12ec28edd7b371a8e84d86506ea661fae988689",
+      "moduleSha256": "759f887b3b647d6a4c1ae5e9c33d9225c97efb11fd383a577b264c73f5d1de90",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.4.11",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.11-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808313,
+      "sha256": "539fe22f8ea5fcfb28f51fd035f9a1b311d54dd21d87b7d6bd72559823a837c0",
+      "moduleSha256": "1cb724e7ff2b7f7a847dee261a3da049ea0a32b6fd319132cb87c1ecb19fda1f",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.4.12",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.12-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621766,
+      "sha256": "a02c563bd833a68d01f1a0d0bea8f6b60ee79658653e18a51b6514dfa9eb39f4",
+      "moduleSha256": "77749bd5b497672a865f1e4b108e029e358855126e81532dbf5f92cd15b46cac",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.12",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.12-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808333,
+      "sha256": "ee9529091e8cfbd12042c8a5ef297c18f8f894e8f699c8ed0f986f4f2a507451",
+      "moduleSha256": "04cdefd55d5a75632ae17137ace501f340ececd8d2ee9b7ae28dac0b9861d31f",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.13",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.13-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621760,
+      "sha256": "89a06f81313e1e2a98516dfea34be2db454016122a5bfa26d2bfe470082ca70b",
+      "moduleSha256": "916b6f818c3c672f1ddeed5c549cd85e21e7560a45b2b1b1627c306c234f2f01",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.13",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.13-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808334,
+      "sha256": "9720646f9208a6a3ab9ce1961e80fd2f654c182534153cb543921a597887ceb9",
+      "moduleSha256": "f47a48f651c6ee6f503acff7034b5d022e4f468abcf14bc8158fa8d57a070236",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.14",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.14-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621762,
+      "sha256": "53471064819ca6952014728b4b3f7009f77e2d3c31b37915621065b84ba1a287",
+      "moduleSha256": "1fbabf78ecfbd80b00bb03720d1487b671be55b176f1d11a727feba0ba469ad3",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.14",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.14-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808326,
+      "sha256": "21ede8fd66f5b786749dee951c9163e8de429c1b0d9484ea79da1cfb60481344",
+      "moduleSha256": "836f9f21a8caf7cad53120213d02014493b02749f76f109813905b51c5cc7ece",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.15",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.15-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621757,
+      "sha256": "7cf71a45bce0e80a5029db8d998efa117e866d3a8f24f53cf41f0969ae0dc075",
+      "moduleSha256": "fdb6d79a399901dcd2827695cd8674e7d7a909aa60d9da2685ff6f5bda2cd8e9",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.15",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.15-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "f88d11d863a069f52fe70ce709e3c1431b2bfc5364608feba66666d91b1405bd",
+      "moduleSha256": "0c71d812a30f510d6f1f52e8bb44137aae498898deffce1c2cb1db1f7dd7417e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.16",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.16-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621760,
+      "sha256": "e37884f6c34a623600aa7568fcb96a3cb6c396dc43766e66cf93accdc0fc413f",
+      "moduleSha256": "bf8c0e6f0b4d7e623b706d121824481c13d42fa9d124fa11da834542bdeb85a5",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.16",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.16-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808323,
+      "sha256": "8d47f0583589a402919196c2386f390c4e2371c102cb8f384929d1d17f43d907",
+      "moduleSha256": "5c64729bad419e33f0e7520b5d77d7604cbca558b1912b647d16c9b0593fee45",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.17",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.17-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621761,
+      "sha256": "bc5236983403d5b266bb1e75264ce70af31fa80460f178baef1ff93f8d066e3c",
+      "moduleSha256": "e0a44a0f7b1d59ad96c5b9d19d8caab5d2057e9185be4cc639b6e4932dfeaafd",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.17",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.17-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808331,
+      "sha256": "8970dd0f594efe7245cf67e99a1552705ed1df7061684c8bf92c59ee9769b76d",
+      "moduleSha256": "ae1745b61a9bc206e21a5f2e7b1d2b4547b0b83b53d1d3001ddab50bc8a00ccc",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.18",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.18-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621758,
+      "sha256": "f3e659ae488692539fc3f2eb0297a520e234631c316eb6ee10125bb48df7eb3a",
+      "moduleSha256": "deb9129d62d2041c16a0637a016fddd3cc6aab9bafa50b42432c46485a5bb4f0",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.18",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.18-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808326,
+      "sha256": "a5f35fe514bf6d914831c661ee0d553a25fb945d24130eacf5c0f86510c462e2",
+      "moduleSha256": "2217801ce15328d54531bfeb6c56a4fbd26f5eda14c3b6b41d491bf8fbe9dd3b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.19",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.19-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621763,
+      "sha256": "4219cdd253d4f0f276e2e8762687ba9eea42263dd18430aeee8a34e79d85b198",
+      "moduleSha256": "6a46403d2511224fd8c4d42e1e914011fdb0458c57d799d3cf9b4229df7091c9",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.19",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.19-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808328,
+      "sha256": "5e6ca7a224b88c89f86109ff2b40765524a4d3e37144f14bfd8a06e162aa75fb",
+      "moduleSha256": "a821a844b496090d717fa6c953239f1e80c46ba4c7903281b6c4b4a3058077b4",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.20",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.20-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621760,
+      "sha256": "6875e5f9e836b2d492366b1af38b582393649659c338cfc67abb05f3ab8920cf",
+      "moduleSha256": "d73add2bf32da01eee1c7d6de9e06e6ce0cf063db0a29eba95e71d5de83daaf7",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.20",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.20-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "c17d427940029fc9b1a491f4067cfb8f01d7f6aef11c94136575ce77f6178cf8",
+      "moduleSha256": "4e7c75e0f1b9f16b670bcdb7f3a9ec6c1363d9ac4280b2671ae85812eeec456f",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.21",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.21-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621764,
+      "sha256": "089ec6faa101b0344e0c661520dce217004072c0c76af62c00b5aa318f2504f6",
+      "moduleSha256": "fb970a7eada0ff02f9cb9203e44b4b16d732771690524fdc76adad1d9a08729f",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.21",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.21-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "c306e4bb46fb93aec37455329f381dcf94b19473ae294467c9b6f81b31a9f434",
+      "moduleSha256": "3636b2d0b8a41cc55e08b569a4254d6d46803073544175b390f2596ee9c2730a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.22",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.22-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621759,
+      "sha256": "f4205da2e4700142671ad1e4c0bf77b1d88bb991183f039a3a6c7d85265fb3de",
+      "moduleSha256": "d5d2e1b572514df4ca6187655200aa486e0285480cffbee27133f7e061452d16",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.22",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.22-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "009fcd5ba3443a54f88dd860ca3f32aefb86ef55da8fce9a51c37b5d40509916",
+      "moduleSha256": "b90cb3910eef83ee156d79e3b384c83345a6f5d0fc8cdecc39a30f07c81ba18b",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.23",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.23-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621763,
+      "sha256": "98e8e240fa1bfc6a34f5a45207dfd1d529d723f3cff6bbbb38ee5883b8d63be2",
+      "moduleSha256": "577daf879f25ad2de12909fbfa1b4b37acd1e2f2e132c1d47a886c9b04027a84",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.23",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.23-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808328,
+      "sha256": "fc557c41f55ac8938c849b17981b09f1812e0687cef10b9366a3930c7bd173e6",
+      "moduleSha256": "65a60a3cccc6857a1b0feac823bfd0a8a0a938d24fbb579e6ea6611dc7961d26",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.24",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.24-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621767,
+      "sha256": "425056ed5aece9e5a76a0b34851bc0d3fc8abfc256988adeaf08d40494bee2da",
+      "moduleSha256": "0675f90dcef1d7c377b4d47a9101f72cc3badae35972c04bba777abaa17b92ac",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.24",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.24-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "955dbf9b7217062ec1cae13ccd3841ceec31fa945e751b18b68c5372b1ba00f4",
+      "moduleSha256": "e9e67ebac7ba57d5ec2ffdd522ab94d5210debe7ced43a6bb2fff0a7cefa2cf6",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.25",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.25-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621767,
+      "sha256": "441c8a81886fb05163ef99d39f03fb5a4a296c7f18e221d355cb4f19524688dd",
+      "moduleSha256": "3af77e005deb9d5f3e742cf70c8e967bbb9257205ee781ca7dcce60d14c05830",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.25",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.25-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808326,
+      "sha256": "45481b2c7a6bd49ce04c29e68bb4498582ae203e044e1f99663be58963c8ed4f",
+      "moduleSha256": "85946e6e4a80b8604ce2895ecdfbd5ea9ebac04649b3b8f8cea2126c7315c863",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.26",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.26-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621761,
+      "sha256": "692d98761bd6e66b2c7ff51b24093a03439f755e67849df3ce72508f55b262dc",
+      "moduleSha256": "c4edacf1e52452db52b5b0f8df7eec7d3f57773a77261a4ecdaab23fab982df7",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.26",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.26-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808327,
+      "sha256": "dc294c26875ef3a727a241fa32034c0bff6e8dd1497da42fbc0c0d7df2b1ab5a",
+      "moduleSha256": "70a70a478e6a903d8a883d524388e3979ebf3eafef14eb52670d197af6036c33",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.4.27",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.4.27-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5622814,
+      "sha256": "2270a315130e193287a93570d191f5e455ef8d3774386f9ecd357ff7d76e7747",
+      "moduleSha256": "19494ccab06b837db283c398fd68e514407713b360d0b8035a72013e9b6e6438",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    },
+    {
+      "php": "8.4.27",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.4.27-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5809759,
+      "sha256": "51433382f20765e45610e9fc28b585864168b7349f7d1c001097516c18179ec1",
+      "moduleSha256": "6fe6ee157689afc628af8b24eb44be9473d13052bda190e65535af53f9e9c2a6",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    },
+    {
+      "php": "8.5.0",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.0-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621746,
+      "sha256": "c8bbb6c7b793499e8a628cad14c1d42eb4ca406244523b4a9c423eca0999cc74",
+      "moduleSha256": "8bdf5b03e3747ecf758567fc55d39cf35908a9a96195b7c47e932189de84225e",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.0",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.0-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808655,
+      "sha256": "1f512458bb88fbd103c5b248b917d125fc7eb9bf39df24f5fe3f6debb36a5438",
+      "moduleSha256": "56eadc4e2793f34b9ad73fbc2f653686beb73f7a608b10b8f5e3060a1538f113",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.1",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.1-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621752,
+      "sha256": "924b91d3395166660a2a82462ef64f76084f62f7c031075d677e53f4b9685ef3",
+      "moduleSha256": "7add47d558bbd6554e87eab09af8f407edf1dd3f16b55db194d78f2a52e6e741",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.1",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.1-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808665,
+      "sha256": "11a311b3e0f3312544ae9ae67f4e5d02c4c77e90b832901057e6c5ea1d334eae",
+      "moduleSha256": "8edd90d2a5718c8f1d2b4f4e263cb9cedace1bf72b4c3aea7c61b74e86299b42",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.2",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.2-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621750,
+      "sha256": "1b735d9615425f7a54b4945ec96399b2fc786cfd7abed16e8bbe674774edf80d",
+      "moduleSha256": "e457e1148e4d249c5d3156762f6822e0f5d02b2f3004721f8484a19759cd0e98",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.2",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.2-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808660,
+      "sha256": "7847008fc88dfd8198aa60a7e469ffa3c5817cda6c628f1ff95979f2bfe5526b",
+      "moduleSha256": "bc2c76d9ae3d601baab34be2c2b28b921eebe02299176dd56b90bad6abd224ed",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.3",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.3-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621743,
+      "sha256": "5ace4098d0433c9fa5b51324984b63b5b45341335877d2848564da48fc61e7d3",
+      "moduleSha256": "a70c86c5f9f2a99f15b76fa878a1d7ae0ddaaa459fb49aa79a618311884196e9",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.3",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.3-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808655,
+      "sha256": "ec89c8d30b5e1ba2f250f5a03bfb3d22eb843a943b95d2dba243eeee7ec29a8f",
+      "moduleSha256": "30a941da52e4e54bc56dffd623795cbe84f5e6af10a3643a48bd1e2b2c9bcbcf",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.4",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.4-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621754,
+      "sha256": "4e4e101f46de1bab9aaaca2a9e308347570d9c871a0f7e5dce36876efff0130b",
+      "moduleSha256": "fa80d10cb0d3418170b28860ef12a390df3b6ad99969c859c64e5e88a948a6b4",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.4",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.4-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808660,
+      "sha256": "d95c77e1bd021ccc1deed422cb540eb970f48c4dc5a2e5182bb55920ec82a6bf",
+      "moduleSha256": "71aa1a9d77b8c4a12fe1a53c6b76f4861a8bcf3613f0a8831dc45ac75729e3cb",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.5",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.5-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621749,
+      "sha256": "99c0be588ea25e48a4f7cf93188d79aea9d9c287a991768032176c25cf92eecb",
+      "moduleSha256": "9ba9819c39862868489742c4c940dbf6a006fc07376d6a078bf79035bfb22711",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.5",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.5-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808657,
+      "sha256": "95e21fa5b48a6c9d8972c318cd48b68619bd60e013617e8ef9fcdb1e390136ef",
+      "moduleSha256": "4b502cd4221e88690dbfc35b89896b37d9b9d2f6c5cc1b2c0a07aa856d64972a",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.6",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.6-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621744,
+      "sha256": "7d41874f6e77f4ca2b823cc13b6c2790ee4e20ede44a4baaf89eacea124fc0fd",
+      "moduleSha256": "d5359b6b1ead8b62fa1e9aec0b4a561c2d5011e5c97ad83379875a99b2c43d96",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.6",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.6-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808659,
+      "sha256": "5887aa0432427a76981d0ed6506eaab51d77393e3024af370b70059e7f27d914",
+      "moduleSha256": "221e79eabf542df3c9952d2aa9f87cf9f108ca92ac9f890a8d6ed58977969996",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.7",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.7-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621747,
+      "sha256": "27e6bf9079a83cf0281923da601d4bc2b1807186149ec031650747b026430ca2",
+      "moduleSha256": "b08ce7b9c7eb7c6aff03bd5200e868656731e9091d29241d124b3506e6c3bc70",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.7",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.7-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808661,
+      "sha256": "8bb2328a3e34f5f5e00ccbb1f357d7d1f283c6894126e4da6f1ef46bca1f6638",
+      "moduleSha256": "a262117342cfc0e8dd4270c5e30729cf68f779dcdecb356863bf46074cf9806d",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.8",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.8-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621753,
+      "sha256": "9ed2819cdc53fd50987cf3e2435279d48827f6502099ac3a3d68e470e81df591",
+      "moduleSha256": "2d7b6787efbac897332d5d37c9e613f5283afb6c073028cbe677ccf246e22981",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.8",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.8-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808666,
+      "sha256": "d1f8e16360c05a6220108d4cdc2336f9567aedd9b3ab0a35615863a35f43ba5b",
+      "moduleSha256": "00b8ea53ce4024f9397a58addc90e2484aa7f8b0a497435c0c490fd1269ccbff",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.9",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.9-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621755,
+      "sha256": "5b26bcea222eb16d758e6dbfaa40dcc9eb16af4b3136673683c777a2c72e3ccb",
+      "moduleSha256": "3d499bc1dc80e4cedd742c8a9cfec577d968d5de1485c5f2303f36cdbdf89044",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.9",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.9-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808662,
+      "sha256": "5b9f9f22c7159e15164cf5a95febe1a7c50761a3d0a6aa0842b2a62538d72650",
+      "moduleSha256": "c5279a6021ccfaf4d24c249f7c09f243c36a9bacbd1d8637685ef86245e860ce",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.10",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.10-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621758,
+      "sha256": "a8cd5cdcd1cda63195d4ee3e7ed49af4d637404137fe930dbbf8048fbe793070",
+      "moduleSha256": "47ac889802979cff1fb0aad98a92a6810ca140dab5713e18d36f764537092468",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.10",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.10-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808678,
+      "sha256": "7989201dfc9b910da36387ea6c964c911f6ee6f858855b8a354f8e4949d1c25c",
+      "moduleSha256": "faac30468b7e8c37578d598edb773f4500e37afb2bc5282c74331dcb138458fc",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545542286"
+    },
+    {
+      "php": "8.5.11",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.11-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5621753,
+      "sha256": "3f47045ec6327e36e40593ad058d6f36cccff32be6c80b28eec5c7a06b970d1a",
+      "moduleSha256": "e21b56bf75eaf3f54a034c0abbb22f696a40a49be1e5f0c484181d5e990035c5",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.5.11",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.11-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5808686,
+      "sha256": "6da75906924b370c768903a003463e865aa48b6d8b14eeef2c29936d117dab3c",
+      "moduleSha256": "fbd80af9bda01e2f74646f2e7d708a21d656ab632cfe6faf2af2b9ed325ff479",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43545043117"
+    },
+    {
+      "php": "8.5.12",
+      "arch": "aarch64",
+      "asset": "asyncara-0.10.0-php8.5.12-nts-linux-glibc-aarch64.tar.gz",
+      "bytes": 5623138,
+      "sha256": "77b1f5215b55a854ccdbde1e3ccaa512a0f8b451a5e1836eadfade4a86630680",
+      "moduleSha256": "11719b4139ab4e3c670a80af1e8651ee3528988063f3cd4dbfaaa71effb3d4f7",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    },
+    {
+      "php": "8.5.12",
+      "arch": "x86_64",
+      "asset": "asyncara-0.10.0-php8.5.12-nts-linux-glibc-x86_64.tar.gz",
+      "bytes": 5809845,
+      "sha256": "ad925b81289d49e26b4c851639ab920d45333cd1f0ccf722bba321490f97d2c9",
+      "moduleSha256": "73ccfe623309f62b4d7a86efbc1361aa6e0fd9587e417aff5b9142d84f47aeba",
+      "ci": "https://github.com/asyncara/asyncara/actions/runs/43544596981"
+    }
+  ]
+}

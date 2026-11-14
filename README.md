@@ -27,10 +27,13 @@ original php.ini. It does not compile locally or require Python. Follow the
 printed PATH instruction when necessary. A missing supported tuple is an error,
 not an implicit source build.
 
-The initial Linux bundles target Ubuntu 24.04 x86_64 and PHP 8.3.36, 8.4.27 or
-8.5.12 NTS. Android 64-bit preview packages have separate requirements; see the [compatibility matrix](https://asyncara.github.io/docs/guide/operations/compatibility/).
-Ubuntu/Kali aarch64 (including Android proot), Windows and 32-bit packages are
-unavailable. Native Android/Termux packages are not Linux/glibc packages. PIE is not a complete supported
+Linux bundles support x86_64 and aarch64, glibc 2.38+, and PHP 8.3, 8.4
+and 8.5 NTS. The release provides **146 tested bundles covering all 73 stable
+PHP versions published as of November 14, 2026**. Each uses its matching PHP
+SDK; future PHP versions need their own validated package. Selection is independent of the distribution name;
+Ubuntu and Kali (including GNU/Linux in Android proot) use the Linux bundle
+when PHP and native libraries match. Android 64-bit preview packages have separate requirements; see the [compatibility matrix](https://asyncara.github.io/docs/guide/operations/compatibility/).
+Windows, ZTS and 32-bit packages are unavailable. Native Android/Termux packages are not Linux/glibc packages. PIE is not a complete supported
 installation method for v0.10.0; use the package containing the extension, PHP
 library and launcher.
 

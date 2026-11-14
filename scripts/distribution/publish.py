@@ -8,7 +8,9 @@ import re
 import subprocess
 
 p=argparse.ArgumentParser();p.add_argument('--tag',required=True);p.add_argument('--assets',type=Path,required=True)
-p.add_argument('--installer-only',action='store_true',help='Attach only install.sh/checksum; preserve existing binary assets')
+mode=p.add_mutually_exclusive_group()
+mode.add_argument('--installer-only',action='store_true',help='Attach only install.sh/checksum; preserve existing binary assets')
+mode.add_argument('--bundles-only',action='store_true',help='Attach new PHP/platform bundles; preserve the published installer')
 a=p.parse_args()
 if not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+',a.tag):p.error('Use a release tag')
 def run(*args):return subprocess.check_output(args,text=True).strip()
@@ -33,7 +35,7 @@ if a.tag!='v'+default:raise SystemExit('Installer default version does not match
 subprocess.run(['php','-n',str(Path(__file__).resolve().parent/'render-installer.php'),'--check'],check=True)
 a.assets.mkdir(parents=True,exist_ok=True)
 payloads={'install.sh':installer.read_bytes(),'install.sh.sha256':(hashlib.sha256(installer.read_bytes()).hexdigest()+'  install.sh\n').encode()}
-for name,data in payloads.items():
+for name,data in ({} if a.bundles_only else payloads).items():
     dest=a.assets/name
     if dest.exists() and dest.read_bytes()!=data:raise SystemExit('Preserve existing staging file: '+str(dest))
     if not dest.exists():dest.write_bytes(data)
