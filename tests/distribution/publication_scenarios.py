@@ -28,7 +28,7 @@ if args[0]=='api':
  path=args[-1];repo='repos/asyncara/asyncara'
  if path==repo:reply={'full_name':'asyncara/asyncara','private':config.get('private',True)}
  elif path==repo+'/git/ref/tags/v0.10.0':reply={'object':{'type':'tag','sha':'a'*40}}
- elif path==repo+'/git/tags/'+'a'*40:reply={'object':{'type':'commit','sha':config.get('commit','4252f83f2cebaaaa2be150984e5ab0fa6d5b1862')}}
+ elif path==repo+'/git/tags/'+'a'*40:reply={'object':{'type':'commit','sha':config.get('commit',os.environ['PUB_EXPECTED_COMMIT'])}}
  elif path==repo+'/releases/tags/v0.10.0':reply={'id':1,'tag_name':'v0.10.0','draft':config.get('draft',False),'immutable':config.get('immutable',False)}
  elif path==repo+'/releases/1/assets?per_page=100&page=1':
   reply=[{'id':int(hashlib.sha256(p.name.encode()).hexdigest()[:8],16),'name':p.name,'size':p.stat().st_size,'state':'uploaded'} for p in sorted(remote.iterdir())]
@@ -67,7 +67,7 @@ def scenario(name,config=None,existing=2):
 
 def run(d,expected,extra=(),assets=source):
  number=len(list(d.glob('run-*.log')));report_dir=d/f'report-{number}'
- env=dict(os.environ,PATH=str(d/'bin')+':'+os.environ['PATH'],PUB_FIXTURE=str(d))
+ env=dict(os.environ,PATH=str(d/'bin')+':'+os.environ['PATH'],PUB_FIXTURE=str(d),PUB_EXPECTED_COMMIT=plan.get('tagCommit',plan['sourceCommit']))
  cmd=['sh',str(root/'scripts/distribution/publish-0.10.0.sh'),'--assets',str(assets),'--output',str(report_dir),*extra]
  r=subprocess.run(cmd,env=env,capture_output=True,text=True,timeout=120)
  (d/f'run-{number}.log').write_text(r.stdout+r.stderr)

@@ -91,7 +91,9 @@ const ASYNCARA_PUBLICATION_PLAN = <<<'ASYNCARA_ASSET_PLAN'
       "bytes": 19900,
       "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh"
     }
-  ]
+  ],
+  "tagCommit": "a7511fdde440ebe0f566661b9cd34145f5c5bd6c",
+  "sourceIdentityNote": "sourceCommit identifies preserved release artifacts; tagCommit identifies the equivalent runtime tree after documentation-only history cleanup."
 }
 ASYNCARA_ASSET_PLAN;
 // Embedded with a pinned asset plan in publish-0.10.0.sh. No Python/build tools.
@@ -165,7 +167,7 @@ final class ReleasePublisher
             if (!preg_match('/\A[0-9a-f]{40}\z/', $object['sha']??'')) throw new RuntimeException('Invalid annotated tag');
             $object=$this->api('git/tags/'.$object['sha'])['object']??[];
         }
-        if (($object['type']??null)!=='commit' || ($object['sha']??null)!==$this->plan['sourceCommit']) {
+        if (($object['type']??null)!=='commit' || ($object['sha']??null)!==($this->plan['tagCommit'] ?? $this->plan['sourceCommit'])) {
             throw new RuntimeException('Remote tag does not match the tested source; nothing will be rewritten');
         }
     }
@@ -233,7 +235,7 @@ final class ReleasePublisher
         $this->output=$options['output']??$home.'/.local/state/asyncara/publication-'.gmdate('Ymd\THis\Z').'-'.bin2hex(random_bytes(4));
         if (file_exists($this->output) || is_link($this->output) || !mkdir($this->output,0700,true)) throw new RuntimeException('Use a new output directory');
         $this->output=realpath($this->output); $this->plan=$plan; $this->repo=$plan['repository'];
-        $this->report=['status'=>'RUNNING','mode'=>$mode,'repository'=>$this->repo,'tag'=>$plan['tag'],'sourceCommit'=>$plan['sourceCommit'],'startedAt'=>gmdate('c'),'commands'=>[],'uploaded'=>[],'missing'=>[]];
+        $this->report=['status'=>'RUNNING','mode'=>$mode,'repository'=>$this->repo,'tag'=>$plan['tag'],'sourceCommit'=>$plan['sourceCommit'],'tagCommit'=>$plan['tagCommit'] ?? $plan['sourceCommit'],'startedAt'=>gmdate('c'),'commands'=>[],'uploaded'=>[],'missing'=>[]];
         echo 'Report: '.$this->output."/report.json\n"; $this->save();
         try {
             $this->publish($options,$mode);
