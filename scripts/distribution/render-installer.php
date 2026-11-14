@@ -24,5 +24,9 @@ asyncara_install_main "$@"
 SH;
 $content=$start."\n".$runtime.$end."\n";
 $target=dirname(__DIR__).'/install.sh';
-if(in_array('--check',$argv,true)) {if(file_get_contents($target)!==$content)throw new RuntimeException('Regenerate scripts/install.sh');}
-else { file_put_contents($target,$content);chmod($target,0755); }
+$checksum=hash('sha256',$content)."  install.sh\n";
+if(in_array('--check',$argv,true)) {
+    if(file_get_contents($target)!==$content || !is_file($target.'.sha256') || file_get_contents($target.'.sha256')!==$checksum)
+        throw new RuntimeException('Regenerate scripts/install.sh and its checksum');
+}
+else { file_put_contents($target,$content);chmod($target,0755);file_put_contents($target.'.sha256',$checksum); }

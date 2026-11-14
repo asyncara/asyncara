@@ -12,8 +12,8 @@ it is an initial usable release, not a production-readiness guarantee.
 
 ## Install a prebuilt bundle
 
-Public v0.10.0 downloads are currently unavailable. Once the matching package is
-available on the release page, install with:
+On a supported Linux/PHP configuration, install directly from the public release.
+No GitHub account or GitHub CLI is required:
 
 ```sh
 curl -fsSL https://github.com/asyncara/asyncara/releases/download/v0.10.0/install.sh | sh
@@ -29,7 +29,8 @@ not an implicit source build.
 
 The initial Linux bundles target Ubuntu 24.04 x86_64 and PHP 8.3.36, 8.4.27 or
 8.5.12 NTS. Android 64-bit preview packages have separate requirements; see the [compatibility matrix](https://asyncara.github.io/docs/guide/operations/compatibility/).
-Windows and 32-bit packages are unavailable. PIE is not a complete supported
+Ubuntu/Kali aarch64 (including Android proot), Windows and 32-bit packages are
+unavailable. Native Android/Termux packages are not Linux/glibc packages. PIE is not a complete supported
 installation method for v0.10.0; use the package containing the extension, PHP
 library and launcher.
 

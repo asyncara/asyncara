@@ -13,12 +13,57 @@ function tarFixture(array $entries,string $path):void{
  }file_put_contents($path,gzencode($tar.str_repeat("\0",1024)));
 }
 function extracted(array $entries,callable $f):void{global $root;$path=$root.'/'.bin2hex(random_bytes(4));mkdir($path);tarFixture($entries,$path.'/a.gz');mkdir($path.'/files');$f($path.'/a.gz',$path.'/files');}
+function downloadFixture(int $status,int $exit,callable $test):void {
+ global $root;
+ $dir=$root.'/download-'.bin2hex(random_bytes(4));mkdir($dir);
+ $curl= <<<'SH'
+#!/bin/sh
+target=; fail=0
+while [ "$#" -gt 0 ]; do
+ case "$1" in --output) shift; target=$1;; --fail) fail=1;; esac
+ shift
+done
+printf fixture > "$target"
+printf '%s' "$FAKE_HTTP_STATUS"
+if [ "$fail" = 1 ] && [ "$FAKE_HTTP_STATUS" -ge 400 ]; then exit 22; fi
+exit "$FAKE_CURL_EXIT"
+SH;
+ file_put_contents($dir.'/curl',$curl);chmod($dir.'/curl',0700);
+ file_put_contents($dir.'/gh',"#!/bin/sh\nprintf called > ".escapeshellarg($dir.'/gh-called')."\nexit 4\n");chmod($dir.'/gh',0700);
+ $saved=[];foreach(['PATH','FAKE_HTTP_STATUS','FAKE_CURL_EXIT']as $key)$saved[$key]=getenv($key);
+ putenv('PATH='.$dir);putenv('FAKE_HTTP_STATUS='.$status);putenv('FAKE_CURL_EXIT='.$exit);
+ try{$test($dir);}finally{foreach($saved as $key=>$value)putenv($value===false?$key:$key.'='.$value);}
+}
 $id=['php'=>['version'=>'8.5.12','zts'=>false,'debug'=>false,'bits'=>64],'platform'=>['os'=>'ubuntu','osVersion'=>'24.04','arch'=>'x86_64']];
 try {
  test('exact PHP/NTS selection',fn()=>eq(assetName('0.10.0',$id),'asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz'));
  test('ZTS selects different asset',function()use($id){$id['php']['zts']=true;eq(str_contains(assetName('0.10.0',$id),'-zts-'),true);});
  test('debug selects different asset',function()use($id){$id['php']['debug']=true;eq(str_contains(assetName('0.10.0',$id),'-nts-debug-'),true);});
  foreach(['aarch64','arm','i686']as $arch)test('architecture '.$arch,function()use($id,$arch){$id['platform']['arch']=$arch;eq(str_ends_with(assetName('0.10.0',$id),'-'.$arch.'.tar.gz'),true);});
+ foreach([
+  ['8.4.11','ubuntu','25.10'],['8.5.12','kali','2025.2'],
+ ]as [$php,$os,$version])test('missing '.$os.' ARM64 package never invokes gh',function()use($id,$php,$os,$version){
+  $id['php']['version']=$php;$id['platform']=['os'=>$os,'osVersion'=>$version,'arch'=>'aarch64'];$name=assetName('0.10.0',$id);
+  downloadFixture(404,0,function($dir)use($name){
+   $error=null;try{download('https://github.com/asyncara/asyncara/releases/download/v0.10.0/'.$name,$dir.'/'.$name,$name);}catch(RuntimeException $e){$error=$e;}
+   eq(file_exists($dir.'/gh-called'),false);eq(file_exists($dir.'/'.$name),false);
+   eq($error!==null,true);eq(str_contains($error->getMessage(),'No prebuilt package'),true);eq(str_contains($error->getMessage(),$name),true);
+  });
+ });
+ test('public download succeeds without gh',fn()=>downloadFixture(200,0,function($dir){
+  download('https://example.invalid/package.tar.gz',$dir.'/package.tar.gz','package.tar.gz');
+  eq(file_get_contents($dir.'/package.tar.gz'),'fixture');eq(file_exists($dir.'/gh-called'),false);
+ }));
+ test('missing checksum has a distinct error',fn()=>downloadFixture(404,0,function($dir){
+  $error=null;try{download('https://example.invalid/package.sha256',$dir.'/package.sha256','package.sha256');}catch(RuntimeException $e){$error=$e;}
+  eq($error!==null,true);eq(str_contains($error->getMessage(),'Checksum file is not published'),true);
+  eq(file_exists($dir.'/package.sha256'),false);eq(file_exists($dir.'/gh-called'),false);
+ }));
+ foreach([[403,0],[500,0],[206,0],[0,6],[0,28],[0,60]]as [$status,$exit])test('HTTP/transport failure '.$status.'/'.$exit.' never invokes gh',fn()=>downloadFixture($status,$exit,function($dir)use($status,$exit){
+  $error=null;try{download('https://example.invalid/package.tar.gz',$dir.'/package.tar.gz','package.tar.gz');}catch(RuntimeException $e){$error=$e;}
+  eq($error!==null,true);eq(str_contains($error->getMessage(),$exit?'Check network access':'HTTP '.$status),true);
+  eq(str_contains($error->getMessage(),'No prebuilt package'),false);eq(file_exists($dir.'/package.tar.gz'),false);eq(file_exists($dir.'/gh-called'),false);
+ }));
  test('ordinary tar member',fn()=>extracted([['asyncara/plain','hello','0']],fn($p,$d)=>eq(extractBundle($p,$d),['plain'=>true])));
  foreach(['../x','/absolute','a/../../x','a//x','a/./x',"a\nx",'a\\x']as $name)test('reject path '.json_encode($name),fn()=>extracted([['asyncara/'.$name,'x','0']],fn($p,$d)=>rejects(fn()=>extractBundle($p,$d))));
  foreach(['1','2','3','5','g']as $type)test('reject nonregular '.$type,fn()=>extracted([['asyncara/x','',''.$type]],fn($p,$d)=>rejects(fn()=>extractBundle($p,$d))));

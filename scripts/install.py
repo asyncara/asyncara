@@ -100,8 +100,7 @@ def asset_name(version, php, host):
 
 
 def download(version, name, directory):
-    # Public HTTPS downloads contain no credentials. For private releases, gh
-    # performs authentication and redirects; never copy a token to a CDN host.
+    # Public HTTPS only. A missing platform package is not an authentication failure.
     target = directory / name
     url = f'https://github.com/{REPOSITORY}/releases/download/v{version}/{name}'
     try:
@@ -114,15 +113,12 @@ def download(version, name, directory):
                 output.write(chunk)
         return target
     except urllib.error.HTTPError as error:
-        if error.code not in (401, 403, 404):
-            raise RuntimeError(f'GitHub download failed (HTTP {error.code})') from error
-    if shutil.which('gh'):
-        run(['gh', 'release', 'download', 'v' + version, '--repo', REPOSITORY,
-             '--pattern', name, '--dir', directory])
-        if target.is_file() and target.stat().st_size <= MAX_ARCHIVE:
-            return target
-    raise RuntimeError('No accessible matching release asset: ' + name +
-                       '\nPrivate repository: run gh auth login, or download the bundle and .sha256 in your browser and use --bundle.\nNo compiler fallback is performed.')
+        if error.code == 404:
+            message = ('Checksum file is not published: ' if name.endswith('.sha256') else
+                       'No prebuilt package is published for the detected PHP and platform: ')
+            raise RuntimeError(message + name +
+                               '\nSee https://asyncara.github.io/docs/guide/operations/compatibility/ for available packages.') from error
+        raise RuntimeError(f'Download failed for {name} (HTTP {error.code})') from error
 
 
 def expected_checksum(sidecar, name):
