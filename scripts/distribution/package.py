@@ -23,6 +23,16 @@ def command(args, **kwargs):
     return subprocess.check_output(list(map(str, args)), text=True, **kwargs).strip()
 
 
+def minimum_glibc(paths):
+    """Required ELF symbol versions, including the statically linked Rust code."""
+    versions = set()
+    for path in paths:
+        versions.update(re.findall(r'Name: GLIBC_([0-9]+\.[0-9]+)(?:\s|$)', command(['readelf','--version-info',path])))
+    if not versions:
+        raise RuntimeError('Cannot establish the packaged ELF glibc requirement')
+    return max(versions, key=lambda value: tuple(map(int, value.split('.'))))
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--source', type=Path, required=True)
@@ -38,7 +48,8 @@ def main():
     php = installer.php_identity(a.php); host = installer.platform_identity()
     if host['os'] != 'ubuntu' or host['osVersion'] != '24.04' or host['arch'] not in ('x86_64','aarch64') or php['zts'] or php['debug'] or php['bits'] != 64:
         p.error('Uncertified binary build profile')
-    name = installer.asset_name(version, php, host); out.mkdir(parents=True, exist_ok=True)
+    portable = dict(host, os='linux-glibc', osVersion='')
+    name = installer.asset_name(version, php, portable); out.mkdir(parents=True, exist_ok=True)
     archive = out/name
     if archive.exists() or Path(str(archive)+'.sha256').exists(): p.error('Preserve existing assets; use a fresh output directory')
     with tempfile.TemporaryDirectory(prefix='asyncara-binary-package-') as temp:
@@ -92,7 +103,8 @@ def main():
         for f in sorted(root.rglob('*')):
             if f.is_symlink():raise RuntimeError('Do not ship symlinks: '+str(f))
             if f.is_file():files[str(f.relative_to(root))]=installer.sha(f)
-        manifest={'schema':1,'project':'asyncara/runtime','version':version,'php':php,'platform':host,
+        manifest={'schema':2,'project':'asyncara/runtime','version':version,'php':php,'platform':host,
+                  'compatibility':{'os':'linux','libc':'glibc','arch':host['arch'],'minimumGlibc':minimum_glibc([module,connector])},
                   'sourceCommit':a.source_commit,'features':{'hyper':True,'postgresql':True,'mysql':True},
                   'connector':'3.4.10/OpenSSL; compiled-in common authentication plugins','files':files}
         (root/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
