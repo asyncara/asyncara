@@ -49,6 +49,8 @@ jobs:
         with:
           ref: ${{ inputs.tag || 'v0.10.0' }}
           path: runtime
+      - name: Enable matching PHP development packages on disposable runner
+        run: sudo add-apt-repository -y ppa:ondrej/php
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -89,6 +91,10 @@ jobs:
     needs: installer
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,24 +103,26 @@ jobs:
         with:
           ref: ${{ inputs.tag || 'v0.10.0' }}
           path: runtime
+      - name: Enable matching PHP development packages on disposable runner
+        run: sudo add-apt-repository -y ppa:ondrej/php
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: ${{ matrix.php }}
           coverage: none
           tools: composer:v2
       - run: |
           sudo apt-get update
-          sudo apt-get install -y php8.4-dev build-essential autoconf pkg-config cmake perl patchelf libcurl4-openssl-dev libsqlite3-dev libpq-dev libssl-dev zlib1g-dev libbrotli-dev libzstd-dev
+          sudo apt-get install -y "php${{ matrix.php }}-dev" build-essential autoconf pkg-config cmake perl patchelf libcurl4-openssl-dev libsqlite3-dev libpq-dev libssl-dev zlib1g-dev libbrotli-dev libzstd-dev
           bash tools/scripts/distribution/build.sh "$PWD/runtime" "$(git -C runtime rev-parse HEAD)" "$PWD/bundle-build"
       - uses: actions/upload-artifact@v4
         with:
-          name: binary-ubuntu24.04-arm64-php8.4
+          name: binary-ubuntu24.04-arm64-php${{ matrix.php }}
           path: bundle-build/assets/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: binary-evidence-arm64
+          name: binary-evidence-arm64-php${{ matrix.php }}
           path: |
             bundle-build/build.log
             bundle-build/installed-test/**/*.log
