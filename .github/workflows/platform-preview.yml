@@ -4,10 +4,18 @@ on:
     branches: ['platform/android-windows-*']
     paths: ['ext/**', 'scripts/platforms/**', 'tests/platforms/**', '.github/workflows/platform-preview.yml']
   workflow_dispatch:
+    inputs:
+      windows:
+        description: 'Explicitly resume deferred Windows port validation'
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
   windows:
+    # Deferred by the owner. Keep the failed regression and port for later;
+    # normal pushes must not spend more time building Windows.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.windows }}
     runs-on: windows-2022
     timeout-minutes: 40
     strategy:
