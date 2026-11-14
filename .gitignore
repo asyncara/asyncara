@@ -22,3 +22,9 @@ ext/*.dep
 ext/config.nice
 ext/configure~
 __pycache__/
+
+# Local engineering output; public guides live in asyncara/docs.
+docs/
+dos/
+WORKLOG.md
+benchmarks/results/

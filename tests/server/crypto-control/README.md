@@ -31,5 +31,5 @@ bridge's release/deps directory can also be used for the AWS provider. AES128,
 AES256 and ChaCha20 handshake controls verify exact plaintext in both directions.
 The AEAD-only control has fixed inputs and does not perform a handshake.
 
-The retained ring/AES findings remain FAIL; see docs/DEPENDENCY_FINDINGS.md.
+The retained ring/AES findings remain FAIL; retain the raw control reports separately; see https://asyncara.github.io/docs/guide/operations/diagnostics/.
 Do not classify those warnings as harmless or suppress them to obtain PASS.

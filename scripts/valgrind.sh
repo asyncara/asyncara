@@ -7,7 +7,7 @@ python3 scripts/check-build.py "$extension"
 export USE_ZEND_ALLOC=0
 export VALGRIND_LIB="$PWD/.local/sysroot/usr/libexec/valgrind"
 vg="$PWD/.local/sysroot/usr/bin/valgrind"
-if [[ ! -x "$vg" ]]; then echo 'Extract Valgrind and matching libc6-dbg packages locally first; see WORKLOG.md.' >&2; exit 1; fi
+if [[ ! -x "$vg" ]]; then echo 'Extract Valgrind and matching libc6-dbg packages locally first; see https://asyncara.github.io/docs/guide/operations/diagnostics/.' >&2; exit 1; fi
 # Valgrind's extra-path lookup uses the loader's debuglink basename, not .build-id.
 loader="$(readlink -f /lib64/ld-linux-x86-64.so.2)"
 identity="$(readelf -n "$loader" | awk '/Build ID:/{print $3; exit}')"

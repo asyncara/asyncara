@@ -3,7 +3,7 @@ declare(strict_types=1);
 require dirname(__DIR__).'/vendor/autoload.php';
 $root=dirname(__DIR__).'/src/Asyncara/';$files=[];
 foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root,FilesystemIterator::SKIP_DOTS))as$file)if($file->getExtension()==='php')$files[]=$file->getPathname();sort($files);
-$text="# Public API reference\n\nGenerated from source signatures by `scripts/api-reference.php`. Semantics and internal-boundary restrictions are in API.md. Inherited methods are documented under their declaring class. Low-level `asyncara_*` functions are internal transport APIs.\n";
+$text="# Public API reference\n\nGenerated from source signatures by `scripts/api-reference.php`. Usage and lifecycle semantics: https://asyncara.github.io/docs/guide/reference/overview/. Inherited methods are documented under their declaring class. Low-level `asyncara_*` functions are internal transport APIs.\n";
 foreach($files as$file){
  $class='Asyncara\\'.str_replace('/','\\',substr($file,strlen($root),-4));
  if(!class_exists($class)&&!interface_exists($class))continue;
@@ -23,4 +23,8 @@ foreach($files as$file){
  }
  if($lines)$text.="```php\n".implode("\n",$lines)."\n```\n";else$text.="Exception or interface type; inherited standard behavior.\n";
 }
-file_put_contents(dirname(__DIR__).'/docs/API_REFERENCE.md',$text);
+if (isset($argv[1])) {
+ $output = fopen($argv[1], 'xb');
+ if ($output === false) throw new RuntimeException('Use a new output path');
+ try { fwrite($output, $text); } finally { fclose($output); }
+} else { echo $text; }

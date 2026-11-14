@@ -82,5 +82,7 @@
       "bytes": 19900,
       "localPath": "build/shell-pie-20261113T222553Z/release-assets/install.sh"
     }
-  ]
+  ],
+  "tagCommit": "a7511fdde440ebe0f566661b9cd34145f5c5bd6c",
+  "sourceIdentityNote": "sourceCommit identifies preserved release artifacts; tagCommit identifies the equivalent runtime tree after documentation-only history cleanup."
 }
