@@ -102,7 +102,7 @@ try {
   eq(validateBundle($p,$names,'0.10.0',$portable),$m);
   foreach(['version'=>'8.5.11','zts'=>true,'debug'=>true,'bits'=>32]as $key=>$value){$bad=$portable;$bad['php'][$key]=$value;rejects(fn()=>validateBundle($p,$names,'0.10.0',$bad));}
   $bad=$portable;$bad['libc']['version']='2.38';rejects(fn()=>validateBundle($p,$names,'0.10.0',$bad));
-  file_put_contents($p.'/runtime/LICENSE','changed');rejects(fn()=>validateBundle($p,$names,'0.10.0',$id));
+  file_put_contents($p.'/runtime/LICENSE','changed');rejects(fn()=>validateBundle($p,$names,'0.10.0',$portable));
  });
  echo json_encode(['status'=>'PASS','tests'=>$count,'php'=>PHP_VERSION],JSON_THROW_ON_ERROR),"\n";
 }finally{removeOwned($root);}

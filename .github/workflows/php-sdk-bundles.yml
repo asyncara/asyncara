@@ -10,6 +10,10 @@ on:
         description: Existing immutable Asyncara release tag
         default: v0.10.0
         required: true
+      publish:
+        description: Upload successfully tested NEW bundles to the existing release (no overwrite)
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -68,3 +72,21 @@ jobs:
             bundle-build/installed-test/report.json
             bundle-build/https-test/*.log
             bundle-build/https-test/report.json
+  publish:
+    if: inputs.publish
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: binary-exact-*
+          merge-multiple: true
+          path: release-assets
+      - name: Preserve existing assets and verify immutable runtime tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: python3 scripts/distribution/publish.py --tag "$RELEASE_TAG" --assets release-assets --bundles-only

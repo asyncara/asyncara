@@ -42,5 +42,6 @@ make -j2
 make install
 [[ "$("$sdk_root/install/bin/php" -n -r 'echo PHP_VERSION;')" = "$sdk_version" ]]
 [[ "$("$sdk_root/install/bin/php-config" --version)" = "$sdk_version" ]]
-"$sdk_root/install/bin/php" -n -i > "$sdk_root/php-info.txt"
+# Build/module identity only: do not persist runner environment or PHP variables.
+"$sdk_root/install/bin/php" -n -r 'phpinfo(INFO_GENERAL | INFO_MODULES);' > "$sdk_root/php-info.txt"
 sha256sum "$sdk_root/install/bin/php" > "$sdk_root/php.sha256"
