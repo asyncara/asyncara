@@ -1,0 +1,70 @@
+name: Exact PHP patch bundles
+on:
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: JSON array of released PHP patch versions (8.3/8.4/8.5)
+        default: '["8.4.11"]'
+        required: true
+      tag:
+        description: Existing immutable Asyncara release tag
+        default: v0.10.0
+        required: true
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ${{ fromJSON(inputs.versions) }}
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: tools
+      - uses: actions/checkout@v4
+        with:
+          path: runtime
+          ref: ${{ inputs.tag }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+          tools: composer:v2
+      - name: Build exact SDK in disposable runner prefix
+        env:
+          PHP_PATCH: ${{ matrix.php }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential autoconf pkg-config cmake perl patchelf libcurl4-openssl-dev libsqlite3-dev libpq-dev libssl-dev zlib1g-dev libbrotli-dev libzstd-dev
+          bash tools/scripts/distribution/php-sdk.sh "$PHP_PATCH" "$PWD/php-sdk"
+          echo "$PWD/php-sdk/install/bin" >> "$GITHUB_PATH"
+      - name: Build and validate native bundle without replacing system PHP
+        run: |
+          bash tools/scripts/distribution/build.sh "$PWD/runtime" "$(git -C runtime rev-parse HEAD)" "$PWD/bundle-build"
+          for bundle in bundle-build/assets/*.tar.gz; do
+            python3 tools/tests/distribution/shell_https.py --php "$(command -v php)" --bundle "$bundle" --output "$PWD/bundle-build/https-test"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-exact-${{ matrix.runner }}-php${{ matrix.php }}
+          path: bundle-build/assets/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-evidence-${{ matrix.runner }}-php${{ matrix.php }}
+          path: |
+            php-sdk/build.log
+            php-sdk/php.sha256
+            php-sdk/php-info.txt
+            php-sdk/release.json
+            php-sdk/source.sha256
+            bundle-build/build.log
+            bundle-build/installed-test/**/*.log
+            bundle-build/installed-test/report.json
+            bundle-build/https-test/*.log
+            bundle-build/https-test/report.json
