@@ -70,12 +70,37 @@ function identity(): array {
         $os = 'macos'; $version = trim(command(['/usr/bin/sw_vers','-productVersion']));
     }
     foreach ([$os,$version,$arch] as $part) if (!preg_match('/\A[a-zA-Z0-9_.-]+\z/', $part)) fail('Unrecognized platform identity');
-    return ['php'=>['version'=>PHP_VERSION,'zts'=>(bool)PHP_ZTS,'debug'=>(bool)PHP_DEBUG,'bits'=>PHP_INT_SIZE*8],
-            'platform'=>['os'=>$os,'osVersion'=>$version,'arch'=>$arch]];
+    $id=['php'=>['version'=>PHP_VERSION,'zts'=>(bool)PHP_ZTS,'debug'=>(bool)PHP_DEBUG,'bits'=>PHP_INT_SIZE*8],
+         'platform'=>['os'=>$os,'osVersion'=>$version,'arch'=>$arch]];
+    if (PHP_OS_FAMILY==='Linux' && $os!=='android') {
+        $getconf=executable('getconf');
+        if ($getconf) {
+            try { $libc=trim(command([$getconf,'GNU_LIBC_VERSION'])); }
+            catch (RuntimeException) { $libc=''; }
+            if (preg_match('/\Aglibc ([0-9]+\.[0-9]+)\z/',$libc,$m)) $id['libc']=['family'=>'glibc','version'=>$m[1]];
+        }
+    }
+    return $id;
 }
 function assetName(string $version, array $identity): string {
     $p=$identity['php']; $h=$identity['platform'];
-    return 'asyncara-'.$version.'-php'.$p['version'].'-'.($p['zts']?'zts':'nts').($p['debug']?'-debug':'').'-'.$h['os'].$h['osVersion'].'-'.$h['arch'].'.tar.gz';
+    $platform=($identity['libc']['family']??null)==='glibc'?'linux-glibc':$h['os'].$h['osVersion'];
+    return 'asyncara-'.$version.'-php'.$p['version'].'-'.($p['zts']?'zts':'nts').($p['debug']?'-debug':'').'-'.$platform.'-'.$h['arch'].'.tar.gz';
+}
+function compatiblePlatform(array $manifest,array $identity): bool {
+    if (($manifest['schema']??null)===1) {
+        $a=$manifest['platform']??null;$b=$identity['platform'];
+        if (!is_array($a)) return false;
+        ksort($a);ksort($b);return $a===$b;
+    }
+    if (($manifest['schema']??null)!==2) return false;
+    $p=$manifest['compatibility']??[];$libc=$identity['libc']??[];
+    return ($p['os']??null)==='linux' && ($p['libc']??null)==='glibc'
+        && ($libc['family']??null)==='glibc'
+        && ($p['arch']??null)===$identity['platform']['arch']
+        && is_string($p['minimumGlibc']??null) && preg_match('/\A[0-9]+\.[0-9]+\z/',$p['minimumGlibc'])
+        && is_string($libc['version']??null) && preg_match('/\A[0-9]+\.[0-9]+\z/',$libc['version'])
+        && version_compare($libc['version'],$p['minimumGlibc'],'>=');
 }
 function readSmall(string $path, int $max = 2097152): string {
     if (!is_file($path) || is_link($path) || filesize($path)>$max) fail('Missing, linked or oversized file: '.$path);
@@ -176,7 +201,7 @@ function extractBundle(string $archive,string $root): array {
 function validateBundle(string $root,array $names,string $version,array $id): array {
     $m=jsonFile($root.'/manifest.json');
     $same=static function(mixed $a,array $b):bool { if(!is_array($a))return false;ksort($a);ksort($b);return $a===$b; };
-    if (($m['schema']??null)!==1 || ($m['project']??null)!=='asyncara/runtime' || ($m['version']??null)!==$version || !$same($m['php']??null,$id['php']) || !$same($m['platform']??null,$id['platform'])) fail('Bundle does not match PHP version, NTS/ZTS, debug mode, architecture or operating system');
+    if (($m['project']??null)!=='asyncara/runtime' || ($m['version']??null)!==$version || !$same($m['php']??null,$id['php']) || !compatiblePlatform($m,$id)) fail('Bundle does not match PHP version, NTS/ZTS, debug mode, architecture or libc requirements');
     if (!is_string($m['sourceCommit']??null) || !preg_match('/\A[0-9a-f]{40}\z/',$m['sourceCommit'])) fail('Missing source commit');
     $files=$m['files']??null;if(!is_array($files)||count($names)!==count($files)+1)fail('Manifest inventory mismatch');
     foreach (['extension/asyncara.so','lib/libasyncara-mariadb.so.3','runtime/autoload.php','runtime/vendor/autoload.php','runtime/scripts/check-install.php','runtime/tests/release/smoke.php','runtime/LICENSE'] as $required) if(!isset($files[$required]))fail('Missing bundle component: '.$required);
@@ -221,7 +246,7 @@ function main(array $argv): void {
         $key=substr($argv[$n],2);if(!str_starts_with($argv[$n],'--')||!array_key_exists($key,$options)||!isset($argv[$n+1]))fail('Invalid installer argument: '.$argv[$n]);$options[$key]=$argv[++$n];
     }
     $id=identity();if($detect){echo json_encode($id,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR),"\n";return;}
-    if(PHP_VERSION_ID<80300 || PHP_VERSION_ID>=80600)fail('Asyncara 0.10 requires PHP 8.3–8.5');
+    if(PHP_VERSION_ID<80300)fail('Asyncara requires PHP 8.3 or newer');
     if(PHP_OS_FAMILY==='Windows')fail('No Windows runtime bundle has been certified; a POSIX shell does not make a Linux module Windows-compatible');
     $version=$options['version'];if(!preg_match('/\A[0-9]+\.[0-9]+\.[0-9]+\z/',$version))fail('Invalid release version');
     $home=getenv('HOME');if(!$home || $home[0]!=='/')fail('HOME must identify the current user');

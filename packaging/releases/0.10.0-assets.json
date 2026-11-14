@@ -72,14 +72,14 @@
     },
     {
       "name": "install.sh.sha256",
-      "sha256": "96d138917398f6bf2786e6af7cf985c4d2a518dbee891562348457b71f0367d0",
+      "sha256": "8e21b619ddbb1b90d447d0d1331b720e3e438bd7d0785dd3e00a2c0b8dec9994",
       "bytes": 77,
       "localPath": "scripts/install.sh.sha256"
     },
     {
       "name": "install.sh",
-      "sha256": "eda6a74e689e34871a0537d86aa68aac0f1c16799fc7a483997cb055f78859cd",
-      "bytes": 20279,
+      "sha256": "5443a86b87729bea1ee0e61b5c02cc35c5c0d9aa7d39bafa73b54be35d3e0c8d",
+      "bytes": 21522,
       "localPath": "scripts/install.sh"
     }
   ],

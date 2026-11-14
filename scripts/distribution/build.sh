@@ -38,7 +38,9 @@ phpize
 make -j2
 module="$PWD/modules/asyncara.so"
 cd ..
-php -d "extension=$module" "$(command -v composer)" install --no-dev --no-interaction --prefer-dist --no-scripts
+# Composer's Xdebug restart drops a CLI-only extension setting on some images.
+# Keep this process (the extension is verified independently below).
+COMPOSER_ALLOW_XDEBUG=1 php -d "extension=$module" "$(command -v composer)" install --no-dev --no-interaction --prefer-dist --no-scripts
 php -n -d "extension=$module" scripts/check-install.php --require-hyper --require-sql
 for backend in epoll poll; do
   ASYNCARA_BACKEND="$backend" php -n -d "extension=$module" tests/release/smoke.php

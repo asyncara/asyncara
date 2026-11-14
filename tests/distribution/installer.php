@@ -37,6 +37,26 @@ SH;
 $id=['php'=>['version'=>'8.5.12','zts'=>false,'debug'=>false,'bits'=>64],'platform'=>['os'=>'ubuntu','osVersion'=>'24.04','arch'=>'x86_64']];
 try {
  test('exact PHP/NTS selection',fn()=>eq(assetName('0.10.0',$id),'asyncara-0.10.0-php8.5.12-nts-ubuntu24.04-x86_64.tar.gz'));
+ test('portable glibc package ignores distribution branding',function()use($id){
+  $id['libc']=['family'=>'glibc','version'=>'2.41'];
+  foreach(['ubuntu','debian','kali','fedora']as $os){$id['platform']['os']=$os;$id['platform']['osVersion']='2025.2';
+   eq(assetName('0.10.0',$id),'asyncara-0.10.0-php8.5.12-nts-linux-glibc-x86_64.tar.gz');}
+ });
+ test('PHP patch versions never silently substitute incompatible SDKs',function()use($id){
+  $id['libc']=['family'=>'glibc','version'=>'2.41'];$id['platform']['arch']='aarch64';
+  foreach(['8.3.0','8.3.36','8.4.11','8.4.27','8.5.12','8.6.0']as $php){$id['php']['version']=$php;
+   eq(assetName('0.10.0',$id),'asyncara-0.10.0-php'.$php.'-nts-linux-glibc-aarch64.tar.gz');}
+ });
+ test('portable manifest checks libc floor and architecture',function()use($id){
+  $m=['schema'=>2,'compatibility'=>['os'=>'linux','libc'=>'glibc','arch'=>'x86_64','minimumGlibc'=>'2.39']];
+  $id['platform']['os']='kali';$id['libc']=['family'=>'glibc','version'=>'2.41'];
+  eq(compatiblePlatform($m,$id),true);
+  foreach(['2.38','2.9','garbage','']as $v){$bad=$id;$bad['libc']['version']=$v;eq(compatiblePlatform($m,$bad),false);}
+  $bad=$id;$bad['platform']['arch']='aarch64';eq(compatiblePlatform($m,$bad),false);
+  $bad=$id;$bad['libc']['family']='musl';eq(compatiblePlatform($m,$bad),false);
+  $bad=$id;unset($bad['libc']);eq(compatiblePlatform($m,$bad),false);
+  $m['schema']=3;eq(compatiblePlatform($m,$id),false);
+ });
  test('ZTS selects different asset',function()use($id){$id['php']['zts']=true;eq(str_contains(assetName('0.10.0',$id),'-zts-'),true);});
  test('debug selects different asset',function()use($id){$id['php']['debug']=true;eq(str_contains(assetName('0.10.0',$id),'-nts-debug-'),true);});
  foreach(['aarch64','arm','i686']as $arch)test('architecture '.$arch,function()use($id,$arch){$id['platform']['arch']=$arch;eq(str_ends_with(assetName('0.10.0',$id),'-'.$arch.'.tar.gz'),true);});
@@ -77,6 +97,11 @@ try {
   $m=['schema'=>1,'project'=>'asyncara/runtime','version'=>'0.10.0','sourceCommit'=>str_repeat('a',40),'php'=>$id['php'],'platform'=>$id['platform'],'files'=>$files];file_put_contents($p.'/manifest.json',json_encode($m));$names=array_fill_keys(array_merge(array_keys($files),['manifest.json']),true);
   eq(validateBundle($p,$names,'0.10.0',$id),$m);
   $z=$id;$z['php']['zts']=true;rejects(fn()=>validateBundle($p,$names,'0.10.0',$z));
+  $m['schema']=2;$m['compatibility']=['os'=>'linux','libc'=>'glibc','arch'=>'x86_64','minimumGlibc'=>'2.39'];
+  file_put_contents($p.'/manifest.json',json_encode($m));$portable=$id;$portable['platform']['os']='kali';$portable['libc']=['family'=>'glibc','version'=>'2.41'];
+  eq(validateBundle($p,$names,'0.10.0',$portable),$m);
+  foreach(['version'=>'8.5.11','zts'=>true,'debug'=>true,'bits'=>32]as $key=>$value){$bad=$portable;$bad['php'][$key]=$value;rejects(fn()=>validateBundle($p,$names,'0.10.0',$bad));}
+  $bad=$portable;$bad['libc']['version']='2.38';rejects(fn()=>validateBundle($p,$names,'0.10.0',$bad));
   file_put_contents($p.'/runtime/LICENSE','changed');rejects(fn()=>validateBundle($p,$names,'0.10.0',$id));
  });
  echo json_encode(['status'=>'PASS','tests'=>$count,'php'=>PHP_VERSION],JSON_THROW_ON_ERROR),"\n";
